@@ -55,7 +55,7 @@ package.path = "./?.luac;;"
 
 ## You may need to edit browser-setting.lua.
 
-See the contents in the file.
+See the comments in the file.
 
 ## Three important things you need to know.
 
