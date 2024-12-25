@@ -60,9 +60,7 @@ c = mathly(1, 10, 5)
 d = mathly(1, 10, 0) --  same as d = mathly(zeros(1, 10))
 A = mathly(10, 10)
 B = mathly(1, 10)
-```
-Style of MATLAB mMatrix operations are enabled. E.g.,
-```
+
 3*a - 10
 2*c + 5 * d - 3
 -- inv(A) * B         -- not allowed as in math
