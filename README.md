@@ -27,6 +27,10 @@ If there is anything I like MATLAB, these tools are.
 With provided functions, it is much easier and faster to do math,
 especially linear algebra, and plot graphs of functions.
 
+## Which verions of Lua is needed?
+
+Mathly is deveoped in Lua 5.4.6. It works with present newest version 5.4.7. It might work with previous versions.
+
 ## Where to place the downloaded files?
 
 ### 1. In either the folder of your Lua code files to run/debug or
@@ -40,7 +44,7 @@ especially linear algebra, and plot graphs of functions.
 
 ###  (Linux) /usr/local/share/lua/5.4/
 
-Note: The downloaded *.lua files can be compiled with luac. To use compiled modules, you
+Note: The *.lua files can be compiled with luac. To use compiled modules, you
 will need to set package.path first as follows.
 
 ```
