@@ -38,7 +38,13 @@ especially linear algebra, and plot graphs of functions.
      plotly.lua
      plotly-2.9.0.min.js
 
-  (Linux) /usr/local/share/lua/5.4/
+###  (Linux) /usr/local/share/lua/5.4/
+
+Note: The downloaded *.lua files can be compiled with luac. To use compiled modules, you
+will need to set package.path first as follows.
+
+```package.path = "./?.luac;;"
+```
 
 ## Three important things you need to know.
 
