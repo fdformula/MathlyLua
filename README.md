@@ -29,7 +29,7 @@ especially linear algebra, and plot graphs of functions.
 
 ## Where to place the downloaded files?
 
-### 1. in either the folder of your Lua code files to run/debug or
+### 1. In either the folder of your Lua code files to run/debug or
 
 ### 2. (Windows) the folder, e.g., c:/cygwin/bin/, which contains the command, lua.exe
      lua.exe
