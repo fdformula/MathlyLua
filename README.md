@@ -59,8 +59,7 @@ See the comments in the file.
 
 ## Three important things you need to know.
 
-### 1. A mathly matrix/metatable is a LUA table, but a LUA table is not
-a mathly matrix/metatable unless it is set so.
+### 1. A mathly matrix/metatable is a LUA table, but a LUA table is not a mathly matrix/metatable unless it is set so.
 
 #### a. examples
 ```
