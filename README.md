@@ -61,7 +61,7 @@ See the comments in the file.
 
 ### 1. A mathly matrix/metatable is a LUA table, but a LUA table is not a mathly matrix/metatable unless it is set so.
 
-#### a. examples
+#### a. Examples
 ```
 mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d are mathly matrices
@@ -86,8 +86,7 @@ A * B
 A * B * C
 B * C
 ```
-#### b. Functions, eye, ones, zeros, rand, randi, reshape, generate
-each a mathly matrix.
+#### b. Functions, eye, ones, zeros, rand, randi, reshape, generate each a mathly matrix.
 
 #### c. mathly matrix operations each return a mathly metatable(s),
 e.g., 3 * A - 4 * B, rref, inv, if the result is a matrix.
