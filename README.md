@@ -181,15 +181,8 @@ function fprimes_for_splines_using_lagrange(x, y)
 end
 
 K = 1 -- 'global', to make it faster to choose a spline
-function resetK()
-  K = 1;
-end
+function resetK() K = 1 end
 
--- X        - a single value
--- x, y     - data points, vectors of same size
--- fprimes  - a vector of fi'(xi) where fi(x) is the quadratice spline on [x[i], x[i+1]].
--- resetK_q - for efficiently computing f(x) at sequential points; otherwise, ignore it
--- output   - the estimated value of f(X) according to the input data
 function evaluate_spline_function(X, x, y, fprimes, resetK_q)
   if resetK_q then resetK() end
   local n = length(x)
@@ -204,10 +197,6 @@ function evaluate_spline_function(X, x, y, fprimes, resetK_q)
     return y[n] + fprimes[K] * (X - x[n]) -- i == n - 1
   end
 end
-
---
--- test
---
 
 function test()
   local x = {-1, 0,  1, 2, 4,  7, 10, 11, 15, 16, 18, 19, 22, 25, 27}
