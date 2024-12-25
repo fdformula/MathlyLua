@@ -27,7 +27,7 @@ If there is anything I like MATLAB, these tools are.
 With provided functions, it is much easier and faster to do math,
 especially linear algebra, and plot graphs of functions.
 
-## Three important things are:
+## Three important things you need to know.
 
 ### 1. A mathly matrix/metatable is a LUA table, but a LUA table is not
 a mathly matrix/metatable unless it is set so.
