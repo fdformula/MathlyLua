@@ -1,4 +1,4 @@
-MathlyLua makes Lua mathly and like MATLAB.
+# MathlyLua makes Lua mathly and like MATLAB.
 
 Mathly for Lua is a Lua module which depends on a Lua module,
 plotly.lua (see https://github.com/kenloen/plotly.lua). The latter is modified
@@ -27,12 +27,12 @@ If there is anything I like MATLAB, these tools are.
 With provided functions, it is much easier and faster to do math,
 especially linear algebra, and plot graphs of functions.
 
-Three important things are:
+## Three important things are:
 
-  1. A mathly matrix/metatable is a LUA table, but a LUA table is not
+### 1. A mathly matrix/metatable is a LUA table, but a LUA table is not
      a mathly matrix/metatable unless it is set so.
 
-     a. examples
+#### a. examples
 
         mathly = require('mathly')
         a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d are mathly matrices
@@ -58,17 +58,17 @@ Three important things are:
         A * B * C
         B * C
 
-     b. Functions, eye, ones, zeros, rand, randi, reshape, generate
+#### b. Functions, eye, ones, zeros, rand, randi, reshape, generate
         each a mathly matrix.
 
-     c. mathly matrix operations each return a mathly metatable(s),
+#### c. mathly matrix operations each return a mathly metatable(s),
         e.g., 3 * A - 4 * B, rref, inv, if the result is a matrix.
 
-  2. A mathly row/column vector is a matrix. It's ith element must be
+### 2. A mathly row/column vector is a matrix. It's ith element must be
      accessed/indexed by either x[i][1] (a column vector) or x[1][i]
      (a row vector).
 
-  3. ones, rand, randi, and zeros are commonly used. If vector/matrix
+### 3. ones, rand, randi, and zeros are commonly used. If vector/matrix
      operations are needed, use them to create a column vector, e.g.,
      zeros(1, 10).
 
@@ -79,24 +79,25 @@ Three important things are:
      always use, e.g., mathly(1, 10), or mathly(ones(1, 10)) to
      generate or convert a Lua list to a row vector/matrix. See 1a.
 
-  plot and its spec
+## plot and its spec
 
-  1) mode='lines+markers', 'lines', or 'markers'
+### Some specs
+#### 1) mode='lines+markers', 'lines', or 'markers'
 
-  2) of a line:
+#### 2) of a line:
       width=5
       style='-' (solid), ':' (dot), or '--' (dash)
 
-  3) of a marker:
+#### 3) of a marker:
       size=10
       symbol='circle'
 
       Some possible symbols are: circle, circle-open, circle-open-dot, cross, diamond, square, x,
       triangle-left, triangle-right, triangle-up, triangle-down, hexagram, star, hourglass, bowtie
 
-  4) of a plot: layout={width=500, height=400}
+#### 4) of a plot: layout={width=500, height=400}
 
-some examples
+### Some examples
 require 'mathly';
 
 x = linspace(0, pi, 100)
