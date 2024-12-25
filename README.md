@@ -31,6 +31,8 @@ especially linear algebra, and plot graphs of functions.
 
 Mathly is deveoped in Lua 5.4.6. It works with present newest version 5.4.7. It might work with previous versions.
 
+You may download Lua source code in https://lua.org/ or built Windows binary commands in, say, https://www.nuget.org/packages/lua/.
+
 ## Where to place the downloaded files?
 
 ### 1. In either the folder of your Lua code files to run/debug or
