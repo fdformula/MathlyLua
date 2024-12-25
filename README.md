@@ -33,7 +33,7 @@ especially linear algebra, and plot graphs of functions.
 a mathly matrix/metatable unless it is set so.
 
 #### a. examples
-
+```
 mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d are mathly matrices
 b = {{1}, {2}, {3}}; b = mathly(b)
@@ -41,8 +41,9 @@ c = mathly(1, 10, 5)
 d = mathly(1, 10, 0) --  same as d = mathly(zeros(1, 10))
 A = mathly(10, 10)
 B = mathly(1, 10)
-
--- Style of MATLAB mMatrix operations are enabled. E.g.,
+```
+Style of MATLAB mMatrix operations are enabled. E.g.,
+```
 3*a - 10
 2*c + 5 * d - 3
 -- inv(A) * B         -- not allowed as in math
@@ -57,7 +58,7 @@ A - 2
 A * B
 A * B * C
 B * C
-
+```
 #### b. Functions, eye, ones, zeros, rand, randi, reshape, generate
 each a mathly matrix.
 
@@ -98,6 +99,7 @@ triangle-left, triangle-right, triangle-up, triangle-down, hexagram, star, hourg
 #### 4) of a plot: layout={width=500, height=400}
 
 ### Some examples
+```
 require 'mathly';
 
 x = linspace(0, pi, 100)
@@ -124,3 +126,4 @@ plot(rand(125, 4), spec)
 plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}})
 plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
 plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
+```
