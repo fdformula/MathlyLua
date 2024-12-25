@@ -43,7 +43,7 @@ especially linear algebra, and plot graphs of functions.
 Note: The downloaded *.lua files can be compiled with luac. To use compiled modules, you
 will need to set package.path first as follows.
 
-```package.path = "./?.luac;;"
+```package.path = ".\/\?.luac;;"
 ```
 
 ## Three important things you need to know.
