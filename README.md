@@ -151,3 +151,77 @@ plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, tit
 plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
 plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
 ```
+
+### A more meaningful exam - Quadratic splines using Lagrange interpolating polynomials for data points
+
+```
+require('mathly')
+
+function fprimes_for_splines_using_lagrange(x, y)
+  n = length(x)
+  if length(y) ~= n then
+    error("vectors x and y must be of the same size.")
+  end
+
+  A = zeros(n - 1, n - 1)
+  B = zeros(1, n - 1)
+  for i = 1, n - 2 do
+    A[i][i] = 1; A[i][i + 1] = 1
+    B[i] = 2 * (y[i + 1]- y[i]) / (x[i + 1] - x[i])
+  end
+  A[n - 1][n - 1] = 1
+  B[n - 1] = (y[n] - y[n - 1]) / (x[n] - x[n - 1])
+
+  fprimes = zeros(1, n - 1)
+  fprimes[n - 1] = B[n - 1] -- solve Ax = B by back substitution
+  for i = n - 2, 1, -1 do
+    fprimes[i] = B[i] - fprimes[i + 1]
+  end
+  return fprimes
+end
+
+K = 1 -- 'global', to make it faster to choose a spline
+function resetK()
+  K = 1;
+end
+
+-- X        - a single value
+-- x, y     - data points, vectors of same size
+-- fprimes  - a vector of fi'(xi) where fi(x) is the quadratice spline on [x[i], x[i+1]].
+-- resetK_q - for efficiently computing f(x) at sequential points; otherwise, ignore it
+-- output   - the estimated value of f(X) according to the input data
+function evaluate_spline_function(X, x, y, fprimes, resetK_q)
+  if resetK_q then resetK() end
+  local n = length(x)
+  while K < n - 1 do -- K is 'global'
+    if x[K] <= X and X <= x[K + 1] then break end
+    K = K + 1
+  end
+  if K < n - 1 then
+    h = x[K + 1] - x[K]
+    return y[K] + 0.5*((X - x[K+1])^2/(-h) + h)*fprimes[K] + 0.5*(X - x[K])^2/h*fprimes[K+1]
+  else
+    return y[n] + fprimes[K] * (X - x[n]) -- i == n - 1
+  end
+end
+
+--
+-- test
+--
+
+function test()
+  local x = {-1, 0,  1, 2, 4,  7, 10, 11, 15, 16, 18, 19, 22, 25, 27}
+  local y = { 5, 9, 10, 8, 7, 12, 14, 21,  9, 11, 15, 17, 20, 31, 35}
+  local X = linspace(min(x), max(x), 500)
+  local Y = zeros(1, length(X))
+  local fprimes = fprimes_for_splines_using_lagrange(x, y)
+  resetK()
+  for i = 1, length(X) do
+    Y[i] = evaluate_spline_function(X[i], x, y, fprimes, false)
+  end
+
+  plot(X, Y, "-r", x, y, "*k")
+end
+
+test()
+```
