@@ -201,14 +201,16 @@ end
 function test()
   local x = {-1, 0,  1, 2, 4,  7, 10, 11, 15, 16, 18, 19, 22, 25, 27}
   local y = { 5, 9, 10, 8, 7, 12, 14, 21,  9, 11, 15, 17, 20, 31, 35}
+
   local X = linspace(min(x), max(x), 500)
   local Y = zeros(1, length(X))
+
   local fprimes = fprimes_for_splines_using_lagrange(x, y)
   resetK()
+
   for i = 1, length(X) do
     Y[i] = evaluate_spline_function(X[i], x, y, fprimes, false)
   end
-
   plot(X, Y, "-r", x, y, "*k")
 end
 
