@@ -30,54 +30,54 @@ especially linear algebra, and plot graphs of functions.
 ## Three important things are:
 
 ### 1. A mathly matrix/metatable is a LUA table, but a LUA table is not
-     a mathly matrix/metatable unless it is set so.
+a mathly matrix/metatable unless it is set so.
 
 #### a. examples
 
-        mathly = require('mathly')
-        a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d are mathly matrices
-        b = {{1}, {2}, {3}}; b = mathly(b)
-        c = mathly(1, 10, 5)
-        d = mathly(1, 10, 0) --  same as d = mathly(zeros(1, 10))
-        A = mathly(10, 10)
-        B = mathly(1, 10)
+mathly = require('mathly')
+a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d are mathly matrices
+b = {{1}, {2}, {3}}; b = mathly(b)
+c = mathly(1, 10, 5)
+d = mathly(1, 10, 0) --  same as d = mathly(zeros(1, 10))
+A = mathly(10, 10)
+B = mathly(1, 10)
 
-        -- Style of MATLAB mMatrix operations are enabled. E.g.,
-        3*a - 10
-        2*c + 5 * d - 3
-        -- inv(A) * B         -- not allowed as in math
-        inv(A) * B^T
-        inv(A) * randi(1, 10) -- mathly knows how to handle a Lua table
-        randi(1, 10) * inv(A) -- randi(1, 10) here in its context
+-- Style of MATLAB mMatrix operations are enabled. E.g.,
+3*a - 10
+2*c + 5 * d - 3
+-- inv(A) * B         -- not allowed as in math
+inv(A) * B^T
+inv(A) * randi(1, 10) -- mathly knows how to handle a Lua table
+randi(1, 10) * inv(A) -- randi(1, 10) here in its context
 
-        A = randi(10, 5)
-        B = randi(5, 3)
-        C = rand(3, 1)
-        A - 2
-        A * B
-        A * B * C
-        B * C
+A = randi(10, 5)
+B = randi(5, 3)
+C = rand(3, 1)
+A - 2
+A * B
+A * B * C
+B * C
 
 #### b. Functions, eye, ones, zeros, rand, randi, reshape, generate
-        each a mathly matrix.
+each a mathly matrix.
 
 #### c. mathly matrix operations each return a mathly metatable(s),
-        e.g., 3 * A - 4 * B, rref, inv, if the result is a matrix.
+e.g., 3 * A - 4 * B, rref, inv, if the result is a matrix.
 
 ### 2. A mathly row/column vector is a matrix. It's ith element must be
-     accessed/indexed by either x[i][1] (a column vector) or x[1][i]
-     (a row vector).
+accessed/indexed by either x[i][1] (a column vector) or x[1][i]
+(a row vector).
 
 ### 3. ones, rand, randi, and zeros are commonly used. If vector/matrix
-     operations are needed, use them to create a column vector, e.g.,
-     zeros(1, 10).
+operations are needed, use them to create a column vector, e.g.,
+zeros(1, 10).
 
-     a. They create each an ordinary Lua table if called like
-     zeros(10, 1).
+a. They create each an ordinary Lua table if called like
+zeros(10, 1).
 
-     b. If a row vector/matrix with vector/maxtrix operations needed,
-     always use, e.g., mathly(1, 10), or mathly(ones(1, 10)) to
-     generate or convert a Lua list to a row vector/matrix. See 1a.
+b. If a row vector/matrix with vector/maxtrix operations needed,
+always use, e.g., mathly(1, 10), or mathly(ones(1, 10)) to
+generate or convert a Lua list to a row vector/matrix. See 1a.
 
 ## plot and its spec
 
@@ -85,15 +85,15 @@ especially linear algebra, and plot graphs of functions.
 #### 1) mode='lines+markers', 'lines', or 'markers'
 
 #### 2) of a line:
-      width=5
-      style='-' (solid), ':' (dot), or '--' (dash)
+width=5
+style='-' (solid), ':' (dot), or '--' (dash)
 
 #### 3) of a marker:
-      size=10
-      symbol='circle'
+size=10
+symbol='circle'
 
-      Some possible symbols are: circle, circle-open, circle-open-dot, cross, diamond, square, x,
-      triangle-left, triangle-right, triangle-up, triangle-down, hexagram, star, hourglass, bowtie
+Some possible symbols are: circle, circle-open, circle-open-dot, cross, diamond, square, x,
+triangle-left, triangle-right, triangle-up, triangle-down, hexagram, star, hourglass, bowtie
 
 #### 4) of a plot: layout={width=500, height=400}
 
