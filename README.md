@@ -158,13 +158,13 @@ plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(
 require('mathly')
 
 function fprimes_for_splines_using_lagrange(x, y)
-  n = length(x)
+  local n = length(x)
   if length(y) ~= n then
     error("vectors x and y must be of the same size.")
   end
 
-  A = zeros(n - 1, n - 1)
-  B = zeros(1, n - 1)
+  local A = zeros(n - 1, n - 1)
+  local B = zeros(1, n - 1)
   for i = 1, n - 2 do
     A[i][i] = 1; A[i][i + 1] = 1
     B[i] = 2 * (y[i + 1]- y[i]) / (x[i + 1] - x[i])
@@ -172,7 +172,7 @@ function fprimes_for_splines_using_lagrange(x, y)
   A[n - 1][n - 1] = 1
   B[n - 1] = (y[n] - y[n - 1]) / (x[n] - x[n - 1])
 
-  fprimes = zeros(1, n - 1)
+  local fprimes = zeros(1, n - 1)
   fprimes[n - 1] = B[n - 1] -- solve Ax = B by back substitution
   for i = n - 2, 1, -1 do
     fprimes[i] = B[i] - fprimes[i + 1]
@@ -181,7 +181,9 @@ function fprimes_for_splines_using_lagrange(x, y)
 end
 
 K = 1 -- 'global', to make it faster to choose a spline
-function resetK() K = 1 end
+function resetK()
+  K = 1;
+end
 
 function evaluate_spline_function(X, x, y, fprimes, resetK_q)
   if resetK_q then resetK() end
@@ -211,6 +213,7 @@ function test()
   for i = 1, length(X) do
     Y[i] = evaluate_spline_function(X[i], x, y, fprimes, false)
   end
+
   plot(X, Y, "-r", x, y, "*k")
 end
 
