@@ -2,7 +2,7 @@
 
 Mathly for Lua is a Lua module which depends on a Lua module,
 plotly.lua (see https://github.com/kenloen/plotly.lua). The latter is modified
-to suit the needs of mathly.lua, and it depends on another Lua module, dkjson.lua
+to suit the needs of mathly, and it depends on another Lua module, dkjson.lua
 (see http://dkolf.de/dkjson-lua). A very sall part of code is borrowed from a Lua
 module, matrix.lua (see https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua).
 
