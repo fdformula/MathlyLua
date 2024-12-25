@@ -27,6 +27,19 @@ If there is anything I like MATLAB, these tools are.
 With provided functions, it is much easier and faster to do math,
 especially linear algebra, and plot graphs of functions.
 
+## Where to place the downloaded files?
+
+### 1. in either the folder of your Lua code files to run/debug or
+
+### 2. (Windows) the folder, e.g., c:/cygwin/bin/, which contains the command, lua.exe
+     lua.exe
+     dkjson.lua
+     mathly.lua
+     plotly.lua
+     plotly-2.9.0.min.js
+
+  (Linux) /usr/local/share/lua/5.4/
+
 ## Three important things you need to know.
 
 ### 1. A mathly matrix/metatable is a LUA table, but a LUA table is not
