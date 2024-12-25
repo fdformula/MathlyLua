@@ -1,4 +1,4 @@
-# MathlyLua makes Lua mathly and like MATLAB
+# Mathly makes Lua mathly and like MATLAB
 
 Mathly for Lua is a Lua module which depends on a Lua module,
 plotly.lua (see https://github.com/kenloen/plotly.lua). The latter is modified
