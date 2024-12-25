@@ -11,7 +11,7 @@ Therefore, graphs are shown in an internet browser.
 
 The whole mathly tool is less than 5 MB, while it provides enough features for college instructors and
 students to introduce and/or implement numerical algorithms in most cases. Because it is lightweight and fast,
-it is can be employed to slow devices like Micrsoft Surface Pro 7. Imagine that the smallest size of GNU Octave
+it is can be employed to slow devices like old Micrsoft Surface Pro 7. Imagine that the smallest size of GNU Octave
 is about 300 MB, MATLAB, needs a few GB space, and Julia with graphing modules occupies is also huge.
 
 It is especially good for linear algebra and numerical analysis instructors for teaching. It takes no time to
