@@ -53,6 +53,10 @@ will need to set package.path first as follows.
 package.path = "./?.luac;;"
 ```
 
+## You may need to edit browser-setting.lua.
+
+See the contents in the file.
+
 ## Three important things you need to know.
 
 ### 1. A mathly matrix/metatable is a LUA table, but a LUA table is not
