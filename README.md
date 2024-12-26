@@ -53,7 +53,7 @@ Note: The `*.lua` files can be compiled with `luac`. To use compiled modules, we
 package.path = "./?.luac;;"
 ```
 
-## You may need to edit browser-setting.lua.
+## You may need to edit the file `browser-setting.lua`.
 
 See the comments in the file.
 
