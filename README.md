@@ -105,7 +105,7 @@ inv(B)    --
 inv(submatrix(C, 1, 1, 3, 3))
 ```
 
-`To allow matrix operations on none-mathly tables, conversion is needed.` For example,
+`To allow matrix operations on ordinary Lua tables, conversion is needed.` For example,
 
 ```
 mathly = require('mathly')
