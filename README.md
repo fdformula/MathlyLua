@@ -97,6 +97,7 @@ A - 2
 A * B
 A * B * C
 B * C
+C^T * B^T
 ```
 #### b. Functions, `eye`, `ones`, `zeros`, `rand`, `randi`, `reshape`, generate each a mathly matrix.
 
