@@ -19,7 +19,7 @@ Mathly is especially good for linear algebra and numerical analysis instructors 
 start Lua and load mathly. They can simply focus on course materials and never need to worry if their computers
 work too slowly.
 
-Mathly makes Lua mathly and like MATLAB. It provides a group of commonly used MATLAB functions and features,
+In brief, mathly makes Lua mathly and like MATLAB. It provides a group of commonly used MATLAB functions and features,
 for example, `ones`, `zeros`, `rand`, `randi`, `save`, matrix operations, and even `plot`. They make coding
 and testing a thought/algorithm much easier and faster than working in most other programming languages.
 If there is anything I love the most about MATLAB, these tools are.
