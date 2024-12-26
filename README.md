@@ -22,7 +22,7 @@ work too slowly.
 Mathly makes Lua mathly and like MATLAB. It provides implementation of
 a group of commonly used MATLAB functions, for example, `ones`, `zeros`, `rand`,
 `randi`, `save`, matrix operations, and even `plot`. They make coding and testing a thought/algorithm
-much easier and faster than working in other programming languages.
+much easier and faster than working in most other programming languages.
 If there is anything I love the most about MATLAB, these tools are.
 
 With provided functions, it is much easier and faster to do math,
