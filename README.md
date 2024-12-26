@@ -59,7 +59,7 @@ See the comments in the file.
 
 ## Three important things you need to know:
 
-### 1. A mathly vector/matrix is in LUA a table of tables, but a LUA table may not be a mathly vector/matrix.
+### 1. A mathly vector/matrix is in LUA a table (of tables), but a LUA table may not be a mathly vector/matrix.
 
 #### a. Examples
 ```
