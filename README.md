@@ -107,7 +107,7 @@ inv(submatrix(C, 1, 1, 3, 3))
 ```
 
 To apply matrix operations on none-mathly matrices, e.g., ordinary/raw Lua tables,
-convertion is needed. For example,
+conversion is needed. For example,
 
 ```
 mathly = require('mathly')
