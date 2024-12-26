@@ -17,7 +17,7 @@ install them in a quite old computer and run smoothly.
 
 Mathly is especially good for instructors of linear algebra and numerical computing for teaching. It takes no time to
 start Lua and load mathly. While presenting code and computing results in lectures, they can simply focus on delivery
-of course contents and never need to worry if their computers work too slowly.
+of course contents and never need to worry if their computers work too slowly or even collapse.
 
 In brief, mathly makes Lua mathly and like MATLAB. It provides a group of commonly used MATLAB functions and features,
 for example,  `linspace`, `zeros`, `rand`, `save`, matrix operations, and even `plot`. They make coding
