@@ -15,9 +15,9 @@ it can be employed to slow devices like old Microsoft Surface Pro 5. Imagine tha
 is about 300 MB, MATLAB needs a few GB storage space, and Julia with graphing modules is huge, too. You can hardly
 install them in a quite old computer and run smoothly.
 
-Mathly is especially good for linear algebra and numerical analysis instructors for teaching. It takes no time to
-start Lua and load mathly. They can simply focus on course materials and never need to worry if their computers
-work too slowly.
+Mathly is especially good for instructors of linear algebra and numerical computing for teaching. It takes no time to
+start Lua and load mathly. While presenting code and computing results in lectures, they can simply focus on delivery
+of course contents and never need to worry if their computers work too slowly.
 
 In brief, mathly makes Lua mathly and like MATLAB. It provides a group of commonly used MATLAB functions and features,
 for example,  `linspace`, `zeros`, `rand`, `save`, matrix operations, and even `plot`. They make coding
