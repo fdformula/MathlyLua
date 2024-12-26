@@ -10,10 +10,10 @@ Mathly uses plotly JavaScript graphing tools to plot graphs of single-variable f
 (see https://plotly.com/javascript/). Therefore, graphs are shown in an internet browser.
 
 The entire mathly tool together with Lua is less than 5 MB, while it provides enough features for instructors and
-college students to introduce and/or implement numerical algorithms in most cases. Because it is lightweight and fast,
+college students to introduce and/or implement numerical algorithms in most cases. Because it is super lightweight and fast as well,
 it can be employed to slow devices like old Microsoft Surface Pro 5. Imagine that the smallest size of GNU Octave
-is about 300 MB, MATLAB needs a few GB storage space, and Julia with graphing modules is also huge. You can hardly
-install them in an quite old computer and run smoothly.
+is about 300 MB, MATLAB needs a few GB storage space, and Julia with graphing modules is huge, too. You can hardly
+install them in a quite old computer and run smoothly.
 
 Mathly is especially good for linear algebra and numerical analysis instructors for teaching. It takes no time to
 start Lua and load mathly. They can simply focus on course materials and never need to worry if their computers
