@@ -73,7 +73,7 @@ Detailed documentation will be provided soon. (!!!)
 #### a. Examples
 ```
 mathly = require('mathly')
-a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d, A, B, C, and D are all mathly matrices
+a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d, A, B, C, D, and E are all mathly matrices
 b = {{1}, {2}, {3}}; b = mathly(b)
 c = mathly(1, 10, 5)
 d = mathly(1, 10, 0) --  same as d = mathly(zeros(1, 10))
