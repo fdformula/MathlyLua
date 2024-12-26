@@ -105,8 +105,8 @@ inv(B)    --
 inv(submatrix(C, 1, 1, 3, 3))
 ```
 
-To apply matrix operations on none-mathly matrices, e.g., ordinary/raw Lua tables,
-conversion is needed. For example,
+`To apply matrix operations on none-mathly matrices, e.g., ordinary/raw Lua tables,
+conversion is needed.` For example,
 
 ```
 mathly = require('mathly')
@@ -131,16 +131,12 @@ Its ith element must be addressed by either `x[i][1]` (a column vector) or `x[1]
 
 Mathly tries its best to allow us to use Lua do math as we do on paper.
 
-### 3. ones, rand, randi, and zeros are commonly used. If vector/matrix
-operations are needed, use them to create a column vector, e.g.,
-`zeros(1, 10)`.
+### 3. ones, rand, randi, and zeros are commonly used.
 
-a. They create each an ordinary Lua table if called like
-`zeros(10, 1)`.
+When called like `ones(1, 10)`, they each generate a Lua table rather than a mathly row vector.
 
-b. If a row vector/matrix with vector/maxtrix operations needed,
-always use, e.g., `mathly(1, 10)`, or` mathly(ones(1, 10))` to
-generate or convert a Lua list to a row vector/matrix. See 1a.
+Matrix operations can't be applied to a Lua table. If they are needed, convert a table to a
+mathly matrix first. (See 1c.)
 
 ## plot and its spec
 
