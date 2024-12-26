@@ -121,13 +121,16 @@ mathly(y) + z               -- y + mathly(z), or mathly(y) + mathly(z) -- at lea
 
 Y = mathly(y)
 display(y)
-disp(Y)       -- print a mathly matrix
 display(Y)    -- print a table, including a mathly matrix, with structure
+disp(Y)       -- print a mathly matrix
 ```
 
-### 2. A mathly row/column vector is a matrix. It's ith element must be
-accessed/indexed by either x[i][1] (a column vector) or x[1][i]
-(a row vector).
+### 2. A mathly row/column vector is a matrix.
+
+Its ith element must be addressed by either x[i][1] (a column vector) or x[1][i]
+(a row vector), while the ith element of an ordinary/raw Lua table is addressed by x[i], the way we human beings do math.
+
+Mathly tries its best to allow us to use Lua do math as we do on paper.
 
 ### 3. ones, rand, randi, and zeros are commonly used. If vector/matrix
 operations are needed, use them to create a column vector, e.g.,
