@@ -1,4 +1,4 @@
-# Mathly makes Lua "math"ly and like MATLAB
+# Mathly makes Lua mathly and like MATLAB
 
 Mathly for Lua is a Lua module which depends on a Lua module,
 plotly.lua (see https://github.com/kenloen/plotly.lua). The latter is modified
@@ -11,7 +11,7 @@ Mathly uses plotly JavaScript graphing tools to plot graphs of single-variable f
 
 The entire mathly tool together with Lua is less than 5 MB, while it provides enough features for instructors and
 college students to introduce and/or implement numerical algorithms in most cases. Because it is lightweight and fast,
-it can be employed to slow devices like old Micrsoft Surface Pro 5. Imagine that the smallest size of GNU Octave
+it can be employed to slow devices like old Microsoft Surface Pro 5. Imagine that the smallest size of GNU Octave
 is about 300 MB, MATLAB needs a few GB storage space, and Julia with graphing modules is also huge. You can hardly
 install them in an quite old computer and run smoothly.
 
@@ -22,7 +22,7 @@ work too slowly.
 Mathly makes Lua mathly and like MATLAB. It provides implementation of
 a group of commonly used MATLAB functions, for example, ones, zeros, rand,
 matrix operations, and even plot. They make coding and testing a thought/algorithm
-much easier then working in some other programming languages like C/C++ and Java.
+much easier than working in other programming languages.
 If there is anything I like MATLAB, these tools are.
 
 With provided functions, it is much easier and faster to do math,
