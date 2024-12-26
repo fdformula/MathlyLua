@@ -92,7 +92,7 @@ B * C
 ```
 #### b. Functions, eye, ones, zeros, rand, randi, reshape, generate each a mathly matrix.
 
-#### c. mathly matrix operations each return a mathly matrix if the result is a matrix.
+#### c. Mathly matrix operations each return a mathly matrix if the result is a matrix.
 
 We can only apply matrix operations to mathly matrices. For example,
 
@@ -103,6 +103,23 @@ A = randi(4)
 rref(A)
 inv(A)
 inv(submatrix(A, 1, 1, 3, 3))
+```
+
+If matrix operations can only applied to a none mathly matrix, e.g., an ordinary/raw Lua table,
+convertion is needed. For example,
+
+```
+mathly = require('mathly')
+x = linspace(0, 2 * pi, 1000)
+y = cos(x)
+z = sin(x)
+
+-- y + z -- not allowed/defined
+mathly(y) + z -- y + mathly(z), or mathly(y) + mathly(z) -- at least one must be a mathly matrix
+Y = mathly(y)
+display(y)
+disp(Y)       -- print a mathly matrix
+display(Y)    -- print a table, including a mathly matrix, with structure
 ```
 
 ### 2. A mathly row/column vector is a matrix. It's ith element must be
