@@ -47,7 +47,7 @@ You may download Lua source code in https://lua.org/ or built binary commands fo
 
 ###  (Linux) /usr/local/share/lua/5.4/
 
-Note: The *.lua files can be compiled with luac. To use compiled modules, we set package.path first as follows.
+Note: The *.lua files can be compiled with luac. To use compiled modules, we set `package.path` first as follows.
 
 ```
 package.path = "./?.luac;;"
