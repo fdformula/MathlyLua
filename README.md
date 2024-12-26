@@ -99,10 +99,11 @@ We can only apply matrix operations to mathly matrices. For example,
 ```
 require('mathly')
 A = randi(4)
-3 * A - 4 * B
-rref(A)
-inv(A)
-inv(submatrix(A, 1, 1, 3, 3))
+B = randi(4)
+C = 3 * A - 4 * B
+rref(A)   -- warn: A is modified (for performance)
+inv(B)    -- 
+inv(submatrix(C, 1, 1, 3, 3))
 ```
 
 If matrix operations can only applied to a none mathly matrix, e.g., an ordinary/raw Lua table,
