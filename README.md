@@ -109,10 +109,11 @@ inv(submatrix(C, 1, 1, 3, 3))
 
 ```
 mathly = require('mathly')
-x = linspace(0, pi, 10)
+x = linspace(0, pi, 10)     -- x, y, and z are not mathly matrices/vectors.
 y = cos(x)
 z = sin(x)
 
+-- 3 * y                    -- not allowed/defined
 -- y + z                    -- not allowed/defined
 mathly(y) + z               -- y + mathly(z), or mathly(y) + mathly(z) -- at least one must be a mathly matrix
 2*mathly(y) - 3 * mathly(z) -- both y and z must be converted to mathly matrices
