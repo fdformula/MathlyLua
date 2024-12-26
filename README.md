@@ -60,17 +60,20 @@ See the comments in the file.
 
 ## Three important things you need to know.
 
-### 1. A mathly matrix/metatable is a LUA table, but a LUA table is not a mathly matrix/metatable unless it is set so.
+### 1. A mathly vector/matrix is in LUA a table of tables, but a LUA table may not be a mathly vector/matrix.
 
 #### a. Examples
 ```
 mathly = require('mathly')
-a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d are mathly matrices
+a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d, A, B, C, and D are all mathly matrices
 b = {{1}, {2}, {3}}; b = mathly(b)
 c = mathly(1, 10, 5)
 d = mathly(1, 10, 0) --  same as d = mathly(zeros(1, 10))
 A = mathly(10, 10)
 B = mathly(1, 10)
+C = randi(10, 1)          -- a column vector of random numbers (from 0 to 100)
+D = randi(10, 2, 50, 110) -- a 10x2 matrix of random numbers (from 50 to 110)
+E = rand(10, 3)           -- a 10x3 matrix of random numbers (from 0 to 1)
 
 3*a - 10
 2*c + 5 * d - 3
@@ -89,8 +92,18 @@ B * C
 ```
 #### b. Functions, eye, ones, zeros, rand, randi, reshape, generate each a mathly matrix.
 
-#### c. mathly matrix operations each return a mathly metatable(s),
-e.g., 3 * A - 4 * B, rref, inv, if the result is a matrix.
+#### c. mathly matrix operations each return a mathly matrix if the result is a matrix.
+
+We can only apply matrix operations to mathly matrices. For example,
+
+```
+require('mathly')
+A = randi(4)
+3 * A - 4 * B
+rref(A)
+inv(A)
+inv(submatrix(A, 1, 1, 3, 3))
+```
 
 ### 2. A mathly row/column vector is a matrix. It's ith element must be
 accessed/indexed by either x[i][1] (a column vector) or x[1][i]
