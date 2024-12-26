@@ -23,16 +23,16 @@ Mathly makes Lua mathly and like MATLAB. It provides implementation of
 a group of commonly used MATLAB functions, for example, ones, zeros, rand,
 matrix operations, and even plot. They make coding and testing a thought/algorithm
 much easier than working in other programming languages.
-If there is anything I like MATLAB, these tools are.
+If there is anything I love the most about MATLAB, these tools are.
 
 With provided functions, it is much easier and faster to do math,
 especially linear algebra, and plot graphs of functions.
 
-## Which verions of Lua is needed?
+## Which verion of Lua is needed?
 
-Mathly is deveoped in Lua 5.4.6. It works with present newest version 5.4.7. It might work with previous versions.
+Mathly is developed in Lua 5.4.6. It works with the present newest version 5.4.7. It might work with previous versions.
 
-You may download Lua source code in https://lua.org/ or built Windows binary commands in, say, https://www.nuget.org/packages/lua/.
+You may download Lua source code in https://lua.org/ or built binary commands for Microsoft Windows in, say, https://www.nuget.org/packages/lua/.
 
 ## Where to place the downloaded files?
 
