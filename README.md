@@ -2,19 +2,20 @@
 
 Mathly for Lua is a Lua module which depends on a Lua module,
 plotly.lua (see https://github.com/kenloen/plotly.lua). The latter is modified
-to suit the needs of mathly, and it depends on another Lua module, dkjson.lua
-(see http://dkolf.de/dkjson-lua). A very sall part of the mathly code is borrowed from a Lua
+to meet the needs of mathly, and it depends on another Lua module, dkjson.lua
+(see http://dkolf.de/dkjson-lua). A very small part of the mathly code is borrowed from a Lua
 module, matrix.lua (see https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua).
 
-Mathly uses plotly JavaScript graphing tools to plot graphs of functions (see https://plotly.com/javascript/).
-Therefore, graphs are shown in an internet browser.
+Mathly uses plotly JavaScript graphing tools to plot graphs of single-variable functions
+(see https://plotly.com/javascript/). Therefore, graphs are shown in an internet browser.
 
-The whole mathly tool is less than 5 MB, while it provides enough features for college instructors and
-students to introduce and/or implement numerical algorithms in most cases. Because it is lightweight and fast,
-it is can be employed to slow devices like old Micrsoft Surface Pro 7. Imagine that the smallest size of GNU Octave
-is about 300 MB, MATLAB, needs a few GB space, and Julia with graphing modules occupies is also huge.
+The entire mathly tool together with Lua is less than 5 MB, while it provides enough features for instructors and
+college students to introduce and/or implement numerical algorithms in most cases. Because it is lightweight and fast,
+it can be employed to slow devices like old Micrsoft Surface Pro 5. Imagine that the smallest size of GNU Octave
+is about 300 MB, MATLAB needs a few GB storage space, and Julia with graphing modules is also huge. You can hardly
+install them in an quite old computer and run smoothly.
 
-It is especially good for linear algebra and numerical analysis instructors for teaching. It takes no time to
+Mathly is especially good for linear algebra and numerical analysis instructors for teaching. It takes no time to
 start Lua and load mathly. They can simply focus on course materials and never need to worry if their computers
 work too slowly.
 
