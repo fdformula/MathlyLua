@@ -93,7 +93,7 @@ B * C
 
 #### c. Mathly matrix operations each return a mathly matrix if the result is a matrix.
 
-We can only apply matrix operations to mathly matrices. For example,
+We can only apply matrix operations on mathly matrices. For example,
 
 ```
 require('mathly')
@@ -105,8 +105,7 @@ inv(B)    --
 inv(submatrix(C, 1, 1, 3, 3))
 ```
 
-`To apply matrix operations on none-mathly matrices, e.g., ordinary/raw Lua tables,
-conversion is needed.` For example,
+`To allow matrix operations on none-mathly tables, conversion is needed.` For example,
 
 ```
 mathly = require('mathly')
