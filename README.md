@@ -100,6 +100,10 @@ B * C
 ```
 #### b. Functions, `eye`, `ones`, `zeros`, `rand`, `randi`, `reshape`, generate each a mathly matrix.
 
+But, `ones`, `zeros`, `rand` and `randi` generate each a table rather than a mathly matrix if
+used this way, say, `ones(1, 100)`. This allows us to generate a table of specified lenght and
+addressed like `x[i]` instead of `x[1][i]`.
+
 #### c. Mathly matrix operations each return a mathly matrix if the result is a matrix.
 
 We can only apply matrix operations on mathly matrices. For example,
