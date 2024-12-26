@@ -126,20 +126,20 @@ disp(Y)       -- print a mathly matrix
 
 ### 2. A mathly row/column vector is a matrix.
 
-Its ith element must be addressed by either x[i][1] (a column vector) or x[1][i]
-(a row vector), while the ith element of an ordinary/raw Lua table is addressed by x[i], the way we human beings do math.
+Its ith element must be addressed by either `x[i][1]` (a column vector) or `x[1][i]`
+(a row vector), while the ith element of an ordinary/raw Lua table is addressed by `x[i]`, the way we human beings do math.
 
 Mathly tries its best to allow us to use Lua do math as we do on paper.
 
 ### 3. ones, rand, randi, and zeros are commonly used. If vector/matrix
 operations are needed, use them to create a column vector, e.g.,
-zeros(1, 10).
+`zeros(1, 10)`.
 
 a. They create each an ordinary Lua table if called like
-zeros(10, 1).
+`zeros(10, 1)`.
 
 b. If a row vector/matrix with vector/maxtrix operations needed,
-always use, e.g., mathly(1, 10), or mathly(ones(1, 10)) to
+always use, e.g., `mathly(1, 10)`, or` mathly(ones(1, 10))` to
 generate or convert a Lua list to a row vector/matrix. See 1a.
 
 ## plot and its spec
@@ -155,8 +155,8 @@ style='-' (solid), ':' (dot), or '--' (dash)
 size=10
 symbol='circle'
 
-Some possible symbols are: circle, circle-open, circle-open-dot, cross, diamond, square, x,
-triangle-left, triangle-right, triangle-up, triangle-down, hexagram, star, hourglass, bowtie
+Some possible symbols are: `circle`, `circle-open`, `circle-open-dot`, `cross`, `diamond`, `square`, `x`,
+`triangle-left`, `triangle-right`, `triangle-up`, `triangle-down`, `hexagram`, `star`, `hourglass`, `bowtie`.
 
 #### 4) of a plot: layout={width=500, height=400}
 
