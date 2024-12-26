@@ -6,8 +6,8 @@ to meet the needs of mathly, and it depends on another Lua module, dkjson.lua
 (see http://dkolf.de/dkjson-lua). A very small part of the mathly code is borrowed from a Lua
 module, matrix.lua (see https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua).
 
-Mathly uses plotly JavaScript graphing tools to plot graphs of single-variable functions
-(see https://plotly.com/javascript/). Therefore, graphs are shown in an internet browser.
+Mathly uses plotly JavaScript graphing tools (see https://plotly.com/javascript/) to plot graphs of single-variabl
+functions. Therefore, graphs are shown in an internet browser.
 
 The entire mathly tool together with Lua is less than 5 MB, while it provides enough features for instructors and
 college students to introduce and/or implement numerical algorithms in most cases. Because it is super lightweight and fast as well,
@@ -23,9 +23,6 @@ Mathly makes Lua mathly and like MATLAB. It provides a group of commonly used MA
 for example, `ones`, `zeros`, `rand`, `randi`, `save`, matrix operations, and even `plot`. They make coding
 and testing a thought/algorithm much easier and faster than working in most other programming languages.
 If there is anything I love the most about MATLAB, these tools are.
-
-With provided functions, it is much easier and faster to do math,
-especially linear algebra, and plot graphs of functions.
 
 ## Which verion of Lua is needed?
 
