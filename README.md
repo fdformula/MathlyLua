@@ -111,7 +111,7 @@ conversion is needed. For example,
 
 ```
 mathly = require('mathly')
-x = linspace(0, 2 * pi, 1000)
+x = linspace(0, pi, 10)
 y = cos(x)
 z = sin(x)
 
