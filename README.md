@@ -104,6 +104,8 @@ B * C
 used this way, say, `ones(1, 100)`**. This allows us to generate a table of specified lenght and
 addresse it conveniently like `x[i]` instead of `x[1][i]`.
 
+Matrix operations can't be applied to a table. If they are needed, convert a table to a mathly matrix first. (See 1c.)
+
 #### c. Mathly matrix operations each return a mathly matrix if the result is a matrix.
 
 We can only apply matrix operations on mathly matrices. For example,
@@ -143,13 +145,6 @@ Its ith element must be addressed by either `x[i][1]` (a column vector) or `x[1]
 (a row vector), while the ith element of an ordinary/raw Lua table is addressed by `x[i]`, the way we human beings do math.
 
 `Mathly tries its best to allow us to use Lua to do math as we do on paper.`
-
-### 3. ones, rand, randi, and zeros are commonly used.
-
-When called like `ones(1, 10)`, they each generate a Lua table rather than a mathly row vector.
-
-Matrix operations can't be applied to a Lua table. If they are needed, convert a table to a
-mathly matrix first. (See 1c.)
 
 ## plot and specifications
 
