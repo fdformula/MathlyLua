@@ -70,8 +70,8 @@ c = mathly(1, 10, 5)
 d = mathly(1, 10, 0) --  same as d = mathly(zeros(1, 10))
 A = mathly(10, 10)
 B = mathly(1, 10)
-C = randi(10, 1)          -- a column vector of random numbers (from 0 to 100)
-D = randi(10, 2, 50, 110) -- a 10x2 matrix of random numbers (from 50 to 110)
+C = randi(10, 1)          -- a column vector of random integer numbers (from 0 to 100)
+D = randi(10, 2, 50, 110) -- a 10x2 matrix of random integer numbers (from 50 to 110)
 E = rand(10, 3)           -- a 10x3 matrix of random numbers (from 0 to 1)
 
 3*a - 10
@@ -89,7 +89,7 @@ A * B
 A * B * C
 B * C
 ```
-#### b. Functions, eye, ones, zeros, rand, randi, reshape, generate each a mathly matrix.
+#### b. Functions, `eye`, `ones`, `zeros`, `rand`, `randi`, `reshape`, generate each a mathly matrix.
 
 #### c. Mathly matrix operations each return a mathly matrix if the result is a matrix.
 
