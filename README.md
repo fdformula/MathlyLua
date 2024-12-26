@@ -115,8 +115,10 @@ x = linspace(0, pi, 10)
 y = cos(x)
 z = sin(x)
 
--- y + z -- not allowed/defined
-mathly(y) + z -- y + mathly(z), or mathly(y) + mathly(z) -- at least one must be a mathly matrix
+-- y + z                    -- not allowed/defined
+mathly(y) + z               -- y + mathly(z), or mathly(y) + mathly(z) -- at least one must be a mathly matrix
+2*mathly(y) - 3 * mathly(z) -- both y and z must be converted to mathly matrices
+
 Y = mathly(y)
 display(y)
 disp(Y)       -- print a mathly matrix
