@@ -53,6 +53,16 @@ package.path = "./?.luac;;"
 
 See the comments in the file.
 
+## Functions provided in mathly
+
+`apply`, `clear`, `cls`, `concath`, `concatv`, `copy`, `cross`, 
+`det`, `diag`, `disp`, `display`, `dot`, `eye`, `flatten`, 
+`hasindex`, `inv`, `isinteger`, `ismember`, `join`, `length`, 
+`linspace`, `ls`, `map`, `norm`, `ones`, `plot`, `polyval`, 
+`printf`, `prod`, `rand`, `randi`, `range`, `reshape`, `rref`, 
+`save`, `seq`, `size`, `solve`, `sprintf`, `submatrix`, 
+`subtable`, `sum`, `tic`, `toc`, `zeros`
+
 ## Three important things you need to know:
 
 ### 1. A mathly vector/matrix is in LUA a table (of tables), but a LUA table may not be a mathly vector/matrix.
@@ -134,7 +144,7 @@ When called like `ones(1, 10)`, they each generate a Lua table rather than a mat
 Matrix operations can't be applied to a Lua table. If they are needed, convert a table to a
 mathly matrix first. (See 1c.)
 
-## plot and its spec
+## plot and specifications
 
 ### Some specs
 #### 1) mode='lines+markers', 'lines', or 'markers'
