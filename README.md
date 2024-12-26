@@ -1,12 +1,12 @@
 # Mathly makes Lua mathly and like MATLAB
 
 Mathly for Lua is a Lua module which depends on a Lua module,
-plotly.lua (see https://github.com/kenloen/plotly.lua). The latter is modified
-to meet the needs of mathly, and it depends on another Lua module, dkjson.lua
+`plotly.lua` (see https://github.com/kenloen/plotly.lua). The latter is modified
+to meet the needs of mathly, and it depends on another Lua module, `dkjson.lua`
 (see http://dkolf.de/dkjson-lua). A very small part of the mathly code is borrowed from a Lua
-module, matrix.lua (see https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua).
+module, `matrix.lua` (see https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua).
 
-Mathly uses plotly JavaScript graphing tools (see https://plotly.com/javascript/) to plot graphs of single-variabl
+Mathly uses Plotly JavaScript graphing tools (see https://plotly.com/javascript/) to plot graphs of single-variabl
 functions. Therefore, graphs are shown in an internet browser.
 
 The entire mathly tool together with Lua is less than 5 MB, while it provides enough features for instructors and
