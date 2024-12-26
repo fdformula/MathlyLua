@@ -102,7 +102,7 @@ B * C
 
 **But, `ones`, `zeros`, `rand` and `randi` generate each a table rather than a mathly matrix if
 used this way, say, `ones(1, 100)`**. This allows us to generate a table of specified lenght and
-addressed like `x[i]` instead of `x[1][i]`.
+addresse it conveniently like `x[i]` instead of `x[1][i]`.
 
 #### c. Mathly matrix operations each return a mathly matrix if the result is a matrix.
 
