@@ -106,7 +106,7 @@ inv(B)    --
 inv(submatrix(C, 1, 1, 3, 3))
 ```
 
-If matrix operations can only applied to a none mathly matrix, e.g., an ordinary/raw Lua table,
+To apply matrix operations on none-mathly matrices, e.g., ordinary/raw Lua tables,
 convertion is needed. For example,
 
 ```
