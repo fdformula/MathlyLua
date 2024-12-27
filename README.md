@@ -149,12 +149,12 @@ Its ith element must be addressed by either `x[i][1]` (a column vector) or `x[1]
 
 ## plot and specifications
 
-### Some specs
-#### 1) mode='lines+markers', 'lines', or 'markers'
+### Some specifications/optionss
+#### 1) of the graph of a function:
+mode='lines+markers', 'lines', or 'markers'mode='lines+markers', 'lines', or 'markers'
 
 #### 2) of a line:
-width=5
-style='-' (solid), ':' (dot), or '--' (dash)
+width=5, style='-' [solid, ':' (dot), or '--' (dash)]
 
 #### 3) of a marker:
 size=10
@@ -163,7 +163,8 @@ symbol='circle'
 Some possible symbols are: `circle`, `circle-open`, `circle-open-dot`, `cross`, `diamond`, `square`, `x`,
 `triangle-left`, `triangle-right`, `triangle-up`, `triangle-down`, `hexagram`, `star`, `hourglass`, `bowtie`.
 
-#### 4) of a plot: layout={width=500, height=400}
+#### 4) of a plot:
+For example, layout={width=500, height=400, grid={rows=2, columns=2}, title='Demo'}.
 
 ### Some examples
 ```
