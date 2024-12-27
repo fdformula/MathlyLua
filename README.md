@@ -52,7 +52,7 @@ package.path = "./?.luac;;"
 
 ## You may need to edit the file `browser-setting.lua`.
 
-See the comments in the file.
+See comments in the file.
 
 ## Functions provided in mathly
 
