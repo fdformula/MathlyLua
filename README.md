@@ -178,13 +178,14 @@ spec1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example
 spec2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
 spec3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
 
-plot(x, y1)
-plot(x, y1, x, y2, spec1)
+plot(x, y1)               -- plot the function defined by data in tables x and y1
+plot(x, y1, x, y2, spec1) -- plot in a figure two functions defined by data in x and y1 and data in x and y2, respectively
 plot(x, y1, '--xr', x, y2, {1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'})
 plot(x, y1, '--xr', x, y2, ':g')
 plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
-plot(x, y1, spec1, x, y2, x, y3, 'o')
-plot(x, y1, spec3, x, y2, spec1, x, y3, spec2, x, sin(x))
+plot(x, y1, spec1, x, y2, x, y3, 'o')  -- plot three functions in a figure
+plot(x, y1, spec3, x, y2, spec1, x, y3, spec2, x, sin(x)) -- plot four functions in a figure
+
 plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
 
 spec = {layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}}
@@ -193,6 +194,7 @@ plot(rand(125, 4), spec)
 plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}})
 plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
 plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
+
 ```
 
 ### A more meaningful exam - Quadratic splines using Lagrange interpolating polynomials for data points
