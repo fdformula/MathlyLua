@@ -461,8 +461,8 @@ y = rand(4, 5)
 save('dw20241219.lua', 'x', 'y')
 
 -- recover the saved data:
-dofile('dw20241219.lua')
 require 'mathly'
+dofile('dw20241219.lua')
 disp(x); disp(y)
 --]]
 function save(fname, ...)
@@ -628,9 +628,16 @@ function range( start, stop, step ) -- ~Python but inclusive
   end
 
   local v = {}
-  while start <= stop + 100*eps do -- weird 1*eps doesn't work
-    v[#v + 1] = start
-    start = start + step
+  if step > 0 then
+    while start <= stop + 100*eps do -- weird 1*eps doesn't work
+      v[#v + 1] = start
+      start = start + step
+    end
+  else
+    while start >= stop - 100*eps do
+      v[#v + 1] = start
+      start = start + step
+    end
   end
   return v
 end
@@ -1206,7 +1213,7 @@ function rref( A, B ) -- gauss-jordan elimination
       while j <= columns and math.abs(A[i][j]) < 1e-15 do
         j = j + 1
       end
-      if j <= cloumns then -- found it
+      if j <= columns then -- found it
         m = j
         local Aij = A[i][j]   -- 'normalize' the row, 0...0 1 xxx
         while j <= columns do
@@ -1237,6 +1244,7 @@ function rref( A, B ) -- gauss-jordan elimination
       end
     end
   end
+  return A
 end
 
 --// function solve( A, b )
@@ -1244,8 +1252,21 @@ end
 -- note: A and b are modified
 function solve( A, b )
   assert(getmetatable(A) == mathly_meta, 'solve( A ): A must be a mathly metatable.')
-  rref(A, b)
-  return b
+  local B = b
+  if b ~= nil then
+    if getmetatable(b) ~= mathly_meta then
+      if type(b) == 'table' then
+        local x = flatten(b)
+        B = mathly:new(x, #x, 1)
+      else
+        error('solve(A, b): b must be a table.')
+      end
+    end
+  else
+    error('solve(A, b): b is not provided.')
+  end
+  rref(A, B)
+  return B
 end
 
 --// function inv( A )
@@ -1537,7 +1558,7 @@ end
 
 --// join( ... )
 -- merge lists/tables into one
--- e.g., join(1, 2, {3, 4}, 5}, join(1, {2, {3, 4}}, {5, 6})
+-- e.g., join(1, 2, {3, 4}, 5), join(1, {2, {3, 4}}, {5, 6})
 function join( ... )
   local args = {}
   for _, v in pairs{...} do
@@ -1547,8 +1568,13 @@ function join( ... )
   local tbl = {}
   for i = 1, #args do
     if type(args[i]) == 'table' then
-      for j = 1, #args[i] do
-        tbl[#tbl + 1] = args[i][j]
+      local x = args[i]
+      if type(args[i][1]) == 'table' and #args[i][1] == 1 then
+        -- convert a column vector to a table/row vector
+        x = flatten(args[i])
+      end
+      for j = 1, #x do
+        tbl[#tbl + 1] = x[j]
       end
     else
       tbl[#tbl + 1] = args[i]
