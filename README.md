@@ -64,7 +64,7 @@ See the comments in the file.
 `save`, `seq`, `size`, `solve`, `sprintf`, `submatrix`, 
 `subtable`, `sum`, `tic`, `toc`, `zeros`
 
-Detailed documentation will be provided soon. (!!!)
+See mathly.html.
 
 ## Two important things you need to know:
 
