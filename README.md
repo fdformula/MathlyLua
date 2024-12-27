@@ -121,7 +121,7 @@ inv(B)    --
 inv(submatrix(C, 1, 1, 3, 3))
 ```
 
-`To allow matrix operations on ordinary Lua tables, conversion is needed.` For example,
+**To allow matrix operations on ordinary Lua tables, conversion is needed.** For example,
 
 ```
 mathly = require('mathly')
@@ -145,7 +145,7 @@ disp(Y)       -- print a mathly matrix
 Its ith element must be addressed by either `x[i][1]` (a column vector) or `x[1][i]`
 (a row vector), while the ith element of an ordinary/raw Lua table is addressed by `x[i]`, the way we human beings do math.
 
-`Mathly tries its best to allow us to use Lua to do math as we do on paper.`
+**Mathly tries its best to allow us to use Lua to do math as we do on paper.**
 
 ## plot and specifications
 
