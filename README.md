@@ -202,7 +202,7 @@ plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(
 
 ```
 
-### A more meaningful exam - Quadratic splines using Lagrange interpolating polynomials for data points
+### A more meaningful exam - Quadratic splines using Lagrange interpolating polynomials
 
 ```
 require('mathly')
