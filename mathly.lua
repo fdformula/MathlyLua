@@ -212,7 +212,7 @@ T = 'T' -- reserved by mathly, transpose of a matrix, A^T
 function  printf(...) io.write(string.format(table.unpack{...})) end
 function sprintf(...) return string.format(table.unpack{...}) end
 
-local function max_min_shared( f, x ) -- column-oriented if x is a matrix
+local function max_min_shared( f, x ) -- column wise if x is a matrix
   if type(x) == 'table' then
     if type(x[1]) == 'table' then -- a matrix
       if #x == 1 then return max_min_shared(f, x[1]) end -- mathly{1, 2} gives {{1,2}}
