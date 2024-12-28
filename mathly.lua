@@ -70,8 +70,11 @@ API
   function cross
   function dot
   function norm
+  function max
+  function min
   function prod
   function sum
+  function polyval
 
   function eye
   function ones
@@ -110,13 +113,11 @@ API
 
   function plot
 
-  function polyval
-
   function tic
   function toc
 
   function cls       -- clear LUA console
-  function clear     -- clear all user-defined variables in current running environment
+  function clear     -- clear all user-defined variables and their values in memory
 
   function ismember
   function ls
@@ -207,12 +208,13 @@ function rad( x )    return map(math.rad, x) end
 pi = math.pi
 e = math.exp(1)
 eps = 2.220446049250313e-16  -- machine epsilon, ~MATLAB
+phi = 1.6180339887499        -- golden radio
 T = 'T' -- reserved by mathly, transpose of a matrix, A^T
 
 function  printf(...) io.write(string.format(table.unpack{...})) end
 function sprintf(...) return string.format(table.unpack{...}) end
 
-local function max_min_shared( f, x ) -- column wise if x is a matrix
+local function max_min_shared( f, x ) -- column-oriented if x is a matrix
   if type(x) == 'table' then
     if type(x[1]) == 'table' then -- a matrix
       if #x == 1 then return max_min_shared(f, x[1]) end -- mathly{1, 2} gives {{1,2}}
