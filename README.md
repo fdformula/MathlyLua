@@ -15,7 +15,7 @@ is about 300 MB, MATLAB needs a few GB storage space, and Julia with graphing mo
 install them in a quite old computer and run smoothly.
 
 Mathly is especially good for instructors of linear algebra and numerical computing for teaching. It takes no time to
-start Lua and load mathly. While presenting code and computing results in lectures, they can simply focus on delivery
+start Lua and load mathly. While developing code and doing computation in a lecture, they can simply focus on delivery
 of course contents and never need to worry if their computers work too slowly or even collapse. Besides, an extra benefit
 of using Lua is that it is so simple a language that even students without programming skills can understand most
 of Lua scripts.
