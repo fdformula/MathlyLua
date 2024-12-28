@@ -109,6 +109,8 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#linspace><code>linspace(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</td></tr>
 <tr><td><code>ls()</code></td><td> </td><td>List all user-defined variables in the memory.</td></tr>
 <tr><td><a href=#map><code>map(f, tbl)</code></a></td><td> </td><td>Apply function <code>f</code> to each atomic element in table <code>tbl</code> and return the result with the same structure of the table.</td></tr>
+<tr><td><a href=#max><code>max(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the largest of all elements of the table; if it is a matrix, ...</td></tr>
+<tr><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
 <tr><td><code>norm(x)</code></td><td> </td><td>Return the Euclidean norm of a row/column vector <code>x</code>.</td></tr>
 <tr><td><a href=#ones><code>ones(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 1. If <code>m = 1</code>, return a table.</td></tr>
 <tr><td><a href=#plot><code>plot(x, y, ...)</code></a></td><td> </td><td>Plot the graph(s) of functions defined by data points <code>x</code> and <code>y</code> and ...</td></tr>
@@ -354,7 +356,7 @@ map(f, A) -- A is a mathly matrix, the result of map(f, A) is a mathly matrix, t
 -- 9  16  25
 -- 1   4   0
 </code></pre>
-<h4>&bull; &nbsp; <a name=zeros></a><a name=rand></a><a name=randi></a><a name=ones href=#mathly><code>ones</code>, <code>zeros</code>, <code>rand</code>, and <code>randi</code></a></h4>
+<h4>&bull; &nbsp; <a name=zeros></a><a name=rand></a><a name=randi></a><a name=ones href=#mathly><code>ones</code>, <code>zeros</code>, <code>rand</code>, <code>randi</code></a></h4>
 <p>The usage of these functions is the same except randi that can take more arguments.</p>
 <table><tbody>
 <tr><td width=20></td><td><code>ones(m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 1.</td></tr>
@@ -460,7 +462,7 @@ x = polyval({1, 2, 1}, 0) -- evaluate x<sup>2</sup> + 2x + 1 at x = 0
 print(x)
 -- 1
 </code></pre>
-<h4>&bull; &nbsp; <a name=sum></a><a name=prod href=#mathly><code>prod(A)</code> and <code>sum(A)</code></a></h4>
+<h4>&bull; &nbsp; <a name=sum></a><a name=prod href=#mathly><code>prod(A)</code>, <code>sum(A)</code></a></h4>
 <ol>
 <li>If <code>A</code> is a table or mathly row/column vector, return the product/sum of its elements;</li>
 <li>If A is a <code>mxn</code> matrix, return a table of which the <code>i</code>-th element is the product/sum of
@@ -671,7 +673,7 @@ a = m{1, 2, 3, 4, 5, 6, 7} -- {{1, 2, 3, 4, 5, 6, 7}}
 display(subtable(a[1], 3, 5))
 -- {3, 4, 5}
 </code></pre>
-<h4>&bull; &nbsp; <a name=toc></a><a name=tic href=#mathly><code>tic()</code> and <code>toc(...)</code></a></h4>
+<h4>&bull; &nbsp; <a name=toc></a><a name=tic href=#mathly><code>tic()</code>, <code>toc(...)</code></a></h4>
 <table><tbody>
 <tr><td width=20></td><td><code>tic()</code></td><td> </td><td width=10> </td><td>Start a wall-clock timer.</td></tr>
 <tr><td width=20></td><td><code>toc(...)</code></td><td> </td><td width=10> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
@@ -688,13 +690,34 @@ toc()
 x = toc(1) -- pass any none-nil value to toc to get the elapsed time; otherwise, print the elapsed time
 printf("The loop took %.2f seconds.", x)
 </code></pre>
-<h4>&bull; &nbsp; <a name=sprintf></a><a name=printf href=#mathly><code>printf(...)</code>, and <code>sprintf(...)</code></a></h4>
+<h4>&bull; &nbsp; <a name=sprintf></a><a name=printf href=#mathly><code>printf(...)</code>, <code>sprintf(...)</code></a></h4>
 <p>This kind of functions is a commonly used tool for printing or preparing a formatted string in many programming languages like C/C++ and MATLAB. They print or prepare a formatted string.</p>
 <p>These two functions depend on <a href="manual.html#pdf-string.format"><code>string.format</code></a>.</p>
 <table><tbody>
 <tr><td width=20></td><td><code>printf</code></td><td> </td><td width=10> </td><td>Print a formatted string.</td></tr>
 <tr><td width=20></td><td><code>sprintf</code></td><td> </td><td width=10> </td><td>Prepare a formatted string.</td></tr>
 </tbody></table>
+
+<h4>&bull; &nbsp; <a name=max></a><a name=min href=#mathly><code>max(x)</code>, <code>min(x))</code></a></h4>
+<p>If <code>x</code> is an array or row/column vector, return the largest/smallest of all elements in it; if it is a matrix, return a table consisting of the largest/smallest of each column of <code>x</code>.</p>
+<table><tbody>
+<pre><code>
+require 'mathly'
+
+x = {1, -10, 2, 31, 4, 7}
+print(min(x), max(x))
+-- -10  31
+
+a = randi(3, 5, -50, 50)
+disp(a)
+-- -12  -19   -15    6  -11
+--   3   43    36   29  -26
+-- -38   -9   -16   20   16
+display(min(a))
+-- {-38, -19, -16, 6, -26}
+display(max(a))
+-- {3, 43, 36, 29, 16}
+</code></pre>
 </div>
 </body>
 </html>
