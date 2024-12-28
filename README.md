@@ -106,7 +106,7 @@ C^T * B^T
 #### b. Functions, `eye`, `ones`, `zeros`, `rand`, `randi`, `reshape`, generate each a mathly matrix.
 
 **But, `ones`, `zeros`, `rand` and `randi` generate each a table rather than a mathly matrix if
-used this way, say, `ones(1, 100)`**. This allows us to generate a table of specified lenght and
+used this way, say, `ones(1, 100)`**. This allows us to generate a table of specified length and
 addresse it conveniently like `x[i]` instead of `x[1][i]`.
 
 Matrix operations can't be applied to a table. If they are needed, convert a table to a mathly matrix first. (See 1c.)
