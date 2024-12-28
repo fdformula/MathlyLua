@@ -57,8 +57,8 @@ download built binary commands for Microsoft Windows in, say,
 
 <p>They can be placed in either</p>
 <ol>
-<li>the folder of your Lua code files to run/debug or</li>
-<li>(Windows) the folder, e.g., <code>c:/cygwin/bin/</code>, which contains the command, <code>lua.exe</code>:<p></p>
+<li>the folder of your Lua code files to run/test or</li>
+<li>(Windows) the folder, e.g., <code>c:/cygwin/bin/</code>, which contains the command, <code>lua.exe</code>:
 <pre><code>...
 lua.exe
 dkjson.lua
@@ -87,12 +87,12 @@ are all tables.</p>
 <p><b>A mathly matrix is obtained/generated</b> by mathly 'creator', functions like <code>zeros</code>, <code>ones</code>,
 <code>rand</code> and <code>randi</code>, or some matrix operations like <code>A^T</code>, <code>inv(A)</code>, and
 <code>2 * A  - 3 * B + 4</code>, given that <code>A</code> and <code>B</code> are mathly matrices. An element in the
-<code>i</code>th row and <code>j</code>th column must be addressed like <code>A[i][j]</code>.</p>
+<code>i</code>th row and <code>j</code>th column is addressed as <code>A[i][j]</code>.</p>
 
-<p>Simply speaking, a mathly matrix is a table (of tables), but a table may not be a mathly vector/matrix.</p>
+<p>Simply speaking, a mathly matrix is a table (of tables), but a table may not be a mathly matrix.</p>
 
-<p><B>2. We can only apply matrix operations on mathly matrices.</b> To apply matrix operations on ordinary Lua tables, conversion is needed and
-done through the 'creator' of mathly.</p>
+<p><B>2. We can only apply matrix operations on mathly matrices.</b> To apply matrix operations on ordinary Lua tables,
+conversion is needed and done first through the 'creator' of mathly.</p>
 <p>Some examples:</p>
 <pre><code>
 mathly = require('mathly')
@@ -122,20 +122,20 @@ A * B * C
 B * C
 C^T * B^T
 
-a = {{1, 2, 3}, {2, 3, 4}}
--- 3 * a  + 4      -- not allowed because a is an ordinary table
-3 * mathly(a) + 4  -- it is fine now because the 'creator' converts a table to a mathly matrix first
+x = {{1, 2, 3}, {2, 3, 4}}
+-- 3 * x  + 4      -- not allowed because x is an ordinary table
+3 * mathly(x) + 4  -- it is fine now because the 'creator' converts table x to a mathly matrix first
 </code></pre>
 
 <p>A mathly row vector is a <code>1xn</code> mathly matrix, and a mathly column vector is a <code>nx1</code> mathly matrix.
 They are all matrices and, thus, an element must be addressed like <code>A[1][i]</code> (for a row vector) or <code>A[i][1]</code>
-(for a column vector), which is realy ugly because we human beings never write this way!</p>
+(for a column vector), which is realy inconvenient and ugly because we human beings never write this way!</p>
 
 <p><i>Mathly tries its best to allow us to write math expressions as we do on paper.</i> Therefore, <code>ones</code>,
 <code>zeros</code>, <code>rand</code> and <code>randi</code> generate each a table rather than a mathly matrix if
 used this way, say, <code>ones(1, 100)</code>. This allows us to generate a table of specified length and
 addresse it conveniently like <code>x[i]</code> instead of <code>x[1][i]</code>. This is also why functions like
-<code>linspace</code>, <code>seq</code>, <code>range</code> all generate a table rather than a mathly row/column vector.
+<code>linspace</code>, <code>seq</code>, and <code>range</code> all generate a table rather than a mathly row/column vector.
 
 <h2><a name=math></a>Basic Mathematical Functions</h2>
 <p>Basic math functions are each now able to work on Lua tables, including mathly matrices. They are
@@ -151,7 +151,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <B>You can always use <code>sin(x)</code>. However, if you know <code>x</code> is a number, you may call
 <code>math.sin(x)</code> to get a little improvement in performance.</p></B>
 
-<p>Mathly also provides three commonly used constants. They are:</p>
+<p>Mathly also provides four commonly used constants. They are:</p>
 <table><tbody>
 <tr><td><code>pi = 3.1415926535898</code></td><td width=40></td><td>It is simply <code>math.pi</code>.</td></tr>
 <tr><td><code>e = 2.718281828459</code></td><td width=40></td><td>It is <code>math.exp(1)</code>.</td></tr>
