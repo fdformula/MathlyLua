@@ -71,7 +71,7 @@ See mathly.html.
 
 ## Two important things you need to know:
 
-### 1. A mathly vector/matrix is a table (of tables), but a table may not be a mathly vector/matrix.
+### 1. A mathly matrix is a table (of tables), but a table may not be a mathly matrix.
 
 #### a. Examples
 ```
