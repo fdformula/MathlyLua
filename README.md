@@ -38,13 +38,13 @@ for Microsoft Windows in, say, https://www.nuget.org/packages/lua/.
 ### 1. In either the folder of your Lua code files to run/debug or
 
 ### 2. (Windows) the folder, e.g., c:/cygwin/bin/, which contains the command, `lua.exe`:
-     ......
+     ...
      lua.exe
      dkjson.lua
      mathly.lua
      plotly.lua
      plotly-2.9.0.min.js
-     ......
+     ...
 
 ###  (Linux) /usr/local/share/lua/5.4/
 
