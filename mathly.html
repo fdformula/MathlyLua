@@ -6,7 +6,7 @@
 a {
     text-decoration: none;
 }
-p, h5 {
+p {
     margin: 20px
 }
 div {
@@ -58,11 +58,11 @@ inv(A) * randi(1, 10)              -- mathly knows how to handle a table randi(1
 randi(1, 10) * inv(A)              --
 </code></pre>
 
-<h2><a name=math></a>2. Commonly Used Mathematical Functions</h2>
-<p>Commonly used math functions are each now able to work on Lua tables, including mathly matrices. They are
+<h2><a name=math></a>2. Basic Mathematical Functions</h2>
+<p>Basic math functions are each now able to work on Lua tables, including mathly matrices. They are
 <code>abs</code>, <code>acos</code>, <code>asin</code>, <code>atan</code>, <code>ceil</code>, <code>cos</code>,
 <code>deg</code>, <code>exp</code>, <code>floor</code>, <code>log</code>, <code>rad</code>, <code>random</code>,
-<code>sin</code>, <code>sqrt</code>, and <code>tan</code>. They evaluate each a function at every number in a
+<code>sin</code>, <code>sqrt</code>, and <code>tan</code>. They evaluate a function at every number in a
 table and keep the structure of the table.</p>
 
 <p>For example, <code>abs({1, -2, {-3, 4, {5, -6}}})</code> evaluates Lua built-in function <code>math.abs</code>
