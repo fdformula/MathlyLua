@@ -6,12 +6,15 @@
 a {
     text-decoration: none;
 }
-p, table, pre, h5 {
+p, h5 {
     margin: 20px
 }
 div {
   font-size: 16px;
   margin: 30px 20px
+}
+table, pre {
+  margin: 1px 25px
 }
 </style>
 </head>
@@ -32,8 +35,7 @@ They are all matrices and, thus, an element in the <code>i</code>th row and <cod
 <code>A[i][j]</code>.</p>
 
 <p>You may see some <i>convenient</i> matrix operations in the following examples.</p>
-<pre><code>
-mathly = require('mathly')
+<pre><code>mathly = require('mathly')
 -- the 'creator' of mathly creates mathly matrices
 a = mathly{{1, 2, 3}, {2, 3, 4}}
 b = {{1}, {2}, {3}}; b = mathly(b)
@@ -132,15 +134,13 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 
 <h4>&bull; &nbsp; <a name=apply href=#list><code>apply(f, ...)</code></a></h4>
 <p>As with some other programming languages like <i>Mathematica</i>, it evaluates function <code>f</code> with provided arguments.</p>
-<pre><code>
-require 'mathly'
+<pre><code>require 'mathly'
 function f(x, y, z) return x + y + z end
 apply(f, {1, 2, 3})  -- return 6
 </code></pre>
 <h4>&bull; &nbsp; <a name=concath href=#list><code>concath(A, B, ...)</code></a></h4>
 <P>Concatenate matrices A, B, ... in order horizontally. Matrices must have the same number of rows.</P>
-<pre><code>
-m = require('mathly')
+<pre><code>m = require('mathly')
 A = m{{1, 2}, {3, 4}}
 disp(A)
 -- 1 2
@@ -160,8 +160,7 @@ disp(D)
 </code></pre>
 <h4>&bull; &nbsp; <a name=concatv href=#list><code>concatv(A, B, ...)</code></a></h4>
 <P>Concatenate matrices A, B, ... in order vertically. Matrices must have the same number of columns.</P>
-<pre><code>
-mathly = require('mathly')
+<pre><code>mathly = require('mathly')
 A = mathly{{1, 2, 3}}
 disp(A)
 -- 1 2 3
@@ -187,8 +186,7 @@ disp(E)
 </code></pre>
 <h4>&bull; &nbsp; <a name=copy href=#list><code>copy(x)</code></a></h4>
 <P>Make a deep copy of <code>x</code>.</P>
-<pre><code>
-m = require('mathly')
+<pre><code>m = require('mathly')
 a = {1, 2, {3, 4, {5, 6}}}
 b = copy(a)
 b[3] = 0
@@ -210,23 +208,20 @@ disp(B)
 <h4>&bull; &nbsp; <a name=cross href=#list><code>cross(a, b)</code></a></h4>
 <P>Return the cross/vector product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>}</code>
 and <code>b = {b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub>}</code>.</P>
-<pre><code>
-require 'mathly'
+<pre><code>require 'mathly'
 display(cross({1, 2, 3}, {3, 4, 5}))
 -- {-2, 4, -2}
 </code></pre>
 <h4>&bull; &nbsp; <a name=diag href=#list><code>diag(A)</code></a></h4>
 <P>Return a table of the diagonal entries of matrix <code>A</code>.</P>
-<pre><code>
-m = require('mathly')
+<pre><code>m = require('mathly')
 a = m{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
 display(diag(a))
 -- {1, 3, 5}
 </code></pre>
 <h4>&bull; &nbsp; <a name=disp href=#list><code>disp(A)</code></a> - Print a mathly matrix. If <code>A</code> is not a mathly matrix, <code>display</code> is called to print it.</h4>
 <h4>&bull; &nbsp; <a name=display href=#list><code>display(x)</code></a> - Print a table with structure.</h4>
-<pre><code>
-require 'mathly'
+<pre><code>require 'mathly'
 a = eye(3)
 disp(a)
 -- 1 0 0
@@ -242,8 +237,7 @@ display(x)
 <h4>&bull; &nbsp; <a name=dot href=#list><code>dot(a, b)</code></a></h4>
 <P>Return the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ...}</code>
 and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ...}</code>.</P>
-<pre><code>
-require 'mathly'
+<pre><code>require 'mathly'
 display(dot({1, 2, 3}, {3, 4, 5}))
 -- 26
 display(dot({1, 2}, {3, 4}))
@@ -251,8 +245,7 @@ display(dot({1, 2}, {3, 4}))
 </code></pre>
 <h4>&bull; &nbsp; <a name=flatten href=#list><code>flatten(x)</code></a></h4>
 <p>Remove the structure of table <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</p>
-<pre><code>
-m = require('mathly')
+<pre><code>m = require('mathly')
 x = {1, 2, {3, 4, {5, 6, {7, 8, {9}}}}}
 y = flatten(x)
 display(y)
@@ -271,8 +264,7 @@ display(b)
 </code></pre>
 <h4>&bull; &nbsp; <a name=hasindex href=#list><code>hasindex(table, index)</code></a></h4>
 <p>Check if <code>table</code> contains <code>index</code>.</p>
-<pre><code>
-require 'mathly'
+<pre><code>require 'mathly'
 opt = {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}}
 x = hasindex(opt, 'grid')
 print(x)
@@ -282,8 +274,7 @@ print(hasindex(opt, 'color'))
 </code></pre>
 <h4>&bull; &nbsp; <a name=inv href=#list><code>inv(A)</code></a></h4>
 <p>Return the inverse of a square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</p>
-<pre><code>
-m = require('mathly')
+<pre><code>m = require('mathly')
 I = eye(3)
 A = m{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
 B = copy(A)
@@ -295,8 +286,7 @@ disp(C)
 </code></pre>
 <h4>&bull; &nbsp; <a name=ismember href=#list><code>ismember(x, table)</code></a></h4>
 <p>Check if <code>x</code> is a member of <code>table</code>.</p>
-<pre><code>
-require 'mathly'
+<pre><code>require 'mathly'
 x = {1, 2, 3, {4, 5, {6}}}
 print(ismember(3, x))
 -- true
@@ -305,8 +295,7 @@ print(ismember(4, x))
 </code></pre>
 <h4>&bull; &nbsp; <a name=join href=#list><code>join(t<sub>1</sub>, t<sub>2</sub>, ...)</code></code></a></h4>
 <p>Concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers or strings.</p>
-<pre><code>
-m = require('mathly')
+<pre><code>m = require('mathly')
 x = {1, 2}
 y = {3, 4, {5}}
 disp(join(0, x, y, 10))
@@ -318,16 +307,14 @@ disp(join(x, z, 11)) -- a column vector is automatically converted into a row ve
 </code></pre>
 <h4>&bull; &nbsp; <a name=linspace href=#list><code>linspace(x, y, n)</code></a></h4>
 <p>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</p>
-<pre><code>
-require 'mathly'
+<pre><code>require 'mathly'
 x = linspace(0, 2*pi, 1000)
 y = cos(x)
 plot(x, y, '-or')
 </code></pre>
 <h4>&bull; &nbsp; <a name=map href=#list><code>map(f, tbl)</code></a></h4>
 <p>Apply function <code>f</code> to each atomic element in table <code>tbl</code> and return the result with the same structure of the table.</p>
-<pre><code>
-m = require('mathly')
+<pre><code>m = require('mathly')
 a = range(1, 10)
 -- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 function f(x) return x ^ 2 end
@@ -404,7 +391,7 @@ display(A)
 </code></pre>
 <h4>&bull; &nbsp; <a name=plot href=#list><code>plot(...)</code></a></h4>
 <p>Plot the graph(s) of functions defined by data points , using specifications/options.</p>
-<h5>Some specifications:</h5>
+<p><b>Some specifications:</b></p>
 <ol>
 <li>of the graph of a function: <code>mode</code>=<code>'lines+markers'</code>, <code>'lines'</code>, or <code>'markers'</code></li><p></p>
 <li>of a line: <code>width</code>=5, <code>style</code>=<code>'-'</code> [solid, <code>':'</code> (dot), or <code>'--'</code> (dash)]</li><p></p>
@@ -412,9 +399,8 @@ display(A)
 Some possible symbols are: <code>circle</code>, <code>circle-open</code>, <code>circle-open-dot</code>, <code>cross</code>, <code>diamond</code>, <code>square</code>, <code>x</code>, <code>triangle-left</code>, <code>triangle-right</code>, <code>triangle-up</code>, <code>triangle-down</code>, <code>hexagram</code>, <code>star</code>, <code>hourglass</code>, <code>bowtie</code>.</li><p></p>
 <li>of a plot: e.g., <code>layout</code>={<code>width</code>=500, <code>height</code>=400, <code>grid</code>={<code>rows</code>=2, <code>columns</code>=2}, <code>title</code>='Demo'}</li>
 </ol>
-<h5>Some examples:</h5>
-<pre><code>
-require 'mathly';
+<p><b>Some examples:</b></p>
+<pre><code>require 'mathly';
 
 x = linspace(0, pi, 100)
 y1 = sin(x)
@@ -449,8 +435,7 @@ in a table <code>coefs</code>.</p>
 a<sub>1</sub>x + a<sub>0</sub></code>,
 <code>coefs = {a<sub>n</sub>, a<sub>n-1</sub>, ..., a<sub>0</sub>}</code>.
 For example, <code>p(x) = -2x<sup>4</sup> + 4x<sup>2</sup> - 5x</code>, <code>coef = {-2, 0, 4, -5, 0}.</code></p>
-<pre><code>
-require 'mathly'
+<pre><code>require 'mathly'
 x = polyval({1, 2, 1}, 0) -- evaluate x<sup>2</sup> + 2x + 1 at x = 0
 print(x)
 -- 1
@@ -461,8 +446,7 @@ print(x)
 <li>If A is a <code>mxn</code> matrix, return a table of which the <code>i</code>-th element is the product/sum of
 the <code>i</code>-th column of <code>A</code>.</p></li>
 </ol>
-<pre><code>
-m = require('mathly')
+<pre><code>m = require('mathly')
 a = {1, 2, 3}
 print(sum(a))
 -- 6
@@ -483,8 +467,7 @@ disp(prod(a))
 </code></pre>
 <h4>&bull; &nbsp; <a name=range href=#list><code>range(x, y, s)</code></a></h4>
 <p>Return a table of numbers starting at <code>x</code>, in between <code>x</code> and <code>y</code>, and incrementing by <code>s</code> (1 by default).</p>
-<pre><code>
-require 'mathly'
+<pre><code>require 'mathly'
 x = range(1, 10)
 disp(x)
 -- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
@@ -497,8 +480,7 @@ disp(range(0, 6, 0.5))
 </code></pre>
 <h4>&bull; &nbsp; <a name=reshape href=#list><code>reshape(A, m, n)</code></a></h4>
 <p>Rearrange existing elements in a table or mathly matrix <code>A</code> and return a new <code>mxn</code> mathly matrix.</p>
-<pre><code>
-m = require('mathly')
+<pre><code>m = require('mathly')
 reshape({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 3) -- return a 3x4 mathly matrix, where 4 is automatically determined
 -- 1  4  7  10
 -- 2  5  8  0
@@ -529,8 +511,7 @@ disp(c)
 <p><code>A</code> and <code>B</code> must be mathly matrices with the same row number.</p>
 <p>Return the reduced row-echelon form of a mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> and <code>B</code> are modified.</p>
 <p>To solve Ax = b, call rref(A, b) first, and b gives the solution.</p>
-<pre><code>
-m = require('mathly')
+<pre><code>m = require('mathly')
 a = m{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
 disp(a)
 --  1  2  3
@@ -567,8 +548,7 @@ display((B^T)[3])
 </code></pre>
 <h4>&bull; &nbsp; <a name=save href=#list><code>save(datafile, ...)</code></a></h4>
 <p>Save specified or all user-defined variables and their values to file <code>datafile</code>.</p>
-<pre><code>
-require 'mathly'
+<pre><code>require 'mathly'
 a = randi(3, 2)
 disp(a)
 --  48  43
@@ -597,8 +577,7 @@ print(c)
 </code></pre>
 <h4>&bull; &nbsp; <a name=seq href=#list><code>seq(x, y, n)</code></a></h4>
 <p>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</p>
-<pre><code>
-require 'mathly'
+<pre><code>require 'mathly'
 x = seq(1, 10) -- same as range(1, 10)
 disp(x)
 -- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
@@ -610,8 +589,7 @@ display(x)
 <h4>&bull; &nbsp; <a name=solve href=#list><code>solve(A, b)</code></a></h4>
 <p>Solve a linear system <code>Ax = b</code> and return the solution.</p>
 <p><u>Note</u>: Both <code>A</code> and <code>b</code> are modified.</p>
-<pre><code>
-require 'mathly'
+<pre><code>require 'mathly'
 a = randi(3)
 aa = copy(a)
 b = randi(3, 1)
@@ -640,8 +618,7 @@ disp(x)
 <h4>&bull; &nbsp; <a name=submatrix href=#list><code>submatrix(A, i, j, m, n)</code></a></h4>
 <p>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row
 and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column.</p>
-<pre><code>
-m = require('mathly')
+<pre><code>m = require('mathly')
 
 a = randi(4, 5)
 disp(a)
@@ -656,8 +633,7 @@ disp(b)
 </code></pre>
 <h4>&bull; &nbsp; <a name=subtable href=#list><code>subtable(tbl, i, j)</code></a></h4>
 <p>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one.</p>
-<pre><code>
-m = require('mathly')
+<pre><code>m = require('mathly')
 x = {1, 2, {3}, 4, {{5, 6, {7}}}}
 display(subtable(x, 2, 4))
 -- {2, {3}, 4}
