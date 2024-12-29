@@ -31,7 +31,7 @@ Mathly is developed in Lua 5.4.6. It works with the present newest version 5.4.7
 
 You may download Lua source code in https://lua.org/ and compile it yourself or simply download prebuilt binary commands
 for Microsoft Windows in, say, https://www.nuget.org/packages/lua/. Another way to get prebuilt Lua is to download
-ZeroBrane Studio (https://studio.zerobrane.com/), a Lua IDE for various platforms.
+ZeroBrane Studio (https://studio.zerobrane.com/), a Lua IDE for various platforms. It comes with multiple versions of Lua.
 
 ## Where to place the downloaded files?
 
