@@ -12,7 +12,7 @@ The entire mathly tool together with Lua is less than 5 MB, while providing enou
 college students to introduce and/or implement numerical algorithms. Because it is super lightweight and fast as well,
 it can be employed to slow devices like old Microsoft Surface Pro 5. Imagine that the smallest size of GNU Octave
 is about 300 MB, MATLAB needs a few GB storage space, and Julia with graphing modules is huge, too. You can hardly
-install them in a quite old computer and run smoothly.
+install them on a quite old computer and run smoothly.
 
 Mathly is especially good for instructors of linear algebra and numerical computing for teaching. It takes no time to
 start Lua and load mathly. While developing code and doing computation in a lecture, they can simply focus on delivery
@@ -25,7 +25,7 @@ for example,  `linspace`, `zeros`, `rand`, `save`, matrix operations, and even `
 and testing a thought/algorithm much easier and faster than working in most other programming languages.
 If there is anything I love the most about MATLAB, these tools are.
 
-## Which verion of Lua is needed?
+## Which version of Lua is needed?
 
 Mathly is developed in Lua 5.4.6. It works with the present newest version 5.4.7. It might work with previous versions.
 
@@ -109,7 +109,7 @@ C^T * B^T
 
 **But, `ones`, `zeros`, `rand` and `randi` generate each a table rather than a mathly matrix if
 used this way, say, `ones(1, 100)`**. This allows us to generate a table of specified length and
-addresse it conveniently like `x[i]` instead of `x[1][i]`.
+address it conveniently like `x[i]` instead of `x[1][i]`.
 
 Matrix operations can't be applied to a table. If they are needed, convert a table to a mathly matrix first. (See 1c.)
 
@@ -165,7 +165,7 @@ style='-' [solid, ':' (dot), or '--' (dash)]
 size=10
 symbol='circle'
 
-Some possible symbols are: `circle`, `circle-open`, `circle-open-dot`, `cross`, `diamond`, `square`, `x`,
+Some possible symbols are `circle`, `circle-open`, `circle-open-dot`, `cross`, `diamond`, `square`, `x`,
 `triangle-left`, `triangle-right`, `triangle-up`, `triangle-down`, `hexagram`, `star`, `hourglass`, `bowtie`.
 
 #### 3) of a plot:
