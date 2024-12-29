@@ -68,7 +68,7 @@ function plotly.show(figures)
   end
 end
 
-function sleep (a)
+local function sleep (a)
   local sec = tonumber(os.clock() + a)
   while (os.clock() < sec) do
   end
@@ -77,7 +77,7 @@ end
 -- From: https://stackoverflow.com/questions/11163748/open-web-browser-using-lua-in-a-vlc-extension#18864453
 -- Attempts to open a given URL in the system default browser, regardless of Operating System.
 local open_cmd -- this needs to stay outside the function, or it'll re-sniff every time...
-function open_url(url)
+local function open_url(url)
   if not open_cmd then
     if package.config:sub(1,1) == '\\' then -- windows
       open_cmd = function(url)
