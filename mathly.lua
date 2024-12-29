@@ -793,7 +793,7 @@ end
 local plotly = nil
 function plot(...) -- ~MATLAB
   if plotly == nil then -- the plotly module is loaded once when needed
-    plotly = require("plotly")
+    plotly = require("plotly-for-mathly")
   end
 
   local args = {}
