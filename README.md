@@ -34,7 +34,9 @@ for Microsoft Windows in, say, https://www.nuget.org/packages/lua/.
 
 ## Where to place the downloaded files?
 
-### 1. In either the folder of your Lua code files to run/test or
+The files may be placed in either
+
+### 1. the folder of your Lua script files to run/test or
 
 ### 2. (Windows) the folder, e.g., c:/cygwin/bin/, which contains the command, `lua.exe`:
      ...
