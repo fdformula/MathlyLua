@@ -747,39 +747,39 @@ end
 
   'plot' has similar usage of the same function in MATLAB with more features.
 
-  1) mode='lines+markers', 'lines', or 'markers'
-
-  2) of a line:
+  1) of a line, i.e., the graph of a function:
       width=5
       style='-' (solid), ':' (dot), or '--' (dash)
+      mode='lines+markers', 'lines', or 'markers'
 
-  3) of a marker:
+  2) of a marker:
       size=10
       symbol='circle'
 
       Some possible symbols are: circle, circle-open, circle-open-dot, cross, diamond, square, x,
       triangle-left, triangle-right, triangle-up, triangle-down, hexagram, star, hourglass, bowtie
 
-  4) of a plot: layout={width=500, height=400}
+  3) of a plot: layout={width=500, height=400}
 
   examples
   --------
+  require 'mathly'
   x = linspace(0, pi, 100)
   y1 = sin(x)
   y2 = map(math.cos, x)
   y3 = map(function(x) return x^2*math.sin(x) end, x)
 
-  options1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example'}}
-  options2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
-  options3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
+  specs1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example'}}
+  specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
+  specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
 
   plot(x, y1)
-  plot(x, y1, x, y2, options1)
+  plot(x, y1, x, y2, specs1)
   plot(x, y1, '--xr', x, y2, {1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'})
   plot(x, y1, '--xr', x, y2, ':g')
   plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
-  plot(x, y1, options1, x, y2, x, y3, 'o')
-  plot(x, y1, options3, x, y2, options2, x, y3, options1, x, sin(x))
+  plot(x, y1, specs1, x, y2, x, y3, 'o')
+  plot(x, y1, specs3, x, y2, specs2, x, y3, specs1, x, sin(x))
 
   plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
   plot(rand(125, 4),{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
