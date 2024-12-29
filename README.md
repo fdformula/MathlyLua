@@ -155,7 +155,7 @@ Its ith element must be addressed by either `x[i][1]` (a column vector) or `x[1]
 
 ## plot and specifications
 
-### Some specifications/optionss
+### Some specifications/options
 #### 1) of a line, i.e., the graph of a function:
 mode='lines+markers', 'lines', or 'markers'mode='lines+markers', 'lines', or 'markers'
 width=5
