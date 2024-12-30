@@ -249,7 +249,7 @@ function ls(usercalledq) -- ~R
   local list = {}
   for k,v in pairs(_G) do
     if type(v) ~= 'function' then
-      if not ismember(k, {'e', 'eps', 'pi', 'T', 'mathly', '_G', 'coroutine',
+      if not ismember(k, {'e', 'eps', 'pi', 'T', 'mathly', 'm', '_G', 'coroutine',
                           'utf8', '_VERSION', 'io', 'package', 'os', 'arg', 'debug',
                           'string', 'table', 'math', 'linux_browser', 'mac_browser',
                           'win_browser', 'plotly_engine', 'temp_plot_html_file'}) then
