@@ -158,7 +158,7 @@ Its ith element must be addressed by either `x[i][1]` (a column vector) or `x[1]
 ### Some specifications/options
 #### 1) of a line, i.e., the graph of a function:
 ```
-mode='lines+markers', 'lines', or 'markers'mode='lines+markers', 'lines', or 'markers'
+mode='lines+markers', 'lines', or 'markers'
 width=5
 style='-' [solid, ':' (dot), or '--' (dash)]
 ```
