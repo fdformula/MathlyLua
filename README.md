@@ -157,20 +157,23 @@ Its ith element must be addressed by either `x[i][1]` (a column vector) or `x[1]
 
 ### Some specifications/options
 #### 1) of a line, i.e., the graph of a function:
+```
 mode='lines+markers', 'lines', or 'markers'mode='lines+markers', 'lines', or 'markers'
 width=5
 style='-' [solid, ':' (dot), or '--' (dash)]
-
+```
 #### 2) of a marker:
+```
 size=10
 symbol='circle'
-
+```
 Some possible symbols are `circle`, `circle-open`, `circle-open-dot`, `cross`, `diamond`, `square`, `x`,
 `triangle-left`, `triangle-right`, `triangle-up`, `triangle-down`, `hexagram`, `star`, `hourglass`, `bowtie`.
 
 #### 3) of a plot:
+```
 layout={width=500, height=400, grid={rows=2, columns=2}, title='Demo'}.
-
+```
 ### Some examples
 ```
 require 'mathly';
