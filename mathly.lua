@@ -773,13 +773,14 @@ end
   specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
   specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
 
-  plot(x, y1)
-  plot(x, y1, x, y2, specs1)
+  plot(math.sin, '--r') -- plot a function
+  plot(x, y1)           -- plot a function defined by x and y1
+  plot(x, y1, x, y2, specs1, math.sin, '--r')
   plot(x, y1, '--xr', x, y2, {1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'})
   plot(x, y1, '--xr', x, y2, ':g')
   plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
   plot(x, y1, specs1, x, y2, x, y3, 'o')
-  plot(x, y1, specs3, x, y2, specs2, x, y3, specs1, x, sin(x))
+  plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
 
   plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
   plot(rand(125, 4),{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
@@ -798,6 +799,8 @@ function plot(...) -- ~MATLAB
 
   local args = {}
   local traces = {}
+  local x_start = nil -- range of x for a plot
+  local x_stop
   for _, v in pairs{...} do
     args[#args + 1] = v
   end
@@ -806,169 +809,191 @@ function plot(...) -- ~MATLAB
   plotly.layout = {}
   local i = 1
   while i <= #args do
-    local trace = {}
-    -- input may be {{1, 2, ...}} or {{1}, {2}, ...}
-    if type(args[i]) == 'table' and type(args[i][1]) == 'table' then
-      if #args[i] == 1 then -- mathly{1, 2, ...} gives {{1, 2, ...}}
-        args[i] = args[i][1]
-      elseif #args[i][1] == 1 then -- {{1}, {2}, ...}
-        args[i] = flatten(args[i])
+    if type(args[i]) == 'function' then
+      args[i] = {0, args[i]}
+      table.insert(args, i + 1, {0, 0}) -- pretend to be x, y, ...; to be modified before plotting
+    else
+      local trace = {}
+      -- input may be {{1, 2, ...}} or {{1}, {2}, ...}
+      if type(args[i]) == 'table' and type(args[i][1]) == 'table' then
+        if #args[i] == 1 then -- mathly{1, 2, ...} gives {{1, 2, ...}}
+          args[i] = args[i][1]
+        elseif #args[i][1] == 1 then -- {{1}, {2}, ...}
+          args[i] = flatten(args[i])
+        end
       end
-    end
 
-    if type(args[i]) == 'table' then
-      if type(args[i][1]) == 'table' then -- plot functions defined in each column of a matrix
-        local traces_tmp = {}
-        local x = seq(1, #args[i]) -- the range of x: 1 to # of rows
-        for j = 1,#args[i][1] do
-          local y = {}
-          for k = 1,#args[i] do
-            y[k] = (args[i][k])[j]
+      if type(args[i]) == 'table' then
+        if type(args[i][1]) == 'table' then -- plot functions defined in each column of a matrix
+          local traces_tmp = {}
+          local x = seq(1, #args[i]) -- the range of x: 1 to # of rows
+          if x_start == nil then
+            x_start, x_stop = 1, #args[i]
           end
-          trace = {x, y, mode='lines', style='-'}
-          if j < #args[i][1] then
-            traces_tmp[#traces_tmp + 1] = trace
-          end
-        end
-        i = i + 1 -- the item has been processed
-
-        local names = {}
-        if i <= #args and type(args[i]) == 'table' then
-          if (hasindex(args[i], 'layout') or hasindex(args[i], 'width') or
-              hasindex(args[i], 'height') or hasindex(args[i], 'title') or
-              hasindex(args[i], 'names')) then
-            local optq = false
-            if args[i]['layout'] ~= nil then
-              trace['layout'] = args[i]['layout']
-              optq = true
+          for j = 1,#args[i][1] do
+            local y = {}
+            for k = 1,#args[i] do
+              y[k] = (args[i][k])[j]
             end
+            trace = {x, y, mode='lines', style='-'}
+            if j < #args[i][1] then
+              traces_tmp[#traces_tmp + 1] = trace
+            end
+          end
+          i = i + 1 -- the item has been processed
 
-            local function test_and_set(key)
-              if args[i][key] ~= nil then
-                if trace['layout'] == nil then trace['layout'] = {} end
-                trace['layout'][key] = args[i][key]
+          local names = {}
+          if i <= #args and type(args[i]) == 'table' then
+            if (hasindex(args[i], 'layout') or hasindex(args[i], 'width') or
+                hasindex(args[i], 'height') or hasindex(args[i], 'title') or
+                hasindex(args[i], 'names')) then
+              local optq = false
+              if args[i]['layout'] ~= nil then
+                trace['layout'] = args[i]['layout']
+                optq = true
               end
-            end
-            test_and_set('title')
-            test_and_set('width')
-            test_and_set('height')
-            if args[i]['names'] ~= nil then names = args[i]['names'] end
-            i = i + 1
-          end
-        end
-        traces_tmp[#traces_tmp + 1] = trace
 
-        if #names > 0 then
-          i = i + 1
-          for j = 1,#traces_tmp do
-            traces_tmp[j]['name'] = names[j]
-          end
-        end
-        for j = 1,#traces_tmp do
-          traces[#traces + 1] = traces_tmp[j]
-          traces_tmp[j] = nil
-        end
-      else
-        trace[1] = flatten(args[i]); i = i + 1
-        trace[2] = flatten(args[i])
-        if i <= #args and type(args[i]) == 'table' and #trace[1] == #trace[2] then
-          i = i + 1
-
-          trace['mode'] = ''
-          if type(args[i]) == 'string' then -- options
-            local specs = string.lower(args[i]); i = i + 1
-            if string.find(specs, '%-%-') then
-              trace['mode'] = 'lines'
-              trace['style'] = '--'
-            elseif string.find(specs, '%-') then
-              trace['mode'] = 'lines'
-              trace['style'] = '-'
-            elseif string.find(specs, '%:') then
-              trace['mode'] = 'lines'
-              trace['style'] = ':'
-            end
-
-            if string.find(specs, 'r') then
-              trace['color'] = 'red'
-            elseif string.find(specs, 'b') then
-              trace['color'] = 'blue'
-            elseif string.find(specs, 'g') then
-              trace['color'] = 'green'
-            elseif string.find(specs, 'c') then
-              trace['color'] = 'cyan'
-            elseif string.find(specs, 'm') then
-              trace['color'] = 'magenta'
-            elseif string.find(specs, 'y') then
-              trace['color'] = 'yellow'
-            elseif string.find(specs, 'k') then
-              trace['color'] = 'black'
-            elseif string.find(specs, 'w') then
-              trace['color'] = 'white'
-            end
-
-            local symbol = ''
-            if string.find(specs, 'o') then
-              symbol = 'circle'
-            elseif string.find(specs, '%*') then
-              symbol = 'star'
-            elseif string.find(specs, 'x') then
-              symbol = 'x'
-            elseif string.find(specs, '%^') then
-              symbol = 'triangle-up'
-            elseif string.find(specs, '%v') then
-              symbol = 'triangle-down'
-            elseif string.find(specs, '%>') then
-              symbol = 'triagle-right'
-            elseif string.find(specs, '%<') then
-              symbol = 'triagle-left'
-            end
-
-            if symbol ~= '' then
-              trace['symbol'] = symbol
-              if trace['mode'] == '' then
-                trace['mode'] = 'markers'
-              else
-                trace['mode'] = 'lines+markers'
-              end
-            end
-          elseif type(args[i]) == 'table' then -- is it options?
-            local optq = false
-            for k, v in pairs(args[i]) do
-              if type(k) == 'string' then k = string.lower(k) end
-              optq = k == 'color' or k == 'size' or k == 'width' or k == 'mode'
-              optq = optq or k == 'xlabel' or k == 'ylabel' or k == 'title'
-              optq = optq or k == 'symbol' or k == 'name' or k == 'layout'
-              if optq then break end
-            end
-            if optq then -- this arg is options
-              for k, v in pairs(args[i]) do
-                if type(k) == 'string' then
-                  trace[string.lower(k)] = v
-                else
-                  trace[k] = v
+              local function test_and_set(key)
+                if args[i][key] ~= nil then
+                  if trace['layout'] == nil then trace['layout'] = {} end
+                  trace['layout'][key] = args[i][key]
                 end
               end
+              test_and_set('title')
+              test_and_set('width')
+              test_and_set('height')
+              if args[i]['names'] ~= nil then names = args[i]['names'] end
               i = i + 1
             end
-            if trace['symbol'] ~= nil then
-              if trace['style'] == nil then
-                trace['mode'] = 'markers'
-              else
-                trace['mode'] = 'lines+markers'
-              end
-            else
-              trace['mode'] = 'lines'
+          end
+          traces_tmp[#traces_tmp + 1] = trace
+
+          if #names > 0 then
+            i = i + 1
+            for j = 1,#traces_tmp do
+              traces_tmp[j]['name'] = names[j]
             end
           end
-
-          traces[#traces + 1] = trace
+          for j = 1,#traces_tmp do
+            traces[#traces + 1] = traces_tmp[j]
+            traces_tmp[j] = nil
+          end
         else
-          print('Invalid input: x and y must be of the same size.')
-          return
+          trace[1] = flatten(args[i]); i = i + 1
+          trace[2] = flatten(args[i])
+          if x_start == nil and #trace[1] >= 2 and type(trace[1][2]) ~= 'function' then
+            x_start, x_stop = trace[1][1], trace[1][#trace[1]]
+          end
+          if i <= #args and type(args[i]) == 'table' and #trace[1] == #trace[2] then
+            i = i + 1
+
+            trace['mode'] = ''
+            if type(args[i]) == 'string' then -- options
+              local specs = string.lower(args[i]); i = i + 1
+              if string.find(specs, '%-%-') then
+                trace['mode'] = 'lines'
+                trace['style'] = '--'
+              elseif string.find(specs, '%-') then
+                trace['mode'] = 'lines'
+                trace['style'] = '-'
+              elseif string.find(specs, '%:') then
+                trace['mode'] = 'lines'
+                trace['style'] = ':'
+              end
+
+              if string.find(specs, 'r') then
+                trace['color'] = 'red'
+              elseif string.find(specs, 'b') then
+                trace['color'] = 'blue'
+              elseif string.find(specs, 'g') then
+                trace['color'] = 'green'
+              elseif string.find(specs, 'c') then
+                trace['color'] = 'cyan'
+              elseif string.find(specs, 'm') then
+                trace['color'] = 'magenta'
+              elseif string.find(specs, 'y') then
+                trace['color'] = 'yellow'
+              elseif string.find(specs, 'k') then
+                trace['color'] = 'black'
+              elseif string.find(specs, 'w') then
+                trace['color'] = 'white'
+              end
+
+              local symbol = ''
+              if string.find(specs, 'o') then
+                symbol = 'circle'
+              elseif string.find(specs, '%*') then
+                symbol = 'star'
+              elseif string.find(specs, 'x') then
+                symbol = 'x'
+              elseif string.find(specs, '%^') then
+                symbol = 'triangle-up'
+              elseif string.find(specs, '%v') then
+                symbol = 'triangle-down'
+              elseif string.find(specs, '%>') then
+                symbol = 'triagle-right'
+              elseif string.find(specs, '%<') then
+                symbol = 'triagle-left'
+              end
+
+              if symbol ~= '' then
+                trace['symbol'] = symbol
+                if trace['mode'] == '' then
+                  trace['mode'] = 'markers'
+                else
+                  trace['mode'] = 'lines+markers'
+                end
+              end
+            elseif type(args[i]) == 'table' then -- is it options?
+              local optq = false
+              for k, v in pairs(args[i]) do
+                if type(k) == 'string' then k = string.lower(k) end
+                optq = k == 'color' or k == 'size' or k == 'width' or k == 'mode'
+                optq = optq or k == 'xlabel' or k == 'ylabel' or k == 'title'
+                optq = optq or k == 'symbol' or k == 'name' or k == 'layout'
+                if optq then break end
+              end
+              if optq then -- this arg is options
+                for k, v in pairs(args[i]) do
+                  if type(k) == 'string' then
+                    trace[string.lower(k)] = v
+                  else
+                    trace[k] = v
+                  end
+                end
+                i = i + 1
+              end
+              if trace['symbol'] ~= nil then
+                if trace['style'] == nil then
+                  trace['mode'] = 'markers'
+                else
+                  trace['mode'] = 'lines+markers'
+                end
+              else
+                trace['mode'] = 'lines'
+              end
+            end
+
+            traces[#traces + 1] = trace
+          else
+            print('Invalid input: x and y must be of the same size.')
+            return
+          end
         end
+      else -- invalid input, skipped
+        i = i + 1
       end
-    else -- invalid input, skipped
-      i = i + 1
+    end
+  end
+
+  if x_start == nil then
+    x_start, x_stop = -7, 7
+  end
+  for i = 1, #traces do
+    if #traces[i][1] >=2 and type(traces[i][1][2]) == 'function' then
+      local func = traces[i][1][2]
+      traces[i][1] = linspace(x_start, x_stop, math.ceil(math.abs(x_stop - x_start)) * 10)
+      traces[i][2] = map(func, traces[i][1])
     end
   end
 
