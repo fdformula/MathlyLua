@@ -189,6 +189,7 @@ layout={width=500, height=400, grid={rows=2, columns=2}, title='Demo'}.
   plot(math.sin, '--r') -- plot a function
   plot(x, y1)           -- plot a function defined by x and y1
   plot(x, y1, x, y2, specs1, math.sin, '--r')
+  plot({1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'}) -- plot a point (1.55, -0.6)
   plot(x, y1, '--xr', x, y2, {1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'})
   plot(x, y1, '--xr', x, y2, ':g')
   plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
