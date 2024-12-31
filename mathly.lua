@@ -1603,13 +1603,9 @@ function mathly.mulnum( m1, num )
 	assert(getmetatable(m1) == mathly_meta, 'm1 * m2: m1 or m2 must be a mathly metatable.')
 	local mtx = {}
 	for i = 1,#m1 do
-		if type(m1[1]) == 'table' then
-			mtx[i] = {}
-			for j = 1,#m1[1] do
-				mtx[i][j] = m1[i][j] * num
-			end
-		else
-			mtx[i] = num * m1[i]
+		mtx[i] = {}
+		for j = 1,#m1[1] do
+			mtx[i][j] = m1[i][j] * num
 		end
 	end
 	return setmetatable( mtx, mathly_meta )
@@ -1624,23 +1620,31 @@ end
 
 -- Set unary minus "-" behavior
 mathly_meta.__unm = function( mtx )
-	return mathly.mulnum( mtx,-1 )
+	return mathly.mulnum( mtx, -1 )
 end
 
---// mathly.pow ( m1, num )
--- Power of matrix; mtx^(num)
--- num is a positive integer
+--// mathly.pow ( m1, n )
+-- Power of matrix; mtx^(n)
+-- n is a positive integer
 -- m1 has to be square
-function mathly.pow( m1, num )
-	assert(num == math.floor(num) and num > 0, "A ^ n: n is not a positive integer")
-	if num == 0 then
-		return setmetatable(eye( #m1 ), mathly_meta)
-	end
-	local mtx = copy( m1 )
-	for i = 2,num	do
-		mtx = mathly.mul( mtx,m1 )
-	end
-	return setmetatable(mtx, mathly_meta)
+function mathly.pow( m1, n )
+	assert(n == math.floor(n) and n >= 0, "A ^ n: n must be a nonnegative integer.")
+  local mtx = {}
+	if #m1 == 1 then -- row vector, element wise
+    for i = 1, #m1[1] do
+      mtx[i] = m1[1][i] ^ n
+    end
+    return setmetatable({mtx}, mathly_meta)
+  else
+  	if n == 0 then
+  		return setmetatable(eye( #m1 ), mathly_meta)
+  	end
+  	mtx = copy( m1 )
+  	for i = 2, n	do
+  		mtx = mathly.mul( mtx, m1 )
+  	end
+  end
+  return setmetatable(mtx, mathly_meta)
 end
 
 -- T = 'T' -- reserved by mathly
@@ -1658,20 +1662,20 @@ mathly_meta.__pow = function( m1, opt )
 end
 
 function mathly.equal( m1, m2 )
-	if #m1 ~= #m2 then return false end
-	for i = 1,#m1 do
-	  if type(m1[1]) == 'table' then
-	    if #m1[1] ~= #m2[1] then return false end
-  		for j = 1,#m1[1] do
-  			if m1[i][j] ~= m2[i][j] then return false end
-  		end
-  	else
-  		for i = 1,#m1 do
-  			if m1[i] ~= m2[i] then return false end
-  		end
-  	end
-	end
-	return true
+  if getmetatable(m1) ~= mathly_meta then
+    m1, m2 = m2, m1 -- m1 is a mathly matrix
+  end
+  if type(m2) ~= 'table' or #m1 ~= #m2 or type(m2[1]) ~= 'table' or #m1[1] ~= #m2[1] then
+    return false
+  else
+    for i = 1, #m1 do
+      if type(m2[i]) ~= 'table' or #m2[i] ~= #m1[1] then return false end
+      for j = 1, #m1[1] do
+        if m1[i][j] ~= m2[i][j] then return false end
+      end
+    end
+  end
+  return true
 end
 
 -- Set equal "==" behaviour
@@ -1679,26 +1683,17 @@ mathly_meta.__eq = function( ... )
 	return mathly.equal( ... )
 end
 
--- Set tostring "tostring( mtx )" behaviour
-mathly_meta.__tostring = function( ... )
-	return mathly.tostring( ... )
+--// mathly.tostring ( mtx )
+function mathly.tostring( mtx )
+	local rowstrings = {}
+	for i = 1,#mtx do
+		rowstrings[i] = table.concat(map(tostring, mtx[i]), "\t")
+	end
+	return table.concat(rowstrings, "\n")
 end
 
---// mathly.tostring ( mtx, formatstr )
-function mathly.tostring( mtx, formatstr )
-	if type(mtx[1]) == 'table' then
-  	local ts = {}
-  	for i = 1,#mtx do
-  		local tstr = {}
-  		for j = 1,#mtx[1] do
-  			tstr[j] = tostring(mtx[i][j],formatstr)
-  		end
-  		ts[i] = table.concat(tstr, "\t")
-  	end
-  	return table.concat(ts, "\n")
-  else -- a row vector
-    return table.concat(mtx, "\t")
-  end
+mathly_meta.__tostring = function( ... )
+	return mathly.tostring( ... )
 end
 
 --// mathly ( rows [, comlumns [, value]] )
