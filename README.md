@@ -25,6 +25,18 @@ for example,  `linspace`, `zeros`, `rand`, `save`, matrix operations, and even `
 and testing a thought/algorithm much easier and faster than working in most other programming languages.
 If there is anything I love the most about MATLAB, these tools are.
 
+Note: This project was started first right in the code of the lua module, matrix.lua, found in
+https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua, to see if Lua is good for
+numerical computing. However, it failed to solve a boundary value problem given to my students
+of numerical analysis. The solution was obviously wrong because the boundary condition at one
+endpoint is not satisfied, though the algorithm and the code were both right. I had to wonder
+if there were bugs in the module. In many cases, it is easier to start all the work from
+scratch than debugging others' code. In addition, matrix.lua addresses a column vector like
+a[i][1] and a row vector a[1][i], rather than, simply, a[i] for both cases, which is quite
+ugly and unnatural. This explains why this mathly module was developed. But anyway I
+appreciate the work in matrix.lua. Actually, you may find some similarity in the code of
+matrix.lua and mathly.lua, e.g., m1, m2 are used to name arguments of functions.
+
 ## Which version of Lua is needed?
 
 Mathly is developed in Lua 5.4.6. It works with the present newest version 5.4.7. It might work with previous versions.
