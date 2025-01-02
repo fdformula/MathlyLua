@@ -167,7 +167,7 @@ Its ith element must be addressed by either `x[i][1]` (a column vector) or `x[1]
 `c` or `r` to determine if an ordinary Lua table is a column or row vector as in the following example.
 ```
 a = randi(3, 1) * {1, 2, 3}  -- (3x1 matrix) * (1x3 matrix) --> 3x3 matrix
-b = randi(3, 1) * c{1, 2, 3} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) in MATLAB
+b = randi(3, 1) * c{1, 2, 3} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) = 3x1 matrix in MATLAB
 
 By the way, `t` converts a row or column vector/matrix into an ordinary Lua table.
 ```
