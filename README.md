@@ -168,9 +168,8 @@ Its ith element must be addressed by either `x[i][1]` (a column vector) or `x[1]
 ```
 a = randi(3, 1) * {1, 2, 3}  -- (3x1 matrix) * (1x3 matrix) --> 3x3 matrix
 b = randi(3, 1) * c{1, 2, 3} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) = 3x1 matrix in MATLAB
-
-By the way, `t` converts a row or column vector/matrix into an ordinary Lua table.
 ```
+By the way, `t` converts a row or column vector/matrix into an ordinary Lua table.
 
 ## plot and specifications
 
