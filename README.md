@@ -163,7 +163,14 @@ disp(Y)       -- print a mathly matrix
 Its ith element must be addressed by either `x[i][1]` (a column vector) or `x[1][i]`
 (a row vector), while the ith element of an ordinary/raw Lua table is addressed by `x[i]`, the way we human beings do math.
 
-**Mathly tries its best to allow us to write math expressions as we do on paper.**
+**Mathly tries its best to allow us to write math expressions as we do on paper.** If you want full control, you can use
+`c` or `r` to determine if an ordinary Lua table is a column or row vector as in the following example.
+```
+a = randi(3, 1) * {1, 2, 3}  -- (3x1 matrix) * (1x3 matrix) --> 3x3 matrix
+b = randi(3, 1) * c{1, 2, 3} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) in MATLAB
+
+By the way, `t` converts a row or column vector/matrix into an ordinary Lua table.
+```
 
 ## plot and specifications
 
