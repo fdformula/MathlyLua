@@ -74,13 +74,13 @@ See comments in the file.
 
 ## Functions provided in mathly
 
-`apply`, `clear`, `cls`, `concath`, `concatv`, `copy`, `cross`, 
+`apply`, `c`, `clear`, `cls`, `concath`, `concatv`, `copy`, `cross`, 
 `det`, `diag`, `disp`, `display`, `dot`, `eye`, `flatten`, 
 `hasindex`, `inv`, `isinteger`, `ismember`, `join`, `length`, 
 `linspace`, `ls`, `map`, `max`, `min`, `norm`, `ones`, `plot`, `polyval`, 
-`printf`, `prod`, `rand`, `randi`, `range`, `reshape`, `rref`, 
+`printf`, `prod`, `r`, `rand`, `randi`, `range`, `reshape`, `rref`, 
 `save`, `seq`, `size`, `solve`, `sprintf`, `submatrix`, 
-`subtable`, `sum`, `tic`, `toc`, `zeros`
+`subtable`, `sum`, `t`, `tic`, `toc`, `zeros`
 
 See mathly.html.
 
