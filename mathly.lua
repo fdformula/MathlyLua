@@ -68,7 +68,11 @@ T = 'T' -- reserved by mathly, transpose of a matrix, A^T
 function  printf(...) io.write(string.format(table.unpack{...})) end
 function sprintf(...) return string.format(table.unpack{...}) end
 
-local function max_min_shared( f, x ) -- column-oriented if x is a matrix
+function r(x) return setmetatable({ flatten(x) }, mathly_meta) end -- convert x to a row vector
+function c(x) return setmetatable(map(function(x) return {x} end, flatten(x)), mathly_meta) end -- convert x to a column vector
+function t(x) return flatten(x) end -- make x a Lua table
+
+local function max_min_shared( f, x ) -- column wise if x is a matrix
   if type(x) == 'table' then
     if type(x[1]) == 'table' then -- a matrix
       if #x == 1 then return max_min_shared(f, x[1]) end -- mathly{1, 2} gives {{1,2}}
@@ -249,7 +253,7 @@ function ls(usercalledq) -- ~R
   local list = {}
   for k,v in pairs(_G) do
     if type(v) ~= 'function' then
-      if not ismember(k, {'e', 'eps', 'pi', 'T', 'mathly', 'm', '_G', 'coroutine',
+      if not ismember(k, {'e', 'eps', 'pi', 'phi', 'T', 'mathly', 'm', '_G', 'coroutine',
                           'utf8', '_VERSION', 'io', 'package', 'os', 'arg', 'debug',
                           'string', 'table', 'math', 'linux_browser', 'mac_browser',
                           'win_browser', 'plotly_engine', 'temp_plot_html_file'}) then
@@ -384,7 +388,7 @@ function prod( x ) -- ~MATLAB
     return x
   elseif type(x) == 'table' then
     if type(x[1]) == 'table' then -- a table of tables, i.e., a "matrix"
-      local prods = {}  -- ~MATLAB, column-oriented
+      local prods = {}  -- ~MATLAB, column wise
       for j = 1,#x[1] do
         prods[j] = 1
         for i = 1,#x do
@@ -413,7 +417,7 @@ function sum( x ) -- ~MATLAB
       if #x == 1 then -- {{1, 2, ...}} b/c mathly{1, 2, 3} gives {{1, 2, 3}}
          return sum(x[1])
       end
-      local sums = {}  -- ~MATLAB, column-oriented
+      local sums = {}  -- ~MATLAB, column wise
       for j = 1,#x[1] do
         sums[j] = 0
         for i = 1,#x do
@@ -776,7 +780,6 @@ end
   plot(math.sin, '--r') -- plot a function
   plot(x, y1)           -- plot a function defined by x and y1
   plot(x, y1, x, y2, specs1, math.sin, '--r')
-  plot({1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'}) -- plot a point (1.55, -0.6)
   plot(x, y1, '--xr', x, y2, {1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'})
   plot(x, y1, '--xr', x, y2, ':g')
   plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
@@ -1394,7 +1397,7 @@ function concatv( ... )
 end
 
 --// join( ... )
--- merge lists/tables into one
+-- merge elements and tables into a single table
 -- e.g., join(1, 2, {3, 4}, 5), join(1, {2, {3, 4}}, {5, 6})
 function join( ... )
   local args = {}
@@ -1603,9 +1606,13 @@ function mathly.mulnum( m1, num )
 	assert(getmetatable(m1) == mathly_meta, 'm1 * m2: m1 or m2 must be a mathly metatable.')
 	local mtx = {}
 	for i = 1,#m1 do
-		mtx[i] = {}
-		for j = 1,#m1[1] do
-			mtx[i][j] = m1[i][j] * num
+		if type(m1[1]) == 'table' then
+			mtx[i] = {}
+			for j = 1,#m1[1] do
+				mtx[i][j] = m1[i][j] * num
+			end
+		else
+			mtx[i] = num * m1[i]
 		end
 	end
 	return setmetatable( mtx, mathly_meta )
@@ -1620,13 +1627,12 @@ end
 
 -- Set unary minus "-" behavior
 mathly_meta.__unm = function( mtx )
-	return mathly.mulnum( mtx, -1 )
+	return mathly.mulnum( mtx,-1 )
 end
 
---// mathly.pow ( m1, n )
 -- Power of matrix; mtx^(n)
--- n is a positive integer
--- m1 has to be square
+-- n is a nonnegative integer
+-- if m1 is square, m1 ^ n = m1 * m1 * ... * m1; if me1 is row/column vector, m1 ^ n ~ m1 .^ n as in MATLAB
 function mathly.pow( m1, n )
 	assert(n == math.floor(n) and n >= 0, "A ^ n: n must be a nonnegative integer.")
   local mtx = {}
@@ -1635,10 +1641,12 @@ function mathly.pow( m1, n )
       mtx[i] = m1[1][i] ^ n
     end
     return setmetatable({mtx}, mathly_meta)
+  elseif #m1[1] == 1 then -- column vector
+    for i = 1, #m1 do
+      mtx[i] = { m1[i][1] ^ n }
+    end
   else
-  	if n == 0 then
-  		return setmetatable(eye( #m1 ), mathly_meta)
-  	end
+  	if n == 0 then return setmetatable(eye( #m1 ), mathly_meta) end
   	mtx = copy( m1 )
   	for i = 2, n	do
   		mtx = mathly.mul( mtx, m1 )
@@ -1683,17 +1691,22 @@ mathly_meta.__eq = function( ... )
 	return mathly.equal( ... )
 end
 
---// mathly.tostring ( mtx )
-function mathly.tostring( mtx )
-	local rowstrings = {}
-	for i = 1,#mtx do
-		rowstrings[i] = table.concat(map(tostring, mtx[i]), "\t")
-	end
-	return table.concat(rowstrings, "\n")
-end
-
+-- Set tostring "tostring( mtx )" behaviour
 mathly_meta.__tostring = function( ... )
 	return mathly.tostring( ... )
+end
+
+--// mathly.tostring ( mtx )
+function mathly.tostring( mtx )
+	if type(mtx[1]) == 'table' then
+    local rowstrs = {}
+		for i = 1,#mtx do
+			rowstrs[i] = table.concat(map(tostring, mtx[i]), "\t")
+		end
+		return table.concat(rowstrs, "\n")
+  else -- a row vector
+    return table.concat(mtx, "\t")
+  end
 end
 
 --// mathly ( rows [, comlumns [, value]] )
@@ -1701,7 +1714,7 @@ end
 -- for mathly( ... ) as mathly.new( ... )
 setmetatable( mathly, { __call = function( ... ) return mathly.new( ... ) end } )
 
--- set __call "mtx( [formatstr] )" behaviour, mtx [, formatstr]
+-- set __call "mtx( )" behaviour
 mathly_meta.__call = function( ... )
 	disp( ... )
 end
@@ -1715,5 +1728,21 @@ end
 
 return mathly
 
--- David Wang, dwang at liberty dot edu, on 12/25/2024
+--[[
+
+This project was started first right in the downloaded code of the lua module, matrix.lua, found
+in https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua, to see if Lua is good for
+numerical computing. However, it failed to solve numerically a boundary value problem. The solution
+was obviously wrong because the boundary condition at one endpoint is not satisfied, though the
+algorithm and the code were both right. I had to wonder if there were bugs in the module. In many
+cases, it is easier to start all the work from scratch than using and debugging others' code. In
+addition, matrix.lua addresses a column vector like a[i][1] and a row vector a[1][i], rather than,
+simply, a[i] for both cases, which is quite ugly and unnatural. Furthermore, basic plotting utility
+is not provided in matrix.lua. Therefore, this mathly module was developed. But anyway I appreciate
+the work in matrix.lua. Actually, you may find some similarity in the code of matrix.lua and
+mathly.lua, e.g., m1, m2 are used to name arguments of functions.
+
+David Wang, dwang at liberty dot edu, on 12/25/2024
+
+--]]
 
