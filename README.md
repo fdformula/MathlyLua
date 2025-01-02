@@ -35,7 +35,7 @@ addition, matrix.lua addresses a column vector like a[i][1] and a row vector a[1
 simply, a[i] for both cases, which is quite ugly and unnatural. Furthermore, basic plotting utility
 is not provided in matrix.lua. Therefore, this mathly module was developed. But anyway I appreciate
 the work in matrix.lua. Actually, you may find some similarities in the code of matrix.lua and
-mathly.lua, e.g., m1, m2 are used to name arguments of functions.
+mathly.lua, e.g., m1, m2 are used to name arguments of some functions.
 
 ## Which version of Lua is needed?
 
