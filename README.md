@@ -121,7 +121,7 @@ A = randi(4)
 B = randi(4)
 C = 3 * A - 4 * B + 5
 ```
-#### b. `ones`, `zeros`, `rand` and `randi` generate each a table rather than a mathly matrix if used this way, say, `ones(1, 100)`.
+#### b. `ones`, `zeros`, `rand` and `randi` generate each an ordinary table rather than a mathly matrix if used this way, say, `ones(1, 100)`.
 This allows us to generate a table of specified length and address it conveniently like `x[i]` instead of `x[1][i]`.
 
 #### c. Mathly matrix operations can only be applied on mathly matrices; if an operation involves two objects, one must be a mathly matrix.
