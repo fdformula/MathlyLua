@@ -124,7 +124,7 @@ rref(A)   -- warn: A is modified (for performance)
 inv(B)    -- 
 inv(submatrix(C, 1, 1, 3, 3))
 ```
-#### b. `ones`, `zeros`, `rand` and `randi` generate each a table rather than a mathly matrix if used this way, say, `ones(1, 100)`**.
+#### b. `ones`, `zeros`, `rand` and `randi` generate each a table rather than a mathly matrix if used this way, say, `ones(1, 100)`.
 This allows us to generate a table of specified length and address it conveniently like `x[i]` instead of `x[1][i]`.
 
 Matrix operations can't be applied to an ordinary table. If they are needed, convert a table to a mathly matrix first. (See 1c.)
