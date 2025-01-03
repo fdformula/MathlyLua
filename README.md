@@ -88,7 +88,7 @@ See mathly.html.
 
 ### 1. A mathly matrix is a table (of tables), but a table may not be a mathly matrix.
 
-#### a. Mathly 'creator', `ones`, `zeros`, `rand`, `randi`, `c`, `r`, and matrix operations can generate mathly matrices.
+#### a. Mathly 'creator', `ones`, `zeros`, `rand`, `randi`, `reshape`, `c`, `r`, and matrix operations can generate mathly matrices.
 ```
 mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, d, f, A, B, C, D, and E are all mathly matrices
@@ -116,21 +116,7 @@ A * B
 A * B * C
 B * C
 C^T * B^T
-```
-#### b. Functions, `eye`, `ones`, `zeros`, `rand`, `randi`, `reshape`, generate each a mathly matrix.
 
-**But, `ones`, `zeros`, `rand` and `randi` generate each a table rather than a mathly matrix if
-used this way, say, `ones(1, 100)`**. This allows us to generate a table of specified length and
-address it conveniently like `x[i]` instead of `x[1][i]`.
-
-Matrix operations can't be applied to a table. If they are needed, convert a table to a mathly matrix first. (See 1c.)
-
-#### c. Mathly matrix operations each return a mathly matrix if the result is a matrix.
-
-We can only apply matrix operations on mathly matrices. For example,
-
-```
-require('mathly')
 A = randi(4)
 B = randi(4)
 C = 3 * A - 4 * B
@@ -138,8 +124,14 @@ rref(A)   -- warn: A is modified (for performance)
 inv(B)    -- 
 inv(submatrix(C, 1, 1, 3, 3))
 ```
+#### b. `ones`, `zeros`, `rand` and `randi` generate each a table rather than a mathly matrix if used this way, say, `ones(1, 100)`**.
+This allows us to generate a table of specified length and address it conveniently like `x[i]` instead of `x[1][i]`.
 
-**To allow matrix operations on ordinary Lua tables, conversion is needed.** For example,
+Matrix operations can't be applied to an ordinary table. If they are needed, convert a table to a mathly matrix first. (See 1c.)
+
+#### c. Mathly matrix operations can only be applied on mathly matrices; if an operation involves two objects, one must be a mathly matrix.
+
+To allow matrix operations on ordinary Lua tables, conversion is needed. For example,
 
 ```
 mathly = require('mathly')
@@ -149,7 +141,7 @@ z = sin(x)
 
 -- 3 * y                    -- not allowed/defined
 -- y + z                    -- not allowed/defined
-mathly(y) + z               -- y + mathly(z), or mathly(y) + mathly(z) -- at least one must be a mathly matrix
+3*mathly(y) + z             -- y + mathly(z), or mathly(y) + mathly(z) -- at least one must be a mathly matrix
 2*mathly(y) - 3 * mathly(z) -- both y and z must be converted to mathly matrices
 
 Y = mathly(y)
