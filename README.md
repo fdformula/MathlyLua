@@ -88,7 +88,7 @@ See mathly.html.
 
 ### 1. A mathly matrix is a table (of tables), but a table may not be a mathly matrix.
 
-#### a. Mathly 'creator', ones, zeros, rand, randi, c, r, and matrix operations can generate mathly matrices.
+#### a. Mathly 'creator', `ones`, `zeros`, `rand`, `randi`, `c`, `r`, and matrix operations can generate mathly matrices.
 ```
 mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, d, f, A, B, C, D, and E are all mathly matrices
