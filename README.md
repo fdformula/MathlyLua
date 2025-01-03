@@ -88,13 +88,13 @@ See mathly.html.
 
 ### 1. A mathly matrix is a table (of tables), but a table may not be a mathly matrix.
 
-#### a. Examples
+#### a. Mathly 'creator', ones, zeros, rand, randi, c, r, and matrix operations can generate mathly matrices.
 ```
 mathly = require('mathly')
-a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d, A, B, C, D, and E are all mathly matrices
-b = {{1}, {2}, {3}}; b = mathly(b)
-c = mathly(1, 10, 5)
-d = mathly(1, 10, 0) --  same as d = mathly(zeros(1, 10))
+a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, d, f, A, B, C, D, and E are all mathly matrices
+b = {{1}, {2}, {3}}; b = mathly(b) -- or b = c{1, 2, 3}
+d = mathly(1, 10, 5)
+f = mathly(1, 10, 0) --  same as f = mathly(zeros(1, 10))
 A = mathly(10, 10)
 B = mathly(1, 10)
 C = randi(10, 1)          -- a column vector of random integer numbers (from 0 to 100)
@@ -102,7 +102,7 @@ D = randi(10, 2, 50, 110) -- a 10x2 matrix of random integer numbers (from 50 to
 E = rand(10, 3)           -- a 10x3 matrix of random numbers (from 0 to 1)
 
 3*a - 10
-2*c + 5 * d - 3
+2*d + 5 * f - 3
 -- inv(A) * B         -- not allowed as in math
 inv(A) * B^T
 inv(A) * randi(1, 10) -- mathly knows how to handle a Lua table
