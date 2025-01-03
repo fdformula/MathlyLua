@@ -97,33 +97,34 @@ so on. For example, <code>{}</code>, <code>{'ab'}</code>, <code>{1, 2, 3}</code>
 are all tables.</p>
 
 <p><b>A mathly matrix is obtained/generated</b> by mathly 'creator', functions like <code>zeros</code>, <code>ones</code>,
-<code>rand</code> and <code>randi</code>, or some matrix operations like <code>A^T</code>, <code>inv(A)</code>, and
-<code>2 * A  - 3 * B + 4</code>, given that <code>A</code> and <code>B</code> are mathly matrices. An element in the
+<code>rand</code>, <code>randi</code>, <code>reshape</code>, <code>submatrix</code>, <code>c</code>, <code>r</code>, or
+matrix operations like <code>A^T</code>, <code>inv(A)</code>, <code>rref(B)</code>, and
+<code>2 * A  - 3 * B + 4</code>, given that <code>A</code> and <code>B</code> are <code>nxn</code> mathly matrices. An element in the
 <code>i</code>th row and <code>j</code>th column is addressed as <code>A[i][j]</code>.</p>
 
 <p>Simply speaking, a mathly matrix is a table (of tables), but a table may not be a mathly matrix.</p>
 
-<p><B>2. We can only apply matrix operations on mathly matrices.</b> To apply matrix operations on ordinary Lua tables,
-conversion is needed and done first through the 'creator' of mathly.</p>
-<p>Some examples:</p>
+<p><B>2. We can only apply matrix operations on mathly matrices; if an operation involves two objects, at least one must be a mathly matrix.</b>
+To apply matrix operations on ordinary Lua tables, conversion is needed and done first through mathly 'creator',
+<code>c</code>, <code>r</code>, or <code>reshape</code>. For example,</p>
 <pre><code>
 mathly = require('mathly')
-a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d, A, B, C, D, and E are all mathly matrices
-b = {{1}, {2}, {3}}; b = mathly(b)
-c = mathly(1, 10, 5)
-d = mathly(1, 10, 0)               --  same as d = mathly(zeros(1, 10))
+a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, d, f, A, B, C, D, and E are all mathly matrices
+b = {{1}, {2}, {3}}; b = mathly(b) -- or b = c{1, 2, 3}
+d = mathly(1, 10, 5)
+f = mathly(1, 10, 0)      --  same as f = mathly(zeros(1, 10))
 A = mathly(10, 10)
 B = mathly(1, 10)
-C = randi(10, 1)                   -- a column vector of random integer numbers (from 0 to 100)
-D = randi(10, 2, 50, 110)          -- a 10x2 matrix of random integer numbers (from 50 to 110)
-E = rand(10, 3)                    -- a 10x3 matrix of random numbers (from 0 to 1)
+C = randi(10, 1)          -- a column vector of random integer numbers (from 0 to 100)
+D = rand(10, 2, 50, 110)  -- a 10x2 matrix of random numbers (from 0 to 1)
+E = reshape(C, 3)         -- a 3x4 matrix
 
 3*a - 10
-2*c + 5 * d - 3
--- inv(A) * B                      -- not allowed as in math
+2*d + 5 * f - 3
+-- inv(A) * B             -- not allowed as in math
 inv(A) * B^T
-inv(A) * randi(1, 10)              -- mathly knows how to handle a Lua table
-randi(1, 10) * inv(A)              -- randi(1, 10) here in its context
+inv(A) * randi(1, 10)     -- mathly knows how to handle a Lua table
+randi(1, 10) * inv(A)     -- randi(1, 10) here in its context
 
 A = randi(10, 5)
 B = randi(5, 3)
@@ -134,9 +135,37 @@ A * B * C
 B * C
 C^T * B^T
 
-x = {{1, 2, 3}, {2, 3, 4}}
--- 3 * x  + 4      -- not allowed because x is an ordinary table
-3 * mathly(x) + 4  -- it is fine now because the 'creator' converts table x to a mathly matrix first
+A = randi(4)
+B = randi(4)
+C = 3 * A - 4 * B + 5
+A^2
+
+x = linspace(0, pi, 10)   -- x, y, and z are not mathly matrices/vectors.
+y = cos(x)
+z = sin(x)
+
+-- 3 * y                  -- not allowed/defined
+-- y + z                  -- not allowed/defined
+mathly(y) + z             -- y + mathly(z), or mathly(y) + mathly(z) -- at least one must be a mathly matrix
+2*r(y) - 3 * r(z)         -- both y and z must be converted to mathly matrices
+
+x = {1, 2, 3}
+r(x)^2
+r(x) * x                  -- x * c(x), or r(x) * c(x) -- mathly tries to convert a table to a row/column
+c(x) * x                  -- vector according to the context
+
+r(x) * r(x)               -- the product of two row (or column) vectors is like x .* y in MATLAB
+c(x) * c(x)               --
+
+Y = mathly(y)
+display(y)
+display(Y)                -- print a table, including a mathly matrix, with structure
+disp(Y)                   -- print a mathly matrix
+
+A = randi(4); B = copy(A); C = copy(A)
+rref(A)                   -- warn: A and B are modified (for performance)
+inv(B)                    --
+inv(submatrix(C, 1, 1, 3, 3))
 </code></pre>
 
 <p>A mathly row vector is a <code>1xn</code> mathly matrix, and a mathly column vector is a <code>nx1</code> mathly matrix.
@@ -149,7 +178,7 @@ used this way, say, <code>ones(1, 100)</code>. This allows us to generate a tabl
 addresse it conveniently like <code>x[i]</code> instead of <code>x[1][i]</code>. This is also why functions like
 <code>linspace</code>, <code>seq</code>, and <code>range</code> all generate a table rather than a mathly row/column vector.
 
-<p>If you want full control, you can use <code>c</code> or <code>r</code> to determine if an ordinary Lua table is a column
+<p>If you want full control, you can use <code>c</code> or <code>r</code> to convert an ordinary table to a column
 or row vector. (See <a href=#c><code>c(x)</code>, <code>r(x)</code>, <code>t(x)</code></a>)</p>
 <h2><a name=math></a>Basic Mathematical Functions</h2>
 <p>Basic math functions are each now able to work on Lua tables, including mathly matrices. They are
