@@ -1730,17 +1730,17 @@ return mathly
 
 --[[
 
-This project was started first right in the downloaded code of the lua module, matrix.lua, found
+Note: This project was started first right in the downloaded code of the Lua module, matrix.lua, found
 in https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua, to see if Lua is good for
 numerical computing. However, it failed to solve numerically a boundary value problem. The solution
-was obviously wrong because the boundary condition at one endpoint is not satisfied, though the
-algorithm and the code were both right. I had to wonder if there were bugs in the module. In many
-cases, it is easier to start all the work from scratch than using and debugging others' code. In
-addition, matrix.lua addresses a column vector like a[i][1] and a row vector a[1][i], rather than,
-simply, a[i] for both cases, which is quite ugly and unnatural. Furthermore, basic plotting utility
-is not provided in matrix.lua. Therefore, this mathly module was developed. But anyway I appreciate
-the work in matrix.lua. Actually, you may find some similarity in the code of matrix.lua and
-mathly.lua, e.g., m1, m2 are used to name arguments of some functions.
+was obviously wrong because the boundary condition at one endpoint is not satisfied, but I could not find
+anything wrong in both the algorithm and the code. I had to wonder if there were bugs in the module. In many
+cases, it is easier to start a small project from scratch than using and debugging others' code. In
+addition, matrix.lua addresses a column vector like a[i][1] and a row vector a[1][i], rather than a[i]
+in both cases, which is quite ugly and unnatural. Furthermore, basic plotting utility is not provided in
+matrix.lua. Therefore, this mathly module was developed. But anyway, I appreciate the work in matrix.lua.
+Actually, you may find some similarities in the code of matrix.lua and mathly.lua, e.g., m1, m2 are used
+to name arguments of some functions.
 
 David Wang, dwang at liberty dot edu, on 12/25/2024
 
