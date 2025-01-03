@@ -129,7 +129,7 @@ This allows us to generate a table of specified length and address it convenient
 
 #### c. Mathly matrix operations can only be applied on mathly matrices; if an operation involves two objects, one must be a mathly matrix.
 
-To allow matrix operations on ordinary Lua tables, conversion is needed. For example,
+To allow matrix operations on ordinary tables, conversion is needed. For example,
 
 ```
 mathly = require('mathly')
