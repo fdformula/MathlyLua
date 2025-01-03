@@ -47,17 +47,17 @@ for example, <code>linspace</code>, <code>zeros</code>, <code>rand</code>, <code
 <code>plot</code>. They make coding and testing a thought/algorithm much easier and faster than working in most other
 programming languages. If there is anything I love the most about MATLAB, these tools are.</p>
 
-<p>Note: This project was started first right in the downloaded code of the lua module, matrix.lua, found
+<p>Note: This project was started first right in the downloaded code of the Lua module, matrix.lua, found
 in <a href="https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua">https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua</a>, to see if Lua is good for
 numerical computing. However, it failed to solve numerically a boundary value problem. The solution
-was obviously wrong because the boundary condition at one endpoint is not satisfied, though the
-algorithm and the code were both right. I had to wonder if there were bugs in the module. In many
-cases, it is easier to start all the work from scratch than using and debugging others' code. In
-addition, matrix.lua addresses a column vector like a[i][1] and a row vector a[1][i], rather than,
-simply, a[i] for both cases, which is quite ugly and unnatural. Furthermore, basic plotting utility
-is not provided in matrix.lua. Therefore, this mathly module was developed. But anyway I appreciate
-the work in matrix.lua. Actually, you may find some similarity in the code of matrix.lua and
-mathly.lua, e.g., <code>m1</code> and <code>m2</code> are used to name arguments of some functions.
+was obviously wrong because the boundary condition at one endpoint is not satisfied, but I could not find
+anything wrong in both the algorithm and the code. I had to wonder if there were bugs in the module. In many
+cases, it is easier to start a small project from scratch than using and debugging others' code. In
+addition, matrix.lua addresses a column vector like a[i][1] and a row vector a[1][i], rather than a[i]
+in both cases, which is quite ugly and unnatural. Furthermore, basic plotting utility is not provided in
+matrix.lua. Therefore, this mathly module was developed. But anyway, I appreciate the work in matrix.lua.
+Actually, you may find some similarities in the code of matrix.lua and mathly.lua, e.g., m1, m2 are used
+to name arguments of some functions.
 </p>
 <h2>Which verion of Lua is needed?</h2>
 <p>Mathly is developed in Lua 5.4.6. It works with the present newest version 5.4.7. It might work with previous versions.</p>
@@ -368,7 +368,7 @@ A = m{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
 a = flatten(A)
 display(a)
 -- {1, 2, 3, 4, 5, 6, 7, 8, 9} -- row wise
-b = flatten(A^T)
+b = flatten(A^T) -- or b = t(A^T)
 display(b)
 -- {1, 4, 7, 2, 5, 8, 3, 6, 9} -- column wise
 </code></pre>
@@ -476,7 +476,7 @@ disp(A * B)
 -- 10 10 10
 -- 10 10 10
 
-C = zeros(1, 5)  - return a table rather than a mathly matrix
+C = zeros(1, 5)  -- return a table rather than a mathly matrix
 -- C + 10 -- not allowed because C is not a mathly vector/matrix
 display(C)
 -- {0, 0, 0, 0, 0}
@@ -643,7 +643,7 @@ disp(a)
 --  0  0  0
 --  0  0  0
 
--- To solve <code>Ax =b<sub>1</sub></code>, <code>Ax = b<sub>2</sub></code>, and <code>Ax = b<sub>3</sub></code>:
+-- To solve Ax =b<sub>1</sub>, Ax = b<sub>2</sub>, and Ax = b<sub>3</sub>:
 m = require('mathly')
 A = m{{1, 2, 3}, {2, 3, 4}, {0, -1, 2}}
 b1 = m{{1},{2},{3}}
@@ -820,8 +820,11 @@ If you want full control, you can use functions <code>c</code> and <code>r</code
 <tr><td width=20></td><td><code>t(x)</code></td><td> </td><td width=10> </td><td>Convert a column/row vector <code>x</code> into a table.</td></tr>
 </tbody></table>
 <pre><code>
-a = randi(3, 1) * {1, 2, 3}  -- (3x1 matrix) * (1x3 matrix) --> 3x3 matrix
-b = randi(3, 1) * c{1, 2, 3} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) in MATLAB
+mathly = require('mathly')
+a = mathly({1, 2, 3}, 3)
+disp(a)
+a * {2, 3, 4}  -- (3x1 matrix) * (1x3 matrix) --> 3x3 matrix
+a * c{2, 3, 4} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) in MATLAB
 </code></pre>
 </div>
 </body>

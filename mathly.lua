@@ -553,29 +553,29 @@ end
 --// create_table( r, c, val )
 -- generates a table of r subtables of which each has c elements, with each element equal to val
 -- if c == nil, c = r;
--- if r == 1 or c == 1, return a row vector (so that the table can be accessed like a[i] as in MATLAB)
+-- if r == 1 or c == 1, return a simple table (so that it can be accessed like a[i] as in MATLAB)
 -- if val == nil, it is a random number.
-local function create_table( r, c, val, metaq )
+local function create_table( row, col, val, metaq )
   if metaq == nil then metaq = false end
   local x = {}
-  if c == nil then c = r end
+  if col == nil then col = row end
   if val == nil then
     -- math.randomseed(os.time()) -- keep generating same seq? Lua 5.4.6
-    for i = 1,r do
+    for i = 1,row do
       x[i] = {}
-      for j = 1,c do
+      for j = 1,col do
         x[i][j] = math.random()
       end
     end
   else
-    for i = 1,r do
+    for i = 1,row do
       x[i] = {}
-      for j = 1,c do
+      for j = 1,col do
         x[i][j] = val
       end
     end
   end
-  if r == 1 and not metaq then
+  if row == 1 and not metaq then
     return x[1]
   else
     return setmetatable(x, mathly_meta)
@@ -619,12 +619,11 @@ end
 
 --// eye( r )
 -- generates a special table, i.e., a rxr identity matrix
--- if c == nil, c = r.
-function eye( r )
+function eye( row )
   local A = {}
-  for i = 1, r do
+  for i = 1, row do
     A[i] = {}
-    for j = 1, r do A[i][j] = 0 end
+    for j = 1, row do A[i][j] = 0 end
     A[i][i] = 1
   end
   return setmetatable(A, mathly_meta)
@@ -633,16 +632,16 @@ end
 --// ones( r, c )
 -- generates a table of r subtables of which each has c elements, with each element equal to 1
 -- if c == nil, c = r.
-function ones( r, c ) return create_table(r, c, 1) end
+function ones( row, col ) return create_table(row, col, 1) end
 
 -- generates a table of r subtables of which each has c elements, with each element equal to 0
 -- if c == nil, c = r.
-function zeros( r, c ) return create_table(r, c, 0) end
+function zeros( row, col ) return create_table(row, col, 0) end
 
 --// rand( r, c )
 -- generates a table of r subtables of which each has c elements, with each element equal to a random number
 -- if c == nil, c = r.
-function rand( r, c ) return create_table(r, c) end
+function rand( row, col ) return create_table(row, col) end
 
 --// function randi( m, n, start, stop )
 -- generate a mxn matrix of which each entry is a random integer in specified range
