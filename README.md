@@ -88,7 +88,7 @@ See mathly.html.
 
 ### 1. A mathly matrix is a table (of tables), but a table may not be a mathly matrix.
 
-#### a. Mathly 'creator', `ones`, `zeros`, `rand`, `randi`, `reshape`, `c`, `r`, and matrix operations can generate mathly matrices.
+#### a. Mathly 'creator', `ones`, `zeros`, `rand`, `randi`, `reshape`, `submatrix`, `c`, `r`, and matrix operations can generate mathly matrices.
 ```
 mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, d, f, A, B, C, D, and E are all mathly matrices
@@ -119,10 +119,7 @@ C^T * B^T
 
 A = randi(4)
 B = randi(4)
-C = 3 * A - 4 * B
-rref(A)   -- warn: A is modified (for performance)
-inv(B)    -- 
-inv(submatrix(C, 1, 1, 3, 3))
+C = 3 * A - 4 * B + 5
 ```
 #### b. `ones`, `zeros`, `rand` and `randi` generate each a table rather than a mathly matrix if used this way, say, `ones(1, 100)`.
 This allows us to generate a table of specified length and address it conveniently like `x[i]` instead of `x[1][i]`.
@@ -146,6 +143,11 @@ Y = mathly(y)
 display(y)
 display(Y)    -- print a table, including a mathly matrix, with structure
 disp(Y)       -- print a mathly matrix
+
+A = randi(4); B = copy(A); C = copy(A)
+rref(A)       -- warn: A and B are modified (for performance)
+inv(B)        -- 
+inv(submatrix(C, 1, 1, 3, 3))
 ```
 
 ### 2. A mathly row/column vector is a matrix.
