@@ -1454,14 +1454,6 @@ function mathly.add_sub_shared( m1, m2, op )
     return setmetatable(mathly.numtableadd(m1, m2, op), mathly_meta)
   end
 
-  if type(m1) == 'number' then
-    if op == '+' then
-      return m1 + m2
-    else
-      return m1 - m2
-    end
-  end
-
   msg = 'm1 ' .. op .. ' m2: dimensions do not match.'
 	local mtx = {}
   local M1 = m1
