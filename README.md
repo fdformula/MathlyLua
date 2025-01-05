@@ -163,7 +163,7 @@ disp(a)
 b = randi(3, 1) * c{1, 2, 3} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) = 3x1 matrix in MATLAB
 disp(b)
 ```
-By the way, `t` converts a row or column vector/matrix into an ordinary Lua table.
+By the way, `t` converts a mathly matrix to a table columnwisely or flatten any other table first and return a slice of the resulted table.
 
 ## plot and specifications
 
