@@ -70,7 +70,44 @@ function sprintf(...) return string.format(table.unpack{...}) end
 
 function r(x) return setmetatable({ flatten(x) }, mathly_meta) end -- convert x to a row vector
 function c(x) return setmetatable(map(function(x) return {x} end, flatten(x)), mathly_meta) end -- convert x to a column vector
-function t(x) return flatten(x) end -- make x a Lua table
+
+-- t(x, startpos, endpos, step)
+-- convert x to a table (columnwisely if its a mathly matrix) or flatten it first
+-- and return a slice of it
+-- t or subtable? t converts first, while subtable doesn't.
+function t(x, startpos, endpos, step) -- make x an ordinary table
+  local y = {}
+  if getmetatable(x) == mathly_meta then -- column wise
+    if #x == 1 then -- row vector
+      y = x[1]
+    else
+      local k = 1
+      for j = 1, #x[1] do
+        for i = 1, #x do
+          y[k] = x[i][j]
+          k = k + 1
+        end
+      end
+    end
+  elseif type(x) == 'table' then
+    y = flatten(x)
+  else
+    return { x }
+  end
+
+  if startpos == nil then startpos = 1 end
+  if endpos == nil or endpos > #y then endpos = #y end
+  if startpos > endpos then return {} end
+  if step == nil then step = 1 end
+
+  local z = {}
+  local k = 1
+  for i = startpos, endpos, step do
+    z[k] = y[i]
+    k = k + 1
+  end
+  return z
+end
 
 local function max_min_shared( f, x ) -- column wise if x is a matrix
   if type(x) == 'table' then
@@ -356,6 +393,7 @@ function clear()
   for i = 1, #vars do
     load(string.format("%s = nil", vars[i]))()
   end
+  if _ ~= nil then _ = nil end
 end
 
 --// seq( from, to, len )
@@ -1268,15 +1306,17 @@ end
 
 --// function subtable( A, startpos, endpos )
 -- return a specified slice of a vector
-function subtable( tbl, startpos, endpos )
+function subtable( tbl, startpos, endpos, step )
+  if startpos == nil then startpos = 1 end
+  if endpos == nil or endpos > #tbl then endpos = #tbl end
   if startpos > endpos then
     -- print('subtable: invalid input.')
     return {}
   end
-  if endpos > #tbl then endpos = #tbl end
+  if step == nil then step = 1 end
 
   local x = {}
-  for i = startpos, endpos do
+  for i = startpos, endpos, step do
     x[#x + 1] = tbl[i]
   end
   return x
@@ -1646,11 +1686,12 @@ function mathly.pow( m1, n )
   return setmetatable(mtx, mathly_meta)
 end
 
--- T = 'T' -- reserved by mathly
 --[[
   Set power "^" behaviour
   if opt is any integer number will do mtx^opt (returning nil if answer doesn't exist)
-  if opt is 'T' then it will return the transpose mathly
+  if opt is 'T' then it will return the transpose of a mathly matrix
+
+  T = 'T' -- reserved by mathly
 --]]
 mathly_meta.__pow = function( m1, opt )
   if opt == 'T' then
