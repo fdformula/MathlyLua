@@ -208,7 +208,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <a name=mathly></a><h2>The following table summarizes other functions provided by <code>mathly</code>.</h2>
 <table>
 <tbody>
-<tr><td width="20%"><a href=#apply><code>apply(f, ...)</code></a></td><td width=1%> </td><td width=79%>As with some other programming languages like <i>Mathematica</i>, call function <code>f</code> with the arguments.</td></tr>
+<tr><td width="25%"><a href=#apply><code>apply(f, ...)</code></a></td><td width=1%> </td><td width=74%>As with some other programming languages like <i>Mathematica</i>, call function <code>f</code> with the arguments.</td></tr>
 <tr><td><code><a href=#c>c(x)</a></code></td><td> </td><td>Convert a table <code>x</code> into a column vector.</td></tr>
 <tr><td><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
 <tr><td><code>cls()</code></td><td> </td><td>Clear Lua console.</td></tr>
@@ -251,10 +251,10 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><code>size(A)</code></td><td> </td><td>Return the dimensions of a mathly matrix <code>A</code>.</td></tr>
 <tr><td><a href=#solve><code>solve(A, b)</code></a></td><td> </td><td>Solve a linear system <code>Ax = b</code> and return the solution. <u>Note</u>: Both <code>A</code> and <code>b</code> are modified.</td></tr>
 <tr><td><a href=#printf><code>sprintf(...)</code></a></td><td> </td><td>Return a formatted string, while <code>printf</code> prints one.</td></tr>
-<tr><td><a href=#submatrix><code>submatrix(A, i, j, m, n)</code></a></td><td> </td><td>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column.</td></tr>
+<tr><td><a href=#submatrix><code>submatrix(A, i, j, m, n, sr, sc)</code></a></td><td> </td><td>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column wtih row step <code>sr</code> and column step <code>sc</code>.</td></tr>
 <tr><td><a href=#subtable><code>subtable(tbl, i, j, s)</code></a></td><td> </td><td>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code>.</td></tr>
 <tr><td><a href=#sum><code>sum(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the sum of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
-<tr><td><code><a href=#c>t(x)</a></code></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and and return a specified slice of it.</td></tr>
+<tr><td><code><a href=#c>t(x, i1, i2, s)</a></code></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and and return a specified slice of the resulted table.</td></tr>
 <tr><td><a href=#tic><code>tic()</code></a></td><td> </td><td>Start a wall-clock timer.</td></tr>
 <tr><td><a href=#toc><code>toc</code></a></td><td> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
 <tr><td><a href=#zeros><code>zeros</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 0. If <code>m = 1</code>, return a table.</td></tr>
@@ -765,13 +765,15 @@ disp(x)
 -- -1.306446
 --  2.695538
 </code></pre>
-<h4>&bull; &nbsp; <a name=submatrix href=#mathly><code>submatrix(A, i, j, m, n)</code></a></h4>
+<h4>&bull; &nbsp; <a name=submatrix href=#mathly><code>submatrix(A, i, j, m, n, sr, sc)</code></a></h4>
 <p>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row
-and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column.</p>
+and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column
+with row step <code>sr</code> and column step <code>sc</code>.</p>
 <pre><code>
 m = require('mathly')
 
-a = randi(4, 5)
+a = m{{22, 15, 94, 77, 48}, {43, 58, 96, 64,  5},
+      {20, 85, 90, 37, 92}, {16, 67,  9, 56, 33}}
 disp(a)
 -- 22  15  94  77  48
 -- 43  58  96  64   5
@@ -781,6 +783,14 @@ b = submatrix(a, 3, 2, 4, 4)
 disp(b)
 --  85  90  37
 --  67   9  56
+B = submatrix(a, 1, 1, 4, 4, 2, 1) -- or submatrix(a, 1, 1, 4, 4, 2)
+disp(B)
+-- 22  15  94  77
+-- 20  85  90  37
+C = submatrix(a, 2, 1, 5, 5, 2, 3) -- or submatrix(a, 1, 1, 4, 4, 2)
+disp(C)
+-- 43  64
+-- 16  56
 </code></pre>
 <h4>&bull; &nbsp; <a name=subtable href=#mathly><code>subtable(tbl, i, j, s)</code></a></h4>
 <p>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code> (default: 1).</p>

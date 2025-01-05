@@ -95,10 +95,10 @@ function t(x, startpos, endpos, step) -- make x an ordinary table
     return { x }
   end
 
-  if startpos == nil then startpos = 1 end
+  if startpos == nil or startpos < 1 then startpos = 1 end
   if endpos == nil or endpos > #y then endpos = #y end
   if startpos > endpos then return {} end
-  if step == nil then step = 1 end
+  if step == nil or step < 1 then step = 1 end
 
   local z = {}
   local k = 1
@@ -1278,24 +1278,28 @@ function diag( A )
   return setmetatable(x, mathly_meta)
 end
 
---// function submatrix( A, startrow, startcolumn, endrow, endcolumn )
+--// function submatrix( A, startrow, startcol, endrow, endcol, steprow, stepcol )
 -- extract a submatrix of matrix A
-function submatrix( A, startrow, startcolumn, endrow, endcolumn )
+function submatrix( A, startrow, startcol, endrow, endcol, steprow, stepcol )
 --assert(getmetatable(A) == mathly_meta, 'submatrix( A ): A must be a mathly metatable.')
   local rows, columns = size(A)
-  if endrow > rows then enrow = rows end
-  if endcolumn > columns then endcolumn = columns end
-  if startrow > endrow or startcolumn > endcolumn then
+  if startrow == nil or startrow < 1 then startrow = 1 end
+  if startcol == nil or startcol < 1 then startcol = 1 end
+  if endrow == nil or endrow > rows then endrow = rows end
+  if endcol == nil or endcol > columns then endcol = columns end
+  if startrow > endrow or startcol > endcol then
     -- print('submatrix: invalid arguments.')
     return setmetatable({}, mathly_meta)
   end
+  if steprow == nil or steprow < 1 then steprow = 1 end
+  if stepcol == nil or stepcol < 1 then stepcol = 1 end
 
   local B = {}
   local I, J
   I = 1
-  for i = startrow, endrow do
+  for i = startrow, endrow, steprow do
     B[I] = {}; J = 1
-    for j = startcolumn, endcolumn do
+    for j = startcol, endcol, stepcol do
       B[I][J] = A[i][j]
       J = J + 1
     end
@@ -1304,16 +1308,16 @@ function submatrix( A, startrow, startcolumn, endrow, endcolumn )
   return setmetatable(B, mathly_meta)
 end
 
---// function subtable( A, startpos, endpos )
+--// function subtable( A, startpos, endpos, step )
 -- return a specified slice of a vector
 function subtable( tbl, startpos, endpos, step )
-  if startpos == nil then startpos = 1 end
+  if startpos == nil or startpos < 1 then startpos = 1 end
   if endpos == nil or endpos > #tbl then endpos = #tbl end
   if startpos > endpos then
     -- print('subtable: invalid input.')
     return {}
   end
-  if step == nil then step = 1 end
+  if step == nil or step < 1 then step = 1 end
 
   local x = {}
   for i = startpos, endpos, step do
