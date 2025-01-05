@@ -59,7 +59,7 @@ matrix.lua. Therefore, this mathly module was developed. But anyway, I appreciat
 Actually, you may find some similarities in the code of matrix.lua and mathly.lua, e.g., m1, m2 are used
 to name arguments of some functions.
 </p>
-<h2>Which verion of Lua is needed?</h2>
+<h2>Which version of Lua is needed?</h2>
 <p>Mathly is developed in Lua 5.4.6. It works with the present newest version 5.4.7. It might work with previous versions.</p>
 <p>You may download Lua source code in <a href="https://lua.org/">https://lua.org/</a> and compile it yourself or simply
 download built binary commands for Microsoft Windows in, say,
@@ -170,12 +170,12 @@ inv(submatrix(C, 1, 1, 3, 3))
 
 <p>A mathly row vector is a <code>1xn</code> mathly matrix, and a mathly column vector is a <code>nx1</code> mathly matrix.
 They are all matrices and, thus, an element must be addressed like <code>A[1][i]</code> (for a row vector) or <code>A[i][1]</code>
-(for a column vector), which is realy inconvenient and ugly because we human beings never write this way!</p>
+(for a column vector), which is really inconvenient and ugly because we human beings never write this way!</p>
 
 <p><i>Mathly tries its best to allow us to write math expressions as we do on paper.</i> Therefore, <code>ones</code>,
 <code>zeros</code>, <code>rand</code> and <code>randi</code> generate each a table rather than a mathly matrix if
 used this way, say, <code>ones(1, 100)</code>. This allows us to generate a table of specified length and
-addresse it conveniently like <code>x[i]</code> instead of <code>x[1][i]</code>. This is also why functions like
+address it conveniently like <code>x[i]</code> instead of <code>x[1][i]</code>. This is also why functions like
 <code>linspace</code>, <code>seq</code>, and <code>range</code> all generate a table rather than a mathly row/column vector.
 
 <p>If you want full control, you can use <code>c</code> or <code>r</code> to convert an ordinary table to a column
@@ -227,7 +227,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of a square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
 <tr><td><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
 <tr><td><a href=#ismember><code>ismember(x, table)</code></a></td><td> </td><td>Check if <code>x</code> is a member of <code>table</code>.</td></tr>
-<tr><td><a href=#join><code>join(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Concat tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers or strings.</td></tr>
+<tr><td><a href=#join><code>join(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers or strings.</td></tr>
 <tr><td><code>length(x)</code></td><td> </td><td>Return the length of a table or string.</td></tr>
 <tr><td><a href=#linspace><code>linspace(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</td></tr>
 <tr><td><code>ls()</code></td><td> </td><td>List all user-defined variables in the memory.</td></tr>
@@ -254,7 +254,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#submatrix><code>submatrix(A, i, j, m, n)</code></a></td><td> </td><td>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column.</td></tr>
 <tr><td><a href=#subtable><code>subtable(tbl, i, j, s)</code></a></td><td> </td><td>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code>.</td></tr>
 <tr><td><a href=#sum><code>sum(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the sum of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
-<tr><td><code><a href=#c>t(x)</a></code></td><td> </td><td>Convert a mahtly matrix/vector or a table (of tables) <code>x</code> to a table and return a slice of it.</td></tr>
+<tr><td><code><a href=#c>t(x)</a></code></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and and return a specified slice of it.</td></tr>
 <tr><td><a href=#tic><code>tic()</code></a></td><td> </td><td>Start a wall-clock timer.</td></tr>
 <tr><td><a href=#toc><code>toc</code></a></td><td> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
 <tr><td><a href=#zeros><code>zeros</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 0. If <code>m = 1</code>, return a table.</td></tr>
@@ -540,7 +540,7 @@ display(A)
 <ol>
 <li>of a line, i.e., the graph of a function:<p><code>width</code>=5</p><p><code>style</code>=<code>'-'</code> [solid, <code>':'</code> (dot), or <code>'--'</code> (dash)]</p><p><code>mode</code>=<code>'lines+markers'</code>, <code>'lines'</code>, or <code>'markers'</code></p></li><p></p>
 <li>of a marker:<p><code>size</code>=10</p><p><code>symbol</code>=<code>'circle'</code></p>
-Some possible symbols are: <code>circle</code>, <code>circle-open</code>, <code>circle-open-dot</code>, <code>cross</code>, <code>diamond</code>, <code>square</code>, <code>x</code>, <code>triangle-left</code>, <code>triangle-right</code>, <code>triangle-up</code>, <code>triangle-down</code>, <code>hexagram</code>, <code>star</code>, <code>hourglass</code>, <code>bowtie</code>.</li><p></p>
+Some possible symbols are <code>circle</code>, <code>circle-open</code>, <code>circle-open-dot</code>, <code>cross</code>, <code>diamond</code>, <code>square</code>, <code>x</code>, <code>triangle-left</code>, <code>triangle-right</code>, <code>triangle-up</code>, <code>triangle-down</code>, <code>hexagram</code>, <code>star</code>, <code>hourglass</code>, <code>bowtie</code>.</li><p></p>
 <li>of a plot:<p><code>layout</code>={<code>width</code>=500, <code>height</code>=400, <code>grid</code>={<code>rows</code>=2, <code>columns</code>=2}, <code>title</code>='Demo'}</p></li>
 </ol>
 <p><b>Some examples:</b></p>
@@ -852,7 +852,7 @@ If you want full control, you can use functions <code>c</code> and <code>r</code
 <table><tbody>
 <tr><td width=20></td><td><code>c(x)</code></td><td> </td><td width=10> </td><td>Convert a table <code>x</code> into a column vector.</td></tr>
 <tr><td width=20></td><td><code>r(x)</code></td><td> </td><td width=10> </td><td>Convert a table <code>x</code> into a row vector.</td></tr>
-<tr><td width=20></td><td><code>t(x)</code></td><td> </td><td width=10> </td><td>Convert a mathly matrix/vecort or a table (of tables) <code>x</code> to an ordinary table and return a slice of it.</td></tr>
+<tr><td width=20></td><td><code>t(x)</code></td><td> </td><td width=10> </td><td>Convert a mathly matrix/vector or a table (of tables) <code>x</code> to an ordinary table and return a slice of it.</td></tr>
 </tbody></table>
 <pre><code>
 mathly = require('mathly')
