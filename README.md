@@ -163,7 +163,7 @@ disp(a)
 b = randi(3, 1) * c{1, 2, 3} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) = 3x1 matrix in MATLAB
 disp(b)
 ```
-By the way, `t` converts a mathly matrix to a table columnwisely or flatten any other table first and return a specified slice of the resulted table.
+By the way, `t` converts a mathly matrix to a table columnwisely or flattens any other table first and return a specified slice of the resulted table.
 
 ## plot and specifications
 
