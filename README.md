@@ -157,7 +157,7 @@ Its ith element must be addressed by either `x[i][1]` (a column vector) or `x[1]
 
 **Mathly tries its best to allow us to write math expressions as we do on paper.** If you want full control, you can use
 `c` or `r` to convert an ordinary Lua table to a column or row vector as in the following example.
-```
+```Lua
 a = randi(3, 1) * {1, 2, 3}  -- (3x1 matrix) * (1x3 matrix) --> 3x3 matrix
 disp(a)
 b = randi(3, 1) * c{1, 2, 3} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) = 3x1 matrix in MATLAB
