@@ -189,31 +189,31 @@ layout={width=500, height=400, grid={rows=2, columns=2}, title='Demo'}.
 ```
 ### Some examples
 ```Lua
-  require 'mathly'
-  x = linspace(0, pi, 100)
-  y1 = sin(x)
-  y2 = map(math.cos, x)
-  y3 = map(function(x) return x^2*math.sin(x) end, x)
+require 'mathly'
+x = linspace(0, pi, 100)
+y1 = sin(x)
+y2 = map(math.cos, x)
+y3 = map(function(x) return x^2*math.sin(x) end, x)
 
-  specs1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example'}}
-  specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
-  specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
+specs1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example'}}
+specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
+specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
 
-  plot(math.sin, '--r') -- plot a function
-  plot(x, y1)           -- plot a function defined by x and y1
-  plot(x, y1, x, y2, specs1, math.sin, '--r')
-  plot({1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'}) -- plot a point (1.55, -0.6)
-  plot(x, y1, '--xr', x, y2, {1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'})
-  plot(x, y1, '--xr', x, y2, ':g')
-  plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
-  plot(x, y1, specs1, x, y2, x, y3, 'o')
-  plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
+plot(math.sin, '--r') -- plot a function
+plot(x, y1)           -- plot a function defined by x and y1
+plot(x, y1, x, y2, specs1, math.sin, '--r')
+plot({1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'}) -- plot a point (1.55, -0.6)
+plot(x, y1, '--xr', x, y2, {1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'})
+plot(x, y1, '--xr', x, y2, ':g')
+plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
+plot(x, y1, specs1, x, y2, x, y3, 'o')
+plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
 
-  plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
-  plot(rand(125, 4),{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
-  plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}})
-  plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
-  plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
+plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
+plot(rand(125, 4),{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
+plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}})
+plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
+plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
 ```
 
 ### A more meaningful exam - Quadratic splines using Lagrange interpolating polynomials
