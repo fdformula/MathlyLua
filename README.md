@@ -52,13 +52,13 @@ The files may be placed in either
 ### 1. the folder of your Lua script files to run/test or
 
 ### 2. (Windows) the folder, e.g., c:/cygwin/bin/, which contains the command, `lua.exe`:
-     ...
+```
      lua.exe
      dkjson.lua
      mathly.lua
-     plotly.lua
+     plotly-for-mathly.lua
      plotly-2.9.0.min.js
-     ...
+```
 
 ###  (Linux) /usr/local/share/lua/5.4/
 
