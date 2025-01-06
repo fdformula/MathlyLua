@@ -54,6 +54,7 @@ The files may be placed in either
 ### 2. (Windows) the folder, e.g., c:/cygwin/bin/, which contains the command, `lua.exe`:
 ```
 lua.exe
+browser-setting.lua
 dkjson.lua
 mathly.lua
 plotly-for-mathly.lua
