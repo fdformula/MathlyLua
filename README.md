@@ -64,7 +64,7 @@ plotly-2.9.0.min.js
 
 Note: The `*.lua` files can be compiled with `luac`. To use compiled modules, we set `package.path` first as follows:
 
-```
+```Lua
 package.path = "./?.luac;;"
 ```
 
