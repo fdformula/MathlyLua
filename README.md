@@ -244,9 +244,7 @@ function fprimes_for_splines_using_lagrange(x, y)
 end
 
 K = 1 -- 'global', to make it faster to choose a spline
-function resetK()
-  K = 1;
-end
+function resetK() K = 1 end
 
 function evaluate_spline_function(X, x, y, fprimes, resetK_q)
   if resetK_q then resetK() end
