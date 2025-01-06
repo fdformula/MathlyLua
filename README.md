@@ -254,7 +254,7 @@ function evaluate_spline_function(X, x, y, fprimes, resetK_q)
     K = K + 1
   end
   if K < n - 1 then
-    h = x[K + 1] - x[K]
+    local h = x[K + 1] - x[K]
     return y[K] + 0.5*((X - x[K+1])^2/(-h) + h)*fprimes[K] + 0.5*(X - x[K])^2/h*fprimes[K+1]
   else
     return y[n] + fprimes[K] * (X - x[n]) -- i == n - 1
