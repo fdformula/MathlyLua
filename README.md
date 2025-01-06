@@ -128,7 +128,7 @@ This allows us to generate a table of specified length and address it convenient
 
 To allow matrix operations on ordinary tables, conversion is needed. For example,
 
-```
+```Lua
 mathly = require('mathly')
 x = linspace(0, pi, 10)     -- x, y, and z are not mathly matrices/vectors.
 y = cos(x)
@@ -169,13 +169,13 @@ By the way, `t` converts a mathly matrix to a table columnwisely or flattens any
 
 ### Some specifications/options
 #### 1) of a line, i.e., the graph of a function:
-```
+```Lua
 mode='lines+markers', 'lines', or 'markers'
 width=5
 style='-' [solid, ':' (dot), or '--' (dash)]
 ```
 #### 2) of a marker:
-```
+```Lua
 size=10
 symbol='circle'
 ```
@@ -183,11 +183,11 @@ Some possible symbols are `circle`, `circle-open`, `circle-open-dot`, `cross`, `
 `triangle-left`, `triangle-right`, `triangle-up`, `triangle-down`, `hexagram`, `star`, `hourglass`, `bowtie`.
 
 #### 3) of a plot:
-```
+```Lua
 layout={width=500, height=400, grid={rows=2, columns=2}, title='Demo'}.
 ```
 ### Some examples
-```
+```Lua
   require 'mathly'
   x = linspace(0, pi, 100)
   y1 = sin(x)
@@ -217,7 +217,7 @@ layout={width=500, height=400, grid={rows=2, columns=2}, title='Demo'}.
 
 ### A more meaningful exam - Quadratic splines using Lagrange interpolating polynomials
 
-```
+```Lua
 require('mathly')
 
 function fprimes_for_splines_using_lagrange(x, y)
