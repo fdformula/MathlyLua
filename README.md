@@ -165,7 +165,7 @@ disp(b)
 ```
 By the way, `t` converts a mathly matrix to a table columnwisely or flattens any other table first and returns a specified slice of the resulted table.
 
-## plot and specifications
+## `plot` and specifications
 
 ### Some specifications/options
 #### 1) of a line, i.e., the graph of a function:
