@@ -221,8 +221,8 @@ layout={width=500, height=400, grid={rows=2, columns=2}, title='Demo'}.
 require('mathly')
 
 function fprimes_for_splines_using_lagrange(x, y)
-  local n = #x
-  if #y ~= n then
+  local n = length(x) -- or: n = #x
+  if length(y) ~= n then
     error("vectors x and y must be of the same size.")
   end
 
@@ -250,7 +250,7 @@ end
 
 function evaluate_spline_function(X, x, y, fprimes, resetK_q)
   if resetK_q then resetK() end
-  local n = #x
+  local n = length(x)
   while K < n - 1 do -- K is 'global'
     if x[K] <= X and X <= x[K + 1] then break end
     K = K + 1
@@ -268,12 +268,12 @@ function test()
   local y = { 5, 9, 10, 8, 7, 12, 14, 21,  9, 11, 15, 17, 20, 31, 35}
 
   local X = linspace(min(x), max(x), 500)
-  local Y = zeros(1, #X)
+  local Y = zeros(1, length(X))
 
   local fprimes = fprimes_for_splines_using_lagrange(x, y)
   resetK()
 
-  for i = 1, #X do
+  for i = 1, length(X) do
     Y[i] = evaluate_spline_function(X[i], x, y, fprimes, false)
   end
 
