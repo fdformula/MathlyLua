@@ -216,7 +216,7 @@ plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, titl
 plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
 ```
 
-### A more meaningful exam - Quadratic splines using Lagrange interpolating polynomials
+### A more meaningful example - Quadratic splines using Lagrange interpolating polynomials
 
 ```Lua
 require('mathly')
