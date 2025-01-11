@@ -20,7 +20,7 @@ of course contents and never need to worry if their computers work too slowly or
 of using Lua is that it is so simple and natural a language that even students without programming skills can understand
 most of Lua scripts.
 
-In brief, mathly makes Lua mathly and like MATLAB. It provides a group of commonly used MATLAB functions and features,
+In brief, mathly makes Lua mathly and a tiny MATLAB. It provides a group of commonly used MATLAB functions and features,
 for example,  `linspace`, `zeros`, `rand`, `save`, matrix operations, and even `plot`. They make coding
 and testing a thought/algorithm much easier and faster than working in most other programming languages.
 If there is anything I love the most about MATLAB, these tools are.
