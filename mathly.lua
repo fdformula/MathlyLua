@@ -1485,7 +1485,7 @@ function concath( ... )
   		end
     end
 	end
-	return mtx
+	return setmetatable(mtx, mathly_meta)
 end
 
 --// concatv ( ... )
@@ -1521,7 +1521,7 @@ function concatv( ... )
   		end
   	end
   end
-	return mtx
+	return setmetatable(mtx, mathly_meta)
 end
 
 --// join( ... )
