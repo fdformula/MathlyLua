@@ -76,7 +76,7 @@ See comments in the file.
 ## Functions provided in mathly
 
 `apply`, `c`, `clear`, `cls`, `concath`, `concatv`, `copy`, `cross`, 
-`det`, `diag`, `disp`, `display`, `dot`, `eye`, `flatten`, 
+`det`, `diag`, `disp`, `display`, `dot`, `expand`, `eye`, `flatten`, 
 `hasindex`, `inv`, `isinteger`, `ismember`, `join`, `length`, 
 `linspace`, `ls`, `map`, `max`, `min`, `norm`, `ones`, `plot`, `polyval`, 
 `printf`, `prod`, `r`, `rand`, `randi`, `range`, `reshape`, `rref`, 
