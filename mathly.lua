@@ -1281,7 +1281,15 @@ end
 -- or -j rows below the main diagonal (if j < 0). E.g., k = 1, the diagonal right above the main
 -- diagonal; k = -1, the diagonal right below the main diagonal.
 --
--- // function diag(v, m, n)
+-- // function diag(v), where v is a table or a row/column vector
+-- return a nxn matrix with v as its main diagonal, where n = size of v
+
+-- // function diag(v, k), where v is a table or a row/column vector
+-- if k > 0, return a matrix with v as the diagonal k rows above the main diagonal.
+-- if k < 0, return a matrix with v as the diagonal -k columns below the main diagonal
+-- if k = 0, same as diag(v)
+--
+-- // function diag(v, m, n), where v is a table or a row/column vector
 -- return a mxn matrix with vector v (or first elements in it) as its main diagonal
 function diag( A, m, n )
   local v
@@ -1308,13 +1316,48 @@ function diag( A, m, n )
     v = A
   end
 
-  if m == nil then m = #v end
+  local z, siz
+  if m == nil or (m ~= nil and n ~= nil) then
+    if m == nil then m = #v; n = m end
+    siz = math.min(#v, m, n)
+    z = zeros(m, n)
+    if m == 1 then z = r(z) end -- zeros(1, n) is not a mathly matrix
+    for i = 1, siz do
+      z[i][i] = v[i]
+    end
+  else -- return a matrix with with v as its diagonal |k| rows above/below the main diagonal
+    local k = m
+    siz = #v + math.abs(k)
+    z = zeros(siz, siz)
+    if k >= 0 then
+      for i = 1, #v do
+        local j = i + k
+        z[i][j] = v[i]
+      end
+    else
+      for i = 1, #v do
+        local j = i - k
+        z[j][i] = v[i]
+      end
+    end
+  end
+  return setmetatable(z, mathly_meta)
+end
+
+--// function expand( A, m, n )
+-- expand/shrink a matrix by adding 0's or dropping entries
+function expand( A, m, n )
+  assert(getmetatable(A) == mathly_meta, 'expand( A ): A must be a mathly matrix.')
+  if m == nil then return A end
   if n == nil then n = m end
-  local siz = math.min(#v, m, n)
+
+  local rows, columns = size(A)
   local z = zeros(m, n)
-  if m == 1 then z = r(z) end -- zeros(1, n) is not a mathly matrix
-  for i = 1, siz do
-    z[i][i] = v[i]
+  if m == 1 then z = r(z) end -- m = 1 gives a table
+  for i = 1, math.min(m, rows) do
+    for j = 1, math.min(n, columns) do
+      z[i][j] = A[i][j]
+    end
   end
   return setmetatable(z, mathly_meta)
 end

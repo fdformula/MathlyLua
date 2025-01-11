@@ -221,6 +221,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#disp><code>disp(x)</code></a></td><td> </td><td>Print a mathly matrix.</td></tr>
 <tr><td><a href=#display><code>display(x)</code></a></td><td> </td><td>Print a table with structure.</td></tr>
 <tr><td><a href=#dot><code>dot(a, b)</code></a></td><td> </td><td>Calculate the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ..., a<sub>n</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ..., b<sub>n</sub>}</code>.</td></tr>
+<tr><td><a href=#expand><code>expand(A, m, n)</code></a></td><td> </td><td>Return an expanded/shrinked mathly matrix with 0's added or entries dropped.</td></tr>
 <tr><td><code>eye(n)</code></td><td> </td><td>Return a <code>nxn</code> identity mathly matrix.</td></tr>
 <tr><td><a href=#flatten><code>flatten(x)</code></a></td><td> </td><td>Remove the structure of <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</td></tr>
 <tr><td><a href=#hasindex><code>hasindex(table, index)</code></a></td><td> </td><td>Check if <code>table</code> contains <code>index</code>.</td></tr>
@@ -348,17 +349,25 @@ display(cross({1, 2, 3}, {3, 4, 5}))
 -- {-2, 4, -2}
 </code></pre>
 <h4>&bull; &nbsp; <a name=diag href=#mathly><code>diag(A, ...)</code></a></h4>
-<p>&#x2713; &nbsp; <code>diag( A, k )</code>, where <code>A</code> is a mathly matrix.</p>
-<p>Return the table of all entries of the <code>k</code>-th diagonal as a column vector.
-The second argument <code>k</code> is optional. Its default value is 0.</p>
-
+<ol>
+<li><code>diag( A, k )</code>, where <code>A</code> is a mathly <code>mxn</code> matrix, <code>m &ne; 1</code> and <code>n &ne; 1</code>.
+<p>Return the table of all entries of the <code>k</code>-th diagonal as a column vector.</p>
+<p>The second argument <code>k</code> is optional. Its default value is 0.</p>
 <p>Which diagonal? If <code>k = 0</code>, the main diagonal; if <code>k = j</code>, the diagonal <code>j</code> rows above (if <code>j &gt; 0</code>)
 or <code>-j</code> rows below the main diagonal (if <code>j &lt; 0</code>). E.g., if <code>k = 1</code>, the diagonal right above the main
-diagonal; if <code>k = -1</code>, the diagonal right below the main diagonal.</p>
+diagonal; if <code>k = -1</code>, the diagonal right below the main diagonal.</p></li>
 
-<p>&#x2713; &nbsp; <code>diag(v, m, n)</code>, where <code>v</code> is a table, a row vector, or column vector.</p>
-<p>Return a <code>mxn</code> matrix with vector <code>v</code> (or first elements in it) as its main diagonal.</p>
-<p>The second and/or the third arguments are optional. <code>m</code> has the size of <code>v</code> as its default value, and <code>n</code> has the value of <code>m</code> as its default value.</p>
+<li><code>diag(v)</code>, where <code>v</code> is a table or a row/column vector.
+<p>Return a <code>nxn</code> matrix with <code>v</code> as its main diagonal, where <code>n = length(v)</code>.</p></li>
+
+<li><code>diag(v, k)</code>, where <code>v</code> is a table or a row/column vector.
+<p>If <code>k &gt; 0</code>, return a matrix with <code>v</code> as the diagonal <code>k</code> rows above the main diagonal.</p>
+<p><code>If k &lt; 0</code>, return a matrix with <code>v</code> as the diagonal <code>-k</code> rows below the main diagonal</p>
+<p>If <code>k = 0</code>, same as <code>diag(v)</code>.</p></li>
+
+<li><code>diag(v, m, n)</code>, where <code>v</code> is a table or a row/column vector.</p>
+<p>Return a <code>mxn</code> matrix with vector v (or first elements in it) as its main diagonal.</p></li>
+</ol>
 <pre><code>
 m = require('mathly')
 a = m{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
@@ -385,11 +394,23 @@ diag(c{1, 2, 3, 4}, 3, 2)
 -- 1  0
 -- 0  2
 -- 0  0
-diag({1, 2, 3},4)
+diag({1, 2, 3},2)
+-- 0  0  1  0  0
+-- 0  0  0  2  0
+-- 0  0  0  0  3
+-- 0  0  0  0  0
+-- 0  0  0  0  0
+diag({1, 2, 3},-1)
+-- 0  0  0  0
 -- 1  0  0  0
 -- 0  2  0  0
 -- 0  0  3  0
--- 0  0  0  0
+diag({2,3,4,5}, 1) + diag({1,2,3,4,5}) + diag({3,4,5,6}, -1)
+-- 1  2  0  0  0
+-- 3  2  3  0  0
+-- 0  4  3  4  0
+-- 0  0  5  4  5
+-- 0  0  0  6  5
 </code></pre>
 <h4>&bull; &nbsp; <a name=disp href=#mathly><code>disp(A)</code></a> - Print a mathly matrix. If <code>A</code> is not a mathly matrix, <code>display</code> is called to print it.</h4>
 <h4>&bull; &nbsp; <a name=display href=#mathly><code>display(x)</code></a> - Print a table with structure.</h4>
@@ -964,6 +985,27 @@ display(t(x, 2))
 -- {2, 3, 4, 5, 6, 7}
 display(t(x, 2, 6, 3))
 -- {2, 5}
+</code></pre>
+<h4>&bull; &nbsp; <a name=expand href=#mathly><code>expand(A, m, n)</code></a></h4>
+<p>Return an expanded/shrinked mathly matrix with 0's added or entries dropped.</p>
+<pre><code>
+mathly = require('mathly')
+a = mathly{{52, 67, 82}, {82, 15, 70}, {94, 82, 50}}
+disp(a)
+-- 52  67  82
+-- 82  15  70
+-- 94  82  50
+disp(expand(a, 2, 4))
+-- 52  67  82  0
+-- 82  15  70  0
+disp(expand(a, 4, 5))
+-- 52  67  82  0  0
+-- 82  15  70  0  0
+-- 94  82  50  0  0
+--  0   0   0  0  0
+disp(expand(a, 2, 2))
+-- 52  67
+-- 82  15
 </code></pre>
 </div>
 </body>
