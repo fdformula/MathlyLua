@@ -1273,14 +1273,50 @@ function length( A )
   end
 end
 
-function diag( A )
-  assert(getmetatable(A) == mathly_meta, 'diag( A ): A must be a mathly metatable.')
-  local x = {}
-  local rows, columns = size(A)
-  for i = 1, math.min(rows, columns) do
-    x[#x + 1] = A[i][i]
+-- // function diag( A, k )
+-- return the table of all entries of the k-th diagonal as a column vector
+-- The second argument k is optional. Its default value is 0.
+--
+-- Which diagonal? If k = 0, the main diagonal; if k = j, the diagonal j rows above (if j > 0)
+-- or -j rows below the main diagonal (if j < 0). E.g., k = 1, the diagonal right above the main
+-- diagonal; k = -1, the diagonal right below the main diagonal.
+--
+-- // function diag(v, m, n)
+-- return a mxn matrix with vector v (or first elements in it) as its main diagonal
+function diag( A, m, n )
+  local v
+  if getmetatable(A) == mathly_meta then
+    local rows, columns = size(A)
+    if rows == 1 or columns == 1 then -- row/column vector
+      v = flatten(A) -- continue after last if .. then .. else ..
+    else -- a matrix
+      local k = m or 0
+      local x = {}
+      local xi = 1
+      for i = 1, math.min(rows, columns) do
+        local j = i - k
+        if j > 0 and j <= rows then
+          x[xi] = {A[j][i]}
+          xi = xi + 1
+        end
+      end
+      return mathly(x) -- can't setmetatable(x, mathly_meta); otherwise, mathly data are not uniformly mxn matrices
+    end
+  elseif type(A) ~= 'table' then
+    v = {A}
+  else
+    v = A
   end
-  return mathly(x) -- can't setmetatable(x, mathly_meta); otherwise, mathly data are not uniformly mxn matrices
+
+  if m == nil then m = #v end
+  if n == nil then n = m end
+  local siz = math.min(#v, m, n)
+  local z = zeros(m, n)
+  if m == 1 then z = r(z) end -- zeros(1, n) is not a mathly matrix
+  for i = 1, siz do
+    z[i][i] = v[i]
+  end
+  return setmetatable(z, mathly_meta)
 end
 
 --// function submatrix( A, startrow, startcol, endrow, endcol, steprow, stepcol )
