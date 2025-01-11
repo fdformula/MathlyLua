@@ -383,6 +383,7 @@ display(dot({1, 2}, {3, 4}))
 </code></pre>
 <h4>&bull; &nbsp; <a name=flatten href=#mathly><code>flatten(x)</code></a></h4>
 <p>Remove the structure of table <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</p>
+<p>If <code>x</code> is a mathly matrix, it does rowwisely. For columnwise flattening, see <a href=#t><code>t(...)</code></a>.</p>
 <pre><code>
 m = require('mathly')
 x = {1, 2, {3, 4, {5, 6, {7, 8, {9}}}}}
@@ -794,7 +795,7 @@ disp(C)
 </code></pre>
 <h4>&bull; &nbsp; <a name=subtable href=#mathly><code>subtable(tbl, i, j, s)</code></a></h4>
 <p>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code> (default: 1).</p>
-<p>See alse: <a href=#t><code>t</code></a>.</p>
+<p>See also: <a href=#t><code>t(...)</code></a>.</p>
 <pre><code>
 m = require('mathly')
 x = {1, 2, {3}, 4, {{5, 6, {7}}}}
@@ -892,7 +893,8 @@ a * r{2, 3, 4} -- (1x3 matrix) * (1x3 matrix) --> (1x3 matrix) .* (1x3 matrix) i
 -- 2  6  12
 </code></pre>
 <p>&#x2713; &nbsp; <code>t(x, i1, i2, s)</code> may be used to replace <a href=#subtable><code>subtable</code></a>. If <code>x</code> is a mathly matrix, it is converted to a table columnwisely first;
-if it is any other table, it is flattened first. Comparatively, <code>subtable</code> doesn't carry out any conversion.</p>
+if it is any other table, it is flattened first. Comparatively, <code>subtable</code> doesn't carry out any conversion.
+For row wise flattening, see <a href=#flatten><code>flatten(tbl)</code></a>.</p>
 <table><tbody>
 <tr><td width=20></td><td><code>i1</code></td><td> </td><td width=10> </td><td>Initial value of index (default: 1).</td></tr>
 <tr><td width=20></td><td><code>i2</code></td><td> </td><td width=10> </td><td>Terminal value of index (default: size of the converted table of <code>x</code>).</td></tr>

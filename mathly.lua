@@ -74,6 +74,8 @@ function c(x) return setmetatable(map(function(x) return {x} end, flatten(x)), m
 -- t(x, startpos, endpos, step)
 -- convert x to a table (columnwisely if its a mathly matrix) or flatten it first
 -- and return a slice of it
+-- want row wise? see flatten(tbl)
+--
 -- t or subtable? t converts first, while subtable doesn't.
 function t(x, startpos, endpos, step) -- make x an ordinary table
   local y = {}
@@ -234,12 +236,11 @@ function copy( x )
 end
 
 --// disp( A )
--- print a mxn matrix while display(x) prints a table with its structure
+-- print a mathly matrix while display(x) prints a table with its structure
 -- disp({{1, 2, 3, 4}, {2, -3, 4, 5}, {3, 4, -5, 6}})
 function disp( A ) -- ~MATLAB
-  if type(A) == 'table' and type(A[1]) == 'table' then
-    local rows, columns
-    rows, columns = #A, #A[1]
+  if getmetatable(A) == mathly_meta then
+    local rows, columns = size(A)
     for i = 1, rows do
       io.write('\n')
       for j = 1, columns do
@@ -732,25 +733,29 @@ end
 
 --// flatten( tbl )
 -- removes the structure of a table and returns the resulted table.
+-- if tbl is a mathly matrix, the result is row wise (rather than column wise)
+-- want column wise? use t(tbl)
+--
 -- flatten({{1},{2,3}}) returns {1, 2, 3}
 -- flatten({1,{2,3}}) returns {1, 2, 3}
-function flatten( tbl )
-  if type(tbl) ~= 'table' then
-    return { tbl }
-  else
-    local x = {}
-    for i = 1,#tbl do
-      if type(tbl[i]) == 'number' then
-        x[#x + 1] = tbl[i]
-      else
-        local y = flatten(tbl[i])
-        for j = 1,#y do
-          x[#x + 1] = y[j]
+function flatten(x)
+  local y = {}
+  local j = 1
+  local function flat(x)
+    if type(x) == 'table' then
+      for i = 1, #x do
+        if type(x[i]) == 'table' then
+          flat(x[i])
+        else
+          y[j] = x[i]; j = j + 1
         end
       end
+    else
+      y[j] = x; j = j + 1
     end
-    return x
   end
+  flat(x)
+  return y
 end
 
 --// hasindex( tbl, idx )
@@ -1275,7 +1280,7 @@ function diag( A )
   for i = 1, math.min(rows, columns) do
     x[#x + 1] = A[i][i]
   end
-  return setmetatable(x, mathly_meta)
+  return mathly(x) -- can't setmetatable(x, mathly_meta); otherwise, mathly data are not uniformly mxn matrices
 end
 
 --// function submatrix( A, startrow, startcol, endrow, endcol, steprow, stepcol )
