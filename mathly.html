@@ -221,7 +221,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#disp><code>disp(x)</code></a></td><td> </td><td>Print a mathly matrix.</td></tr>
 <tr><td><a href=#display><code>display(x)</code></a></td><td> </td><td>Print a table with structure.</td></tr>
 <tr><td><a href=#dot><code>dot(a, b)</code></a></td><td> </td><td>Calculate the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ..., a<sub>n</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ..., b<sub>n</sub>}</code>.</td></tr>
-<tr><td><a href=#expand><code>expand(A, m, n)</code></a></td><td> </td><td>Return an expanded/shrinked mathly matrix with 0's added or entries dropped.</td></tr>
+<tr><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrinked <code>mxn</code> mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
 <tr><td><code>eye(n)</code></td><td> </td><td>Return a <code>nxn</code> identity mathly matrix.</td></tr>
 <tr><td><a href=#flatten><code>flatten(x)</code></a></td><td> </td><td>Remove the structure of <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</td></tr>
 <tr><td><a href=#hasindex><code>hasindex(table, index)</code></a></td><td> </td><td>Check if <code>table</code> contains <code>index</code>.</td></tr>
@@ -986,8 +986,9 @@ display(t(x, 2))
 display(t(x, 2, 6, 3))
 -- {2, 5}
 </code></pre>
-<h4>&bull; &nbsp; <a name=expand href=#mathly><code>expand(A, m, n)</code></a></h4>
-<p>Return an expanded/shrinked mathly matrix with 0's added or entries dropped.</p>
+<h4>&bull; &nbsp; <a name=expand href=#mathly><code>expand(A, m, n, v)</code></a></h4>
+<p>Return an expanded/shrinked mathly matrix with value v's added or entries dropped.</p>
+<p>The default value of <code>v</code> is 0, and the default value of <code>n</code> is <code>m</code>.</p>
 <pre><code>
 mathly = require('mathly')
 a = mathly{{52, 67, 82}, {82, 15, 70}, {94, 82, 50}}
@@ -998,12 +999,12 @@ disp(a)
 disp(expand(a, 2, 4))
 -- 52  67  82  0
 -- 82  15  70  0
-disp(expand(a, 4, 5))
--- 52  67  82  0  0
--- 82  15  70  0  0
--- 94  82  50  0  0
---  0   0   0  0  0
-disp(expand(a, 2, 2))
+disp(expand(a, 4, 5, -1))
+-- 52  67  82  -1 -1
+-- 82  15  70  -1 -1
+-- 94  82  50  -1 -1
+-- -1  -1  -1  -1 -1
+disp(expand(a, 2))
 -- 52  67
 -- 82  15
 </code></pre>

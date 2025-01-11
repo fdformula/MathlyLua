@@ -1344,15 +1344,17 @@ function diag( A, m, n )
   return setmetatable(z, mathly_meta)
 end
 
---// function expand( A, m, n )
--- expand/shrink a matrix by adding 0's or dropping entries
-function expand( A, m, n )
+--// function expand( A, m, n, v )
+-- expand/shrink a matrix by adding value v's or dropping entries.
+-- the default value of v is 0
+function expand( A, m, n, v )
   assert(getmetatable(A) == mathly_meta, 'expand( A ): A must be a mathly matrix.')
   if m == nil then return A end
   if n == nil then n = m end
+  if v == nil then v = 0 end
 
   local rows, columns = size(A)
-  local z = zeros(m, n)
+  local z = mathly(m, n, v)
   if m == 1 then z = r(z) end -- m = 1 gives a table
   for i = 1, math.min(m, rows) do
     for j = 1, math.min(n, columns) do
