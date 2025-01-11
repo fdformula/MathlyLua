@@ -1298,11 +1298,11 @@ function diag( A, m, n )
     if rows == 1 or columns == 1 then -- row/column vector
       v = flatten(A) -- continue after last if .. then .. else ..
     else -- a matrix
-      local k = m or 0
+      m = m or 0
       local x = {}
       local xi = 1
       for i = 1, math.min(rows, columns) do
-        local j = i - k
+        local j = i - m
         if j > 0 and j <= rows then
           x[xi] = {A[j][i]}
           xi = xi + 1
@@ -1325,18 +1325,17 @@ function diag( A, m, n )
     for i = 1, siz do
       z[i][i] = v[i]
     end
-  else -- return a matrix with with v as its diagonal |k| rows above/below the main diagonal
-    local k = m
-    siz = #v + math.abs(k)
+  else -- return a matrix with with v as its diagonal |m| rows above/below the main diagonal
+    siz = #v + math.abs(m)
     z = zeros(siz, siz)
-    if k >= 0 then
+    if m >= 0 then
       for i = 1, #v do
-        local j = i + k
+        local j = i + m
         z[i][j] = v[i]
       end
     else
       for i = 1, #v do
-        local j = i - k
+        local j = i - m
         z[j][i] = v[i]
       end
     end
