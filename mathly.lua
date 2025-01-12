@@ -1499,7 +1499,7 @@ end
 function lu(A) -- by Crout's method
   assert(getmetatable(A) == mathly_meta, 'lu(A): A must be a mathly square matrix.')
   local m, n = size(A)
-  assert(n == m, "lu(A): A is not square.\n")
+  assert(n == m and n > 1, "lu(A): A is not square.\n")
 
   local L = zeros(n, n)
   local U = zeros(n, n)
@@ -1530,6 +1530,40 @@ function lu(A) -- by Crout's method
   end
 
   return L, U
+end
+
+--// function qr(A)
+-- Return QR factorization A=QR, where mxn matrix A = mxn matrix Q * nxn matrix R, Q has orthonormal
+-- column vectors, and R is an invertible upper triangular matrix.
+-- note: this implementation requires that m >= n.
+function qr(A)  -- by Gram-Schmidt process
+  assert(getmetatable(A) == mathly_meta, 'qr(A): A must be a mathly matrix.')
+  local m, n = size(A)
+  assert(m >= n, 'qr(A): A is a mxn matrix, where m >= n.')
+
+  -- constructing Q
+  local Q = copy(submatrix(A, 1, 1, m, 1)) -- A[:, 1]
+  Q = Q * (1 / norm(Q))
+  for i = 2, n do
+    local u = submatrix(A, 1, i, m, i) -- A[:, i]
+    local v = copy(u)            -- MATLAB: v = u
+    for j = 1, i - 1 do
+      local vj = submatrix(Q, 1, j, m, j) -- Q[:, j]
+      v = v - (sum(u * vj) / sum(vj * vj)) * vj -- u .* vj, vj .* vj
+    end
+    v = v * (1 / norm(v))  -- normalizing the column vector
+    Q = concath(Q, v)
+  end
+
+  -- calculating R
+  local R = zeros(n, n)
+  for i = 1, n do
+    for j = i, n do
+      R[i][j] = sum(submatrix(A, 1, j, m, j) * submatrix(Q, 1, i, m, i)) -- A[:, j] .* Q[:, i])
+    end
+  end
+
+  return Q, R
 end
 
 --// det( A )

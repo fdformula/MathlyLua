@@ -210,8 +210,8 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tbody>
 <tr><td width="25%"><a href=#apply><code>apply(f, ...)</code></a></td><td width=1%> </td><td width=74%>As with some other programming languages like <i>Mathematica</i>, call function <code>f</code> with the arguments.</td></tr>
 <tr><td><code><a href=#c>c(x)</a></code></td><td> </td><td>Convert a table <code>x</code> into a column vector.</td></tr>
-<tr><td><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
 <tr><td><code>clc()</code></td><td> </td><td>Clear Lua console.</td></tr>
+<tr><td><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
 <tr><td><a href=#concath><code>concath(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
 <tr><td><a href=#concatv><code>concatv(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order vertically. Matrices must have the same number of columns.</td></tr>
 <tr><td><a href=#copy><code>copy(x)</code></a></td><td> </td><td>Make a deep copy of <code>x</code>.</td></tr>
@@ -224,8 +224,8 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrinked <code>mxn</code> mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
 <tr><td><code>eye(n)</code></td><td> </td><td>Return a <code>nxn</code> identity mathly matrix.</td></tr>
 <tr><td><a href=#flatten><code>flatten(x)</code></a></td><td> </td><td>Remove the structure of <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</td></tr>
-<tr><td><a href=#flipud><code>flipud(A)</code></a></td><td> </td><td>Return a matrix with rows of matrix <code>A</code> reversed.</td></tr>
 <tr><td><a href=#fliplr><code>fliplr(A)</code></a></td><td> </td><td>Return a matrix with columns of matrix <code>A</code> reversed.</td></tr>
+<tr><td><a href=#flipud><code>flipud(A)</code></a></td><td> </td><td>Return a matrix with rows of matrix <code>A</code> reversed.</td></tr>
 <tr><td><a href=#hasindex><code>hasindex(table, index)</code></a></td><td> </td><td>Check if <code>table</code> contains <code>index</code>.</td></tr>
 <tr><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of a square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
 <tr><td><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
@@ -233,7 +233,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#join><code>join(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers or strings.</td></tr>
 <tr><td><code>length(x)</code></td><td> </td><td>Return the length of a table or string.</td></tr>
 <tr><td><a href=#linspace><code>linspace(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</td></tr>
-<tr><td><a href=#lu><code>lu(A)</code></a></td><td> </td><td>Return LU factorization <code>A = LU</code>, where <code>L</code> and <code>U</code> are lower and upper triangular matrices, respectively.</td></tr>
+<tr><td><a href=#lu><code>lu(A)</code></a></td><td> </td><td>Return <code>L</code> and <code>U</code> of LU factorization <code>A = LU</code>.</td></tr>
 <tr><td><a href=#map><code>map(f, tbl)</code></a></td><td> </td><td>Apply function <code>f</code> to each atomic element in table <code>tbl</code> and return the result with the same structure of the table.</td></tr>
 <tr><td><a href=#max><code>max(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the largest of all elements of the table; if it is a matrix, ...</td></tr>
 <tr><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
@@ -243,6 +243,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#polyval><code>polyval(coefs, x)</code></a></td><td> </td><td>Evaluate at <code>x</code> the value of a polynomial of which the coefficients are specified in a table <code>coefs</code>.</td></tr>
 <tr><td><a href=#printf><code>printf(...)</code></a></td><td> </td><td>Print formatted text like <code>printf</code> in C/C++.</td></tr>
 <tr><td><a href=#prod><code>prod(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the product of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
+<tr><td><a href=#qr><code>qr(A)</code></a></td><td> </td><td>Return <code>Q</code> and <code>R</code> of QR factorization <code>A = QR</code>.</td></tr>
 <tr><td><code><a href=#c>r(x)</a></code></td><td> </td><td>Convert a table <code>x</code> into a row vector.</td></tr>
 <tr><td><a href=#rand><code>rand(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is a random number in [0, 1]. If <code>m = 1</code>, return a table.</td></tr>
 <tr><td><a href=#randi><code>randi(m, n, ...)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is a random integer in [0, 100]. If <code>m = 1</code>, return a table...</td></tr>
@@ -1054,7 +1055,7 @@ disp(fliplr(a))
 </code></pre>
 </div>
 <h4>&bull; &nbsp; <a name=lu href=#mathly><code>lu(A)</code></a></h4>
-<p>Return <code>L</code> and <code>U</code> as in LU factorization <code>A = LU</code>, where <code>L</code> and <code>U</code> are lower and upper triangular matrices, respectively.</p>
+<p>Return <code>L</code> and <code>U</code> of LU factorization <code>A = LU</code>, where <code>L</code> and <code>U</code> are lower and upper triangular matrices, respectively.</p>
 <pre><code>
 mathly = require('mathly')
 A = mathly{{1, 2, 3}, {2, 3, 4}, {-1, 0, 2}}
@@ -1071,6 +1072,27 @@ disp(L * U - A)
 -- 0  0  0
 -- 0  0  0
 -- 0  0  0
+</code></pre>
+<h4>&bull; &nbsp; <a name=qr href=#mathly><code>qr(A)</code></a></h4>
+<p>Return <code>Q</code> and <code>R</code> of QR factorization <code>A = QR</code>, where <code>A</code> is a <code>mxn</code> matrix, <code>Q</code> is a <code>mxn</code> matrix with orthonormal
+column vectors, and <code>R</code> is an invertible upper triangular <code>nxn</code> matrix.</p>
+<p>Note: mathly applies the Gram-Schmidt process and requires that <code>m &ge; n</code>.
+<pre><code>
+mathly = require('mathly')
+A = mathly{{1, 2, 3}, {2, 3, 4}, {-1, 0, 2}}
+Q, R = qr(A)
+disp(Q)
+--  0.408248  0.436436  -0.801784
+--  0.816497  0.218218   0.534522
+-- -0.408248  0.872872   0.267261
+disp(R)
+-- 2.449490  3.265986  3.674235
+--        0  1.527525  3.927922
+--        0         0  0.267261
+disp(Q * R - A)
+--  0.000000   0.000000   0.000000
+--  0.000000   0.000000  -0.000000
+-- -0.000000  -0.000000  -0.000000
 </code></pre>
 </div>
 </body>
