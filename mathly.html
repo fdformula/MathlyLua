@@ -211,7 +211,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td width="25%"><a href=#apply><code>apply(f, ...)</code></a></td><td width=1%> </td><td width=74%>As with some other programming languages like <i>Mathematica</i>, call function <code>f</code> with the arguments.</td></tr>
 <tr><td><code><a href=#c>c(x)</a></code></td><td> </td><td>Convert a table <code>x</code> into a column vector.</td></tr>
 <tr><td><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
-<tr><td><code>cls()</code></td><td> </td><td>Clear Lua console.</td></tr>
+<tr><td><code>clc()</code></td><td> </td><td>Clear Lua console.</td></tr>
 <tr><td><a href=#concath><code>concath(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
 <tr><td><a href=#concatv><code>concatv(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order vertically. Matrices must have the same number of columns.</td></tr>
 <tr><td><a href=#copy><code>copy(x)</code></a></td><td> </td><td>Make a deep copy of <code>x</code>.</td></tr>
@@ -224,6 +224,8 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrinked <code>mxn</code> mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
 <tr><td><code>eye(n)</code></td><td> </td><td>Return a <code>nxn</code> identity mathly matrix.</td></tr>
 <tr><td><a href=#flatten><code>flatten(x)</code></a></td><td> </td><td>Remove the structure of <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</td></tr>
+<tr><td><a href=#flipud><code>flipud(A)</code></a></td><td> </td><td>Return a matrix with rows of matrix <code>A</code> reversed.</td></tr>
+<tr><td><a href=#fliplr><code>fliplr(A)</code></a></td><td> </td><td>Return a matrix with columns of matrix <code>A</code> reversed.</td></tr>
 <tr><td><a href=#hasindex><code>hasindex(table, index)</code></a></td><td> </td><td>Check if <code>table</code> contains <code>index</code>.</td></tr>
 <tr><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of a square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
 <tr><td><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
@@ -231,7 +233,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#join><code>join(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers or strings.</td></tr>
 <tr><td><code>length(x)</code></td><td> </td><td>Return the length of a table or string.</td></tr>
 <tr><td><a href=#linspace><code>linspace(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</td></tr>
-<tr><td><code>ls()</code></td><td> </td><td>List all user-defined variables in the memory.</td></tr>
+<tr><td><a href=#lu><code>lu(A)</code></a></td><td> </td><td>Return LU factorization <code>A = LU</code>, where <code>L</code> and <code>U</code> are lower and upper triangular matrices, respectively.</td></tr>
 <tr><td><a href=#map><code>map(f, tbl)</code></a></td><td> </td><td>Apply function <code>f</code> to each atomic element in table <code>tbl</code> and return the result with the same structure of the table.</td></tr>
 <tr><td><a href=#max><code>max(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the largest of all elements of the table; if it is a matrix, ...</td></tr>
 <tr><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
@@ -245,6 +247,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#rand><code>rand(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is a random number in [0, 1]. If <code>m = 1</code>, return a table.</td></tr>
 <tr><td><a href=#randi><code>randi(m, n, ...)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is a random integer in [0, 100]. If <code>m = 1</code>, return a table...</td></tr>
 <tr><td><a href=#range><code>range(x, y, s)</code></a></td><td> </td><td>Return a table of numbers starting at <code>x</code>, in between <code>x</code> and <code>y</code>, and incrementing by <code>s</code>.</td></tr>
+<tr><td><a href=#repmat><code>repmat(A, m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> block matrix with each entry a copy of matrix <code>A</code>.</td></tr>
 <tr><td><a href=#reshape><code>reshape(A, m, n)</code></a></td><td> </td><td>Rearrange existing elements in a table or mathly matrix <code>A</code> and return a new <code>mxn</code> mathly matrix.</td></tr>
 <tr><td><a href=#rref><code>rref(A, ..)</code></a></td><td> </td><td>Return the reduced row-echelon form of a mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
 <tr><td><a href=#save><code>save(datafile, ...)</code></a></td><td> </td><td>Save specified or all user-defined variables and their values to file <code>datafile</code>.</td></tr>
@@ -258,6 +261,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><code><a href=#c>t(x, i1, i2, s)</a></code></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and and return a specified slice of the resulted table.</td></tr>
 <tr><td><a href=#tic><code>tic()</code></a></td><td> </td><td>Start a wall-clock timer.</td></tr>
 <tr><td><a href=#toc><code>toc</code></a></td><td> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
+<tr><td><code>who()</code></td><td> </td><td>List all user-defined variables in the memory.</td></tr>
 <tr><td><a href=#zeros><code>zeros</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 0. If <code>m = 1</code>, return a table.</td></tr>
 </tbody>
 </table>
@@ -1007,6 +1011,66 @@ disp(expand(a, 4, 5, -1))
 disp(expand(a, 2))
 -- 52  67
 -- 82  15
+</code></pre>
+<h4>&bull; &nbsp; <a name=repmat href=#mathly><code>repmat(A, m, n)</code></a></h4>
+<p>Return a mxn block matrix with each entry a copy of matrix <code>A</code>. The default value of <code>n</code> is <code>m</code>.</p>
+<pre><code>
+mathly = require('mathly')
+a = mathly{{1, 2, 3}, {2, 3, 4}}
+disp(a)
+-- 1  2  3
+-- 2  3  4
+disp(repmat(a, 2))
+-- 1  2  3  1  2  3
+-- 2  3  4  2  3  4
+-- 1  2  3  1  2  3
+-- 2  3  4  2  3  4
+disp(repmat(a, 2, 3))
+-- 1  2  3  1  2  3  1  2  3
+-- 2  3  4  2  3  4  2  3  4
+-- 1  2  3  1  2  3  1  2  3
+-- 2  3  4  2  3  4  2  3  4
+disp(repmat(5, 2, 3)) -- same as mathly(2, 3, 5)
+-- 5  5  5
+-- 5  5  5
+</code></pre>
+<h4>&bull; &nbsp; <a name=fliplr></a><a name=flipud href=#mathly><code>flipud(A), fliplr</code></a></h4>
+<ol>
+<li>flipud(A): Return a matrix with rows of matrix <code>A</code> reversed.</li>
+<li>fliplr(A): Return a matrix with columns of matrix <code>A</code> reversed.</li>
+</ol>
+<pre><code>
+mathly = require('mathly')
+a = mathly{{1, 2, 3}, {2, 3, 4}}
+disp(a)
+-- 1  2  3
+-- 2  3  4
+disp(flipud(a))
+-- 2  3  4
+-- 1  2  3
+disp(fliplr(a))
+-- 3  2  1
+-- 4  3  2
+</code></pre>
+</div>
+<h4>&bull; &nbsp; <a name=lu href=#mathly><code>lu(A)</code></a></h4>
+<p>Return <code>L</code> and <code>U</code> as in LU factorization <code>A = LU</code>, where <code>L</code> and <code>U</code> are lower and upper triangular matrices, respectively.</p>
+<pre><code>
+mathly = require('mathly')
+A = mathly{{1, 2, 3}, {2, 3, 4}, {-1, 0, 2}}
+L, U = lu(A)
+disp(L)
+--  1   0  0
+--  2  -1  0
+-- -1   2  1
+disp(U)
+-- 1  2  3
+-- 0  1  2
+-- 0  0  1
+disp(L * U - A)
+-- 0  0  0
+-- 0  0  0
+-- 0  0  0
 </code></pre>
 </div>
 </body>

@@ -13,11 +13,11 @@ API and Usage
 
   List of functions provided in this module:
 
-    apply, clear, cls, concath, concatv, copy, cross, det, diag, disp, display,
-    dot, eye, flatten, hasindex, inv, isinteger, ismember, join, length, linspace,
-    ls, map, max, min, norm, ones, plot, polyval, printf, prod, rand, randi,
-    range, reshape, rref, save, seq, size, solve, sprintf, submatrix, subtable,
-    sum, tic, toc, zeros,
+    apply, c, clear, clc, concath, concatv, copy, cross, det, diag, disp, display,
+    dot, expand, eye, flatten, fliplr, flipud, hasindex, inv, isinteger, ismember,
+    join, length, linspace, map, max, min, norm, ones, plot, polyval, printf, prod,
+    rand, randi, r, range, repmat, reshape, rref, save, seq, size, solve, sprintf,
+    submatrix, subtable, sum, t, tic, toc, who, zeros
 
   See code and mathly.html.
 
@@ -283,10 +283,10 @@ function display( x, first_itemq ) -- ~MATLAB
   if calledbyuserq then io.write('\n') end
 end
 
---// function ls()
+--// function who()
 -- list all user defined variables (some may be defined by some loaded modules)
--- if a list of variables are needed by other code, pass false to it: ls(false)
-function ls(usercalledq) -- ~R
+-- if a list of variables are needed by other code, pass false to it: who(false)
+function who(usercalledq) -- ~R
   if usercalledq == nil then usercalledq = true end
   local list = {}
   for k,v in pairs(_G) do
@@ -368,7 +368,7 @@ function save(fname, ...)
   for _, v in pairs{...} do
     vars[#vars + 1] = v
   end
-  if #vars == 0 then vars = ls(false) end
+  if #vars == 0 then vars = who(false) end
 
   local file = io.open(fname, "w")
   if file ~= nil then
@@ -381,16 +381,16 @@ function save(fname, ...)
   end
 end
 
---// function cls()
+--// function clc()
 -- clear LUA console
-function cls()
+function clc()
   local x = os.execute("cls") or os.execute('clear')
 end
 
 --// function clear()
 -- clear all user-defined variables in current running environment
 function clear()
-  local vars = ls(false)
+  local vars = who(false)
   for i = 1, #vars do
     load(string.format("%s = nil", vars[i]))()
   end
@@ -401,7 +401,10 @@ end
 -- generates an evenly spaced sequence/table of 'len' numbers on the interval [from, to]. same as linspace(...).
 function seq( from, to, len ) -- ~R, generate a sequence of numbers
   if len == nil then return range(from, to) end
-
+  if len < 0 then
+    print("seq(from, to, len): len can't be negative.")
+    return {}
+  end
   local lst = {}
   local step = (to - from) / (len - 1)
   local i = 1
@@ -513,16 +516,17 @@ end
 --// range( start, stop, step )
 -- generates a evenly spaced sequence/table of numbers starting at 'start' and likely ending at 'stop' by 'step'.
 function range( start, stop, step ) -- ~Python but inclusive
-  if start == nil or stop == nil then
-    print('Invalid input: range(start, stop, step).')
+  if start == nil then
+    print('range(start, stop, step): no input.')
     return {}
   end
+  if stop == nil then stop = start; start = 1 end
   if step == nil then step = 1 end
   if start <= stop and step < 0 then
-    print('The step size must be positive.')
+    printf("range(%d, %d, step): step must be positive.\n", start, stop)
     return {}
   elseif start >= stop and step > 0 then
-    print('The step size must be negative.')
+    printf("range(%d, %d, step): step must be negative.\n", start, stop)
     return {}
   end
 
@@ -1225,6 +1229,74 @@ function size( A )
   end
 end
 
+--// function repmat(A, m, n)
+-- Return a mxn block matrix with each entry a copy of matrix A.
+function repmat(A, m, n)
+  local B = A
+  if getmetatable(A) ~= mathly_meta then
+    if type(A) == 'table' then
+      B = mathly(A)
+    else
+      B = {{A}}
+    end
+  end
+  if n == nil then n = m end
+
+  local C = {}
+  local row, col = size(B)
+  for i = 1, m * row do C[i] = {} end
+  for i = 1, m do
+    local tmp1 = (i - 1) * row + 1
+    for j = 1, n do
+      local I = tmp1
+      local tmp2 = (j - 1) * col + 1
+      for ii = 1, row do
+        local J = tmp2
+        for jj = 1, col do
+          C[I][J] = B[ii][jj]
+          J = J + 1
+        end
+        I = I + 1
+      end
+    end
+  end
+  return setmetatable(C, mathly_meta)
+end
+
+--// function flipud(A)
+-- Return a matrix with rows of matrix A reversed
+function flipud(A)
+  assert(getmetatable(A) == mathly_meta, 'flipud(A): A must be a mathly matrix.')
+  local B = {}
+  local rows, columns = size(A)
+  for i = 1, rows do B[i] = {} end
+  local I = 1
+  for i = rows, 1, -1 do
+    for j = 1, columns do
+      B[I][j] = A[i][j]
+    end
+    I = I + 1
+  end
+  return setmetatable(B, mathly_meta)
+end
+
+--// function fliplr(A)
+-- Return a matrix with columns of matrix A reversed
+function fliplr(A)
+  assert(getmetatable(A) == mathly_meta, 'flipud(A): A must be a mathly matrix.')
+  local B = {}
+  local rows, columns = size(A)
+  for i = 1, rows do
+    B[i] = {}
+    local J = 1
+    for j = columns, 1, -1 do
+      B[i][J] = A[i][j]
+      J = J + 1
+    end
+  end
+  return setmetatable(B, mathly_meta)
+end
+
 --// function reshape( A, m, n )
 -- use entries of matrix A to generate a new mxn matrix, given that A is a valid vector or matrix
 function reshape( A, m, n ) -- ~MATLAB, and better
@@ -1353,11 +1425,22 @@ function expand( A, m, n, v )
   if v == nil then v = 0 end
 
   local rows, columns = size(A)
-  local z = mathly(m, n, v)
-  if m == 1 then z = r(z) end -- m = 1 gives a table
-  for i = 1, math.min(m, rows) do
-    for j = 1, math.min(n, columns) do
+  local row = math.min(m, rows)
+  local col = math.min(n, columns)
+  local z = {}
+  for i = 1, row do
+    z[i] = {}
+    for j = 1, col do
       z[i][j] = A[i][j]
+    end
+    for j = col + 1, n do
+      z[i][j] = v
+    end
+  end
+  for i = row + 1, m do
+    z[i] = {}
+    for j = 1, n do
+      z[i][j] = v
     end
   end
   return setmetatable(z, mathly_meta)
@@ -1409,6 +1492,44 @@ function subtable( tbl, startpos, endpos, step )
     x[#x + 1] = tbl[i]
   end
   return x
+end
+
+--// function lu(A)
+-- Return L and U in LU factorization A = L * U, where L and U are lower and upper traingular matrices, respectively.
+function lu(A) -- by Crout's method
+  assert(getmetatable(A) == mathly_meta, 'lu(A): A must be a mathly square matrix.')
+  local m, n = size(A)
+  assert(n == m, "lu(A): A is not square.\n")
+
+  local L = zeros(n, n)
+  local U = zeros(n, n)
+
+  for i = 1, n do
+    local s
+    -- calculate L[i][1 : i]
+    for j = 1, i do
+      s = 0
+      for k = 1, j - 1 do
+        s = s + L[i][k] * U[k][j]
+      end
+      L[i][j] = A[i][j] - s
+    end
+
+    -- calculate U[i][i : end]
+    U[i][i] = 1
+    for j = i + 1, n do
+      s = 0
+      for k = 1, i - 1 do
+        s = s + L[i][k] * U[k][j]
+      end
+      if math.abs(L[i][i]) < eps then
+        error(sprintf('L[%d][%d] = 0. No LU factorization is found.', i, i))
+      end
+      U[i][j] = (A[i][j] - s) / L[i][i]
+    end
+  end
+
+  return L, U
 end
 
 --// det( A )
