@@ -78,8 +78,8 @@ See comments in the file.
 `apply`, `c`, `clc`, `clear`, `concath`, `concatv`, `copy`, `cross`, 
 `det`, `diag`, `disp`, `display`, `dot`, `expand`, `eye`, `flatten`,  `fliplr`, `flipud`,
 `hasindex`, `inv`, `isinteger`, `ismember`, `join`, `length`, 
-`linspace`, `map`, `max`, `min`, `norm`, `ones`, `plot`, `polyval`, 
-`printf`, `prod`, `r`, `rand`, `randi`, `range`, `repmat`, `reshape`, `rref`, 
+`linspace`, `lu`, `map`, `max`, `min`, `norm`, `ones`, `plot`, `polyval`, 
+`printf`, `prod`, `qr`, `r`, `rand`, `randi`, `range`, `repmat`, `reshape`, `rref`, 
 `save`, `seq`, `size`, `solve`, `sprintf`, `submatrix`, 
 `subtable`, `sum`, `t`, `tic`, `toc`, `who`, `zeros`
 
