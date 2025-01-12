@@ -1,6 +1,6 @@
 # Mathly makes Lua "mathly" and a tiny MATLAB
 
-Mathly for Lua is a Lua module which depends on a Lua module,
+Mathly for Lua (https://www.lua.org/) is a Lua module which depends on a Lua module,
 `plotly.lua` (see https://github.com/kenloen/plotly.lua). The latter is modified
 to meet the needs of mathly, and it depends on another Lua module, `dkjson.lua`
 (see http://dkolf.de/dkjson-lua).
