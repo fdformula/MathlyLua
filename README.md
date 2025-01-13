@@ -95,22 +95,22 @@ mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, d, f, A, B, C, D, and E are all mathly matrices
 b = {{1}, {2}, {3}}; b = mathly(b) -- or b = c{1, 2, 3}
 d = mathly(1, 10, 5)
-f = mathly(1, 10, 0) --  same as f = mathly(zeros(1, 10))
+f = mathly(1, 10, 0)        --  same as f = mathly(zeros(1, 10))
 A = mathly(10, 10)
 B = mathly(1, 10)
-C = randi(10, 1)          -- a column vector of random integer numbers (from 0 to 100)
-D = randi(10, 2, 50, 110) -- a 10x2 matrix of random integer numbers (from 50 to 110)
-E = rand(10, 3)           -- a 10x3 matrix of random numbers (from 0 to 1)
+C = randi(100, 10, 1)       -- a column vector of random integer numbers (from 1 to 100)
+D = randi({50, 110}, 10, 2) -- a 10x2 matrix of random integer numbers (from 50 to 110)
+E = rand(10, 3)             -- a 10x3 matrix of random numbers (from 0 to 1)
 
 3*a - 10
 2*d + 5 * f - 3
--- inv(A) * B         -- not allowed as in math
+-- inv(A) * B               -- not allowed as in math
 inv(A) * B^T
-inv(A) * randi(1, 10) -- mathly knows how to handle a Lua table
-randi(1, 10) * inv(A) -- randi(1, 10) here in its context
+inv(A) * randi(100, 1, 10)  -- mathly knows how to handle a Lua table
+randi(100, 1, 10) * inv(A)  -- randi(100, 1, 10) here in its context
 
-A = randi(10, 5)
-B = randi(5, 3)
+A = randi(50, 10, 5)
+B = randi(50, 5, 3)
 C = rand(3, 1)
 A - 2
 A * B
@@ -118,8 +118,8 @@ A * B * C
 B * C
 C^T * B^T
 
-A = randi(4)
-B = randi(4)
+A = randi(100, 4)
+B = randi(100, 4)
 C = 3 * A - 4 * B + 5
 ```
 #### b. `ones`, `zeros`, `rand` and `randi` generate each an ordinary table rather than a mathly matrix if used this way, say, `ones(1, 100)`.
