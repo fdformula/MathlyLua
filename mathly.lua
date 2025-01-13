@@ -686,21 +686,32 @@ function zeros( row, col ) return create_table(row, col, 0) end
 -- if c == nil, c = r.
 function rand( row, col ) return create_table(row, col) end
 
---// function randi( m, n, start, stop )
--- generate a mxn matrix of which each entry is a random integer in specified range
-function randi( m, n, start, stop )
+--// function randi( imax, m, n )
+-- generate a mxn matrix of which each entry is a random integer in [1, imax]
+--
+--// function randi( {imin, imax}, m, n )
+-- generate a mxn matrix of which each entry is a random integer in [imin, imax]
+--
+function randi( imax, m, n )
+  local imin
+  if type(imax) == 'number' then
+    imin = 1
+  elseif type(imax) == 'table' then
+    imin = imax[1]
+    imax = imax[2]
+  end
+  if m == nil then return math.random(imin, imax) end
   if n == nil then n = m end
-  if start == nil then start = 0 end
-  if stop == nil then stop = start + 100 end
-  assert(start == nil or stop == nil or start < stop,
-         'randi( m, n, start, stop ): start must be less than stop.')
+
+  assert(imin < imax,
+         'randi({iminm, imax}, m, n): imin must be less than imax.')
 
   local B = {}
   -- math.randomseed(os.time()) -- keep generating same seq? Lua 5.4.6
   for i = 1, m do
     B[i] = {}
     for j = 1, n do
-      B[i][j] = math.random(start, stop)
+      B[i][j] = math.random(imin, imax)
     end
   end
   if m == 1 then
@@ -1414,6 +1425,33 @@ function diag( A, m, n )
   end
   return setmetatable(z, mathly_meta)
 end
+--[[
+--// function eigs(A)
+-- Return eigenvalues of a square matrix A.
+function eigs(A) -- apply qr factorization
+  assert(getmetatable(A) == mathly_meta, 'eigs(A): A must be a mathly matrix.')
+  local row, col = size(A)
+  assert(row == col, 'eigs(A): A must be a square matrix.')
+  local Q, R
+
+  local i = 1
+  while true do
+    q, r = qr(A)
+    A = r * q
+    if math.abs(A[i + 1][i]) < 1e-4 then
+      i = i + 1
+      if i == row then break end
+    end
+  end
+
+--  while true do
+--    Q, R = qr(A)
+--    A = R * Q
+--    if norm(diag(A, -1)) < 1e-5 then break end
+--  end
+  return diag(A)
+end
+--]]
 
 --// function expand( A, m, n, v )
 -- expand/shrink a matrix by adding value v's or dropping entries.

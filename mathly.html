@@ -115,7 +115,7 @@ d = mathly(1, 10, 5)
 f = mathly(1, 10, 0)      --  same as f = mathly(zeros(1, 10))
 A = mathly(10, 10)
 B = mathly(1, 10)
-C = randi(10, 1)          -- a column vector of random integer numbers (from 0 to 100)
+C = randi(100, 10, 1)     -- a column vector of random integer numbers (from 1 to 100)
 D = rand(10, 2, 50, 110)  -- a 10x2 matrix of random numbers (from 0 to 1)
 E = reshape(C, 3)         -- a 3x4 matrix
 
@@ -123,11 +123,11 @@ E = reshape(C, 3)         -- a 3x4 matrix
 2*d + 5 * f - 3
 -- inv(A) * B             -- not allowed as in math
 inv(A) * B^T
-inv(A) * randi(1, 10)     -- mathly knows how to handle a Lua table
-randi(1, 10) * inv(A)     -- randi(1, 10) here in its context
+inv(A) * randi(50, 1, 10) -- mathly knows how to handle a Lua table
+randi(50, 1, 10) * inv(A) -- randi(50, 1, 10) here in its context
 
-A = randi(10, 5)
-B = randi(5, 3)
+A = randi(100, 10, 5)
+B = randi(100, 5, 3)
 C = rand(3, 1)
 A - 2
 A * B
@@ -135,8 +135,8 @@ A * B * C
 B * C
 C^T * B^T
 
-A = randi(4)
-B = randi(4)
+A = randi(100, 4)
+B = randi(50, 4)
 C = 3 * A - 4 * B + 5
 A^2
 
@@ -162,7 +162,7 @@ display(y)
 display(Y)                -- print a table, including a mathly matrix, with structure
 disp(Y)                   -- print a mathly matrix
 
-A = randi(4); B = copy(A); C = copy(A)
+A = randi({-10,10}, 4); B = copy(A); C = copy(A)
 rref(A)                   -- warn: A and B are modified (for performance)
 inv(B)                    --
 inv(submatrix(C, 1, 1, 3, 3))
@@ -246,7 +246,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#qr><code>qr(A)</code></a></td><td> </td><td>Return <code>Q</code> and <code>R</code> of QR factorization <code>A = QR</code>.</td></tr>
 <tr><td><code><a href=#c>r(x)</a></code></td><td> </td><td>Convert a table <code>x</code> into a row vector.</td></tr>
 <tr><td><a href=#rand><code>rand(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is a random number in [0, 1]. If <code>m = 1</code>, return a table.</td></tr>
-<tr><td><a href=#randi><code>randi(m, n, ...)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is a random integer in [0, 100]. If <code>m = 1</code>, return a table...</td></tr>
+<tr><td><a href=#randi><code>randi(...)</code></a></td><td> </td><td>Return a mathly matrix of which each element is a random integer in a specified range.</td></tr>
 <tr><td><a href=#range><code>range(x, y, s)</code></a></td><td> </td><td>Return a table of numbers starting at <code>x</code>, in between <code>x</code> and <code>y</code>, and incrementing by <code>s</code>.</td></tr>
 <tr><td><a href=#repmat><code>repmat(A, m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> block matrix with each entry a copy of matrix <code>A</code>.</td></tr>
 <tr><td><a href=#reshape><code>reshape(A, m, n)</code></a></td><td> </td><td>Rearrange existing elements in a table or mathly matrix <code>A</code> and return a new <code>mxn</code> mathly matrix.</td></tr>
@@ -548,9 +548,9 @@ map(f, A) -- A is a mathly matrix, the result of map(f, A) is a mathly matrix, t
 <p>The usage of these functions is the same except randi that can take more arguments.</p>
 <table><tbody>
 <tr><td width=20></td><td><code>ones(m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 1.</td></tr>
+<tr><td width=20></td><td><code>randi(...)</code></a></td><td> </td><td width=10> </td><td>Return a mathly matrix of which each element is a random integer in a specified range.</td></tr>
 <tr><td width=20></td><td><code>zeros(m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 0.</td></tr>
 <tr><td width=20></td><td><code>rand(m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is a random number in [0, 1].</td></tr>
-<tr><td width=20></td><td><code>randi(m, n, ...)</code></a></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is a random integer in [0, 100].</td></tr>
 <tr><td width=20></td><td> </td><td> </td><td width=10> </td><td> </td></tr>
 <tr><td width=20></td><td> </td><td> </td><td width=10> </td><td><u>Note</u>: Each function returns a table rather than a mathly column vector if <code>m = 1</code>.</td></tr>
 </tbody></table>
@@ -585,18 +585,20 @@ disp(2*D + 3)
 -- 3
 -- 3
 
-A = randi(2, 3) -- each element is a random integer in [0, 100]
+A = randi({0, 100}, 2, 3) -- each element is a random integer in [0, 100]
 disp(A)
--- it varies.
--- 68  46  85
--- 45  61  48
-A = randi(3, 1, 50, 90) -- each element is a random integer in [50, 90]
+A = randi({50, 90}, 3, 1) -- each element is a random integer in [50, 90]
 display(A)
--- {{79}, {85}, {63}} -- it varies.
-A = randi(1, 5, 50, 90) -- return a table rather than a mathly matrix
+A = randi({50, 90}, 1, 5) -- return a table rather than a mathly matrix
 display(A)
--- {53, 54, 75, 80, 83} -- it varies.
 </code></pre>
+<table><tbody>
+<p>&#x2713; &nbsp; The usage of <code>randi(...)</code> is different.</p>
+<tr><td><code>randi(imax)</code></td><td> </td><td width=10> </td><td>Return an random integer in <code>[1, imax]</code>.</tr>
+<tr><td><code>randi({imin, imax})</code></td><td> </td><td width=10> </td><td>Return an random integer in <code>[imin, imax]</code>.</tr>
+<tr><td><code>randi(imax, m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is in <code>[1, imax]</code>. (<code>n</code> is optional. The default is <code>m</code>.)</tr>
+<tr><td><code>randi({imin, imax}, m, n)</code></td><td> </td><td width=10> </td><td>Return a mxn mathly matrix of which each element is in <code>[imin, imax]</code>. (<code>n</code> is optional. The default is <code>m</code>.)</tr>
+</tbody></table>
 <h4>&bull; &nbsp; <a name=plot href=#mathly><code>plot(...)</code></a></h4>
 <p>Plot the graph(s) of functions defined by data points , using specifications/options.</p>
 <p><b>Some specifications:</b></p>
@@ -760,9 +762,9 @@ display((B^T)[3])
 <p>Save specified or all user-defined variables and their values to file <code>datafile</code>.</p>
 <pre><code>
 require 'mathly'
-a = randi(3, 2)
+a = randi(100, 3, 2)
 disp(a)
---  48  43
+--  48  43 -- it varies
 --  71  72
 --  66   5
 b = {1, 2, {3, {4, {5, 6, {7}}}}}
@@ -803,9 +805,9 @@ display(x)
 <p><u>Note</u>: Both <code>A</code> and <code>b</code> are modified.</p>
 <pre><code>
 require 'mathly'
-a = randi(3)
+a = randi(100, 3)
 aa = copy(a)
-b = randi(3, 1)
+b = randi(100, 3, 1)
 disp(a)
 -- it varies
 --  58  18  88
@@ -908,7 +910,7 @@ x = {1, -10, 2, 31, 4, 7}
 print(min(x), max(x))
 -- -10  31
 
-a = randi(3, 5, -50, 50)
+a = randi({-50, 50}, 3, 5)
 disp(a)
 -- -12  -19   -15    6  -11
 --   3   43    36   29  -26
