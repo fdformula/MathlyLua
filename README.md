@@ -145,7 +145,7 @@ display(y)
 display(Y)    -- print a table, including a mathly matrix, with structure
 disp(Y)       -- print a mathly matrix
 
-A = randi(4); B = copy(A); C = copy(A)
+A = randi(100, 4); B = copy(A); C = copy(A)
 rref(A)       -- warn: A and B are modified (for performance)
 inv(B)        -- 
 inv(submatrix(C, 1, 1, 3, 3))
