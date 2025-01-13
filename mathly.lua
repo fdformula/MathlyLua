@@ -16,8 +16,8 @@ API and Usage
     apply, c, clear, clc, concath, concatv, copy, cross, det, diag, disp, display,
     dot, expand, eye, flatten, fliplr, flipud, hasindex, inv, isinteger, ismember,
     join, length, linspace, map, max, min, norm, ones, plot, polyval, printf, prod,
-    rand, randi, r, range, repmat, reshape, rref, save, seq, size, solve, sprintf,
-    submatrix, subtable, sum, t, tic, toc, who, zeros
+    rand, randi, r, range, remake, repmat, reshape, rref, save, seq, size, linsolve,
+    sprintf, submatrix, subtable, sum, t, tic, toc, unique, who, zeros
 
   See code and mathly.html.
 
@@ -233,6 +233,22 @@ function copy( x )
       return y
     end
   end
+end
+
+--// function unique(tbl)
+-- Return the same data as in tbl but with no repetitions.
+function unique(tbl)
+  if type(tbl) ~= 'table' then return tbl end
+  local x = copy(tbl)
+  table.sort(x)
+  local y
+  if #x > 0 then y = {x[1]} else return {} end
+  for i = 2, #x do
+    if math.abs(x[i] - x[i - 1]) > eps then -- not equal
+      y[#y + 1] = x[i]
+    end
+  end
+  return y
 end
 
 --// disp( A )
@@ -1189,11 +1205,11 @@ function rref( A, B ) -- gauss-jordan elimination
   return A
 end
 
---// function solve( A, b )
+--// function linsolve( A, b, opt )
 -- solve the linear system Ax = b for x, given that A is a square matrix; return the solution
 -- note: A and b are modified
-function solve( A, b )
-  assert(getmetatable(A) == mathly_meta, 'solve( A ): A must be a mathly metatable.')
+function linsolve( A, b, opt )
+  assert(getmetatable(A) == mathly_meta, 'linsolve( A ): A must be a mathly metatable.')
   local B = b
   if b ~= nil then
     if getmetatable(b) ~= mathly_meta then
@@ -1201,14 +1217,33 @@ function solve( A, b )
         local x = flatten(b)
         B = mathly:new(x, #x, 1)
       else
-        error('solve(A, b): b must be a table.')
+        error('linsolve(A, b): b must be a table.')
       end
     end
   else
-    error('solve(A, b): b is not provided.')
+    error('linsolve(A, b): b is not provided.')
   end
-  rref(A, B)
-  return B
+
+  if opt ~= 'UT' and opt ~= 'LT' then
+    rref(A, B)
+    return B
+  end
+
+  local m, n = size(A)
+  assert(m == n and n == #B, 'linsolve(A, b, ...): A must be square and the dimensions of A and b must match.')
+  local y = zeros(1, n)
+  if opt == 'UT' then -- solve it by back substitution
+    y[n] = B[n][1] / A[n][n]
+    for i = n - 1, 1, -1 do
+      y[i] = (B[i][1] - sum(submatrix(A, i, i + 1, i, n) * r(subtable(y, i + 1, n)))) / A[i][i]
+    end
+  else -- solve it by forward substitution
+    y[1] = B[1][1] / A[1][1]
+    for i = 2, n do
+      y[i] = (B[i][1] - sum(submatrix(A, i, 1, i, i - 1) * r(subtable(y, 1, i - 1)))) / A[i][i]
+    end
+  end
+  return c(y)
 end
 
 --// function inv( A )
@@ -1306,6 +1341,67 @@ function fliplr(A)
     end
   end
   return setmetatable(B, mathly_meta)
+end
+
+--// function remake(A, opt)
+-- Make A a lower (opt = 'LT'), upper (opt = 'UT'), or a symmetric (opt = 'SYM') matrix by replacing entries with 0's or so
+function remake(A, opt)
+  assert(getmetatable(A) == mathly_meta, 'remake(A, opt): A must be a mathly matrix.')
+  local B
+  local m, n = size(A)
+  local minn = math.min(m, n)
+  if opt == 'UT' then
+    B = zeros(m, n)
+    if m == 1 then B = r(B) end
+    for i = 1, m do
+      for j = i, n do
+        B[i][j] = A[i][j]
+      end
+    end
+  elseif opt == 'LT' then
+    B = zeros(m, n)
+    if m == 1 then B = r(B) end
+    for i = 1, m do
+      for j = 1, math.min(i, n) do
+        B[i][j] = A[i][j]
+      end
+    end
+  elseif opt == 'SYM' then
+    B = {}
+    for i = 1, minn do
+      B[i] = {}
+      for j = i, minn do
+        B[i][j] = A[i][j]
+      end
+    end
+    for i = 2, minn do
+      for j = 1, i - 1 do
+        B[i][j] = B[j][i]
+      end
+    end
+    setmetatable(B, mathly_meta)
+  elseif opt == 'DIAG' then
+    return diag(diag(A))
+  elseif type(opt) == 'table' and type(opt[1]) == 'number' then
+    local opts = unique(flatten(opt)) -- that allows input {-1,0,2, seq(5,10)}
+    B = zeros(m, n)
+    if m == 1 then B = r(B) end
+    local I, J
+    for k = 1, #opts do
+      for i = 1, m do
+        I = i - opts[k]
+        for j = i, n do
+          if I > 0 and I <= m then
+            B[I][j] = A[I][j]
+          end
+          I = I + 1
+        end
+      end
+    end
+  else
+    B = A
+  end
+  return B
 end
 
 --// function reshape( A, m, n )

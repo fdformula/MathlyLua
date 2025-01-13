@@ -232,6 +232,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#ismember><code>ismember(x, table)</code></a></td><td> </td><td>Check if <code>x</code> is a member of <code>table</code>.</td></tr>
 <tr><td><a href=#join><code>join(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers or strings.</td></tr>
 <tr><td><code>length(x)</code></td><td> </td><td>Return the length of a table or string.</td></tr>
+<tr><td><a href=#linsolve><code>linsolve(A, b, opt)</code></a></td><td> </td><td>Solve a linear system <code>Ax = b</code> and return the solution. <u>Note</u>: Both <code>A</code> and <code>b</code> can be modified.</td></tr>
 <tr><td><a href=#linspace><code>linspace(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</td></tr>
 <tr><td><a href=#lu><code>lu(A)</code></a></td><td> </td><td>Return <code>L</code> and <code>U</code> of LU factorization <code>A = LU</code>.</td></tr>
 <tr><td><a href=#map><code>map(f, tbl)</code></a></td><td> </td><td>Apply function <code>f</code> to each atomic element in table <code>tbl</code> and return the result with the same structure of the table.</td></tr>
@@ -248,13 +249,13 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#rand><code>rand(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is a random number in [0, 1]. If <code>m = 1</code>, return a table.</td></tr>
 <tr><td><a href=#randi><code>randi(...)</code></a></td><td> </td><td>Return a mathly matrix of which each element is a random integer in a specified range.</td></tr>
 <tr><td><a href=#range><code>range(x, y, s)</code></a></td><td> </td><td>Return a table of numbers starting at <code>x</code>, in between <code>x</code> and <code>y</code>, and incrementing by <code>s</code>.</td></tr>
+<tr><td><code><a href=#remake>remake(A, opt)</a></code></td><td> </td><td>Generate a lower, upper, diagonal, symmetrical, or ...  matrix from matrix <code>A</code>.</td></tr>
 <tr><td><a href=#repmat><code>repmat(A, m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> block matrix with each entry a copy of matrix <code>A</code>.</td></tr>
 <tr><td><a href=#reshape><code>reshape(A, m, n)</code></a></td><td> </td><td>Rearrange existing elements in a table or mathly matrix <code>A</code> and return a new <code>mxn</code> mathly matrix.</td></tr>
 <tr><td><a href=#rref><code>rref(A, ..)</code></a></td><td> </td><td>Return the reduced row-echelon form of a mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
 <tr><td><a href=#save><code>save(datafile, ...)</code></a></td><td> </td><td>Save specified or all user-defined variables and their values to file <code>datafile</code>.</td></tr>
 <tr><td><a href=#seq><code>seq(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</td></tr>
 <tr><td><code>size(A)</code></td><td> </td><td>Return the dimensions of a mathly matrix <code>A</code>.</td></tr>
-<tr><td><a href=#solve><code>solve(A, b)</code></a></td><td> </td><td>Solve a linear system <code>Ax = b</code> and return the solution. <u>Note</u>: Both <code>A</code> and <code>b</code> are modified.</td></tr>
 <tr><td><a href=#printf><code>sprintf(...)</code></a></td><td> </td><td>Return a formatted string, while <code>printf</code> prints one.</td></tr>
 <tr><td><a href=#submatrix><code>submatrix(A, i, j, m, n, sr, sc)</code></a></td><td> </td><td>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column wtih row step <code>sr</code> and column step <code>sc</code>.</td></tr>
 <tr><td><a href=#subtable><code>subtable(tbl, i, j, s)</code></a></td><td> </td><td>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code>.</td></tr>
@@ -262,6 +263,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><code><a href=#c>t(x, i1, i2, s)</a></code></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and and return a specified slice of the resulted table.</td></tr>
 <tr><td><a href=#tic><code>tic()</code></a></td><td> </td><td>Start a wall-clock timer.</td></tr>
 <tr><td><a href=#toc><code>toc</code></a></td><td> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
+<tr><td><a href=#unique><code>unique(tbl)</code></a></td><td> </td><td>Return the same data as in tbl but with no repetitions.</td></tr>
 <tr><td><code>who()</code></td><td> </td><td>List all user-defined variables in the memory.</td></tr>
 <tr><td><a href=#zeros><code>zeros</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 0. If <code>m = 1</code>, return a table.</td></tr>
 </tbody>
@@ -721,7 +723,7 @@ disp(c)
 <p>If there is one more argument, i.e., <code>rref(A, B)</code>, <code>A</code> and <code>B</code> will be merged horizontally into A.
 <p><code>A</code> and <code>B</code> must be mathly matrices with the same row number.</p>
 <p>Return the reduced row-echelon form of a mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> and <code>B</code> are modified.</p>
-<p>To solve Ax = b, call rref(A, b) first, and b gives the solution.</p>
+<p>To solve <code>Ax = b</code>, call <code>rref(A, b)</code> first, and <code>b</code> gives the solution.</p>
 <pre><code>
 m = require('mathly')
 a = m{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
@@ -737,7 +739,7 @@ disp(a)
 --  0  0  0
 --  0  0  0
 
--- To solve Ax =b<sub>1</sub>, Ax = b<sub>2</sub>, and Ax = b<sub>3</sub>:
+-- To solve Ax = b<sub>1</sub>, Ax = b<sub>2</sub>, and Ax = b<sub>3</sub>:
 m = require('mathly')
 A = m{{1, 2, 3}, {2, 3, 4}, {0, -1, 2}}
 b1 = m{{1},{2},{3}}
@@ -800,17 +802,21 @@ x = seq(0, 1, 10) -- same as linspace(0, 1, 10)
 display(x)
 -- {0, 0.111111, 0.222222, 0.333333, 0.444444, 0.555556, 0.666667, 0.777778, 0.888889, 1}
 </code></pre>
-<h4>&bull; &nbsp; <a name=solve href=#mathly><code>solve(A, b)</code></a></h4>
+<h4>&bull; &nbsp; <a name=linsolve href=#mathly><code>linsolve(A, b, opt)</code></a></h4>
 <p>Solve a linear system <code>Ax = b</code> and return the solution.</p>
-<p><u>Note</u>: Both <code>A</code> and <code>b</code> are modified.</p>
+<p>The argument <code>opt</code> is optional:</p>
+<ol>
+<li><code>'LT'</code>: <code>A</code> is lower triangular</li>
+<li><code>'UT'</code>: <code>A</code> is upper triangular</li>
+</ol>
+<p>If <code>A</code> is neither upper nor lower triangular, call <code>rref(A, b)</code> first, and <code>b</code> gives the solution, and both <code>A</code> and <code>b</code> are modified.</p>
 <pre><code>
 require 'mathly'
 a = randi(100, 3)
 aa = copy(a)
 b = randi(100, 3, 1)
 disp(a)
--- it varies
---  58  18  88
+--  58  18  88 -- it varies
 --  68  30  71
 --  14  75  49
 disp(b)
@@ -818,13 +824,13 @@ disp(b)
 -- 6
 -- 4
 
-x = solve(a, b)
+x = linsolve(a, b)
 disp(x)
 -- -2.149850
 -- -1.306446
 --  2.695538
 
-x = solve(aa, {89, 6, 4}) -- or solve(aa, {{89}, {6}, {4}})
+x = linsolve(aa, {89, 6, 4}) -- or linsolve(aa, {{89}, {6}, {4}})
 disp(x)
 -- -2.149850
 -- -1.306446
@@ -1096,6 +1102,46 @@ disp(Q * R - A)
 --  0.000000   0.000000  -0.000000
 -- -0.000000  -0.000000  -0.000000
 </code></pre>
+<h4>&bull; &nbsp; <a name=remake href=#mathly><code>remake(A, opt)</code></a></h4>
+<p>Generate a lower (opt = 'LT'), upper (opt = 'UT'), diagonal (opt = 'DIAG'), or symmetrical (opt = 'SYM') matrix from matrix <code>A</code>.</p>
+<p>If, say, <code>opt = {k<sub>1</sub>, k<sub>2</sub>, ..., k<sub>m</sub>}</code>, generate from matrix <code>A</code> a matrix which keeps the diagonal entries <code>k<sub>i</sub></code> rows above (<code>k<sub>i</sub> > 0</code>) or <code>-k<sub>i</sub></code> rows below (<code>k<sub>i</sub> < 0</code>) the main diagonal, <code>i = 1, 2, ..., m</code>.</p>
+<pre><code>
+mathly = require('mathly')
+A = reshape(seq(1, 25), 5, 5)
+disp(A)
+-- 1   6  11  16  21
+-- 2   7  12  17  22
+-- 3   8  13  18  23
+-- 4   9  14  19  24
+-- 5  10  15  20  25
+remake(A, 'UT')
+-- 1   6  11  16  21
+-- 0   7  12  17  22
+-- 0   0  13  18  23
+-- 0   0  0   19  24
+-- 0   0  0   0   25
+remake(A, 'SYM')
+-- 1   6   11  16  21
+-- 6   7   12  17  22
+-- 11  12  13  18  23
+-- 16  17  18  19  24
+-- 21  22  23  24  25
+remake(A, {-1, 0, 1})
+-- 1  6   0   0   0
+-- 2  7  12   0   0
+-- 0  8  13  18   0
+-- 0  0  14  19  24
+-- 0  0   0  20  25
+remake(A, {-1, seq(1,3)})
+-- 0  6  11  16   0
+-- 2  0  12  17  22
+-- 0  8   0  18  23
+-- 0  0  14   0  24
+-- 0  0   0  20   0
+</code>
+</pre>
+<h4>&bull; &nbsp; <a name=unique href=#mathly><code>unique(tbl)</code></a></h4>
+<p>Return the same data as in tbl but with no repetitions. Data is sorted.</p>
 </div>
 </body>
 </html>
