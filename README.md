@@ -25,10 +25,8 @@ for example,  `linspace`, `zeros`, `rand`, `save`, matrix operations, and even `
 and testing a thought/algorithm much easier and faster than working in most other programming languages.
 If there is anything I love the most about MATLAB, these tools are.
 
-<ul>
 **Note 1**: Most functions provided in this mathly module, e.g., *copy*, *disp*, and *display*, can't be applied to tables like
 *{1, 2, age=20, 10, year=2024}* with fields, for instance, *age*. It is designed simply for numerical computing.
-
 
 **Note 2**: This project was started first right in the downloaded code of the Lua module, matrix.lua, found
 in https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua, to see if Lua is good for
@@ -41,7 +39,7 @@ in both cases, which is quite ugly and unnatural. Furthermore, basic plotting ut
 matrix.lua. Therefore, this mathly module was developed. But anyway, I appreciate the work in matrix.lua.
 Actually, you may find some similarities in the code of matrix.lua and mathly.lua, e.g., m1, m2 are used
 to name arguments of some functions.
-</ul>
+
 ## Which version of Lua is needed?
 
 Mathly is developed in Lua 5.4.6. It works with the present newest version 5.4.7. It might work with previous versions.
