@@ -79,7 +79,7 @@ See comments in the file.
 `det`, `diag`, `disp`, `display`, `dot`, `expand`, `eye`, `flatten`,  `fliplr`, `flipud`,
 `hasindex`, `inv`, `isinteger`, `ismember`, `join`, `length`, `linsolve`,
 `linspace`, `lu`, `map`, `max`, `min`, `norm`, `ones`, `plot`, `polyval`, 
-`printf`, `prod`, `qr`, `rr`, `rand`, `randi`, `range`, `remake`, `repmat`, `reshape`, `rref`, 
+`printf`, `prod`, `qr`, `rand`, `randi`, `range`, `remake`, `repmat`, `reshape`, `rr`, `rref`, 
 `save`, `seq`, `size`, `sprintf`, `submatrix`, 
 `subtable`, `sum`, `tic`, `toc`, `tt`, `unique`, `who`, `zeros`
 
