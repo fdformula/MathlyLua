@@ -124,14 +124,6 @@ C^T * B^T
 A = randi(100, 4)
 B = randi(50, 4)
 C = 3 * A - 4 * B + 5
-
-x = linspace(0, pi, 10)   -- x, y, and z are not mathly matrices/vectors.
-y = cos(x)
-z = sin(x)
--- 3 * y                  -- not allowed/defined
--- y + z                  -- not allowed/defined
-mathly(y) + z             -- y + mathly(z), or mathly(y) + mathly(z) -- at least one must be a mathly matrix
-2*rr(y) - 3 * rr(z)       -- both y and z must be converted to mathly matrices
 ```
 #### b. `ones`, `zeros`, `rand` and `randi` generate each an ordinary table rather than a mathly matrix if used this way, say, `ones(1, 100)`.
 This allows us to generate a table of specified length and address it conveniently like `x[i]` instead of `x[1][i]`.
@@ -142,24 +134,13 @@ To allow matrix operations on ordinary tables, conversion is needed. For example
 
 ```Lua
 mathly = require('mathly')
-x = linspace(0, pi, 10)     -- x, y, and z are not mathly matrices/vectors.
+x = linspace(0, pi, 10)   -- x, y, and z are not mathly matrices/vectors.
 y = cos(x)
 z = sin(x)
-
--- 3 * y                    -- not allowed/defined
--- y + z                    -- not allowed/defined
-mathly(y) + z               -- y + mathly(z), or mathly(y) + mathly(z) -- at least one must be a mathly matrix
-2*mathly(y) - 3 * mathly(z) -- both y and z must be converted to mathly matrices
-
-Y = mathly(y)
-display(y)
-display(Y)    -- print a table, including a mathly matrix, with structure
-disp(Y)       -- print a mathly matrix
-
-A = randi(100, 4); B = copy(A); C = copy(A)
-rref(A)       -- warn: A and B are modified (for performance)
-inv(B)        -- 
-inv(submatrix(C, 1, 1, 3, 3))
+-- 3 * y                  -- not allowed/defined
+-- y + z                  -- not allowed/defined
+mathly(y) + z             -- y + mathly(z), or mathly(y) + mathly(z) -- at least one must be a mathly matrix
+2*rr(y) - 3 * rr(z)       -- both y and z must be converted to mathly matrices
 ```
 
 ### 2. A mathly row/column vector is a matrix.
