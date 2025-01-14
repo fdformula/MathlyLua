@@ -1,4 +1,4 @@
-# Mathly makes Lua "mathly" and a tiny MATLAB
+# Mathly makes Lua "mathly" and a tiny MATLAB ![Lua](https://www.lua.org/images/luaa.gif)
 
 Mathly for [Lua](https://www.lua.org) is a Lua module which depends on a Lua module,
 `plotly.lua` (see https://github.com/kenloen/plotly.lua). The latter is modified
