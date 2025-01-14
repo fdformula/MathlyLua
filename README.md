@@ -92,28 +92,28 @@ See mathly.html.
 
 ### 1. A mathly matrix is a table (of tables), but a table may not be a mathly matrix.
 
-#### a. Mathly 'constructor', `concath`, `concatv`, `diag`, `expand`, `flipfr`, `flipud`, `lu`, `ones`, `zeros`, `rand`, `randi`, `remake`, `reshape`, `submatrix`, `c`, `r`, and matrix operations can generate mathly matrices.
+#### a. Mathly 'constructor', `concath`, `concatv`, `diag`, `expand`, `flipfr`, `flipud`, `lu`, `ones`, `zeros`, `rand`, `randi`, `remake`, `reshape`, `submatrix`, `cc`, `rr`, and matrix operations can generate mathly matrices.
 ```Lua
 mathly = require('mathly')
-a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, d, f, A, B, C, D, and E are all mathly matrices
-b = {{1}, {2}, {3}}; b = mathly(b) -- or b = c{1, 2, 3}
-d = mathly(1, 10, 5)
-f = mathly(1, 10, 0)        --  same as f = mathly(zeros(1, 10))
+a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d, A, B, C, D, and E are all mathly matrices
+b = {{1}, {2}, {3}}; b = mathly(b) -- or b = cc{1, 2, 3}
+c = mathly(1, 10, 5)
+d = mathly(1, 10, 0)      --  same as f = mathly(zeros(1, 10))
 A = mathly(10, 10)
 B = mathly(1, 10)
-C = randi(100, 10, 1)       -- a column vector of random integer numbers (from 1 to 100)
-D = randi({50, 110}, 10, 2) -- a 10x2 matrix of random integer numbers (from 50 to 110)
-E = rand(10, 3)             -- a 10x3 matrix of random numbers (from 0 to 1)
+C = randi(100, 10, 1)     -- a column vector of random integer numbers (from 1 to 100)
+D = rand(10, 2)           -- a 10x2 matrix of random numbers (from 0 to 1)
+E = reshape(C, 3)         -- a 3x4 matrix; 4 is determined by mathly
 
 3*a - 10
-2*d + 5 * f - 3
--- inv(A) * B               -- not allowed as in math
+2*c + 5 * d - 3
+-- inv(A) * B             -- not allowed as in math
 inv(A) * B^T
-inv(A) * randi(100, 1, 10)  -- mathly knows how to handle a Lua table
-randi(100, 1, 10) * inv(A)  -- randi(100, 1, 10) here in its context
+inv(A) * randi(50, 1, 10) -- mathly knows how to handle a Lua table
+randi(50, 1, 10) * inv(A) -- randi(50, 1, 10) here in its context
 
-A = randi(50, 10, 5)
-B = randi(50, 5, 3)
+A = randi(100, 10, 5)
+B = randi(100, 5, 3)
 C = rand(3, 1)
 A - 2
 A * B
@@ -122,8 +122,16 @@ B * C
 C^T * B^T
 
 A = randi(100, 4)
-B = randi(100, 4)
+B = randi(50, 4)
 C = 3 * A - 4 * B + 5
+
+x = linspace(0, pi, 10)   -- x, y, and z are not mathly matrices/vectors.
+y = cos(x)
+z = sin(x)
+-- 3 * y                  -- not allowed/defined
+-- y + z                  -- not allowed/defined
+mathly(y) + z             -- y + mathly(z), or mathly(y) + mathly(z) -- at least one must be a mathly matrix
+2*rr(y) - 3 * rr(z)       -- both y and z must be converted to mathly matrices
 ```
 #### b. `ones`, `zeros`, `rand` and `randi` generate each an ordinary table rather than a mathly matrix if used this way, say, `ones(1, 100)`.
 This allows us to generate a table of specified length and address it conveniently like `x[i]` instead of `x[1][i]`.
