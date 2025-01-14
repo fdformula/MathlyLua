@@ -259,6 +259,7 @@ end
 test()
 ```
 
+### Note
 > Most functions provided in this mathly module, e.g., *copy*, *disp*, and *display*, can't be applied to tables like
 *{1, 2, age=20, 10, year=2024}* with fields, for instance, *age*. It is designed simply for numerical computing.
 
