@@ -350,7 +350,6 @@ local function vartostring( x, first_itemq, titleq )
           str = str .. "'" .. x[i] .. "'"
         elseif type(x[i]) == 'number' then
           str = str .. string.format("%.18f", x[i])
-      --else -- what?
         end
       else
         str = str .. vartostring(x[i], first_itemq, false)
@@ -358,7 +357,6 @@ local function vartostring( x, first_itemq, titleq )
       first_itemq = false
     end
     str = str .. '}'
---else -- what?
   end
   if titleq then str = str .. '\n\n' end
   return str
