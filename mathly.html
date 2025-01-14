@@ -147,15 +147,15 @@ z = sin(x)
 -- 3 * y                  -- not allowed/defined
 -- y + z                  -- not allowed/defined
 mathly(y) + z             -- y + mathly(z), or mathly(y) + mathly(z) -- at least one must be a mathly matrix
-2*r(y) - 3 * r(z)         -- both y and z must be converted to mathly matrices
+2*rr(y) - 3 * rr(z)       -- both y and z must be converted to mathly matrices
 
 x = {1, 2, 3}
-r(x)^2
-r(x) * x                  -- x * c(x), or r(x) * c(x) -- mathly tries to convert a table to a row/column
-c(x) * x                  -- vector according to the context
+rr(x)^2
+rr(x) * x                 -- x * cc(x), or rr(x) * cc(x) -- mathly tries to convert a table to a row/column
+cc(x) * x                 -- vector according to the context
 
-r(x) * r(x)               -- the product of two row (or column) vectors is like x .* y in MATLAB
-c(x) * c(x)               --
+rr(x) * rr(x)             -- the product of two row (or column) vectors is like x .* y in MATLAB
+cc(x) * cc(x)             --
 
 Y = mathly(y)
 display(y)
@@ -179,7 +179,7 @@ address it conveniently like <code>x[i]</code> instead of <code>x[1][i]</code>. 
 <code>linspace</code>, <code>seq</code>, and <code>range</code> all generate a table rather than a mathly row/column vector.
 
 <p>If you want full control, you can use <code>c</code> or <code>r</code> to convert an ordinary table to a column
-or row vector. (See <a href=#c><code>c(x)</code>, <code>r(x)</code>, <code>t(x)</code></a>)</p>
+or row vector. (See <a href=#c><code>cc(x)</code>, <code>rr(x)</code>, <code>tt(x)</code></a>)</p>
 <h2><a name=math></a>Basic Mathematical Functions</h2>
 <p>Basic math functions are each now able to work on Lua tables, including mathly matrices. They are
 <code>abs</code>, <code>acos</code>, <code>asin</code>, <code>atan</code>, <code>ceil</code>, <code>cos</code>,
@@ -209,7 +209,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <table>
 <tbody>
 <tr><td width="25%"><a href=#apply><code>apply(f, ...)</code></a></td><td width=1%> </td><td width=74%>As with some other programming languages like <i>Mathematica</i>, call function <code>f</code> with the arguments.</td></tr>
-<tr><td><code><a href=#c>c(x)</a></code></td><td> </td><td>Convert a table <code>x</code> into a column vector.</td></tr>
+<tr><td><code><a href=#cc>cc(x)</a></code></td><td> </td><td>Convert a table <code>x</code> into a column vector.</td></tr>
 <tr><td><code>clc()</code></td><td> </td><td>Clear Lua console.</td></tr>
 <tr><td><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
 <tr><td><a href=#concath><code>concath(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
@@ -245,7 +245,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#printf><code>printf(...)</code></a></td><td> </td><td>Print formatted text like <code>printf</code> in C/C++.</td></tr>
 <tr><td><a href=#prod><code>prod(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the product of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
 <tr><td><a href=#qr><code>qr(A)</code></a></td><td> </td><td>Return <code>Q</code> and <code>R</code> of QR factorization <code>A = QR</code>.</td></tr>
-<tr><td><code><a href=#c>r(x)</a></code></td><td> </td><td>Convert a table <code>x</code> into a row vector.</td></tr>
+<tr><td><code><a href=#cc>rr(x)</a></code></td><td> </td><td>Convert a table <code>x</code> into a row vector.</td></tr>
 <tr><td><a href=#rand><code>rand(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is a random number in [0, 1]. If <code>m = 1</code>, return a table.</td></tr>
 <tr><td><a href=#randi><code>randi(...)</code></a></td><td> </td><td>Return a mathly matrix of which each element is a random integer in a specified range.</td></tr>
 <tr><td><a href=#range><code>range(x, y, s)</code></a></td><td> </td><td>Return a table of numbers starting at <code>x</code>, in between <code>x</code> and <code>y</code>, and incrementing by <code>s</code>.</td></tr>
@@ -260,7 +260,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#submatrix><code>submatrix(A, i, j, m, n, sr, sc)</code></a></td><td> </td><td>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column wtih row step <code>sr</code> and column step <code>sc</code>.</td></tr>
 <tr><td><a href=#subtable><code>subtable(tbl, i, j, s)</code></a></td><td> </td><td>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code>.</td></tr>
 <tr><td><a href=#sum><code>sum(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the sum of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
-<tr><td><code><a href=#c>t(x, i1, i2, s)</a></code></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and and return a specified slice of the resulted table.</td></tr>
+<tr><td><code><a href=#cc>tt(x, i1, i2, s)</a></code></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and and return a specified slice of the resulted table.</td></tr>
 <tr><td><a href=#tic><code>tic()</code></a></td><td> </td><td>Start a wall-clock timer.</td></tr>
 <tr><td><a href=#toc><code>toc</code></a></td><td> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
 <tr><td><a href=#unique><code>unique(tbl)</code></a></td><td> </td><td>Return the same data as in tbl but with no repetitions.</td></tr>
@@ -323,7 +323,6 @@ disp(E)
 -- 4   5  6
 -- 7   8  9
 -- 10 11 12
-
 </code></pre>
 <h4>&bull; &nbsp; <a name=copy href=#mathly><code>copy(x)</code></a></h4>
 <P>Make a deep copy of <code>x</code>.</P>
@@ -397,7 +396,7 @@ diag({1, 2, 3})
 -- 1  0  0
 -- 0  2  0
 -- 0  0  3
-diag(c{1, 2, 3, 4}, 3, 2)
+diag(cc{1, 2, 3, 4}, 3, 2)
 -- 1  0
 -- 0  2
 -- 0  0
@@ -462,7 +461,7 @@ A = m{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
 a = flatten(A)
 display(a)
 -- {1, 2, 3, 4, 5, 6, 7, 8, 9} -- row wise
-b = flatten(A^T) -- or b = t(A^T)
+b = flatten(A^T) -- or b = tt(A^T)
 display(b)
 -- {1, 4, 7, 2, 5, 8, 3, 6, 9} -- column wise
 </code></pre>
@@ -770,14 +769,14 @@ disp(a)
 --  71  72
 --  66   5
 b = {1, 2, {3, {4, {5, 6, {7}}}}}
-C = 100
+c = 100
 save('data_1.lua')  -- save all user-defined variables and their values to a file,
                     -- data_1.lua, in present working directory
                     -- to save to different place? e.g., 'D:/Workspace/data_1.lua'
 save('data_2.lua', 'a', 'b')  -- save variables a, b, and their values to a file,
                     -- data_2.lua, in present working directory
 clear()
-print(a, b, C)
+print(a, b, c)
 -- nil nil nil -- not defined
 
 dofile('data_2.lua') -- load/recover the data
@@ -787,7 +786,7 @@ disp(a)
 --  66   5
 disp(b)
 -- {1, 2, {3, {4, {5, 6, {7}}}}}
-print(C)
+print(c)
 -- nil
 </code></pre>
 <h4>&bull; &nbsp; <a name=seq href=#mathly><code>seq(x, y, n)</code></a></h4>
@@ -865,7 +864,7 @@ disp(C)
 </code></pre>
 <h4>&bull; &nbsp; <a name=subtable href=#mathly><code>subtable(tbl, i, j, s)</code></a></h4>
 <p>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code> (default: 1).</p>
-<p>See also: <a href=#t><code>t(...)</code></a>.</p>
+<p>See also: <a href=#tt><code>tt(...)</code></a>.</p>
 <pre><code>
 m = require('mathly')
 x = {1, 2, {3}, 4, {{5, 6, {7}}}}
@@ -927,14 +926,16 @@ display(max(a))
 -- {3, 43, 36, 29, 16}
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=c></a><a name=r></a><a name=t href=#mathly><code>c(x)</code>, <code>r(x)</code>, <code>t(x)</code></a></h4>
+<h4>&bull; &nbsp; <a name=cc></a><a name=rr></a><a name=tt href=#mathly><code>cc(x)</code>, <code>rr(x)</code>, <code>tt(x)</code></a></h4>
 <p>A matrix operation may be applied to an ordinary table. It takes the table as a row or column vector according to the very context.
 If you want full control, you can use functions <code>c</code> and <code>r</code> to tell mathly whether the table is a column or row vector.</p>
 <table><tbody>
-<tr><td width=20></td><td><code>c(x)</code></td><td> </td><td width=10> </td><td>Convert a table <code>x</code> into a column vector.</td></tr>
-<tr><td width=20></td><td><code>r(x)</code></td><td> </td><td width=10> </td><td>Convert a table <code>x</code> into a row vector.</td></tr>
-<tr><td width=20></td><td><code>t(x)</code></td><td> </td><td width=10> </td><td>Convert a mathly matrix/vector or a table (of tables) <code>x</code> to an ordinary table and return a slice of it.</td></tr>
+<tr><td width=20></td><td><code>cc(x)</code></td><td> </td><td width=10> </td><td>Convert a table <code>x</code> into a column vector.</td></tr>
+<tr><td width=20></td><td><code>rr(x)</code></td><td> </td><td width=10> </td><td>Convert a table <code>x</code> into a row vector.</td></tr>
+<tr><td width=20></td><td><code>tt(x)</code></td><td> </td><td width=10> </td><td>Convert a mathly matrix/vector or a table (of tables) <code>x</code> to an ordinary table and return a slice of it.</td></tr>
 </tbody></table>
+<p>Note: Why not <code>c</code>, <code>r</code>, and <code>t</code>? It is because they can be easily used
+as names of variables.</p>
 <pre><code>
 mathly = require('mathly')
 a = mathly({1, 2, 3}, 3)
@@ -942,27 +943,27 @@ disp(a)
 -- 1
 -- 2
 -- 3
-a * {2, 3, 4}  -- or a * r{2, 3, 4}, (3x1 matrix) * (1x3 matrix) --> 3x3 matrix
+a * {2, 3, 4}  -- or a * rr{2, 3, 4}, (3x1 matrix) * (1x3 matrix) --> 3x3 matrix
 -- 2  3  4
 -- 4  6  8
 -- 6  9  12
-a * c{2, 3, 4} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) in MATLAB
-c{2, 3, 4} * a --
+a * cc{2, 3, 4} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) in MATLAB
+cc{2, 3, 4} * a --
 -- 2
 -- 6
 -- 12
-{2, 3, 4} * a -- or r{2, 3, 4} * a, (1x3 matrix) * (3x1 matrix) --> 1x1 matrix
+{2, 3, 4} * a -- or rr{2, 3, 4} * a, (1x3 matrix) * (3x1 matrix) --> 1x1 matrix
 -- 20
 
 a = mathly({1, 2, 3})
 disp(a)
 -- 1  2  3
-a * {2, 3, 4} -- or a * c{2, 3, 4}, (1x3 matrix) * (3x1 matrix) --> 1x1 matrix
+a * {2, 3, 4} -- or a * cc{2, 3, 4}, (1x3 matrix) * (3x1 matrix) --> 1x1 matrix
 -- 20
-a * r{2, 3, 4} -- (1x3 matrix) * (1x3 matrix) --> (1x3 matrix) .* (1x3 matrix) in MATLAB
+a * rr{2, 3, 4} -- (1x3 matrix) * (1x3 matrix) --> (1x3 matrix) .* (1x3 matrix) in MATLAB
 -- 2  6  12
 </code></pre>
-<p>&#x2713; &nbsp; <code>t(x, i1, i2, s)</code> may be used to replace <a href=#subtable><code>subtable</code></a>. If <code>x</code> is a mathly matrix, it is converted to a table columnwisely first;
+<p>&#x2713; &nbsp; <code>tt(x, i1, i2, s)</code> may be used to replace <a href=#subtable><code>subtable</code></a>. If <code>x</code> is a mathly matrix, it is converted to a table columnwisely first;
 if it is any other table, it is flattened first. Comparatively, <code>subtable</code> doesn't carry out any conversion.
 For row wise flattening, see <a href=#flatten><code>flatten(tbl)</code></a>.</p>
 <table><tbody>
@@ -973,30 +974,30 @@ For row wise flattening, see <a href=#flatten><code>flatten(tbl)</code></a>.</p>
 <pre><code>
 mathly = require('mathly')
 a = mathly{{52, 67, 82}, {82, 15, 70}, {94, 82, 50}}
-display(t(a))
+display(tt(a))
 -- {52, 82, 94, 67, 15, 82, 82, 70, 50}
-display(t(a, 3, 1000)) -- or display(t(a, 3))
+display(tt(a, 3, 1000)) -- or display(tt(a, 3))
 -- {94, 67, 15, 82, 82, 70, 50}
-x = t(a, 3)
-display(t(x, 1, 1000, 2)) -- 1000? any value larger than the actual size of a table is replaced with the size of the table.
+x = tt(a, 3)
+display(tt(x, 1, 1000, 2)) -- 1000? any value larger than the actual size of a table is replaced with the size of the table.
 -- {94, 15, 82, 50}
 
 x = {{1}, {2}, {3}, {4}, {5}}
-display(t(x))
+display(tt(x))
 -- {1, 2, 3, 4, 5}
-display(t(x, 1, 4, 2))
+display(tt(x, 1, 4, 2))
 -- {1, 3}
 
 x = {1, 2, {3}, 4, {{5, 6, {7}}}}
-display(t(x))
+display(tt(x))
 -- {1, 2, 3, 4, 5, 6, 7}
-display(t(x, 2, 4))
+display(tt(x, 2, 4))
 -- {2, 3, 4}
 display(subtable(x, 2, 4))
 -- {2, {3}, 4}
-display(t(x, 2))
+display(tt(x, 2))
 -- {2, 3, 4, 5, 6, 7}
-display(t(x, 2, 6, 3))
+display(tt(x, 2, 6, 3))
 -- {2, 5}
 </code></pre>
 <h4>&bull; &nbsp; <a name=expand href=#mathly><code>expand(A, m, n, v)</code></a></h4>
@@ -1045,8 +1046,8 @@ disp(repmat(5, 2, 3)) -- same as mathly(2, 3, 5)
 </code></pre>
 <h4>&bull; &nbsp; <a name=fliplr></a><a name=flipud href=#mathly><code>flipud(A), fliplr</code></a></h4>
 <ol>
-<li>flipud(A): Return a matrix with rows of matrix <code>A</code> reversed.</li>
-<li>fliplr(A): Return a matrix with columns of matrix <code>A</code> reversed.</li>
+<li>flipud(A): Return a matrix with rows of matrix <code>A</code> reversed. (ud: upside down)</li>
+<li>fliplr(A): Return a matrix with columns of matrix <code>A</code> reversed. (lr: from left to right) </li>
 </ol>
 <pre><code>
 mathly = require('mathly')
@@ -1146,6 +1147,7 @@ remake(randi({-100, 100}, 6), 'LT') -- generate randomly a lower triangular matr
 require('mathly')
 display(unique({4,5,2,1,-2,2,4,2,7,6,19}))
 -- {-2, 1, 2, 4, 5, 6, 7, 19}
+
 </code></pre>
 </div>
 </body>

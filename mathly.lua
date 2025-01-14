@@ -13,11 +13,11 @@ API and Usage
 
   List of functions provided in this module:
 
-    apply, c, clear, clc, concath, concatv, copy, cross, det, diag, disp, display,
+    apply, cc, clear, clc, concath, concatv, copy, cross, det, diag, disp, display,
     dot, expand, eye, flatten, fliplr, flipud, hasindex, inv, isinteger, ismember,
     join, length, linspace, map, max, min, norm, ones, plot, polyval, printf, prod,
-    rand, randi, r, range, remake, repmat, reshape, rref, save, seq, size, linsolve,
-    sprintf, submatrix, subtable, sum, t, tic, toc, unique, who, zeros
+    rand, randi, rr, range, remake, repmat, reshape, rref, save, seq, size, linsolve,
+    sprintf, submatrix, subtable, sum, tt, tic, toc, unique, who, zeros
 
   See code and mathly.html.
 
@@ -68,16 +68,16 @@ T = 'T' -- reserved by mathly, transpose of a matrix, A^T
 function  printf(...) io.write(string.format(table.unpack{...})) end
 function sprintf(...) return string.format(table.unpack{...}) end
 
-function r(x) return setmetatable({ flatten(x) }, mathly_meta) end -- convert x to a row vector
-function c(x) return setmetatable(map(function(x) return {x} end, flatten(x)), mathly_meta) end -- convert x to a column vector
+function rr(x) return setmetatable({ flatten(x) }, mathly_meta) end -- convert x to a row vector
+function cc(x) return setmetatable(map(function(x) return {x} end, flatten(x)), mathly_meta) end -- convert x to a column vector
 
--- t(x, startpos, endpos, step)
+-- tt(x, startpos, endpos, step)
 -- convert x to a table (columnwisely if its a mathly matrix) or flatten it first
 -- and return a slice of it
 -- want row wise? see flatten(tbl)
 --
 -- t or subtable? t converts first, while subtable doesn't.
-function t(x, startpos, endpos, step) -- make x an ordinary table
+function tt(x, startpos, endpos, step) -- make x an ordinary table
   local y = {}
   if getmetatable(x) == mathly_meta then -- column wise
     if #x == 1 then -- row vector
@@ -453,7 +453,7 @@ function prod( x ) -- ~MATLAB
           prods[j] = prods[j] * x[i][j]
         end
       end
-      return setmetatable(r(prods), mathly_meta)
+      return setmetatable(rr(prods), mathly_meta)
     else
       local s = 1
       for i = 1,#x do s = s * x[i] end
@@ -485,7 +485,7 @@ function sum( x ) -- ~MATLAB
       if #sums == 1 then
         return sums[1]
       else
-        return setmetatable(r(sums), mathly_meta)
+        return setmetatable(rr(sums), mathly_meta)
       end
     else
       local s = 0
@@ -765,7 +765,7 @@ end
 --// flatten( tbl )
 -- removes the structure of a table and returns the resulted table.
 -- if tbl is a mathly matrix, the result is row wise (rather than column wise)
--- want column wise? use t(tbl)
+-- want column wise? use tt(tbl)
 --
 -- flatten({{1},{2,3}}) returns {1, 2, 3}
 -- flatten({1,{2,3}}) returns {1, 2, 3}
@@ -1235,15 +1235,15 @@ function linsolve( A, b, opt )
   if opt == 'UT' then -- solve it by back substitution
     y[n] = B[n][1] / A[n][n]
     for i = n - 1, 1, -1 do
-      y[i] = (B[i][1] - sum(submatrix(A, i, i + 1, i, n) * r(subtable(y, i + 1, n)))) / A[i][i]
+      y[i] = (B[i][1] - sum(submatrix(A, i, i + 1, i, n) * rr(subtable(y, i + 1, n)))) / A[i][i]
     end
   else -- solve it by forward substitution
     y[1] = B[1][1] / A[1][1]
     for i = 2, n do
-      y[i] = (B[i][1] - sum(submatrix(A, i, 1, i, i - 1) * r(subtable(y, 1, i - 1)))) / A[i][i]
+      y[i] = (B[i][1] - sum(submatrix(A, i, 1, i, i - 1) * rr(subtable(y, 1, i - 1)))) / A[i][i]
     end
   end
-  return c(y)
+  return cc(y)
 end
 
 --// function inv( A )
@@ -1352,7 +1352,7 @@ function remake(A, opt)
   local minn = math.min(m, n)
   if opt == 'UT' then
     B = zeros(m, n)
-    if m == 1 then B = r(B) end
+    if m == 1 then B = rr(B) end
     for i = 1, m do
       for j = i, n do
         B[i][j] = A[i][j]
@@ -1360,7 +1360,7 @@ function remake(A, opt)
     end
   elseif opt == 'LT' then
     B = zeros(m, n)
-    if m == 1 then B = r(B) end
+    if m == 1 then B = rr(B) end
     for i = 1, m do
       for j = 1, math.min(i, n) do
         B[i][j] = A[i][j]
@@ -1385,7 +1385,7 @@ function remake(A, opt)
   elseif type(opt) == 'table' and type(opt[1]) == 'number' then
     local opts = unique(flatten(opt)) -- that allows input {-1,0,2, seq(5,10)}
     B = zeros(m, n)
-    if m == 1 then B = r(B) end
+    if m == 1 then B = rr(B) end
     local I, J
     for k = 1, #opts do
       for i = 1, m do
@@ -1500,7 +1500,7 @@ function diag( A, m, n )
     if m == nil then m = #v; n = m end
     siz = math.min(#v, m, n)
     z = zeros(m, n)
-    if m == 1 then z = r(z) end -- zeros(1, n) is not a mathly matrix
+    if m == 1 then z = rr(z) end -- zeros(1, n) is not a mathly matrix
     for i = 1, siz do
       z[i][i] = v[i]
     end
