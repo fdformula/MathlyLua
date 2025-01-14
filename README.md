@@ -157,14 +157,14 @@ Its ith element must be addressed by either `x[i][1]` (a column vector) or `x[1]
 (a row vector), while the ith element of an ordinary/raw Lua table is addressed by `x[i]`, the way we human beings do math.
 
 **Mathly tries its best to allow us to write math expressions as we do on paper.** If you want full control, you can use
-`c` or `r` to convert an ordinary Lua table to a column or row vector as in the following example.
+`cc` or `cr` to convert an ordinary Lua table to a column or row vector as in the following example.
 ```Lua
 a = randi({-10, 10}, 3, 1) * {1, 2, 3}  -- (3x1 matrix) * (1x3 matrix) --> 3x3 matrix
 disp(a)
 b = randi({-10,10}, 3, 1) * cc{1, 2, 3} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) = 3x1 matrix in MATLAB
 disp(b)
 ```
-By the way, `t` converts a mathly matrix to a table columnwisely or flattens any other table first and returns a specified slice of the resulted table.
+By the way, `tt` converts a mathly matrix to a table columnwisely or flattens any other table first and returns a specified slice of the resulted table.
 
 ## `plot` and specifications
 
