@@ -161,7 +161,7 @@ Its ith element must be addressed by either `x[i][1]` (a column vector) or `x[1]
 ```Lua
 a = randi({-10, 10}, 3, 1) * {1, 2, 3}  -- (3x1 matrix) * (1x3 matrix) --> 3x3 matrix
 disp(a)
-b = randi({-10,10}, 3, 1) * c{1, 2, 3} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) = 3x1 matrix in MATLAB
+b = randi({-10,10}, 3, 1) * cc{1, 2, 3} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) = 3x1 matrix in MATLAB
 disp(b)
 ```
 By the way, `t` converts a mathly matrix to a table columnwisely or flattens any other table first and returns a specified slice of the resulted table.
