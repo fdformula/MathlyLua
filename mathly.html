@@ -47,7 +47,11 @@ for example, <code>linspace</code>, <code>zeros</code>, <code>rand</code>, <code
 <code>plot</code>. They make coding and testing a thought/algorithm much easier and faster than working in most other
 programming languages. If there is anything I love the most about MATLAB, these tools are.</p>
 
-<p>Note: This project was started first right in the downloaded code of the Lua module, matrix.lua, found
+<p style="margin-left: 50px;"><b>Note 1</b>: Most functions provided in this mathly module, e.g., <code>copy</code>, <code>disp</code>, and
+<code>display</code>, can't be applied to tables like <code>x = {1, 2, age=20, 10, year=2024}</code> with
+fields, for instance, <code>age</code>. It is designed simply for numerical computing.</p>
+
+<p style="margin-left: 50px;"><b>Note 2</b>: This project was started first right in the downloaded code of the Lua module, matrix.lua, found
 in <a href="https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua">https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua</a>, to see if Lua is good for
 numerical computing. However, it failed to solve numerically a boundary value problem. The solution
 was obviously wrong because the boundary condition at one endpoint is not satisfied, but I could not find
@@ -57,8 +61,7 @@ addition, matrix.lua addresses a column vector like a[i][1] and a row vector a[1
 in both cases, which is quite ugly and unnatural. Furthermore, basic plotting utility is not provided in
 matrix.lua. Therefore, this mathly module was developed. But anyway, I appreciate the work in matrix.lua.
 Actually, you may find some similarities in the code of matrix.lua and mathly.lua, e.g., m1, m2 are used
-to name arguments of some functions.
-</p>
+to name arguments of some functions.</p>
 <h2>Which version of Lua is needed?</h2>
 <p>Mathly is developed in Lua 5.4.6. It works with the present newest version 5.4.7. It might work with previous versions.</p>
 <p>You may download Lua source code in <a href="https://lua.org/">https://lua.org/</a> and compile it yourself or simply
@@ -73,6 +76,7 @@ download built binary commands for Microsoft Windows in, say,
 <li>(Windows) the folder, e.g., <code>c:/cygwin/bin/</code>, which contains the command, <code>lua.exe</code>:
 <pre><code>...
 lua.exe
+browser-setting.lua
 dkjson.lua
 mathly.lua
 plotly.lua
@@ -96,7 +100,7 @@ so on. For example, <code>{}</code>, <code>{'ab'}</code>, <code>{1, 2, 3}</code>
 <code>{1, 'ab', { 2, 3, {4}}}</code>, <code>{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}</code>
 are all tables.</p>
 
-<p><b>A mathly matrix is obtained/generated</b> by mathly 'creator', functions like <code>zeros</code>, <code>ones</code>,
+<p><b>A mathly matrix is obtained/generated</b> by mathly 'constructor', functions like <code>zeros</code>, <code>ones</code>,
 <code>rand</code>, <code>randi</code>, <code>reshape</code>, <code>submatrix</code>, <code>c</code>, <code>r</code>, or
 matrix operations like <code>A^T</code>, <code>inv(A)</code>, <code>rref(B)</code>, and
 <code>2 * A  - 3 * B + 4</code>, given that <code>A</code> and <code>B</code> are <code>nxn</code> mathly matrices. An element in the
@@ -105,22 +109,22 @@ matrix operations like <code>A^T</code>, <code>inv(A)</code>, <code>rref(B)</cod
 <p>Simply speaking, a mathly matrix is a table (of tables), but a table may not be a mathly matrix.</p>
 
 <p><B>2. We can only apply matrix operations on mathly matrices; if an operation involves two objects, at least one must be a mathly matrix.</b>
-To apply matrix operations on ordinary Lua tables, conversion is needed and done first through mathly 'creator',
+To apply matrix operations on ordinary Lua tables, conversion is needed and done first through mathly 'constructor',
 <code>c</code>, <code>r</code>, or <code>reshape</code>. For example,</p>
 <pre><code>
 mathly = require('mathly')
-a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, d, f, A, B, C, D, and E are all mathly matrices
-b = {{1}, {2}, {3}}; b = mathly(b) -- or b = c{1, 2, 3}
-d = mathly(1, 10, 5)
-f = mathly(1, 10, 0)      --  same as f = mathly(zeros(1, 10))
+a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d, A, B, C, D, and E are all mathly matrices
+b = {{1}, {2}, {3}}; b = mathly(b) -- or b = cc{1, 2, 3}
+c = mathly(1, 10, 5)
+d = mathly(1, 10, 0)      --  same as f = mathly(zeros(1, 10))
 A = mathly(10, 10)
 B = mathly(1, 10)
 C = randi(100, 10, 1)     -- a column vector of random integer numbers (from 1 to 100)
-D = rand(10, 2, 50, 110)  -- a 10x2 matrix of random numbers (from 0 to 1)
-E = reshape(C, 3)         -- a 3x4 matrix
+D = rand(10, 2)           -- a 10x2 matrix of random numbers (from 0 to 1)
+E = reshape(C, 3)         -- a 3x4 matrix; 4 is determined by mathly
 
 3*a - 10
-2*d + 5 * f - 3
+2*c + 5 * d - 3
 -- inv(A) * B             -- not allowed as in math
 inv(A) * B^T
 inv(A) * randi(50, 1, 10) -- mathly knows how to handle a Lua table
@@ -338,7 +342,7 @@ display(b)
 
 A = m{{1, 2}, {3, 4}}
 B = copy(A)
-C = inv(A) -- A is modified
+inv(A) -- A is modified
 disp(A)
 -- 1 0
 -- 0 1
@@ -411,7 +415,7 @@ diag({1, 2, 3},-1)
 -- 1  0  0  0
 -- 0  2  0  0
 -- 0  0  3  0
-diag({2,3,4,5}, 1) + diag({1,2,3,4,5}) + diag({3,4,5,6}, -1)
+diag({2,3,4,5}, 1) + diag({1,2,3,4,5}) + diag({3,4,5,6}, -1) -- See also: <a name=diag1></a><a href=#remake1>remake</a>
 -- 1  2  0  0  0
 -- 3  2  3  0  0
 -- 0  4  3  4  0
@@ -470,8 +474,9 @@ display(b)
 <pre><code>
 require 'mathly'
 opt = {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}}
-x = hasindex(opt, 'grid')
-print(x)
+print(hasindex(opt, 'grid'))
+-- true
+print(hasindex(opt, 'rows'))
 -- true
 print(hasindex(opt, 'color'))
 -- false
@@ -524,7 +529,7 @@ plot(x, y, '-or')
 <p>Apply function <code>f</code> to each atomic element in table <code>tbl</code> and return the result with the same structure of the table.</p>
 <pre><code>
 m = require('mathly')
-a = range(1, 10)
+a = range(1, 10) -- seq(1, 10) or seq(10)
 -- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 function f(x) return x ^ 2 end
 b = map(f, a)
@@ -611,30 +616,30 @@ Some possible symbols are <code>circle</code>, <code>circle-open</code>, <code>c
 </ol>
 <p><b>Some examples:</b></p>
 <pre><code>
-  require 'mathly'
-  x = linspace(0, pi, 100)
-  y1 = sin(x)
-  y2 = map(math.cos, x)
-  y3 = map(function(x) return x^2*math.sin(x) end, x)
+require 'mathly'
+x = linspace(0, pi, 100)
+y1 = sin(x)
+y2 = map(math.cos, x)
+y3 = map(function(x) return x^2*math.sin(x) end, x)
 
-  specs1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example'}}
-  specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
-  specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
+specs1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example'}}
+specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
+specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
 
-  plot(math.sin, '--r') -- plot a function
-  plot(x, y1)           -- plot a function defined by x and y1
-  plot(x, y1, math.cos, x, y2, specs1, math.sin, '--r')
-  plot(x, y1, '--xr', x, y2, {1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'})
-  plot(x, y1, '--xr', x, y2, ':g')
-  plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
-  plot(x, y1, specs1, x, y2, x, y3, 'o')
-  plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
+plot(math.sin, '--r') -- plot a function
+plot(x, y1)           -- plot a function defined by x and y1
+plot(x, y1, math.cos, x, y2, specs1, math.sin, '--r')
+plot(x, y1, '--xr', x, y2, {1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'})
+plot(x, y1, '--xr', x, y2, ':g')
+plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
+plot(x, y1, specs1, x, y2, x, y3, 'o')
+plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
 
-  plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
-  plot(rand(125, 4),{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
-  plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}})
-  plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
-  plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
+plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
+plot(rand(125, 4),{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
+plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}})
+plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
+plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
 </code></pre>
 <h4>&bull; &nbsp; <a name=polyval href=#mathly><code>polyval(coefs, x)</code></a></h4>
 <p>Evaluate at <code>x</code> the value of a polynomial of which the coefficients are specified
@@ -713,8 +718,8 @@ disp(a)
 disp(b)
 -- 1  3  3  3  5
 -- 2  2  4  4  0
-C = reshape(a, 2, 7)
-disp(C)
+c = reshape(a, 2, 7)
+disp(c)
 -- 1  3  3  3  5  0  0
 -- 2  2  4  4  0  0  0
 </code></pre>
@@ -922,7 +927,7 @@ disp(a)
 -- -38   -9   -16   20   16
 display(min(a))
 -- {-38, -19, -16, 6, -26}
-display(max(a))
+disp(max(a))
 -- {3, 43, 36, 29, 16}
 </code></pre>
 
@@ -1127,7 +1132,7 @@ remake(A, 'SYM')
 -- 11  12 13  18  23
 -- 16  17 18  19  24
 -- 21  22 23  24  25
-remake(A, {-1, 0, 1}) -- or remake(A, seq(-1,1))
+remake(A, {-1, 0, 1}) -- or remake(A, seq(-1,1)) -- See also: <a name=remake1></a><a href=#diag1>diag</a>
 -- 1  6   0   0   0
 -- 2  7  12   0   0
 -- 0  8  13  18   0
