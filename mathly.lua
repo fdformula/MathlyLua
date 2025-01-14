@@ -453,7 +453,7 @@ function prod( x ) -- ~MATLAB
           prods[j] = prods[j] * x[i][j]
         end
       end
-      return setmetatable(prods, mathly_meta)
+      return setmetatable(r(prods), mathly_meta)
     else
       local s = 1
       for i = 1,#x do s = s * x[i] end
@@ -485,7 +485,7 @@ function sum( x ) -- ~MATLAB
       if #sums == 1 then
         return sums[1]
       else
-        return setmetatable(sums, mathly_meta)
+        return setmetatable(r(sums), mathly_meta)
       end
     else
       local s = 0
@@ -1841,9 +1841,7 @@ function join( ... )
   return tbl
 end
 
---[[
-        Set +, -, *, and ^ behaviours
---]]
+-----------[[ Set behaviours of +, -, *, and ^ -----------]]
 
 -- type(m1) == 'table', type(m2) == 'number'
 function mathly.numtableadd(m1, m2, op)
