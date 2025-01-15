@@ -1,26 +1,26 @@
 # Mathly makes Lua a tiny MATLAB
 
 Mathly for [Lua](https://www.lua.org) is a Lua module which makes Lua a tiny MATLAB. It provides a group of commonly
-used MATLAB functions and features, for example,  `linspace`, `zeros`, `rand`, `save`, matrix operations, and even
-`plot`. They make coding and testing a thought/algorithm much easier and faster than working in most other programming
-languages. If there is anything I love the most about MATLAB, these tools are.
+used MATLAB functions and features, for example,  `linspace`, `zeros`, `rand`, `save`, convenient matrix operations,
+and even `plot`. They make coding and testing a thought/algorithm much easier and faster than working in most other
+programming languages. If there is anything I love the most about MATLAB, these tools are.
 
-Mathly for Lua requires a Lua module, `plotly.lua` (see https://github.com/kenloen/plotly.lua). The latter is modified
-to meet the needs of mathly, and it requires another Lua module, `dkjson.lua` (see http://dkolf.de/dkjson-lua).
+Mathly for Lua requires a small Lua module, `plotly.lua` (see https://github.com/kenloen/plotly.lua). The latter is
+modified to meet the needs of mathly, and it requires another Lua module, `dkjson.lua` (see http://dkolf.de/dkjson-lua).
 
 Mathly uses Plotly JavaScript graphing tools (see https://plotly.com/javascript/) to plot graphs of single-variable
 functions. Therefore, graphs are shown in an internet browser.
 
 The entire mathly tool together with Lua is less than 5 MB, while providing enough features for instructors and
-college students to introduce and/or implement numerical algorithms. Because it is super lightweight and fast as well,
-it can be employed to slow devices like old Microsoft Surface Pro 5. Imagine that the smallest size of GNU Octave
+college students to introduce and/or implement many numerical algorithms. Because it is super lightweight and fast as well,
+it can be employed to slow devices like old Microsoft Surface Pro 4. Imagine that the smallest size of GNU Octave
 is about 300 MB, MATLAB needs a few GB storage space, and Julia with graphing modules is huge, too. You can hardly
 install them on a quite old computer and run smoothly.
 
 Mathly is especially good for instructors of linear algebra and numerical computing for teaching. It takes no time to
 start Lua and load mathly. While developing code and doing computation in a lecture, they can simply focus on delivery
 of course contents and never need to worry if their computers work too slowly or even collapse. Besides, an extra benefit
-of using Lua is that it is so simple and natural a language that even students without programming skills can understand
+of using Lua is that Lua is so simple and natural a language that even students without programming skills can understand
 most of Lua scripts.
 
 ## Which version of Lua is needed?
