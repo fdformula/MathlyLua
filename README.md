@@ -1,9 +1,12 @@
 # Mathly makes Lua "mathly" and a tiny MATLAB
 
-Mathly for [Lua](https://www.lua.org) is a Lua module which depends on a Lua module,
-`plotly.lua` (see https://github.com/kenloen/plotly.lua). The latter is modified
-to meet the needs of mathly, and it depends on another Lua module, `dkjson.lua`
-(see http://dkolf.de/dkjson-lua).
+Mathly for [Lua](https://www.lua.org) is a Lua module which makes Lua a tiny MATLAB. It provides a group of commonly
+used MATLAB functions and features, for example,  `linspace`, `zeros`, `rand`, `save`, matrix operations, and even
+`plot`. They make coding and testing a thought/algorithm much easier and faster than working in most other programming
+languages. If there is anything I love the most about MATLAB, these tools are.
+
+Mathly for Lua requires a Lua module, `plotly.lua` (see https://github.com/kenloen/plotly.lua). The latter is modified
+to meet the needs of mathly, and it requires another Lua module, `dkjson.lua` (see http://dkolf.de/dkjson-lua).
 
 Mathly uses Plotly JavaScript graphing tools (see https://plotly.com/javascript/) to plot graphs of single-variable
 functions. Therefore, graphs are shown in an internet browser.
@@ -19,11 +22,6 @@ start Lua and load mathly. While developing code and doing computation in a lect
 of course contents and never need to worry if their computers work too slowly or even collapse. Besides, an extra benefit
 of using Lua is that it is so simple and natural a language that even students without programming skills can understand
 most of Lua scripts.
-
-In brief, mathly makes Lua mathly and a tiny MATLAB. It provides a group of commonly used MATLAB functions and features,
-for example,  `linspace`, `zeros`, `rand`, `save`, matrix operations, and even `plot`. They make coding
-and testing a thought/algorithm much easier and faster than working in most other programming languages.
-If there is anything I love the most about MATLAB, these tools are.
 
 ## Which version of Lua is needed?
 
