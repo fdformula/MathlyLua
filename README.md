@@ -275,4 +275,4 @@ matrix.lua. Therefore, this mathly module was developed. But anyway, I appreciat
 Actually, you may find some similarities in the code of matrix.lua and mathly.lua, e.g., m1, m2 are used
 to name arguments of some functions.
 
-December 25, 2024
+--: December 25, 2024
