@@ -261,7 +261,7 @@ test()
 
 ### Note
 1. Most functions provided in this mathly module, e.g., `copy`, `disp`, and `display`, can't be applied to tables like
-`{1, 2, age=20, 10, year=2024}` with fields (*age* and *year* in the example). It is designed simply for numerical computing.
+`{1, 2, age=20, 10, year=2024}` with fields, i.e., *age* and *year* in the example. It is designed simply for numerical computing.
 
 1. This project was started first right in the downloaded code of the Lua module, matrix.lua, found
 in https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua, to see if Lua is good for
