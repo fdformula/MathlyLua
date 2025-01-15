@@ -1,4 +1,4 @@
-# Mathly makes Lua "mathly" and a tiny MATLAB
+# Mathly makes Lua a tiny MATLAB
 
 Mathly for [Lua](https://www.lua.org) is a Lua module which makes Lua a tiny MATLAB. It provides a group of commonly
 used MATLAB functions and features, for example,  `linspace`, `zeros`, `rand`, `save`, matrix operations, and even
