@@ -20,9 +20,9 @@ table, pre {
 </head>
 <body>
 <div>
-<h2>Mathly makes Lua mathly and like MATLAB</h2>
+<h2><a name=top></a><a href=#mathly>Mathly makes Lua mathly and like MATLAB</a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &rArr; <a href=lua5_4.html>Lua 5.4 Manual</a></h2>
 
-<p>Mathly for Lua is a Lua module which depends on a Lua module,
+<p>Mathly for <a href=https://www.lua.org>Lua</a> is a Lua module which depends on a Lua module,
 plotly.lua (see <a href="https://github.com/kenloen/plotly.lua">https://github.com/kenloen/plotly.lua</a>).
 The latter is modified to meet the needs of mathly, and it depends on another Lua module, dkjson.lua
 (see <a href="http://dkolf.de/dkjson-lua">http://dkolf.de/dkjson-lua</a>).</p>
@@ -39,7 +39,7 @@ install them in a quite old computer and run smoothly.</p>
 <p>Mathly is especially good for instructors of linear algebra and numerical computing for teaching. It takes no time to
 start Lua and load mathly. While developing code and doing computation in a lecture, they can simply focus on delivery
 of course contents and never need to worry if their computers work too slowly or even collapse. Besides, an extra benefit
-of using Lua is that it is SO simple a language that even students without programming skills can understand most
+of using Lua is that it is so simple a language that even students without programming skills can understand most
 of Lua code.</p>
 
 <p>In brief, mathly makes Lua mathly and like MATLAB. It provides a group of commonly used MATLAB functions and features,
@@ -47,27 +47,13 @@ for example, <code>linspace</code>, <code>zeros</code>, <code>rand</code>, <code
 <code>plot</code>. They make coding and testing a thought/algorithm much easier and faster than working in most other
 programming languages. If there is anything I love the most about MATLAB, these tools are.</p>
 
-<p style="margin-left: 50px;"><b>Note 1</b>: Most functions provided in this mathly module, e.g., <code>copy</code>, <code>disp</code>, and
-<code>display</code>, can't be applied to tables like <code>x = {1, 2, age=20, 10, year=2024}</code> with
-fields, for instance, <code>age</code>. It is designed simply for numerical computing.</p>
-
-<p style="margin-left: 50px;"><b>Note 2</b>: This project was started first right in the downloaded code of the Lua module, matrix.lua, found
-in <a href="https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua">https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua</a>, to see if Lua is good for
-numerical computing. However, it failed to solve numerically a boundary value problem. The solution
-was obviously wrong because the boundary condition at one endpoint is not satisfied, but I could not find
-anything wrong in both the algorithm and the code. I had to wonder if there were bugs in the module. In many
-cases, it is easier to start a small project from scratch than using and debugging others' code. In
-addition, matrix.lua addresses a column vector like a[i][1] and a row vector a[1][i], rather than a[i]
-in both cases, which is quite ugly and unnatural. Furthermore, basic plotting utility is not provided in
-matrix.lua. Therefore, this mathly module was developed. But anyway, I appreciate the work in matrix.lua.
-Actually, you may find some similarities in the code of matrix.lua and mathly.lua, e.g., m1, m2 are used
-to name arguments of some functions.</p>
 <h2>Which version of Lua is needed?</h2>
 <p>Mathly is developed in Lua 5.4.6. It works with the present newest version 5.4.7. It might work with previous versions.</p>
 <p>You may download Lua source code in <a href="https://lua.org/">https://lua.org/</a> and compile it yourself or simply
-download built binary commands for Microsoft Windows in, say,
-<a href="https://www.nuget.org/packages/lua/">https://www.nuget.org/packages/lua/</a>.</p>
-
+download prebuilt binary commands for Microsoft Windows in, say,
+<a href="https://www.nuget.org/packages/lua/">https://www.nuget.org/packages/lua/</a>. Another way to get prebuilt Lua is to
+download <a href=https://studio.zerobrane.com/>ZeroBrane Studio</a>, a lightweight Lua IDE for various platforms. It may come with
+multiple versions of Lua.</p>
 <h2>Where to place the downloaded files of this module?</h2>
 
 <p>They can be placed in either</p>
@@ -183,7 +169,7 @@ address it conveniently like <code>x[i]</code> instead of <code>x[1][i]</code>. 
 <code>linspace</code>, <code>seq</code>, and <code>range</code> all generate a table rather than a mathly row/column vector.
 
 <p>If you want full control, you can use <code>c</code> or <code>r</code> to convert an ordinary table to a column
-or row vector. (See <a href=#c><code>cc(x)</code>, <code>rr(x)</code>, <code>tt(x)</code></a>)</p>
+or row vector. (See <a href=#cc><code>cc(x)</code>, <code>rr(x)</code>, <code>tt(x)</code></a>)</p>
 <h2><a name=math></a>Basic Mathematical Functions</h2>
 <p>Basic math functions are each now able to work on Lua tables, including mathly matrices. They are
 <code>abs</code>, <code>acos</code>, <code>asin</code>, <code>atan</code>, <code>ceil</code>, <code>cos</code>,
@@ -209,7 +195,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <p></p>
 <p><u>Note</u>: <code>T</code> is reserved by mathly for finding the transpose of a matrix, e.g., <code>A^T</code>, where <code>A</code> is a mathly matrix.</p>
 
-<a name=mathly></a><h2>The following table summarizes other functions provided by <code>mathly</code>.</h2>
+<a name=mathly></a><h2><a href=#top>The following table summarizes other functions provided by <code>mathly</code>.</a></h2>
 <table>
 <tbody>
 <tr><td width="25%"><a href=#apply><code>apply(f, ...)</code></a></td><td width=1%> </td><td width=74%>As with some other programming languages like <i>Mathematica</i>, call function <code>f</code> with the arguments.</td></tr>
@@ -225,7 +211,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#disp><code>disp(x)</code></a></td><td> </td><td>Print a mathly matrix.</td></tr>
 <tr><td><a href=#display><code>display(x)</code></a></td><td> </td><td>Print a table with structure.</td></tr>
 <tr><td><a href=#dot><code>dot(a, b)</code></a></td><td> </td><td>Calculate the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ..., a<sub>n</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ..., b<sub>n</sub>}</code>.</td></tr>
-<tr><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrunk <code>mxn</code> mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
+<tr><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrinked <code>mxn</code> mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
 <tr><td><code>eye(n)</code></td><td> </td><td>Return a <code>nxn</code> identity mathly matrix.</td></tr>
 <tr><td><a href=#flatten><code>flatten(x)</code></a></td><td> </td><td>Remove the structure of <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</td></tr>
 <tr><td><a href=#fliplr><code>fliplr(A)</code></a></td><td> </td><td>Return a matrix with columns of matrix <code>A</code> reversed.</td></tr>
@@ -264,7 +250,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#submatrix><code>submatrix(A, i, j, m, n, sr, sc)</code></a></td><td> </td><td>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column wtih row step <code>sr</code> and column step <code>sc</code>.</td></tr>
 <tr><td><a href=#subtable><code>subtable(tbl, i, j, s)</code></a></td><td> </td><td>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code>.</td></tr>
 <tr><td><a href=#sum><code>sum(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the sum of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
-<tr><td><code><a href=#cc>tt(x, i1, i2, s)</a></code></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and return a specified slice of the resulted table.</td></tr>
+<tr><td><code><a href=#cc>tt(x, i1, i2, s)</a></code></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and and return a specified slice of the resulted table.</td></tr>
 <tr><td><a href=#tic><code>tic()</code></a></td><td> </td><td>Start a wall-clock timer.</td></tr>
 <tr><td><a href=#toc><code>toc</code></a></td><td> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
 <tr><td><a href=#unique><code>unique(tbl)</code></a></td><td> </td><td>Return the same data as in tbl but with no repetitions.</td></tr>
@@ -450,7 +436,7 @@ display(dot({1, 2}, {3, 4}))
 </code></pre>
 <h4>&bull; &nbsp; <a name=flatten href=#mathly><code>flatten(x)</code></a></h4>
 <p>Remove the structure of table <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</p>
-<p>If <code>x</code> is a mathly matrix, it does rowwisely. For columnwise flattening, see <a href=#t><code>t(...)</code></a>.</p>
+<p>If <code>x</code> is a mathly matrix, it does rowwisely. For columnwise flattening, see <a href=#tt><code>tt(...)</code></a>.</p>
 <pre><code>
 m = require('mathly')
 x = {1, 2, {3, 4, {5, 6, {7, 8, {9}}}}}
@@ -1006,7 +992,7 @@ display(tt(x, 2, 6, 3))
 -- {2, 5}
 </code></pre>
 <h4>&bull; &nbsp; <a name=expand href=#mathly><code>expand(A, m, n, v)</code></a></h4>
-<p>Return an expanded/shrunk mathly matrix with value v's added or entries dropped.</p>
+<p>Return an expanded/shrinked mathly matrix with value v's added or entries dropped.</p>
 <p>The default value of <code>v</code> is 0, and the default value of <code>n</code> is <code>m</code>.</p>
 <pre><code>
 mathly = require('mathly')
@@ -1154,6 +1140,26 @@ display(unique({4,5,2,1,-2,2,4,2,7,6,19}))
 -- {-2, 1, 2, 4, 5, 6, 7, 19}
 
 </code></pre>
+<hr>
+<h2 style="margin-left: 20px;">Note</h2>
+<ol>
+<li>Most functions provided in this mathly module, e.g., <code>copy</code>, <code>disp</code>, and
+<code>display</code>, can't be applied to tables like <code>x = {1, 2, age=20, 10, year=2024}</code> with
+fields, for instance, <code>age</code>. It is designed simply for numerical computing.</li>
+<p></p>
+<li>This project was started first right in the downloaded code of the Lua module, matrix.lua, found
+in <a href="https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua">https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua</a>, to see if Lua is good for
+numerical computing. However, it failed to solve numerically a boundary value problem. The solution
+was obviously wrong because the boundary condition at one endpoint is not satisfied, but I could not find
+anything wrong in both the algorithm and the code. I had to wonder if there were bugs in the module. In many
+cases, it is easier to start a small project from scratch than using and debugging others' code. In
+addition, matrix.lua addresses a column vector like a[i][1] and a row vector a[1][i], rather than a[i]
+in both cases, which is quite ugly and unnatural. Furthermore, basic plotting utility is not provided in
+matrix.lua. Therefore, this mathly module was developed. But anyway, I appreciate the work in matrix.lua.
+Actually, you may find some similarities in the code of matrix.lua and mathly.lua, e.g., m1, m2 are used
+to name arguments of some functions.</li>
+</ol>
+<p style="margin-left: 40px;">December 25, 2024</p>
 </div>
 </body>
 </html>
