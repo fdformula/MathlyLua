@@ -5,8 +5,8 @@ used MATLAB functions and features, for example,  `linspace`, `zeros`, `rand`, `
 and even `plot`. They make coding and testing a thought/algorithm much easier and faster than working in most other
 programming languages. If there is anything many love the most about MATLAB, these tools are.
 
-Mathly for Lua requires a small Lua module, `plotly.lua` (see https://github.com/kenloen/plotly.lua). The latter is
-modified to meet the needs of mathly, and it requires another Lua module, `dkjson.lua` (see http://dkolf.de/dkjson-lua).
+Mathly for Lua requires a small Lua module, plotly.lua (see https://github.com/kenloen/plotly.lua). The latter is
+modified to meet the needs of mathly, and it requires another Lua module, dkjson.lua (see http://dkolf.de/dkjson-lua).
 
 Mathly uses Plotly JavaScript graphing tools (see https://plotly.com/javascript/) to plot graphs of single-variable
 functions. Therefore, graphs are shown in an internet browser.
