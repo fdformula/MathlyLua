@@ -61,13 +61,13 @@ See comments in the file.
 
 ## Functions provided in mathly
 
-`apply`, `cc`, `clc`, `clear`, `concath`, `concatv`, `copy`, `cross`, 
+`apply`, `cc`, `clc`, `clear`, `copy`, `cross`, 
 `det`, `diag`, `disp`, `display`, `dot`, `expand`, `eye`, `flatten`,  `fliplr`, `flipud`,
-`hasindex`, `inv`, `isinteger`, `ismember`, `join`, `length`, `linsolve`,
+`hasindex`,  `horzcat`, `inv`, `isinteger`, `ismember`, `join`, `length`, `linsolve`,
 `linspace`, `lu`, `map`, `max`, `min`, `norm`, `ones`, `plot`, `polyval`, 
 `printf`, `prod`, `qr`, `rand`, `randi`, `range`, `remake`, `repmat`, `reshape`, `rr`, `rref`, 
 `save`, `seq`, `size`, `sprintf`, `submatrix`, 
-`subtable`, `sum`, `tic`, `toc`, `tt`, `unique`, `who`, `zeros`
+`subtable`, `sum`, `tic`, `toc`, `tt`, `unique`, `vertcat`, `who`, `zeros`
 
 See mathly.html.
 
@@ -75,7 +75,7 @@ See mathly.html.
 
 ### 1. A mathly matrix is a table (of tables), but a table may not be a mathly matrix.
 
-#### a. Mathly 'constructor', `concath`, `concatv`, `diag`, `expand`, `flipfr`, `flipud`, `lu`, `ones`, `zeros`, `rand`, `randi`, `remake`, `reshape`, `submatrix`, `cc`, `rr`, and matrix operations can generate mathly matrices.
+#### a. Mathly 'constructor', `diag`, `expand`, `flipfr`, `flipud`, `horzcat`, `lu`, `ones`, `zeros`, `rand`, `randi`, `remake`, `reshape`, `submatrix`, `vertcat`, `cc`, `rr`, and matrix operations can generate mathly matrices.
 ```Lua
 mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d, A, B, C, D, and E are all mathly matrices
