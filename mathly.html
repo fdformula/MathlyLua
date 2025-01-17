@@ -286,6 +286,11 @@ disp(D)
 -- 3  4  6 10 11 12
 disp(rr{1, 2, 3} .. rr{4, 5})
 --  1  2  3  4  5
+
+b = {5, 6}
+disp(A .. cc(b)) -- augmented coefficient matrix for Ax = b
+-- 1  2  5
+-- 3  4  6
 </code></pre>
 <h4>&bull; &nbsp; <a name=vertcat href=#mathly><code>vertcat(A, B, ...)</code></a></h4>
 <P>Concatenate matrices A, B, ... in order vertically. Matrices must have the same number of columns.</P>
