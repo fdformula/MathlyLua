@@ -101,7 +101,7 @@ C^T * B^T
 A = randi({50, 100}, 3)
 B = randi({0, 10}, 3)
 C = 3 * A - 4 * B + 5
-D = A .. B .. C           -- concatenate matrices A and C horizontally
+D = A .. B .. C           -- concatenate matrices A, B, and C horizontally, same as horzcat(A, B, C)
 disp(D)
 E = A .. cc{1, 2, 3}
 disp(E)
