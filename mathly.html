@@ -192,8 +192,6 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><code><a href=#cc>cc(x)</a></code></td><td> </td><td>Convert a table <code>x</code> into a column vector.</td></tr>
 <tr><td><code>clc()</code></td><td> </td><td>Clear Lua console.</td></tr>
 <tr><td><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
-<tr><td><a href=#concath><code>concath(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
-<tr><td><a href=#concatv><code>concatv(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order vertically. Matrices must have the same number of columns.</td></tr>
 <tr><td><a href=#copy><code>copy(x)</code></a></td><td> </td><td>Make a deep copy of <code>x</code>.</td></tr>
 <tr><td><a href=#cross><code>cross(a, b)</code></a></td><td> </td><td>Calculate the cross/vector product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub>}</code>.</td></tr>
 <tr><td><code>det(A)</code></td><td> </td><td>Calculate the determinant of a square matrix <code>A</code>. <u>Note</u>: A is modified.</td></tr>
@@ -207,16 +205,17 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#fliplr><code>fliplr(A)</code></a></td><td> </td><td>Return a matrix with columns of matrix <code>A</code> reversed.</td></tr>
 <tr><td><a href=#flipud><code>flipud(A)</code></a></td><td> </td><td>Return a matrix with rows of matrix <code>A</code> reversed.</td></tr>
 <tr><td><a href=#hasindex><code>hasindex(table, index)</code></a></td><td> </td><td>Check if <code>table</code> contains <code>index</code>.</td></tr>
+<tr><td><a href=#horzcat><code>horzcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
 <tr><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of a square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
 <tr><td><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
 <tr><td><a href=#ismember><code>ismember(x, table)</code></a></td><td> </td><td>Check if <code>x</code> is a member of <code>table</code>.</td></tr>
-<tr><td><a href=#join><code>join(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers or strings.</td></tr>
 <tr><td><code>length(x)</code></td><td> </td><td>Return the length of a table or string.</td></tr>
 <tr><td><a href=#linsolve><code>linsolve(A, b, opt)</code></a></td><td> </td><td>Solve a linear system <code>Ax = b</code> and return the solution. <u>Note</u>: Both <code>A</code> and <code>b</code> can be modified.</td></tr>
 <tr><td><a href=#linspace><code>linspace(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</td></tr>
 <tr><td><a href=#lu><code>lu(A)</code></a></td><td> </td><td>Return <code>L</code> and <code>U</code> of LU factorization <code>A = LU</code>.</td></tr>
 <tr><td><a href=#map><code>map(f, tbl)</code></a></td><td> </td><td>Apply function <code>f</code> to each atomic element in table <code>tbl</code> and return the result with the same structure of the table.</td></tr>
 <tr><td><a href=#max><code>max(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the largest of all elements of the table; if it is a matrix, ...</td></tr>
+<tr><td><a href=#mean><code>mean(x)</code></a></td><td> </td><td>Return mean value of numbers in <code>x</td>.</tr>
 <tr><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
 <tr><td><code>norm(x)</code></td><td> </td><td>Return the Euclidean norm of a row/column vector <code>x</code>.</td></tr>
 <tr><td><a href=#ones><code>ones(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 1. If <code>m = 1</code>, return a table.</td></tr>
@@ -237,13 +236,18 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#seq><code>seq(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</td></tr>
 <tr><td><code>size(A)</code></td><td> </td><td>Return the dimensions of a mathly matrix <code>A</code>.</td></tr>
 <tr><td><a href=#printf><code>sprintf(...)</code></a></td><td> </td><td>Return a formatted string, while <code>printf</code> prints one.</td></tr>
+<tr><td><a href=#std><code>std(x, opt)</code></a></td><td> </td><td>Return the standard deviation of numbers in <code>x</code>.</td></tr>
+<tr><td><a href=#strcat><code>strcat(...)</code></a></td><td> </td><td>Horizontally concatenate input strings and return the resulted string.</td></tr>
 <tr><td><a href=#submatrix><code>submatrix(A, i, j, m, n, sr, sc)</code></a></td><td> </td><td>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column wtih row step <code>sr</code> and column step <code>sc</code>.</td></tr>
 <tr><td><a href=#subtable><code>subtable(tbl, i, j, s)</code></a></td><td> </td><td>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code>.</td></tr>
 <tr><td><a href=#sum><code>sum(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the sum of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
+<tr><td><a href=#tblcat><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers or strings.</td></tr>
 <tr><td><code><a href=#cc>tt(x, i1, i2, s)</a></code></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and and return a specified slice of the resulted table.</td></tr>
 <tr><td><a href=#tic><code>tic()</code></a></td><td> </td><td>Start a wall-clock timer.</td></tr>
 <tr><td><a href=#toc><code>toc</code></a></td><td> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
 <tr><td><a href=#unique><code>unique(tbl)</code></a></td><td> </td><td>Return the same data as in tbl but with no repetitions.</td></tr>
+<tr><td><a href=#var><code>var(x, opt)</code></a></td><td> </td><td>Return the variance of numbers in <code>x</code>.</td></tr>
+<tr><td><a href=#vertcat><code>vertcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order vertically. Matrices must have the same number of columns.</td></tr>
 <tr><td><code>who()</code></td><td> </td><td>List all user-defined variables in the memory.</td></tr>
 <tr><td><a href=#zeros><code>zeros</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 0. If <code>m = 1</code>, return a table.</td></tr>
 </tbody>
@@ -257,8 +261,9 @@ function f(x, y, z) return x + y + z end
 apply(f, {1, 2, 3})
 -- 6
 </code></pre>
-<h4>&bull; &nbsp; <a name=concath href=#mathly><code>concath(A, B, ...)</code></a></h4>
+<h4>&bull; &nbsp; <a name=horzcat href=#mathly><code>horzcat(A, B, ...)</code></a></h4>
 <P>Concatenate matrices A, B, ... in order horizontally. Matrices must have the same number of rows.</P>
+<p>See also: <a href=#vertcat><code>vertcat</code></a></p>
 <pre><code>
 m = require('mathly')
 A = m{{1, 2}, {3, 4}}
@@ -273,13 +278,14 @@ C = m{{7, 8, 9}, {10, 11, 12}}
 disp(C)
 --  7  8  9
 -- 10 11 12
-D = concath(A, B, C)
+D = horzcat(A, B, C)
 disp(D)
 -- 1 2 5  7  8  9
 -- 3 4 6 10 11 12
 </code></pre>
-<h4>&bull; &nbsp; <a name=concatv href=#mathly><code>concatv(A, B, ...)</code></a></h4>
+<h4>&bull; &nbsp; <a name=vertcat href=#mathly><code>vertcat(A, B, ...)</code></a></h4>
 <P>Concatenate matrices A, B, ... in order vertically. Matrices must have the same number of columns.</P>
+<p>See also: <a href=#horzcat><code>horzcat</code></a></p>
 <pre><code>
 mathly = require('mathly')
 A = mathly{{1, 2, 3}}
@@ -292,12 +298,12 @@ disp(B)
 C = mathly{{10, 11, 12}}
 disp(C)
 -- 10 11 12
-D = concatv(A, B)
+D = vertcat(A, B)
 disp(D)
 -- 1 2 3
 -- 4 5 6
 -- 7 8 9
-E = concatv(A, B, C)
+E = vertcat(A, B, C)
 disp(E)
 -- 1   2  3
 -- 4   5  6
@@ -480,17 +486,18 @@ print(ismember(3, x))
 print(ismember(4, x))
 -- false
 </code></pre>
-<h4>&bull; &nbsp; <a name=join href=#mathly><code>join(t<sub>1</sub>, t<sub>2</sub>, ...)</code></code></a></h4>
+<h4>&bull; &nbsp; <a name=tblcat href=#mathly><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></code></a></h4>
 <p>Concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers or strings.</p>
+<p>See also: <a href=#strcat><code>strcat</code></a></p>
 <pre><code>
 m = require('mathly')
 x = {1, 2}
 y = {3, 4, {5}}
-disp(join(0, x, y, 10))
+disp(tblcat(0, x, y, 10))
 -- {0, 1, 2, 3, 4, {5}, 10}
 
 z = m{{6}, {7}, {8}, {9}}
-disp(join(x, z, 11)) -- a column vector is automatically converted into a row vector
+disp(tblcat(x, z, 11)) -- a column vector is automatically converted into a row vector
 -- {1, 2, 6, 7, 8, 9, 11}
 </code></pre>
 <h4>&bull; &nbsp; <a name=linspace href=#mathly><code>linspace(x, y, n)</code></a></h4>
@@ -633,7 +640,7 @@ print(x)
 <h4>&bull; &nbsp; <a name=sum></a><a name=prod href=#mathly><code>prod(A)</code>, <code>sum(A)</code></a></h4>
 <ol>
 <li>If <code>A</code> is a table or mathly row/column vector, return the product/sum of its elements;</li>
-<li>If A is a <code>mxn</code> matrix, return a table of which the <code>i</code>-th element is the product/sum of
+<li>If <code>A</code> is a <code>mxn</code> matrix, return a row vector of which the <code>i</code>-th element is the product/sum of
 the <code>i</code>-th column of <code>A</code>.</p></li>
 </ol>
 <pre><code>
@@ -726,7 +733,7 @@ b1 = m{{1},{2},{3}}
 b2 = m{{1},{0},{5}}
 b3 = m{{-2},{1},{2}}
 
-B = m(concath(b1, b2, b3))
+B = m(horzcat(b1, b2, b3))
 rref(A, B)
 disp(B)
 --  1.75 -1.25  7.25
@@ -1129,6 +1136,60 @@ require('mathly')
 display(unique({4,5,2,1,-2,2,4,2,7,6,19}))
 -- {-2, 1, 2, 4, 5, 6, 7, 19}
 
+</code></pre>
+<h4>&bull; &nbsp; <a name=strcat href=#mathly><code>strcat(...)</code></a></h4>
+<p>Horizontally concatenate input strings and return the resulted string.</p>
+<p>See also: <a href=#tblcat><code>tblcat</code></a></p>
+<pre><code>
+require('mathly')
+print(strcat('Good', ' ', 'morning', '!'))
+-- Good morning!
+</code></pre>
+<h4>&bull; &nbsp; <a name=mean href=#mathly><code>mean(x)</code></a></h4>
+<ol>
+<li>If <code>x</code> is a table or mathly row/column vector, return the mean of its elements;</li>
+<li>If <code>x</code> is a <code>mxn</code> matrix, return a row vector of which the <code>i</code>-th element is the mean of
+the <code>i</code>-th column of <code>x</code>.</p></li>
+</ol>
+<pre><code>
+mathly = require('mathly')
+disp(mean({1,2,3}))
+-- 2
+A = mathly{{1, 2, 3}, {2, 3, 4}, {3, 1, 2}}
+disp(A)
+-- 1  2  3
+-- 2  3  4
+-- 3  1  2
+disp(mean(A))
+-- 2  2  3
+print(mean('abc')) -- 'abc' --> {97, 98, 99}, string.byte('a') ...
+-- 98.0
+print(mean({'abc', 'de'})) --> strcat first: 'abcde' --> mean('abcde')
+-- 99.0
+</code></pre>
+<h4>&bull; &nbsp; <a name=var></a><a name=std href=#mathly><code>std(x, opt)</code>, <code>var(x, opt)</code></a></h4>
+<ol>
+<li>If <code>x</code> is a table or mathly row/column vector, return the standard deviation of its elements;</li>
+<li>If <code>x</code> is a <code>mxn</code> matrix, return a row vector of which the <code>i</code>-th element is the standard deviation of
+the <code>i</code>-th column of <code>x</code>.</p></li>
+</ol>
+<p>If <code>opt = 0</code> (default), calculate for a population; otherwise, calculate for a sample.</p>
+<pre><code>
+mathly = require('mathly')
+print(std({1,2,3}))
+-- 1.0
+print(std({1,2,3}, 1))
+-- 0.81649658092773
+A = mathly{{1, 2, 3}, {2, 3, 4}, {4, 7, 9}}
+disp(A)
+-- 1  2  3
+-- 2  3  4
+-- 4  7  9
+disp(std(A))
+-- 1.527525  2.645751  3.214550
+disp(var(A))
+-- 2.333333  7  10.333333
+disp(var(A), 1)
 </code></pre>
 <hr>
 <h2 style="margin-left: 20px;">Note</h2>

@@ -13,9 +13,9 @@ API and Usage
 
   List of functions provided in this module:
 
-    apply, cc, clear, clc, concath, concatv, copy, cross, det, diag, disp, display,
+    apply, cc, clear, clc, horzcat, vertcat, copy, cross, det, diag, disp, display,
     dot, expand, eye, flatten, fliplr, flipud, hasindex, inv, isinteger, ismember,
-    join, length, linspace, map, max, min, norm, ones, plot, polyval, printf, prod,
+    tblcat, length, linspace, map, max, min, norm, ones, plot, polyval, printf, prod,
     rand, randi, rr, range, remake, repmat, reshape, rref, save, seq, size, linsolve,
     sprintf, submatrix, subtable, sum, tt, tic, toc, unique, who, zeros
 
@@ -439,11 +439,11 @@ end
 --// prod( x )
 -- calculates the product of all elements of a table
 -- calculates the product of all elements of each column in a matrix
-function prod( x ) -- ~MATLAB
+function prod( x )
   if type(x) == 'number' then
     return x
   elseif type(x) == 'table' then
-    if type(x[1]) == 'table' then -- a table of tables, i.e., a "matrix"
+    if type(x[1]) == 'table' then -- a "matrix"
       local prods = {}  -- ~MATLAB, column wise
       for j = 1,#x[1] do
         prods[j] = 1
@@ -465,11 +465,11 @@ end
 --// sum( x )
 -- calculates the sum of all elements of a table
 -- calculates the sum of all elements of each column in a matrix
-function sum( x ) -- ~MATLAB
+function sum( x )
   if type(x) == 'number' then
     return x
   elseif type(x) == 'table' then
-    if type(x[1]) == 'table' then -- a table of tables, i.e., a "matrix"
+    if type(x[1]) == 'table' then -- a "matrix"
       if #x == 1 then -- {{1, 2, ...}} b/c mathly{1, 2, 3} gives {{1, 2, 3}}
          return sum(x[1])
       end
@@ -494,6 +494,111 @@ function sum( x ) -- ~MATLAB
     return 0
   end
 end
+
+-- // function strcat(s1, s2, ...)
+function strcat(...)
+  local s = ''
+  for _, v in pairs{...} do
+    if type(v) == 'string' then
+      s = s .. v
+    elseif type(v) == 'number' then
+      s = s .. string.char(v)
+    end
+  end
+  return s
+end
+
+--// mean( x )
+-- calculates the mean of all elements of a table
+-- calculates the mean of all elements of each column in a matrix
+function mean( x )
+  if type(x) == 'number' then
+    return x
+  elseif type(x) == 'string' then
+    return mean(table.pack(string.byte(x, 1, #x)))
+  elseif type(x) == 'table' then
+    if type(x[1]) == 'number' then
+      local s = 0
+      for i = 1, #x do s = s + x[i] end
+      return s / #x
+    elseif type(x[1]) == 'string' then
+      return mean(strcat(table.unpack(x)))
+    else
+      assert(getmetatable(x) == mathly_meta, 'mean(A, ...): A must be a mathly matrix')
+      local m, n = size(x)
+      if m == 1 then
+        return mean(x[1])
+      elseif n == 1 then
+        return mean(flatten(x))
+      end
+
+      local means = {}  -- ~MATLAB, column wise
+      for j = 1, n do
+        means[j] = 0
+        for i = 1, m do
+          means[j] = means[j] + x[i][j]
+        end
+        means[j] = means[j] / #x
+      end
+      return setmetatable(rr(means), mathly_meta)
+    end
+  end
+end
+
+local function _stdvar( x, opt, sqrtq )
+  opt = opt or 0
+  if type(x) == 'number' then
+    return 0
+  elseif type(x) == 'table' then
+    if type(x[1]) == 'number' then
+      local avg = mean(x)
+      local s = sum((rr(x) - avg) ^ 2)
+      if opt == 0 then
+        s = s / (#x - 1)
+      else
+        s = s / #x
+      end
+      if sqrtq then s = math.sqrt(s) end
+      return s
+    else -- a "matrix"
+      assert(getmetatable(x) == mathly_meta, 'std(x): x should be a mathly matrix here')
+      local m, n = size(x)
+      if m == 1 then
+        return _stdvar(x[1], opt, sqrtq)
+      elseif n == 1 then
+        return _stdvar(flatten(x), opt, sqrtq)
+      end
+
+      local s = {}  -- ~MATLAB, column wise
+      for j = 1, n do
+        local avg = mean(submatrix(x, 1, j, #x, j))
+        s[j] = 0
+        for i = 1, m do
+          s[j] = s[j] + (x[i][j] - avg)^2
+        end
+        if opt == 0 then
+          s[j] = s[j] / (m - 1)
+        else
+          s[j] = s[j] / m
+        end
+        if sqrtq then s[j] = math.sqrt(s[j]) end
+      end
+      return setmetatable(rr(s), mathly_meta)
+    end
+  else
+    error('std(x): x must be a table or matrix of numbers.')
+  end
+end
+
+--// std( x, opt )
+--// var( x, opt )
+-- calculates the standard deviation (or variance) of all elements of a table
+-- calculates the standard deviation (or variance) of all elements of each column in a matrix
+--
+-- if opt = 0 (default), find the standard deviation (or variance) of a population
+-- otherwise, find that of a sample
+function std( x, opt ) return _stdvar(x, opt, true) end
+function var( x, opt ) return _stdvar(x, opt, false) end
 
 --// dot( a, b )
 -- calculates the dot/inner product if two vectors
@@ -1684,7 +1789,7 @@ function qr(A)  -- by Gram-Schmidt process
       v = v - (sum(u * vj) / sum(vj * vj)) * vj -- u .* vj, vj .* vj
     end
     v = v * (1 / norm(v))  -- normalizing the column vector
-    Q = concath(Q, v)
+    Q = horzcat(Q, v)
   end
 
   -- calculating R
@@ -1742,11 +1847,11 @@ function det( A )
   return val * A[n][n]
 end
 
---// mathly.concath( ... )
+--// mathly.horzcat( ... )
 -- Concatenate matrices, horizontal
 -- rows have to be the same, e.g.: #m1 == #m2
--- e.g., concath({{1},{2}}, {{2,3,4},{3,4,5}}, {{5,6},{6,7}})
-function concath( ... )
+-- e.g., horzcat({{1},{2}}, {{2,3,4},{3,4,5}}, {{5,6},{6,7}})
+function horzcat( ... )
   local args = {}
   for _, v in pairs{...} do
     args[#args + 1] = v
@@ -1775,11 +1880,11 @@ function concath( ... )
 	return setmetatable(mtx, mathly_meta)
 end
 
---// concatv ( ... )
+--// vertcat ( ... )
 -- Concatenate matrices, vertical
 -- columns have to be the same; e.g.: #m1[1] == #m2[1]
--- e.g., concatv({{1,2,3},{2,3,4}}, {{3,4,5}}, {{4,5,6},{5,6,7}})
-function concatv( ... )
+-- e.g., vertcat({{1,2,3},{2,3,4}}, {{3,4,5}}, {{4,5,6},{5,6,7}})
+function vertcat( ... )
   local args = {}
   for _, v in pairs{...} do
     args[#args + 1] = v
@@ -1811,10 +1916,10 @@ function concatv( ... )
 	return setmetatable(mtx, mathly_meta)
 end
 
---// join( ... )
+--// tblcat( ... )
 -- merge elements and tables into a single table
--- e.g., join(1, 2, {3, 4}, 5), join(1, {2, {3, 4}}, {5, 6})
-function join( ... )
+-- e.g., tblcat(1, 2, {3, 4}, 5), tblcat(1, {2, {3, 4}}, {5, 6})
+function tblcat( ... )
   local args = {}
   for _, v in pairs{...} do
     args[#args + 1] = v
