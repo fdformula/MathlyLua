@@ -69,8 +69,61 @@ T = 'T' -- reserved by mathly, transpose of a matrix, A^T
 function  printf(...) io.write(string.format(table.unpack{...})) end
 function sprintf(...) return string.format(table.unpack{...}) end
 
-function rr(x) return setmetatable({ flatten(x) }, mathly_meta) end -- convert x to a row vector
-function cc(x) return setmetatable(map(function(x) return {x} end, flatten(x)), mathly_meta) end -- convert x to a column vector
+--// function rr(x, i, start, stop)
+-- rr(x):                 make x a row vector and return it
+-- rr(x, i):              return the ith row of x
+-- rr(x, i, start, stop): return submatrix(x, i, start, i, stop), stop defaults to #x[1]
+function rr(x, i, start, stop)
+  if i == nil then
+    return setmetatable({ flatten(x) }, mathly_meta) -- convert x to a row vector
+  else
+    assert(getmetatable(x) == mathly_meta, 'rr(x, i...): x must be a mathly matrix.')
+    if i > 0 and i <= #x then
+      local siz = #x[1]
+      start = start or 1
+      if start < 1 or start > siz then error('rr(x, i, start...): your given start is out of range.') end
+      stop  = stop or siz
+      if stop < 1 or stop > siz then error('rr(x, i, start, stop): your given stop is out of range.') end
+      local y = {}
+      local k = 1
+      for j = start, stop do
+        y[k] = x[i][j]
+        k = k + 1
+      end
+      return setmetatable({y}, mathly_meta)
+    else
+      error('rr(x, i...): your given i is out of range.')
+    end
+  end
+end
+
+--// function cc(x, i, start, stop)
+-- cc(x):                 make x a column vector and return it
+-- cc(x, i):              return the ith column of x
+-- cc(x, i, start, stop): return submatrix(x, start, i, stop, i), stop defaults to #x
+function cc(x, i, start, stop)
+  if i == nil then
+    return setmetatable(map(function(x) return {x} end, flatten(x)), mathly_meta) -- convert x to a column vector
+  else
+    assert(getmetatable(x) == mathly_meta, 'cc(x, i...): x must be a mathly matrix.')
+    if i > 0 and i <= #x[1] then
+      local siz = #x
+      start = start or 1
+      if start < 1 or start > siz then error('cc(x, i, start...): your given start is out of range.') end
+      stop  = stop or siz
+      if stop < 1 or stop > siz then error('cc(x, i, start, stop): your given stop is out of range.') end
+      local y = {}
+      local k = 1
+      for j = start, stop do
+        y[k] = {x[j][i]}
+        k = k + 1
+      end
+      return setmetatable(y, mathly_meta)
+    else
+      error('cc(x, i...): your given i is out of range.')
+    end
+  end
+end
 
 -- tt(x, startpos, endpos, step)
 -- convert x to a table (columnwisely if its a mathly matrix) or flatten it first

@@ -930,12 +930,12 @@ disp(max(a))
 -- {3, 43, 36, 29, 16}
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=cc></a><a name=rr></a><a name=tt href=#mathly><code>cc(x)</code>, <code>rr(x)</code>, <code>tt(x)</code></a></h4>
+<h4>&bull; &nbsp; <a name=cc></a><a name=rr></a><a name=tt href=#mathly><code>cc(x...)</code>, <code>rr(x...)</code>, <code>tt(x)</code></a></h4>
 <p>A matrix operation may be applied to an ordinary table. It takes the table as a row or column vector according to the very context.
 If you want full control, you can use functions <code>c</code> and <code>r</code> to tell mathly whether the table is a column or row vector.</p>
 <table><tbody>
-<tr><td width=20></td><td><code>cc(x)</code></td><td> </td><td width=10> </td><td>Convert a table <code>x</code> into a column vector.</td></tr>
-<tr><td width=20></td><td><code>rr(x)</code></td><td> </td><td width=10> </td><td>Convert a table <code>x</code> into a row vector.</td></tr>
+<tr><td width=20></td><td><code>cc(x)</code></td><td> </td><td width=10> </td><td>Convert a table <code>x</code> into a column vector or return a specified column vector of <code>x</code>.</td></tr>
+<tr><td width=20></td><td><code>rr(x)</code></td><td> </td><td width=10> </td><td>Convert a table <code>x</code> into a row vector or return a specified row vector of <code>x</code>.</td></tr>
 <tr><td width=20></td><td><code>tt(x)</code></td><td> </td><td width=10> </td><td>Convert a mathly matrix/vector or a table (of tables) <code>x</code> to an ordinary table and return a slice of it.</td></tr>
 </tbody></table>
 <p>Note: Why not <code>c</code>, <code>r</code>, and <code>t</code>? It is because they can be easily used
@@ -947,7 +947,7 @@ disp(a)
 -- 1
 -- 2
 -- 3
-a * {2, 3, 4}  -- or a * rr{2, 3, 4}, (3x1 matrix) * (1x3 matrix) --> 3x3 matrix
+a * {2, 3, 4}   -- or a * rr{2, 3, 4}, (3x1 matrix) * (1x3 matrix) --> 3x3 matrix
 -- 2  3  4
 -- 4  6  8
 -- 6  9  12
@@ -956,16 +956,26 @@ cc{2, 3, 4} * a --
 -- 2
 -- 6
 -- 12
-{2, 3, 4} * a -- or rr{2, 3, 4} * a, (1x3 matrix) * (3x1 matrix) --> 1x1 matrix
+{2, 3, 4} * a   -- or rr{2, 3, 4} * a, (1x3 matrix) * (3x1 matrix) --> 1x1 matrix
 -- 20
 
 a = mathly({1, 2, 3})
 disp(a)
 -- 1  2  3
-a * {2, 3, 4} -- or a * cc{2, 3, 4}, (1x3 matrix) * (3x1 matrix) --> 1x1 matrix
+a * {2, 3, 4}   -- or a * cc{2, 3, 4}, (1x3 matrix) * (3x1 matrix) --> 1x1 matrix
 -- 20
 a * rr{2, 3, 4} -- (1x3 matrix) * (1x3 matrix) --> (1x3 matrix) .* (1x3 matrix) in MATLAB
 -- 2  6  12
+
+A = mathly{{52, 67, 82, 21}, {82, 15, 70, 42}, {94, 82, 50, 23}}
+cc(A, 1)        -- return the 1st column of A
+-- 52
+-- 82
+-- 94
+rr(A, 3, 2)     -- return the 3rd row of A starting from the 2nd entry to the last
+-- 82  50  23
+rr(A, 3, 2, 3)  -- return the 3rd row of A starting from the 2nd entry to the 3rd one
+-- 82  50
 </code></pre>
 <p>&#x2713; &nbsp; <code>tt(x, i1, i2, s)</code> may be used to replace <a href=#subtable><code>subtable</code></a>. If <code>x</code> is a mathly matrix, it is converted to a table columnwisely first;
 if it is any other table, it is flattened first. Comparatively, <code>subtable</code> doesn't carry out any conversion.
