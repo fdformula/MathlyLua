@@ -77,34 +77,34 @@ See mathly.html.
 ```Lua
 mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d, A, B, C, D, and E are all mathly matrices
-b = {{1}, {2}, {3}}; b = mathly(b) -- or b = cc{1, 2, 3}
+b = {{1}, {2}, {3}}; b = mathly(b) -- or simply b = cc{1, 2, 3}
 c = mathly(1, 10, 5)
-d = mathly(1, 10, 0)      --  same as f = mathly(zeros(1, 10))
+d = mathly(1, 10, 0)      --  same as f = mathly(zeros(1, 10)) or rr(zeros(1, 10))
 A = mathly(10, 10)
 B = mathly(1, 10)
 C = randi(100, 10, 1)     -- a column vector of random integer numbers (from 1 to 100)
 D = rand(10, 2)           -- a 10x2 matrix of random numbers (from 0 to 1)
 E = reshape(C, 3)         -- a 3x4 matrix; 4 is determined by mathly
 
-3*a - 10
-2*c + 5 * d - 3
 -- inv(A) * B             -- not allowed as in math
 inv(A) * B^T
-inv(A) * randi(50, 1, 10) -- mathly knows how to handle a Lua table
-randi(50, 1, 10) * inv(A) -- randi(50, 1, 10) here in its context
+inv(A) * seq(1, 10)       -- mathly knows how to handle a Lua table seq(1, 10)
+seq(1, 10) * inv(A)       -- here in its context
+rr(seq(1, 10)) * inv(A)   -- or you can have full control by using rr or cc
 
 A = randi(100, 10, 5)
 B = randi(100, 5, 3)
 C = rand(3, 1)
-A - 2
-A * B
 A * B * C
-B * C
 C^T * B^T
 
-A = randi(100, 4)
-B = randi(50, 4)
+A = randi({50, 100}, 3)
+B = randi({0, 10}, 3)
 C = 3 * A - 4 * B + 5
+D = A .. B .. C           -- concatenate matrices A and C horizontally
+disp(D)
+E = A .. cc{1, 2, 3}
+disp(E)
 ```
 #### b. `ones`, `zeros`, `rand` and `randi` generate each an ordinary table rather than a mathly matrix if used this way, say, `ones(1, 100)`.
 This allows us to generate a table of specified length and address it conveniently like `x[i]` instead of `x[1][i]`.
