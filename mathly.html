@@ -264,13 +264,14 @@ apply(f, {1, 2, 3})
 </code></pre>
 <h4>&bull; &nbsp; <a name=horzcat href=#mathly><code>horzcat(A, B, ...)</code></a></h4>
 <P>Concatenate matrices A, B, ... in order horizontally. Matrices must have the same number of rows.</P>
+<p><em>Operator .. can be used to repalce <code>horzcat</code>.</em></p>
 <p>See also: <a href=#vertcat><code>vertcat</code></a></p>
 <pre><code>
 m = require('mathly')
 A = m{{1, 2}, {3, 4}}
 disp(A)
--- 1 2
--- 3 4
+-- 1  2
+-- 3  4
 B = m{{5}, {6}}
 disp(B)
 -- 5
@@ -279,10 +280,12 @@ C = m{{7, 8, 9}, {10, 11, 12}}
 disp(C)
 --  7  8  9
 -- 10 11 12
-D = horzcat(A, B, C)
+D = A .. B .. C -- same as horzcat(A, B, C)
 disp(D)
--- 1 2 5  7  8  9
--- 3 4 6 10 11 12
+-- 1  2  5  7  8  9
+-- 3  4  6 10 11 12
+disp(rr{1, 2, 3} .. rr{4, 5})
+--  1  2  3  4  5
 </code></pre>
 <h4>&bull; &nbsp; <a name=vertcat href=#mathly><code>vertcat(A, B, ...)</code></a></h4>
 <P>Concatenate matrices A, B, ... in order vertically. Matrices must have the same number of columns.</P>
@@ -533,6 +536,12 @@ map(f, A) -- A is a mathly matrix, the result of map(f, A) is a mathly matrix, t
 -- 1   4   9
 -- 9  16  25
 -- 1   4   0
+
+A = {{1, 2, 3}, {2, 3, 4}}
+B = {{3, 4, 5}, {5, 6, 7}}
+C = map(function(x, y) return x * y end, A, B) -- MATHLAB: A .* B
+disp(C)
+-- {{3, 8, 15}, {10, 18, 28}}
 </code></pre>
 <h4>&bull; &nbsp; <a name=zeros></a><a name=rand></a><a name=randi></a><a name=ones href=#mathly><code>ones</code>, <code>zeros</code>, <code>rand</code>, <code>randi</code></a></h4>
 <p>The usage of these functions is the same except randi that can take more arguments.</p>
