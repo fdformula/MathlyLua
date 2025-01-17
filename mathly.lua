@@ -316,7 +316,11 @@ function display( x, first_itemq )
   if first_itemq == nil then first_itemq = true end
   if not first_itemq then io.write(', ') end
   if type(x) ~= 'table' then
-    io.write(_tostring1(x))
+    if type(x) == 'number' then
+      io.write(_tostring1(x))
+    else
+      io.write(x)
+    end
   else
     io.write('{'); first_itemq = true
     for i = 1,#x do
