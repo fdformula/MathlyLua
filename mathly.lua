@@ -69,31 +69,50 @@ T = 'T' -- reserved by mathly, transpose of a matrix, A^T
 function  printf(...) io.write(string.format(table.unpack{...})) end
 function sprintf(...) return string.format(table.unpack{...}) end
 
+local function _rct_adjust_input(siz, start, stop, name)
+  start = start or 1
+  if start < 0 then start = siz + start + 1 end -- -1, -2, ... --> siz, siz - 1
+  if start < 1 or start > siz then error(name .. '(x, i, start...): start = ', tostring(start) .. ' is out of range.') end
+  stop  = stop or siz
+  if stop < 0 then stop = siz + stop + 1 end -- -1, -2, ...
+  if stop < 1 or stop > siz then error(name .. '(x, i, start, stop): stop = ' .. tostring(stop) .. ' is out of range.') end
+  if stop < start then error(name .. '(x, i, start, stop): invalid input, stop < start.') end
+  return start, stop
+end
+
 --// function rr(x, i, start, stop)
 -- rr(x):                 make x a row vector and return it
 -- rr(x, i):              return the ith row of x
 -- rr(x, i, start, stop): return submatrix(x, i, start, i, stop), stop defaults to #x[1]
-function rr(x, i, start, stop)
-  if i == nil then
+--
+-- if i is a list of indice, return rows defined in the list and in order (the latter allows rearrangement and repetition of rows)
+--
+-- i = -1, last row; i = -2, the row before the last row; ... similar with start and stop
+function rr(x, I, start, stop)
+  if I == nil then
     return setmetatable({ flatten(x) }, mathly_meta) -- convert x to a row vector
   else
     assert(getmetatable(x) == mathly_meta, 'rr(x, i...): x must be a mathly matrix.')
-    if i > 0 and i <= #x then
-      local siz = #x[1]
-      start = start or 1
-      if start < 1 or start > siz then error('rr(x, i, start...): your given start is out of range.') end
-      stop  = stop or siz
-      if stop < 1 or stop > siz then error('rr(x, i, start, stop): your given stop is out of range.') end
-      local y = {}
-      local k = 1
-      for j = start, stop do
-        y[k] = x[i][j]
-        k = k + 1
+    start, stop = _rct_adjust_input(#x[1], start, stop, 'rr')
+    local rows = {}
+    if type(I) ~= 'table' then I = { I } end
+    for m = 1, #I do
+      local i = I[m]
+      local siz = #x
+      if i < 0 then i = siz + i + 1 end -- i = -1, -2, ...
+      if i > 0 and i <= siz then
+        local y = {}
+        local k = 1
+        for j = start, stop do
+          y[k] = x[i][j]
+          k = k + 1
+        end
+        rows[m] = y
+      else
+        error('rr(x, i...): i = ' .. tostring(i) .. ' is out of range.')
       end
-      return setmetatable({y}, mathly_meta)
-    else
-      error('rr(x, i...): your given i is out of range.')
     end
+    return setmetatable(rows, mathly_meta)
   end
 end
 
@@ -101,27 +120,32 @@ end
 -- cc(x):                 make x a column vector and return it
 -- cc(x, i):              return the ith column of x
 -- cc(x, i, start, stop): return submatrix(x, start, i, stop, i), stop defaults to #x
-function cc(x, i, start, stop)
-  if i == nil then
+--
+-- if i is a list of indice, return columns defined in the list and in order (the latter allows rearrangement and repetition of columns)
+-- i = -1, last columns; i = -2, the column before the last column; ...
+function cc(x, I, start, stop)
+  if I == nil then
     return setmetatable(map(function(x) return {x} end, flatten(x)), mathly_meta) -- convert x to a column vector
   else
     assert(getmetatable(x) == mathly_meta, 'cc(x, i...): x must be a mathly matrix.')
-    if i > 0 and i <= #x[1] then
-      local siz = #x
-      start = start or 1
-      if start < 1 or start > siz then error('cc(x, i, start...): your given start is out of range.') end
-      stop  = stop or siz
-      if stop < 1 or stop > siz then error('cc(x, i, start, stop): your given stop is out of range.') end
-      local y = {}
-      local k = 1
-      for j = start, stop do
-        y[k] = {x[j][i]}
-        k = k + 1
+    start, stop = _rct_adjust_input(#x, start, stop, 'cc')
+    if type(I) ~= 'table' then I = { I } end
+    local cols = mathly(stop - start + 1, #I, 0)
+    for jj = 1, #I do
+      local j = I[jj]
+      local siz = #x[1]
+      if j < 0 then j = siz + j + 1 end -- j = -1, -2, ...
+      if j > 0 and j <= siz then
+        local ii = 1
+        for i = start, stop do
+          cols[ii][jj] = x[i][j]
+          ii = ii + 1
+        end
+      else
+        error('cc(x, i...): i = ' .. tostring(i) .. ' is out of range.')
       end
-      return setmetatable(y, mathly_meta)
-    else
-      error('cc(x, i...): your given i is out of range.')
     end
+    return cols -- setmetatable(cols, mathly_meta)
   end
 end
 
@@ -131,7 +155,7 @@ end
 -- want row wise? see flatten(tbl)
 --
 -- t or subtable? t converts first, while subtable doesn't.
-function tt(x, startpos, endpos, step) -- make x an ordinary table
+function tt(x, start, stop, step) -- make x an ordinary table
   local y = {}
   if getmetatable(x) == mathly_meta then -- column wise
     if #x == 1 then -- row vector
@@ -151,14 +175,13 @@ function tt(x, startpos, endpos, step) -- make x an ordinary table
     return { x }
   end
 
-  if startpos == nil or startpos < 1 then startpos = 1 end
-  if endpos == nil or endpos > #y then endpos = #y end
-  if startpos > endpos then return {} end
-  if step == nil or step < 1 then step = 1 end
+  start, stop = _rct_adjust_input(#y, start, stop, 'tt')
+  step = step or 1
+  if step <= 0 then error('tt(xx, ..., step): step size must be positve.') end
 
   local z = {}
   local k = 1
-  for i = startpos, endpos, step do
+  for i = start, stop, step do
     z[k] = y[i]
     k = k + 1
   end
@@ -373,12 +396,12 @@ function any( x, f )
   end
 end
 
---// function filter( A, f ) -- not the one in MATLAB
+--// function check( A, f ) -- not the one in MATLAB
 -- check if each element makes f(x) true or not, return 1 or 0 for the element
 --
--- used usually together with function 'what'
-function filter( A, f )
-  assert(getmetatable(A) == mathly_meta, 'filter(A, f): A must be a mathly matrix.')
+-- used usually together with function 'extract'
+function check( A, f )
+  assert(getmetatable(A) == mathly_meta, 'check(A, f): A must be a mathly matrix.')
   if f == nil then f = function(x) return math.abs(x) > eps end end
   local m, n = size(A)
   local B = {}
@@ -391,15 +414,15 @@ function filter( A, f )
   return setmetatable(B, mathly_meta)
 end
 
---// function what( A, B ) -- not the one in MATLAB
+--// function extract( A, B ) -- not the one in MATLAB
 -- return a column vector of elements of A columnwisely if the corresponding element in B is 1
 --
--- used usually together with function 'filter'
-function what( A, B )
-  assert(getmetatable(A) == mathly_meta and getmetatable(B) == mathly_meta, 'what(A, B): A and B must be mathly matrices.')
+-- used usually together with function 'check'
+function extract( A, B )
+  assert(getmetatable(A) == mathly_meta and getmetatable(B) == mathly_meta, 'extract(A, B): A and B must be mathly matrices.')
   local m, n = size(A)
   local M, N = size(B)
-  assert(m <= M and n <= N, 'what(A, B): B must be a matrix at least the same size of A.')
+  assert(m <= M and n <= N, 'extract(A, B): B must be a matrix at least the same size of A.')
   local x = {}
   local k = 1
   for j = 1, n do
@@ -415,8 +438,19 @@ The largest number print or io.write prints each digit is ±9223372036854775807,
 otherwise, ±9.2233720368548e+18 is printed ---]]
 
 local function _set_disp_format( mtx ) -- mtx must be a mathly matrix
-  local width = 2
-  local x = max(max(abs(mtx)))
+  local width = 3
+  local x = 1
+  local allintq = false
+  if type(x) ~= 'table' then
+    if type(x) == 'number' then
+      allintq = isinteger(x)
+      x = math.abs(x)
+    end
+  elseif #x > 0 then
+    allintq = sum(all(mtx, isinteger)) == #mtx[1]
+    x = max(max(abs(mtx)))
+  end
+
   local dplaces
   if _disp_format == 'long' then
     dplaces = 15
@@ -425,7 +459,7 @@ local function _set_disp_format( mtx ) -- mtx must be a mathly matrix
   else -- 'bank'
     dplaces = 2
   end
-  if x > 9999999999999 or (not isinteger(x) and x < 10000*eps) then
+  if x > 9999999999999 or (not isinteger(x) and x < 100000*eps) then
     dplaces = dplaces + 1
     _float_format  = string.format('%%%d.%dG', dplaces + 6, dplaces)
     _float_format1 = string.format('%%.%dG', dplaces)
@@ -434,7 +468,6 @@ local function _set_disp_format( mtx ) -- mtx must be a mathly matrix
     return
   end
 
-  local allintq = sum(all(mtx, isinteger)) == #mtx[1]
   while x > 9 do width = width + 1; x = x // 10 end
   _float_format  = string.format('%%%d.%df', width + dplaces, dplaces)
   _float_format1 = string.format('%%.%df', dplaces)
@@ -463,8 +496,8 @@ end
 -- print a mathly matrix while display(x) prints a table with its structure
 -- disp({{1, 2, 3, 4}, {2, -3, 4, 5}, {3, 4, -5, 6}})
 function disp( A )
+  _set_disp_format(A)
   if getmetatable(A) == mathly_meta then
-    _set_disp_format(A)
     local rows, columns = size(A)
     for i = 1, rows do
       io.write('\n')
@@ -483,7 +516,10 @@ end -- disp
 -- display({1, 2, 3, {3, 4, 5, 6, 7, 8, {1, 2, {-5, {-6, 9}}, 8}}})
 function display( x, first_itemq )
   local calledbyuserq = first_itemq == nil
-  if calledbyuserq then first_itemq = true end
+  if calledbyuserq then
+    first_itemq = true
+    _set_disp_format(x)
+  end
   if not first_itemq then io.write(', ') end
   if type(x) ~= 'table' then
     if type(x) == 'number' then
@@ -1128,7 +1164,7 @@ function hasindex( tbl, idx )
   end
 end -- hasindex
 
-function isinteger( x ) return math.floor(x) == x end
+function isinteger( x ) return math.type(x) == 'integer' end
 
 --// function ismember( x, v )
 -- return true if x is an entry of a vector, e.g., ismember(5, {1,2,3,4,5,6}),
