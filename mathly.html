@@ -267,12 +267,14 @@ if all of the elements of the corresponding column of the matrix make <code>f(x)
 <p>If <code>x</code> is a mathly matrix, it returns a row vector of 1's and 0's with each element indicating
 if there is any element of the corresponding column of the matrix which makes <code>f(x)</code> true.</p>
 <p>If <code>x</code> is a simple table, a row or column vector, return 1 if there is any element of the table which makes <code>f(x)</code> true.</p>
-<p>Note: <code>f(x)</code> returns true or false (default to: <code>x ~= 0</code>).</p></li>
+<p>Note: <code>f(x)</code> returns true or false (default to: <code>x ~= 0</code>). It makes the two functions more useful than those in MATLAB.</p></li>
 </ol>
 <pre><code>
 mathly = require 'mathly'
 A = mathly{{1, 2, 3}, {2, 3, 4}}
 all(A, isinteger)
+-- 1  1  1
+any(A)
 -- 1  1  1
 any(A, function(x) return x > 2 end)
 -- 0  1  1
