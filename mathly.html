@@ -203,6 +203,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#dot><code>dot(a, b)</code></a></td><td> </td><td>Calculate the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ..., a<sub>n</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ..., b<sub>n</sub>}</code>.</td></tr>
 <tr><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrinked <code>mxn</code> mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
 <tr><td><code>eye(n)</code></td><td> </td><td>Return a <code>nxn</code> identity mathly matrix.</td></tr>
+<tr><td><a href=#filter><code>filter(A, f)</code></a></td><td> </td><td>Check if each element of matrix <code>A</code> makes <code>f(x)</code> true or not, return 1 or 0 for the element.</td></tr>
 <tr><td><a href=#flatten><code>flatten(x)</code></a></td><td> </td><td>Remove the structure of <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</td></tr>
 <tr><td><a href=#fliplr><code>fliplr(A)</code></a></td><td> </td><td>Return a matrix with columns of matrix <code>A</code> reversed.</td></tr>
 <tr><td><a href=#flipud><code>flipud(A)</code></a></td><td> </td><td>Return a matrix with rows of matrix <code>A</code> reversed.</td></tr>
@@ -251,6 +252,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#unique><code>unique(tbl)</code></a></td><td> </td><td>Return the same data as in tbl but with no repetitions.</td></tr>
 <tr><td><a href=#var><code>var(x, opt)</code></a></td><td> </td><td>Return the variance of numbers in <code>x</code>.</td></tr>
 <tr><td><a href=#vertcat><code>vertcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order vertically. Matrices must have the same number of columns.</td></tr>
+<tr><td><a href=#what><code>what(A, B)</code></a></td><td> </td><td>Return a column vector of elements of <code>A</code> columnwisely if the corresponding element in <code>B</code> is 1.</td></tr>
 <tr><td><code>who()</code></td><td> </td><td>List all user-defined variables in the memory.</td></tr>
 <tr><td><a href=#zeros><code>zeros</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 0. If <code>m = 1</code>, return a table.</td></tr>
 </tbody>
@@ -267,7 +269,7 @@ if all of the elements of the corresponding column of the matrix make <code>f(x)
 <p>If <code>x</code> is a mathly matrix, it returns a row vector of 1's and 0's with each element indicating
 if there is any element of the corresponding column of the matrix which makes <code>f(x)</code> true.</p>
 <p>If <code>x</code> is a simple table, a row or column vector, return 1 if there is any element of the table which makes <code>f(x)</code> true.</p>
-<p>Note: <code>f(x)</code> returns true or false (default to: <code>x ~= 0</code>). It makes the two functions more useful than those in MATLAB.</p></li>
+<p>Note: <code>f(x)</code> returns true or false (default: <code>x ~= 0</code>). It makes the two functions more useful than those in MATLAB.</p></li>
 </ol>
 <pre><code>
 mathly = require 'mathly'
@@ -1252,6 +1254,32 @@ disp(var(A, 1))
 <tr><td width=20></td><td><code>'short'</code></td><td> </td><td width=10> </td><td>4 decimal places (default).</td></tr>
 <tr><td width=20></td><td><code>'long'</code></td><td> </td><td width=10> </td><td>15 decimal places</td></tr>
 </tbody></table>
+<h4>&bull; &nbsp; <a name=what></a><a name=filter href=#mathly><code>filter(A, f)</code>, <code>what(A, B)</code></a></h4>
+<p>The two functions are usually used together.</p>
+<ol>
+<li><code>filter(A, f)</code>: Check if each element of matrix <code>A</code> makes <code>f(x)</code> true or not, return 1 or 0 for the element.</li><p></p>
+<li><code>what(A, B)</code>: Return a column vector of elements of <code>A</code> columnwisely if the corresponding element in <code>B</code> is 1.</li>
+</ol>
+<p>Note: <code>f(x)</code> returns true or false (default: <code>x ~= 0</code>).</p></li>
+<pre><code>
+mathly = require('mathly')
+A = mathly{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
+disp(A)
+- 1  2  3
+- 4  5  6
+- 7  8  9
+C = filter(A, function(x) return x >= 2 and x % 2 == 0 end)
+disp(C)
+-- 0  1  0
+-- 1  0  1
+-- 0  1  0
+B = what(A, C)
+disp(B)
+-- 4
+-- 2
+-- 8
+-- 6
+</code></pre>
 <hr>
 <h2 style="margin-left: 20px;">Note</h2>
 <ol>

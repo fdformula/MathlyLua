@@ -303,7 +303,7 @@ function format(fmt)
 end
 
 --// function all( x, f )
--- x is a table or row/column vector: return 1 if all elements of the table make f(x) true. 
+-- x is a table or row/column vector: return 1 if all elements of the table make f(x) true.
 -- x is a mathly matrix: return a row vector of 1's and 0's with each element indicating
 --   if all of the elements of the corresponding column of the matrix make f(x) true.
 --
@@ -340,7 +340,7 @@ function all( x, f )
 end
 
 --// function any( x, f )
--- x is a table or row/column vector: return 1 if there is any element of the table which makes f(x) true. 
+-- x is a table or row/column vector: return 1 if there is any element of the table which makes f(x) true.
 -- x is a mathly matrix: return a row vector of 1's and 0's with each element indicating
 --   if there is any element of the corresponding column of the matrix which makes f(x) true.
 --
@@ -371,6 +371,43 @@ function any( x, f )
   else
     error('all(x, f): x must be a table or mathly matrix.')
   end
+end
+
+--// function filter( A, f ) -- not the one in MATLAB
+-- check if each element makes f(x) true or not, return 1 or 0 for the element
+--
+-- used usually together with function 'what'
+function filter( A, f )
+  assert(getmetatable(A) == mathly_meta, 'filter(A, f): A must be a mathly matrix.')
+  if f == nil then f = function(x) return math.abs(x) > eps end end
+  local m, n = size(A)
+  local B = {}
+  for i = 1, m do
+    B[i] = {}
+    for j = 1, n do
+      if f(A[i][j]) then B[i][j] = 1 else B[i][j] = 0 end
+    end
+  end
+  return setmetatable(B, mathly_meta)
+end
+
+--// function what( A, B ) -- not the one in MATLAB
+-- return a column vector of elements of A columnwisely if the corresponding element in B is 1
+--
+-- used usually together with function 'filter'
+function what( A, B )
+  assert(getmetatable(A) == mathly_meta and getmetatable(B) == mathly_meta, 'what(A, B): A and B must be mathly matrices.')
+  local m, n = size(A)
+  local M, N = size(B)
+  assert(m <= M and n <= N, 'what(A, B): B must be a matrix at least the same size of A.')
+  local x = {}
+  local k = 1
+  for j = 1, n do
+    for i = 1, m do
+      if B[i][j] == 1 then x[k] = {A[i][j]}; k = k + 1 end
+    end
+  end
+  return setmetatable(x, mathly_meta)
 end
 
 --[[ Lua 5.4.6
