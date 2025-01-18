@@ -258,20 +258,27 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 
 <h4>&bull; &nbsp; <a name=any></a><a name=all href=#mathly><code>all(x, f)</code>, <code>any(x, f)</code></a></h4>
 <ol>
-<li><code>all(x, f)</code>: Test if <code>f(x)</code> is true for every number in <code>x</code>.</li>
-<li><code>any(x, f)</code>: Test if there is any number in <code>x</code> such that <code>f(x)</code> is true.</li>
+<li><code>all(x, f)</code>: Test if <code>f(x)</code> is true for every number in <code>x</code>.
+<p>If <code>x</code> is a table or a row/column vector, returns 1 if all elements of the table make <code>f(x)</code> true.</p>
+<p>If <code>x</code> is a mathly matrix, returns a row vector of 1's and 0's with each element indicating
+if all of the elements of the corresponding column of the matrix make <code>f(x)</code> true.</p></li>
+
+<li><code>any(x, f)</code>: Test if there is any number in <code>x</code> such that <code>f(x)</code> is true.
+<p>If <code>x</code> is a mathly matrix, it returns a row vector of 1's and 0's with each element indicating
+if there is any element of the corresponding column of the matrix which makes <code>f(x)</code> true.</p>
+<p>If <code>x</code> is a simple table, a row or column vector, return 1 if there is any element of the table which makes <code>f(x)</code> true.</p>
+<p>Note: <code>f(x)</code> returns true or false (default to: <code>x ~= 0</code>).</p></li>
 </ol>
-<p>Note: They do not behave like those in MATLAB.</p>
 <pre><code>
 mathly = require 'mathly'
 A = mathly{{1, 2, 3}, {2, 3, 4}}
 all(A, isinteger)
--- true
-any(A, function(x) return x > 4 end)
--- false
+-- 1  1  1
+any(A, function(x) return x > 2 end)
+-- 0  1  1
 x = {1, 2, 3, 4, 5, 6}
 any(x, function(x) return x % 2 == 0 end)
--- true
+-- 1
 </code></pre>
 <h4>&bull; &nbsp; <a name=apply href=#mathly><code>apply(f, ...)</code></a></h4>
 <p>As with some other programming languages like <i>Mathematica</i>, it evaluates function <code>f</code> with provided arguments.</p>

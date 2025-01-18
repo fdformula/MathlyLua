@@ -303,38 +303,73 @@ function format(fmt)
 end
 
 --// function all( x, f )
--- is f true for every number in x?
--- f(x) return true or false
+-- x is a table or row/column vector: return 1 if all elements of the table make f(x) true. 
+-- x is a mathly matrix: return a row vector of 1's and 0's with each element indicating
+--   if all of the elements of the corresponding column of the matrix make f(x) true.
+--
+-- f(x) return true or false (default to: x ~= 0)
 function all( x, f )
-  if type(x) ~= 'table' then
-    return f(x)
-  else
-    for i = 1, #x do
-      if type(x[i]) ~= 'table' then
-        if not f(x[i]) then return false end
-      else
-        if not all(x[i], f) then return false end
+  local X = x
+  if f == nil then f = function(x) return math.abs(x) > eps end end -- x ~= 0
+  if getmetatable(x) == mathly_meta then
+    local m, n = size(x)
+    if m > 1 and n > 1 then
+      local y = zeros(1, #x[1])
+      for j = 1, #x[1] do
+        local i = 1
+        while i <= #x do
+          if not f(x[i][j]) then break end
+          i = i + 1
+        end
+        if i > #x then y[j] = 1 end
       end
+      return setmetatable(rr(y), mathly_meta)
+    else
+      X = flatten(x)
     end
-    return true
+  end
+
+  if type(X) == 'table' and type(X[1]) ~= 'table' then
+    for i = 1, #X do
+      if not f(X[i]) then return 0 end
+    end
+    return 1
+  else
+    error('all(x, f): x must be a table or mathly matrix.')
   end
 end
 
 --// function any( x, f )
--- is there any number in x for which f is true?
--- f(x) return true or false
+-- x is a table or row/column vector: return 1 if there is any element of the table which makes f(x) true. 
+-- x is a mathly matrix: return a row vector of 1's and 0's with each element indicating
+--   if there is any element of the corresponding column of the matrix which makes f(x) true.
+--
+-- f(x) return true or false (default to: x ~= 0)
 function any( x, f )
-  if type(x) ~= 'table' then
-    return f(x)
-  else
-    for i = 1, #x do
-      if type(x[i]) ~= 'table' then
-        if f(x[i]) then return true end
-      else
-        if any(x[i], f) then return true end
+  local X = x
+  if f == nil then f = function(x) return math.abs(x) > eps end end -- x ~= 0
+  if getmetatable(x) == mathly_meta then
+    local m, n = size(x)
+    if m > 1 and n > 1 then
+      local y = zeros(1, #x[1])
+      for j = 1, #x[1] do
+        for i = 1, #x do
+          if f(x[i][j]) then y[j] = 1; break end
+        end
       end
+      return setmetatable(rr(y), mathly_meta)
+    else
+      X = flatten(x)
     end
-    return false
+  end
+
+  if type(X) == 'table' and type(X[1]) ~= 'table' then
+    for i = 1, #X do
+      if f(X[i]) then return 1 end
+    end
+    return 0
+  else
+    error('all(x, f): x must be a table or mathly matrix.')
   end
 end
 
@@ -353,7 +388,7 @@ local function _set_disp_format( mtx ) -- mtx must be a mathly matrix
   else -- 'bank'
     dplaces = 2
   end
-  if x > 9999999999999 or x < 10000*eps then
+  if x > 9999999999999 or (not isinteger(x) and x < 10000*eps) then
     dplaces = dplaces + 1
     _float_format  = string.format('%%%d.%dG', dplaces + 6, dplaces)
     _float_format1 = string.format('%%.%dG', dplaces)
@@ -362,8 +397,8 @@ local function _set_disp_format( mtx ) -- mtx must be a mathly matrix
     return
   end
 
-  local allintq = all(mtx, isinteger)
-  while x > 0 do width = width + 1; x = x // 10 end
+  local allintq = sum(all(mtx, isinteger)) == #mtx[1]
+  while x > 9 do width = width + 1; x = x // 10 end
   _float_format  = string.format('%%%d.%df', width + dplaces, dplaces)
   _float_format1 = string.format('%%.%df', dplaces)
   if not allintq then width = width + dplaces end
