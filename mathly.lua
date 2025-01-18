@@ -290,24 +290,86 @@ end -- unique
 local _int_format    = "%12d"   -- 'global' for disp(...)
 local _float_format  = "%12.4f" --
 
---local _int_format1 = "%d"     -- 'global' for display(...)
+local _int_format1   = "%d"     -- 'global' for display(...)
 local _float_format1 = "%.4f"   --
 
+local _disp_format   = 'short'  -- 'global'
 function format(fmt)
-  if fmt == 'long' then
-    _int_format      = "%22d"
-    _float_format    = "%22.15f"
-    _float_format1   = "%.15f"
-  elseif fmt == 'bank' then
-    _int_format      = "%10d"
-    _float_format    = "%10.2f"
-    _float_format1   = "%.2f"
-  else -- default
-    _int_format      = "%12d"
-    _float_format    = "%12.4f"
-    _float_format1   = "%.4f"
+  if fmt == 'long' or fmt == 'bank' then
+    _disp_format = fmt
+  else
+    _disp_format = 'short'
   end
-end -- format
+end
+
+--// function all( x, f )
+-- is f true for every number in x?
+-- f(x) return true or false
+function all( x, f )
+  if type(x) ~= 'table' then
+    return f(x)
+  else
+    for i = 1, #x do
+      if type(x[i]) ~= 'table' then
+        if not f(x[i]) then return false end
+      else
+        if not all(x[i], f) then return false end
+      end
+    end
+    return true
+  end
+end
+
+--// function any( x, f )
+-- is there any number in x for which f is true?
+-- f(x) return true or false
+function any( x, f )
+  if type(x) ~= 'table' then
+    return f(x)
+  else
+    for i = 1, #x do
+      if type(x[i]) ~= 'table' then
+        if f(x[i]) then return true end
+      else
+        if any(x[i], f) then return true end
+      end
+    end
+    return false
+  end
+end
+
+--[[ Lua 5.4.6
+The largest number print or io.write prints each digit is ±9223372036854775807,
+otherwise, ±9.2233720368548e+18 is printed ---]]
+
+local function _set_disp_format( mtx ) -- mtx must be a mathly matrix
+  local width = 2
+  local x = max(max(abs(mtx)))
+  local dplaces
+  if _disp_format == 'long' then
+    dplaces = 15
+  elseif _disp_format == 'short' then
+    dplaces = 4
+  else -- 'bank'
+    dplaces = 2
+  end
+  if x > 9999999999999 or x < 10000*eps then
+    dplaces = dplaces + 1
+    _float_format  = string.format('%%%d.%dG', dplaces + 6, dplaces)
+    _float_format1 = string.format('%%.%dG', dplaces)
+    _int_format    = _float_format
+    _int_format1   = _float_format1
+    return
+  end
+
+  local allintq = all(mtx, isinteger)
+  while x > 0 do width = width + 1; x = x // 10 end
+  _float_format  = string.format('%%%d.%df', width + dplaces, dplaces)
+  _float_format1 = string.format('%%.%df', dplaces)
+  if not allintq then width = width + dplaces end
+  _int_format    = string.format('%%%dd', width)
+  _int_format1   = '%d'
+end -- _set_disp_format
 
 local function _tostring(x)
   if isinteger(x) then
@@ -319,7 +381,7 @@ end
 
 local function _tostring1(x)
   if isinteger(x) then
-    return string.format("%d", x)
+    return string.format(_int_format1, x)
   else
     return string.format(_float_format1, x)
   end
@@ -330,11 +392,12 @@ end
 -- disp({{1, 2, 3, 4}, {2, -3, 4, 5}, {3, 4, -5, 6}})
 function disp( A )
   if getmetatable(A) == mathly_meta then
+    _set_disp_format(A)
     local rows, columns = size(A)
     for i = 1, rows do
       io.write('\n')
       for j = 1, columns do
-        io.write(_tostring(A[i][j]))
+        io.write(_tostring(A[i][j]), ' ')
       end
     end
     io.write('\n\n')
@@ -348,7 +411,7 @@ end -- disp
 -- display({1, 2, 3, {3, 4, 5, 6, 7, 8, {1, 2, {-5, {-6, 9}}, 8}}})
 function display( x, first_itemq )
   local calledbyuserq = first_itemq == nil
-  if first_itemq == nil then first_itemq = true end
+  if calledbyuserq then first_itemq = true end
   if not first_itemq then io.write(', ') end
   if type(x) ~= 'table' then
     if type(x) == 'number' then
@@ -357,6 +420,7 @@ function display( x, first_itemq )
       io.write(x)
     end
   else
+    if calledbyuserq then _set_disp_format(x) end
     io.write('{'); first_itemq = true
     for i = 1,#x do
       if type(x[i]) ~= 'table' then
@@ -2269,6 +2333,7 @@ end
 
 --// mathly.tostring ( mtx )
 function mathly.tostring( mtx )
+  _set_disp_format(mtx)
 	if type(mtx[1]) == 'table' then
     local rowstrs = {}
 		for i = 1,#mtx do

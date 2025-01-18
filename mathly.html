@@ -188,7 +188,9 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <a name=mathly></a><h2><a href=#top>The following table summarizes other functions provided by <code>mathly</code>.</a></h2>
 <table>
 <tbody>
-<tr><td width="25%"><a href=#apply><code>apply(f, ...)</code></a></td><td width=1%> </td><td width=74%>As with some other programming languages like <i>Mathematica</i>, call function <code>f</code> with the arguments.</td></tr>
+<tr><td width="25%"><a href=#all><code>all(x, f)</code></a></td><td width=1%> </td><td width=74%>Test if <code>f(x)</code> is true for every number in <code>x</code>.</td></tr>
+<tr><td><a href=#any><code>any(x, f)</code></a></td><td> </td><td>Test if there is any number in <code>x</code> such that <code>f(x)</code> is true.</td></tr>
+<tr><td><a href=#apply><code>apply(f, ...)</code></a></td><td> </td><td>As with some other programming languages like <i>Mathematica</i>, call function <code>f</code> with the arguments.</td></tr>
 <tr><td><code><a href=#cc>cc(x)</a></code></td><td> </td><td>Convert a table <code>x</code> into a column vector.</td></tr>
 <tr><td><code>clc()</code></td><td> </td><td>Clear Lua console.</td></tr>
 <tr><td><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
@@ -216,7 +218,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#lu><code>lu(A)</code></a></td><td> </td><td>Return <code>L</code> and <code>U</code> of LU factorization <code>A = LU</code>.</td></tr>
 <tr><td><a href=#map><code>map(f, tbl)</code></a></td><td> </td><td>Apply function <code>f</code> to each atomic element in table <code>tbl</code> and return the result with the same structure of the table.</td></tr>
 <tr><td><a href=#max><code>max(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the largest of all elements of the table; if it is a matrix, ...</td></tr>
-<tr><td><a href=#mean><code>mean(x)</code></a></td><td> </td><td>Return mean value of numbers in <code>x</td>.</tr>
+<tr><td><a href=#mean><code>mean(x)</code></a></td><td> </td><td>Return mean value of numbers in <code>x</code>.</td></tr>
 <tr><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
 <tr><td><code>norm(x)</code></td><td> </td><td>Return the Euclidean norm of a row/column vector <code>x</code>.</td></tr>
 <tr><td><a href=#ones><code>ones(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 1. If <code>m = 1</code>, return a table.</td></tr>
@@ -254,6 +256,23 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 </tbody>
 </table>
 
+<h4>&bull; &nbsp; <a name=any></a><a name=all href=#mathly><code>all(x, f)</code>, <code>any(x, f)</code></a></h4>
+<ol>
+<li><code>all(x, f)</code>: Test if <code>f(x)</code> is true for every number in <code>x</code>.</li>
+<li><code>any(x, f)</code>: Test if there is any number in <code>x</code> such that <code>f(x)</code> is true.</li>
+</ol>
+<p>Note: They do not behave like those in MATLAB.</p>
+<pre><code>
+mathly = require 'mathly'
+A = mathly{{1, 2, 3}, {2, 3, 4}}
+all(A, isinteger)
+-- true
+any(A, function(x) return x > 4 end)
+-- false
+x = {1, 2, 3, 4, 5, 6}
+any(x, function(x) return x % 2 == 0 end)
+-- true
+</code></pre>
 <h4>&bull; &nbsp; <a name=apply href=#mathly><code>apply(f, ...)</code></a></h4>
 <p>As with some other programming languages like <i>Mathematica</i>, it evaluates function <code>f</code> with provided arguments.</p>
 <pre><code>
