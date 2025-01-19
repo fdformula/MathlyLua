@@ -1691,38 +1691,11 @@ function repmat(A, m, n)
 end -- repmat
 
 --// function flipud(A)
--- Return a matrix with rows of matrix A reversed
-function flipud(A)
-  assert(getmetatable(A) == mathly_meta, 'flipud(A): A must be a mathly matrix.')
-  local B = {}
-  local rows, columns = size(A)
-  for i = 1, rows do B[i] = {} end
-  local I = 1
-  for i = rows, 1, -1 do
-    for j = 1, columns do
-      B[I][j] = A[i][j]
-    end
-    I = I + 1
-  end
-  return setmetatable(B, mathly_meta)
-end -- flipud
-
+-- Return a matrix with rows of matrix A reversed (upside down)
 --// function fliplr(A)
--- Return a matrix with columns of matrix A reversed
-function fliplr(A)
-  assert(getmetatable(A) == mathly_meta, 'flipud(A): A must be a mathly matrix.')
-  local B = {}
-  local rows, columns = size(A)
-  for i = 1, rows do
-    B[i] = {}
-    local J = 1
-    for j = columns, 1, -1 do
-      B[i][J] = A[i][j]
-      J = J + 1
-    end
-  end
-  return setmetatable(B, mathly_meta)
-end -- fliplr
+-- Return a matrix with columns of matrix A reversed (from left to right)
+function flipud(A) return rr(A, range(#A, 1, -1)) end
+function fliplr(A) return cc(A, range(#A[1], 1, -1)) end
 
 --// function remake(A, opt)
 -- Make A a lower (opt = 'LT'), upper (opt = 'UT'), or a symmetric (opt = 'SYM') matrix by replacing entries with 0's or so
