@@ -680,12 +680,17 @@ function save(fname, ...)
       file:write('%' .. stamp)
     end
     for i = 1, #vars do
-      if matlabq then
-        file:write(vartostring_matlab(vars[i]))
+      local x = load('return ' .. vars[i])()
+      if x == nil then
+        print(vars[i] .. ' is undefined.')
       else
-        file:write(vartostring_lua(vars[i]))
-        if getmetatable(load('return ' .. vars[i])()) == mathly_meta then
-          file:write(vars[i] .. ' = mathly(' .. vars[i] .. ')\r\r')
+        if matlabq then
+          file:write(vartostring_matlab(vars[i]))
+        else
+          file:write(vartostring_lua(vars[i]))
+          if getmetatable(x) == mathly_meta then
+            file:write(vars[i] .. ' = mathly(' .. vars[i] .. ')\r\r')
+          end
         end
       end
     end
