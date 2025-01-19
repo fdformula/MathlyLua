@@ -572,8 +572,8 @@ function who(usercalledq) -- ~R
   end
 end -- who
 
--- vartostring('y') gives the string version of variable y starting with 'y ='
-local function vartostring( x, first_itemq, titleq )
+-- vartostring_lua('y') gives the string version of variable y starting with 'y ='
+local function vartostring_lua( x, first_itemq, titleq )
   if titleq == nil then titleq = true end
   if first_itemq == nil then first_itemq = true end
 
@@ -606,7 +606,7 @@ local function vartostring( x, first_itemq, titleq )
           end
         end
       else
-        str = str .. vartostring(x[i], first_itemq, false)
+        str = str .. vartostring_lua(x[i], first_itemq, false)
       end
       first_itemq = false
     end
@@ -614,7 +614,39 @@ local function vartostring( x, first_itemq, titleq )
   end
   if titleq then str = str .. '\n\n' end
   return str
-end -- vartostring
+end -- vartostring_lua
+
+local function _ismatrixq(x)
+  if type(x) ~= 'table' or type(x[1]) ~= 'table' then return false end
+  local n = #x[1]
+  for i = 1, #x do
+    if type(x[i]) ~= 'table' or #x[i] ~= n then return false end
+    for j = 1, #x[i] do
+      if type(x[i][j]) ~= 'number' then return false end
+    end
+  end
+  return true
+end -- _ismatrixq
+
+-- vartostring_matlab('y') gives the string version of variable y starting with 'y ='
+local function vartostring_matlab( x )
+  local s = vartostring_lua(x)
+  x = load('return ' .. x)()
+  if getmetatable(x) == mathly_meta or _ismatrixq(x) then -- save matrices
+    s = string.gsub(s, "}, {", ";\r")
+    s = string.gsub(s, "{{", "[")
+    s = string.gsub(s, "}}", "]")
+  elseif type(x) == 'table' then -- flatten a table. matlab: [1,2,[5,6,[7,[8]]]] --> [1, 2, 5, 6, 7, 8]
+    s = string.gsub(s, "}+", "}")
+    s = string.gsub(s, "{+", "{")
+    s = string.gsub(s, "}, {", ", ")
+    s = string.gsub(s, ", {", ", ")
+    s = string.gsub(s, "}, ", ", ")
+    s = string.gsub(s, "{", "[")
+    s = string.gsub(s, "}", "]")
+  end
+  return s
+end -- vartostring_lua
 
 --// function save(fname, ...)
 -- save variables and their values to a textfile
@@ -638,10 +670,24 @@ function save(fname, ...)
   end
   if #vars == 0 then vars = who(false) end
 
+  local matlabq = string.lower(string.sub(fname, #fname - 1)) == '.m'
   local file = io.open(fname, "w")
   if file ~= nil then
+    local stamp = ' mathly saved on ' .. os.date() .. '\r\r'
+    if not matlabq then
+      file:write('--' .. stamp .. "mathly = require('mathly')\r\r")
+    else
+      file:write('%' .. stamp)
+    end
     for i = 1, #vars do
-      file:write(vartostring(vars[i]))
+      if matlabq then
+        file:write(vartostring_matlab(vars[i]))
+      else
+        file:write(vartostring_lua(vars[i]))
+        if getmetatable(load('return ' .. vars[i])()) == mathly_meta then
+          file:write(vars[i] .. ' = mathly(' .. vars[i] .. ')\r\r')
+        end
+      end
     end
     file:close()
   else
