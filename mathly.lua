@@ -13,12 +13,12 @@ API and Usage
 
   List of functions provided in this module:
 
-    apply, cc, clear, clc, horzcat, copy, cross, det, diag, disp, display, dot,
-    expand, eye, flatten, fliplr, flipud, hasindex, inv, isinteger, ismember,
-    length, linsolve, linspace, map, max, mean, min, norm, ones, plot, polyval,
-    printf, prod, rand, randi, rr, range, remake, repmat, reshape, rref, save,
-    seq, size, sprintf, std, strcat, submatrix, subtable, sum, tblcat, tt, tic,
-    toc, unique, var, vertcat, who, zeros
+    all, any, apply, cc, check, clear, clc, horzcat, copy, cross, det, diag, disp, display,
+    dot, expand, extract, eye, flatten, fliplr, flipud, hasindex, inv, isinteger, ismember,
+    length, linsolve, linspace, map, max, mean, min, norm, ones, plot, polyval, printf,
+    prod, rand, randi, rr, range, remake, repmat, reshape, rref, save, seq, size,
+    sprintf, std, strcat, submatrix, subtable, sum, tblcat, tt, tic, toc, unique, var,
+    vertcat, who, zeros
 
   See code and mathly.html.
 
@@ -69,15 +69,29 @@ T = 'T' -- reserved by mathly, transpose of a matrix, A^T
 function  printf(...) io.write(string.format(table.unpack{...})) end
 function sprintf(...) return string.format(table.unpack{...}) end
 
-local function _rct_adjust_input(siz, start, stop, name)
+--// _adjust_index(siz, start, stop, normalq)
+-- adjust values of indices, start and stop. they must be in the range from 1 to siz. the can be -1, -2, ...
+-- if normalq is missing, start <= stop is required
+local function _adjust_index(siz, start, stop, normalq)
   start = start or 1
   if start < 0 then start = siz + start + 1 end -- -1, -2, ... --> siz, siz - 1
-  if start < 1 or start > siz then error(name .. '(x, i, start...): start = ', tostring(start) .. ' is out of range.') end
-  stop  = stop or siz
-  if stop < 0 then stop = siz + stop + 1 end -- -1, -2, ...
-  if stop < 1 or stop > siz then error(name .. '(x, i, start, stop): stop = ' .. tostring(stop) .. ' is out of range.') end
-  if stop < start then error(name .. '(x, i, start, stop): invalid input, stop < start.') end
+  if start < 1 or start > siz then error('start = ' .. tostring(start) .. ' is out of range.') end
+
+  stop = stop or siz
+  if stop < 0 then stop = siz + stop + 1 end
+  if stop < 1 or stop > siz then error('stop = ' .. tostring(stop) .. ' is out of range.') end
+
+  if normalq == nil and stop < start then error('Invalid input, stop < start: '.. tostring(stop) .. ' < ' .. tostring(start) .. '.') end
   return start, stop
+end
+
+local function _adjust_index_step(siz, start, stop, step)
+  start, stop = _adjust_index(siz, start, stop, false)
+  step = step or 1
+  if step == 0 or (step > 0 and start > stop) or (step < 0 and start < stop) then
+    error('Invalid input, start, stop, step: ' .. tostring(start) .. ', ' .. tostring(stop) .. ', ' .. tostring(step) .. '.')
+  end
+  return start, stop, step
 end
 
 --// function rr(x, i, start, stop)
@@ -93,7 +107,7 @@ function rr(x, I, start, stop)
     return setmetatable({ flatten(x) }, mathly_meta) -- convert x to a row vector
   else
     assert(getmetatable(x) == mathly_meta, 'rr(x, i...): x must be a mathly matrix.')
-    start, stop = _rct_adjust_input(#x[1], start, stop, 'rr')
+    start, stop = _adjust_index(#x[1], start, stop)
     local rows = {}
     if type(I) ~= 'table' then I = { I } end
     for m = 1, #I do
@@ -128,7 +142,7 @@ function cc(x, I, start, stop)
     return setmetatable(map(function(x) return {x} end, flatten(x)), mathly_meta) -- convert x to a column vector
   else
     assert(getmetatable(x) == mathly_meta, 'cc(x, i...): x must be a mathly matrix.')
-    start, stop = _rct_adjust_input(#x, start, stop, 'cc')
+    start, stop = _adjust_index(#x, start, stop)
     if type(I) ~= 'table' then I = { I } end
     local cols = mathly(stop - start + 1, #I, 0)
     for jj = 1, #I do
@@ -175,9 +189,7 @@ function tt(x, start, stop, step) -- make x an ordinary table
     return { x }
   end
 
-  start, stop = _rct_adjust_input(#y, start, stop, 'tt')
-  step = step or 1
-  if step <= 0 then error('tt(xx, ..., step): step size must be positve.') end
+  start, stop, step = _adjust_index_step(#y, start, stop, step)
 
   local z = {}
   local k = 1
@@ -1937,18 +1949,10 @@ end -- expand
 --// function submatrix( A, startrow, startcol, endrow, endcol, steprow, stepcol )
 -- extract a submatrix of matrix A
 function submatrix( A, startrow, startcol, endrow, endcol, steprow, stepcol )
---assert(getmetatable(A) == mathly_meta, 'submatrix( A ): A must be a mathly metatable.')
+  assert(getmetatable(A) == mathly_meta, 'submatrix( A ): A must be a mathly metatable.')
   local rows, columns = size(A)
-  if startrow == nil or startrow < 1 then startrow = 1 end
-  if startcol == nil or startcol < 1 then startcol = 1 end
-  if endrow == nil or endrow > rows then endrow = rows end
-  if endcol == nil or endcol > columns then endcol = columns end
-  if startrow > endrow or startcol > endcol then
-    -- print('submatrix: invalid arguments.')
-    return setmetatable({}, mathly_meta)
-  end
-  if steprow == nil or steprow < 1 then steprow = 1 end
-  if stepcol == nil or stepcol < 1 then stepcol = 1 end
+  startrow, endrow, steprow = _adjust_index_step(rows, startrow, endrow, steprow)
+  startcol, endcol, stepcol = _adjust_index_step(columns, startcol, endcol, stepcol)
 
   local B = {}
   local I, J
@@ -1967,14 +1971,7 @@ end -- submatrix
 --// function subtable( A, startpos, endpos, step )
 -- return a specified slice of a vector
 function subtable( tbl, startpos, endpos, step )
-  if startpos == nil or startpos < 1 then startpos = 1 end
-  if endpos == nil or endpos > #tbl then endpos = #tbl end
-  if startpos > endpos then
-    -- print('subtable: invalid input.')
-    return {}
-  end
-  if step == nil or step < 1 then step = 1 end
-
+  startpos, endpos, step = _adjust_index_step(#tbl, startpos, endpos, step)
   local x = {}
   for i = startpos, endpos, step do
     x[#x + 1] = tbl[i]
