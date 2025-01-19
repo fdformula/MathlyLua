@@ -202,7 +202,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#disp><code>disp(x)</code></a></td><td> </td><td>Print a mathly matrix.</td></tr>
 <tr><td><a href=#display><code>display(x)</code></a></td><td> </td><td>Print a table with structure.</td></tr>
 <tr><td><a href=#dot><code>dot(a, b)</code></a></td><td> </td><td>Calculate the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ..., a<sub>n</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ..., b<sub>n</sub>}</code>.</td></tr>
-<tr><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrinked <code>mxn</code> mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
+<tr><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrunk <code>mxn</code> mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
 <tr><td><a href=#extract><code>extract(A, B)</code></a></td><td> </td><td>Return a column vector of elements of <code>A</code> columnwisely if the corresponding element of <code>B</code> is 1.</td></tr>
 <tr><td><code>eye(n)</code></td><td> </td><td>Return a <code>nxn</code> identity mathly matrix.</td></tr>
 <tr><td><a href=#flatten><code>flatten(x)</code></a></td><td> </td><td>Remove the structure of <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</td></tr>
@@ -247,7 +247,7 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><a href=#subtable><code>subtable(tbl, i, j, s)</code></a></td><td> </td><td>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code>.</td></tr>
 <tr><td><a href=#sum><code>sum(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the sum of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
 <tr><td><a href=#tblcat><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers or strings.</td></tr>
-<tr><td><code><a href=#cc>tt(x, i1, i2, s)</a></code></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and and return a specified slice of the resulted table.</td></tr>
+<tr><td><code><a href=#cc>tt(x, i1, i2, s)</a></code></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and return a specified slice of the resulted table.</td></tr>
 <tr><td><a href=#tic><code>tic()</code></a></td><td> </td><td>Start a wall-clock timer.</td></tr>
 <tr><td><a href=#toc><code>toc</code></a></td><td> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
 <tr><td><a href=#unique><code>unique(tbl)</code></a></td><td> </td><td>Return the same data as in tbl but with no repetitions.</td></tr>
@@ -284,6 +284,7 @@ x = {1, 2, 3, 4, 5, 6}
 any(x, function(x) return x % 2 == 0 end)
 -- 1
 </code></pre>
+
 <h4>&bull; &nbsp; <a name=apply href=#mathly><code>apply(f, ...)</code></a></h4>
 <p>As with some other programming languages like <i>Mathematica</i>, it evaluates function <code>f</code> with provided arguments.</p>
 <pre><code>
@@ -291,680 +292,6 @@ require 'mathly'
 function f(x, y, z) return x + y + z end
 apply(f, {1, 2, 3})
 -- 6
-</code></pre>
-<h4>&bull; &nbsp; <a name=horzcat href=#mathly><code>horzcat(A, B, ...)</code></a></h4>
-<P>Concatenate matrices A, B, ... in order horizontally. Matrices must have the same number of rows.</P>
-<p><em>Operator .. can be used to repalce <code>horzcat</code>.</em></p>
-<p>See also: <a href=#vertcat><code>vertcat</code></a></p>
-<pre><code>
-m = require('mathly')
-A = m{{1, 2}, {3, 4}}
-disp(A)
--- 1  2
--- 3  4
-B = m{{5}, {6}}
-disp(B)
--- 5
--- 6
-C = m{{7, 8, 9}, {10, 11, 12}}
-disp(C)
---  7  8  9
--- 10 11 12
-D = A .. B .. C -- same as horzcat(A, B, C)
-disp(D)
--- 1  2  5  7  8  9
--- 3  4  6 10 11 12
-disp(rr{1, 2, 3} .. rr{4, 5})
---  1  2  3  4  5
-
-b = {5, 6}
-disp(A .. cc(b)) -- augmented coefficient matrix for Ax = b
--- 1  2  5
--- 3  4  6
-</code></pre>
-<h4>&bull; &nbsp; <a name=vertcat href=#mathly><code>vertcat(A, B, ...)</code></a></h4>
-<P>Concatenate matrices A, B, ... in order vertically. Matrices must have the same number of columns.</P>
-<p>See also: <a href=#horzcat><code>horzcat</code></a></p>
-<pre><code>
-mathly = require('mathly')
-A = mathly{{1, 2, 3}}
-disp(A)
--- 1 2 3
-B = mathly{{4, 5, 6}, {7, 8, 9}}
-disp(B)
--- 4 5 6
--- 7 8 9
-C = mathly{{10, 11, 12}}
-disp(C)
--- 10 11 12
-D = vertcat(A, B)
-disp(D)
--- 1 2 3
--- 4 5 6
--- 7 8 9
-E = vertcat(A, B, C)
-disp(E)
--- 1   2  3
--- 4   5  6
--- 7   8  9
--- 10 11 12
-</code></pre>
-<h4>&bull; &nbsp; <a name=copy href=#mathly><code>copy(x)</code></a></h4>
-<P>Make a deep copy of <code>x</code>.</P>
-<pre><code>
-m = require('mathly')
-a = {1, 2, {3, 4, {5, 6}}}
-b = copy(a)
-b[3] = 0
-display(a)
--- {1, 2, {3, 4, {5, 6}}}
-display(b)
--- {1, 2, 0}
-
-A = m{{1, 2}, {3, 4}}
-B = copy(A)
-inv(A) -- A is modified
-disp(A)
--- 1 0
--- 0 1
-disp(B)
--- 1 2
--- 3 4
-</code></pre>
-<h4>&bull; &nbsp; <a name=cross href=#mathly><code>cross(a, b)</code></a></h4>
-<P>Return the cross/vector product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>}</code>
-and <code>b = {b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub>}</code>.</P>
-<pre><code>
-require 'mathly'
-display(cross({1, 2, 3}, {3, 4, 5}))
--- {-2, 4, -2}
-</code></pre>
-<h4>&bull; &nbsp; <a name=diag href=#mathly><code>diag(A, ...)</code></a></h4>
-<ol>
-<li><code>diag( A, k )</code>, where <code>A</code> is a mathly <code>mxn</code> matrix, <code>m &ne; 1</code> and <code>n &ne; 1</code>.
-<p>Return the table of all entries of the <code>k</code>-th diagonal as a column vector.</p>
-<p>The second argument <code>k</code> is optional. Its default value is 0.</p>
-<p>Which diagonal? If <code>k = 0</code>, the main diagonal; if <code>k = j</code>, the diagonal <code>j</code> rows above (if <code>j &gt; 0</code>)
-or <code>-j</code> rows below the main diagonal (if <code>j &lt; 0</code>). E.g., if <code>k = 1</code>, the diagonal right above the main
-diagonal; if <code>k = -1</code>, the diagonal right below the main diagonal.</p></li>
-
-<li><code>diag(v)</code>, where <code>v</code> is a table or a row/column vector.
-<p>Return a <code>nxn</code> matrix with <code>v</code> as its main diagonal, where <code>n = length(v)</code>.</p></li>
-
-<li><code>diag(v, k)</code>, where <code>v</code> is a table or a row/column vector.
-<p>If <code>k &gt; 0</code>, return a matrix with <code>v</code> as the diagonal <code>k</code> rows above the main diagonal.</p>
-<p><code>If k &lt; 0</code>, return a matrix with <code>v</code> as the diagonal <code>-k</code> rows below the main diagonal</p>
-<p>If <code>k = 0</code>, same as <code>diag(v)</code>.</p></li>
-
-<li><code>diag(v, m, n)</code>, where <code>v</code> is a table or a row/column vector.</p>
-<p>Return a <code>mxn</code> matrix with vector v (or first elements in it) as its main diagonal.</p></li>
-</ol>
-<pre><code>
-m = require('mathly')
-a = m{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
-disp(a)
--- 1  2  3
--- 2  3  4
--- 3  4  5
--- 4  5  6
-disp(diag(a))
--- 1
--- 3
--- 5
-disp(diag(a, 1))
--- 2
--- 4
-disp(diag(a, -2))
--- 3
--- 5
-diag({1, 2, 3})
--- 1  0  0
--- 0  2  0
--- 0  0  3
-diag(cc{1, 2, 3, 4}, 3, 2)
--- 1  0
--- 0  2
--- 0  0
-diag({1, 2, 3},2)
--- 0  0  1  0  0
--- 0  0  0  2  0
--- 0  0  0  0  3
--- 0  0  0  0  0
--- 0  0  0  0  0
-diag({1, 2, 3},-1)
--- 0  0  0  0
--- 1  0  0  0
--- 0  2  0  0
--- 0  0  3  0
-diag({2,3,4,5}, 1) + diag({1,2,3,4,5}) + diag({3,4,5,6}, -1) -- See also: <a name=diag1></a><a href=#remake1>remake</a>
--- 1  2  0  0  0
--- 3  2  3  0  0
--- 0  4  3  4  0
--- 0  0  5  4  5
--- 0  0  0  6  5
-</code></pre>
-<h4>&bull; &nbsp; <a name=disp href=#mathly><code>disp(A)</code></a> - Print a mathly matrix. If <code>A</code> is not a mathly matrix, <code>display</code> is called to print it.</h4>
-<h4>&bull; &nbsp; <a name=display href=#mathly><code>display(x)</code></a> - Print a table with structure.</h4>
-<pre><code>
-require 'mathly'
-a = eye(3)
-disp(a)
--- 1 0 0
--- 0 1 0
--- 0 0 1
-display(a)
--- {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
-
-x = {1, 2, {3, 4, {5, 6, {7, 8, {9}}}}}
-display(x)
--- {1, 2, {3, 4, {5, 6, {7, 8, {9}}}}}
-</code></pre>
-<h4>&bull; &nbsp; <a name=dot href=#mathly><code>dot(a, b)</code></a></h4>
-<P>Return the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ...}</code>
-and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ...}</code>.</P>
-<pre><code>
-require 'mathly'
-display(dot({1, 2, 3}, {3, 4, 5}))
--- 26
-display(dot({1, 2}, {3, 4}))
--- 11
-</code></pre>
-<h4>&bull; &nbsp; <a name=flatten href=#mathly><code>flatten(x)</code></a></h4>
-<p>Remove the structure of table <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</p>
-<p>If <code>x</code> is a mathly matrix, it does rowwisely. For columnwise flattening, see <a href=#tt><code>tt(...)</code></a>.</p>
-<pre><code>
-m = require('mathly')
-x = {1, 2, {3, 4, {5, 6, {7, 8, {9}}}}}
-y = flatten(x)
-display(y)
--- {1, 2, 3, 4, 5, 6, 7, 8, 9}
-
-A = m{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
--- 1 2 3
--- 4 5 6
--- 7 8 9
-a = flatten(A)
-display(a)
--- {1, 2, 3, 4, 5, 6, 7, 8, 9} -- row wise
-b = flatten(A^T) -- or b = tt(A^T)
-display(b)
--- {1, 4, 7, 2, 5, 8, 3, 6, 9} -- column wise
-</code></pre>
-<h4>&bull; &nbsp; <a name=hasindex href=#mathly><code>hasindex(table, index)</code></a></h4>
-<p>Check if <code>table</code> contains <code>index</code>.</p>
-<pre><code>
-require 'mathly'
-opt = {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}}
-print(hasindex(opt, 'grid'))
--- true
-print(hasindex(opt, 'rows'))
--- true
-print(hasindex(opt, 'color'))
--- false
-</code></pre>
-<h4>&bull; &nbsp; <a name=inv href=#mathly><code>inv(A)</code></a></h4>
-<p>Return the inverse of a square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</p>
-<pre><code>
-m = require('mathly')
-I = eye(3)
-A = m{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
-B = copy(A)
-C = inv(A) * B
-disp(C)
---       1        0  -0.0000
---  0.0000   1.0000   0.0000
--- -0.0000  -0.0000        1
-</code></pre>
-<h4>&bull; &nbsp; <a name=ismember href=#mathly><code>ismember(x, table)</code></a></h4>
-<p>Check if <code>x</code> is a member of <code>table</code>.</p>
-<pre><code>
-require 'mathly'
-x = {1, 2, 3, {4, 5, {6}}}
-print(ismember(3, x))
--- true
-print(ismember(4, x))
--- false
-</code></pre>
-<h4>&bull; &nbsp; <a name=tblcat href=#mathly><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></code></a></h4>
-<p>Concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers or strings.</p>
-<p>See also: <a href=#strcat><code>strcat</code></a></p>
-<pre><code>
-m = require('mathly')
-x = {1, 2}
-y = {3, 4, {5}}
-disp(tblcat(0, x, y, 10))
--- {0, 1, 2, 3, 4, {5}, 10}
-
-z = m{{6}, {7}, {8}, {9}}
-disp(tblcat(x, z, 11)) -- a column vector is automatically converted into a row vector
--- {1, 2, 6, 7, 8, 9, 11}
-</code></pre>
-<h4>&bull; &nbsp; <a name=linspace href=#mathly><code>linspace(x, y, n)</code></a></h4>
-<p>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</p>
-<pre><code>
-require 'mathly'
-x = linspace(0, 2*pi, 1000)
-y = cos(x)
-plot(x, y, '-or')
-</code></pre>
-<h4>&bull; &nbsp; <a name=map href=#mathly><code>map(f, tbl)</code></a></h4>
-<p>Apply function <code>f</code> to each atomic element in table <code>tbl</code> and return the result with the same structure of the table.</p>
-<pre><code>
-m = require('mathly')
-a = range(1, 10) -- seq(1, 10) or seq(10)
--- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-function f(x) return x ^ 2 end
-b = map(f, a)
-display(b)
--- {1, 4, 9, 16, 25, 36, 49, 64, 81, 100}
-
-function g(x, y) return x + y end
-display(map(g, a, b))
--- {2, 6, 12, 20, 30, 42, 56, 72, 90, 110}
-
-x = {1, 2, {3, 4, {5, 6, {7}}}}
-display(map(f, x))
-{1, 4, {9, 16, {25, 36, {49}}}}
-
-A = m{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
-map(f, A) -- A is a mathly matrix, the result of map(f, A) is a mathly matrix, too.
--- 1   4   9
--- 9  16  25
--- 1   4   0
-
-A = {{1, 2, 3}, {2, 3, 4}}
-B = {{3, 4, 5}, {5, 6, 7}}
-C = map(function(x, y) return x * y end, A, B) -- MATHLAB: A .* B
-disp(C)
--- {{3, 8, 15}, {10, 18, 28}}
-</code></pre>
-<h4>&bull; &nbsp; <a name=zeros></a><a name=rand></a><a name=randi></a><a name=ones href=#mathly><code>ones</code>, <code>zeros</code>, <code>rand</code>, <code>randi</code></a></h4>
-<p>The usage of these functions is the same except randi that can take more arguments.</p>
-<table><tbody>
-<tr><td width=20></td><td><code>ones(m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 1.</td></tr>
-<tr><td width=20></td><td><code>randi(...)</code></a></td><td> </td><td width=10> </td><td>Return a mathly matrix of which each element is a random integer in a specified range.</td></tr>
-<tr><td width=20></td><td><code>zeros(m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 0.</td></tr>
-<tr><td width=20></td><td><code>rand(m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is a random number in [0, 1].</td></tr>
-<tr><td width=20></td><td> </td><td> </td><td width=10> </td><td> </td></tr>
-<tr><td width=20></td><td> </td><td> </td><td width=10> </td><td><u>Note</u>: Each function returns a table rather than a mathly column vector if <code>m = 1</code>.</td></tr>
-</tbody></table>
-<pre><code>
-require 'mathly'
-A = ones(2) -- or ones(2, 2)
-disp(A)
--- 1 1
--- 1 1
-B = zeros(2, 3) + 5
-disp(B)
--- 5 5 5
--- 5 5 5
-disp(A * B)
--- 10 10 10
--- 10 10 10
-
-C = zeros(1, 5)  -- return a table rather than a mathly matrix
--- C + 10 -- not allowed because C is not a mathly vector/matrix
-display(C)
--- {0, 0, 0, 0, 0}
-
-D = zeros(3, 1)  -- a mathly column vector
-disp(D)
--- 0
--- 0
--- 0
-display(D)
--- {{0}, {0}, {0}}
-disp(2*D + 3)
--- 3
--- 3
--- 3
-
-A = randi({0, 100}, 2, 3) -- each element is a random integer in [0, 100]
-disp(A)
-A = randi({50, 90}, 3, 1) -- each element is a random integer in [50, 90]
-display(A)
-A = randi({50, 90}, 1, 5) -- return a table rather than a mathly matrix
-display(A)
-</code></pre>
-<table><tbody>
-<p>&#x2713; &nbsp; The usage of <code>randi(...)</code> is different.</p>
-<tr><td><code>randi(imax)</code></td><td> </td><td width=10> </td><td>Return an random integer in <code>[1, imax]</code>.</tr>
-<tr><td><code>randi({imin, imax})</code></td><td> </td><td width=10> </td><td>Return an random integer in <code>[imin, imax]</code>.</tr>
-<tr><td><code>randi(imax, m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is in <code>[1, imax]</code>. (<code>n</code> is optional. The default is <code>m</code>.)</tr>
-<tr><td><code>randi({imin, imax}, m, n)</code></td><td> </td><td width=10> </td><td>Return a mxn mathly matrix of which each element is in <code>[imin, imax]</code>. (<code>n</code> is optional. The default is <code>m</code>.)</tr>
-</tbody></table>
-<h4>&bull; &nbsp; <a name=plot href=#mathly><code>plot(...)</code></a></h4>
-<p>Plot the graph(s) of functions defined by data points , using specifications/options.</p>
-<p><b>Some specifications:</b></p>
-<ol>
-<li>of a line, i.e., the graph of a function:<p><code>width</code>=5</p><p><code>style</code>=<code>'-'</code> [solid, <code>':'</code> (dot), or <code>'--'</code> (dash)]</p><p><code>mode</code>=<code>'lines+markers'</code>, <code>'lines'</code>, or <code>'markers'</code></p></li><p></p>
-<li>of a marker:<p><code>size</code>=10</p><p><code>symbol</code>=<code>'circle'</code></p>
-Some possible symbols are <code>circle</code>, <code>circle-open</code>, <code>circle-open-dot</code>, <code>cross</code>, <code>diamond</code>, <code>square</code>, <code>x</code>, <code>triangle-left</code>, <code>triangle-right</code>, <code>triangle-up</code>, <code>triangle-down</code>, <code>hexagram</code>, <code>star</code>, <code>hourglass</code>, <code>bowtie</code>.</li><p></p>
-<li>of a plot:<p><code>layout</code>={<code>width</code>=500, <code>height</code>=400, <code>grid</code>={<code>rows</code>=2, <code>columns</code>=2}, <code>title</code>='Demo'}</p></li>
-</ol>
-<p><b>Some examples:</b></p>
-<pre><code>
-require 'mathly'
-x = linspace(0, pi, 100)
-y1 = sin(x)
-y2 = map(math.cos, x)
-y3 = map(function(x) return x^2*math.sin(x) end, x)
-
-specs1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example'}}
-specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
-specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
-
-plot(math.sin, '--r') -- plot a function
-plot(x, y1)           -- plot a function defined by x and y1
-plot(x, y1, math.cos, x, y2, specs1, math.sin, '--r')
-plot(x, y1, '--xr', x, y2, {1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'})
-plot(x, y1, '--xr', x, y2, ':g')
-plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
-plot(x, y1, specs1, x, y2, x, y3, 'o')
-plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
-
-plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
-plot(rand(125, 4),{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
-plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}})
-plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
-plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
-</code></pre>
-<h4>&bull; &nbsp; <a name=polyval href=#mathly><code>polyval(coefs, x)</code></a></h4>
-<p>Evaluate at <code>x</code> the value of a polynomial of which the coefficients are specified
-in a table <code>coefs</code>.</p>
-<p>For a polynomial of <code>p(x) = a<sub>n</sub>x<sup>n</sup> + a<sub>n-1</sub>x<sup>n-1</sup> + ... +
-a<sub>1</sub>x + a<sub>0</sub></code>,
-<code>coefs = {a<sub>n</sub>, a<sub>n-1</sub>, ..., a<sub>0</sub>}</code>.
-For example, <code>p(x) = -2x<sup>4</sup> + 4x<sup>2</sup> - 5x</code>, <code>coef = {-2, 0, 4, -5, 0}.</code></p>
-<pre><code>
-require 'mathly'
-x = polyval({1, 2, 1}, 0) -- evaluate x<sup>2</sup> + 2x + 1 at x = 0
-print(x)
--- 1.0
-</code></pre>
-<h4>&bull; &nbsp; <a name=sum></a><a name=prod href=#mathly><code>prod(A)</code>, <code>sum(A)</code></a></h4>
-<ol>
-<li>If <code>A</code> is a table or mathly row/column vector, return the product/sum of its elements;</li>
-<li>If <code>A</code> is a <code>mxn</code> matrix, return a row vector of which the <code>i</code>-th element is the product/sum of
-the <code>i</code>-th column of <code>A</code>.</p></li>
-</ol>
-<pre><code>
-m = require('mathly')
-a = {1, 2, 3}
-print(sum(a))
--- 6
-
-a = {{1}, {2}, {3}}
-print(sum(a))
--- 6
-
-a = m{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}}
-disp(a)
---  1  2  3
---  2  3  4
---  3  4  5
-disp(sum(a))
--- {6, 9, 12}
-disp(prod(a))
--- {6, 24, 60}
-</code></pre>
-<h4>&bull; &nbsp; <a name=range href=#mathly><code>range(x, y, s)</code></a></h4>
-<p>Return a table of numbers starting at <code>x</code>, in between <code>x</code> and <code>y</code>, and incrementing by <code>s</code> (1 by default).</p>
-<pre><code>
-require 'mathly'
-x = range(1, 10)
-disp(x)
--- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-
-display(range(10, 1, -1))
--- {10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
-
-disp(range(0, 6, 0.5))
--- {0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6}
-</code></pre>
-<h4>&bull; &nbsp; <a name=reshape href=#mathly><code>reshape(A, m, n)</code></a></h4>
-<p>Rearrange existing elements in a table or mathly matrix <code>A</code> and return a new <code>mxn</code> mathly matrix.</p>
-<pre><code>
-m = require('mathly')
-reshape({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 3) -- return a 3x4 mathly matrix, where 4 is automatically determined
--- 1  4  7  10
--- 2  5  8  0
--- 3  6  9  0
-
-reshape({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 3, 5) -- <b>column wise</b>; no sufficient numbers in a table? fill with 0
--- 1  4  7  10  0
--- 2  5  8  0   0
--- 3  6  9  0   0
-
-a = m{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}}
-disp(a)
--- 1  2  3
--- 2  3  4
--- 3  4  5
-b = reshape(a, 2)
-disp(a)
-disp(b)
--- 1  3  3  3  5
--- 2  2  4  4  0
-c = reshape(a, 2, 7)
-disp(c)
--- 1  3  3  3  5  0  0
--- 2  2  4  4  0  0  0
-</code></pre>
-<h4>&bull; &nbsp; <a name=rref href=#mathly><code>rref(A, ...)</code></a></h4>
-<p>If there is one more argument, i.e., <code>rref(A, B)</code>, <code>A</code> and <code>B</code> will be merged horizontally into A.
-<p><code>A</code> and <code>B</code> must be mathly matrices with the same row number.</p>
-<p>Return the reduced row-echelon form of a mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> and <code>B</code> are modified.</p>
-<p>To solve <code>Ax = b</code>, call <code>rref(A, b)</code> first, and <code>b</code> gives the solution.</p>
-<pre><code>
-m = require('mathly')
-a = m{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
-disp(a)
---  1  2  3
---  2  3  4
---  3  4  5
---  4  5  6
-rref(a)
-disp(a)
---  1  0 -1
---  0  1  2
---  0  0  0
---  0  0  0
-
--- To solve Ax = b<sub>1</sub>, Ax = b<sub>2</sub>, and Ax = b<sub>3</sub>:
-m = require('mathly')
-A = m{{1, 2, 3}, {2, 3, 4}, {0, -1, 2}}
-b1 = m{{1},{2},{3}}
-b2 = m{{1},{0},{5}}
-b3 = m{{-2},{1},{2}}
-
-B = m(horzcat(b1, b2, b3))
-rref(A, B)
-disp(B)
---  1.7500  -1.2500   7.2500
--- -1.5000  -1.5000  -3.5000
---  0.7500   1.7500  -0.7500
--- the solutions are
-display((B^T)[1])
--- {1.7500, -1.5000, 0.7500}
-display((B^T)[2])
--- {-1.2500, -1.5000, 1.7500}
-display((B^T)[3])
--- {7.2500, -3.5000, -0.7500}
-</code></pre>
-<h4>&bull; &nbsp; <a name=save href=#mathly><code>save(datafile, ...)</code></a></h4>
-<p>Save specified or all user-defined variables and their values to file <code>datafile</code>.</p>
-<p>Note: If the name of <code>datafile</code> ends in <code>.m</code>, the data is saved in the format of MATLAB
-scripts. <em>Only matrices are saved as matrices.</em> All other types of tables will be flattened and
-saved as row vectors.</p>
-<pre><code>
-mathly = require 'mathly'
-a = randi(100, 3, 2)
-disp(a)
---  48  43 -- it varies
---  71  72
---  66   5
-b = {1, 2, {3, {4, {5, 6, {7}}}}}
-c = 100
-save('data_1.lua')            -- save all user-defined variables and their values to a file,
-                              -- data_1.lua, in present working directory
-                              -- to save to different place? e.g., 'D:/Workspace/data_1.lua'
-save('data_2.lua', 'a', 'b')  -- save variables a, b, and their values to a file, data_2.lua,
-                              -- in present working directory
-
-save('data.m', 'a', 'b')      -- save variables a, b, and their values to a file, data.m, in the format
-                              -- of MATLAB scripts.
-
-clear()
-print(a, b, c)
--- nil nil nil -- not defined
-
-dofile('data_2.lua') -- load/recover the data
-a = mathly(a)
-disp(a)
---  48  43
---  71  72
---  66   5
-disp(b)
--- {1, 2, {3, {4, {5, 6, {7}}}}}
-print(c)
--- nil
-</code></pre>
-<h4>&bull; &nbsp; <a name=seq href=#mathly><code>seq(x, y, n)</code></a></h4>
-<p>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</p>
-<pre><code>
-require 'mathly'
-x = seq(1, 10) -- same as range(1, 10)
-disp(x)
--- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-
-x = seq(0, 1, 10) -- same as linspace(0, 1, 10)
-display(x)
--- {0, 0.1111, 0.2222, 0.3333, 0.4444, 0.5556, 0.6667, 0.7778, 0.8889, 1.0000}
-</code></pre>
-<h4>&bull; &nbsp; <a name=linsolve href=#mathly><code>linsolve(A, b, opt)</code></a></h4>
-<p>Solve a linear system <code>Ax = b</code> and return the solution.</p>
-<p>The argument <code>opt</code> is optional:</p>
-<ol>
-<li><code>'LT'</code>: <code>A</code> is lower triangular</li>
-<li><code>'UT'</code>: <code>A</code> is upper triangular</li>
-</ol>
-<p>If <code>A</code> is neither upper nor lower triangular, call <code>rref(A, b)</code> first, and <code>b</code> gives the solution, and both <code>A</code> and <code>b</code> are modified.</p>
-<pre><code>
-require 'mathly'
-a = randi(100, 3)
-aa = copy(a)
-b = randi(100, 3, 1)
-disp(a)
---  58  18  88 -- it varies
---  68  30  71
---  14  75  49
-disp(b)
--- 89
--- 6
--- 4
-
-x = linsolve(a, b)
-disp(x)
--- -2.1499
--- -1.3064
---  2.6955
-
-x = linsolve(aa, {89, 6, 4}) -- or linsolve(aa, {{89}, {6}, {4}})
-disp(x)
--- -2.1499
--- -1.3064
---  2.6955
-</code></pre>
-<h4>&bull; &nbsp; <a name=submatrix href=#mathly><code>submatrix(A, i, j, m, n, sr, sc)</code></a></h4>
-<p>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row
-and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column
-with row step <code>sr</code> and column step <code>sc</code>.</p>
-<pre><code>
-m = require('mathly')
-
-a = m{{22, 15, 94, 77, 48}, {43, 58, 96, 64,  5},
-      {20, 85, 90, 37, 92}, {16, 67,  9, 56, 33}}
-disp(a)
--- 22  15  94  77  48
--- 43  58  96  64   5
--- 20  85  90  37  92
--- 16  67   9  56  33
-b = submatrix(a, 3, 2, 4, 4) -- default value of sr and sc is 1 each
-disp(b)
---  85  90  37
---  67   9  56
-B = submatrix(a, 1, 1, 4, 4, 2, 1) -- or submatrix(a, 1, 1, 4, 4, 2)
-disp(B)
--- 22  15  94  77
--- 20  85  90  37
-C = submatrix(a, 2, 1, 5, 5, 2, 3) -- or submatrix(a, 1, 1, 4, 4, 2)
-disp(C)
--- 43  64
--- 16  56
-</code></pre>
-<h4>&bull; &nbsp; <a name=subtable href=#mathly><code>subtable(tbl, i, j, s)</code></a></h4>
-<p>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code> (default: 1).</p>
-<p>See also: <a href=#tt><code>tt(...)</code></a>.</p>
-<pre><code>
-m = require('mathly')
-x = {1, 2, {3}, 4, {{5, 6, {7}}}}
-display(subtable(x, 2, 4))
--- {2, {3}, 4}
-
-a = m{1, 2, 3, 4, 5, 6, 7} -- {{1, 2, 3, 4, 5, 6, 7}}
-display(subtable(a[1], 3, 5))
--- {3, 4, 5}
-
-x = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
-y = subtable(x, 1, 11, 3)
-display(y)
--- {1, 4, 7, 10}
-</code></pre>
-<h4>&bull; &nbsp; <a name=toc></a><a name=tic href=#mathly><code>tic()</code>, <code>toc(...)</code></a></h4>
-<table><tbody>
-<tr><td width=20></td><td><code>tic()</code></td><td> </td><td width=10> </td><td>Start a wall-clock timer.</td></tr>
-<tr><td width=20></td><td><code>toc(...)</code></td><td> </td><td width=10> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
-</tbody></table>
-<pre><code>
-require 'mathly'
-
-tic() -- start recording the time
-for i = 1, 10000000 do
-  x = math.cos(i) * math.sin(i)
-end
-toc()
-
-x = toc(1) -- pass any none-nil value to toc to get the elapsed time; otherwise, print the elapsed time
-printf("The loop took %.2f seconds.", x)
-</code></pre>
-<h4>&bull; &nbsp; <a name=sprintf></a><a name=printf href=#mathly><code>printf(...)</code>, <code>sprintf(...)</code></a></h4>
-<p>This kind of functions is a commonly used tool for printing or preparing a formatted string in many programming languages like C/C++ and MATLAB. They print or prepare a formatted string.</p>
-<p>These two functions depend on <a href="manual.html#pdf-string.format"><code>string.format</code></a>.</p>
-<table><tbody>
-<tr><td width=20></td><td><code>printf</code></td><td> </td><td width=10> </td><td>Print a formatted string.</td></tr>
-<tr><td width=20></td><td><code>sprintf</code></td><td> </td><td width=10> </td><td>Prepare a formatted string.</td></tr>
-</tbody></table>
-
-<h4>&bull; &nbsp; <a name=max></a><a name=min href=#mathly><code>max(x)</code>, <code>min(x))</code></a></h4>
-<p>If <code>x</code> is an array or row/column vector, return the largest/smallest of all elements in it; if it is a matrix, return a table consisting of the largest/smallest of each column of <code>x</code>.</p>
-<table><tbody>
-<pre><code>
-require 'mathly'
-
-x = {1, -10, 2, 31, 4, 7}
-print(min(x), max(x))
--- -10  31
-
-a = randi({-50, 50}, 3, 5)
-disp(a)
--- -12  -19   -15    6  -11
---   3   43    36   29  -26
--- -38   -9   -16   20   16
-display(min(a))
--- {-38, -19, -16, 6, -26}
-disp(max(a))
--- {3, 43, 36, 29, 16}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=cc></a><a name=rr></a><a name=tt href=#mathly><code>cc(x...)</code>, <code>rr(x...)</code>, <code>tt(x)</code></a></h4>
@@ -1091,8 +418,161 @@ display(tt(x, 2, 4))       -- flattened first
 display(tt(x, 2))
 -- {2, 3, 4, 5, 6, 7}
 </code></pre>
+
+<h4>&bull; &nbsp; <a name=extract></a><a name=check href=#mathly><code>check(A, f)</code>, <code>extract(A, B)</code></a></h4>
+<p>The two functions are usually used together.</p>
+<ol>
+<li><code>check(A, f)</code>: Check if each element of matrix <code>A</code> makes <code>f(x)</code> true or not, return 1 or 0 for the element.</li><p></p>
+<li><code>extract(A, B)</code>: Return a column vector of elements of <code>A</code> columnwisely if the corresponding element of <code>B</code> is 1.</li>
+</ol>
+<p>Note: <code>f(x)</code> returns true or false (default: <code>x ~= 0</code>).</p></li>
+<pre><code>
+mathly = require('mathly')
+A = mathly{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
+disp(A)
+-- 1  2  3
+-- 4  5  6
+-- 7  8  9
+C = check(A, function(x) return x >= 2 and x % 2 == 0 end)
+disp(C)
+-- 0  1  0
+-- 1  0  1
+-- 0  1  0
+B = extract(A, C)
+disp(B)
+-- 4
+-- 2
+-- 8
+-- 6
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=copy href=#mathly><code>copy(x)</code></a></h4>
+<P>Make a deep copy of <code>x</code>.</P>
+<pre><code>
+m = require('mathly')
+a = {1, 2, {3, 4, {5, 6}}}
+b = copy(a)
+b[3] = 0
+display(a)
+-- {1, 2, {3, 4, {5, 6}}}
+display(b)
+-- {1, 2, 0}
+
+A = m{{1, 2}, {3, 4}}
+B = copy(A)
+inv(A) -- A is modified
+disp(A)
+-- 1 0
+-- 0 1
+disp(B)
+-- 1 2
+-- 3 4
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=cross href=#mathly><code>cross(a, b)</code></a></h4>
+<P>Return the cross/vector product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>}</code>
+and <code>b = {b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub>}</code>.</P>
+<pre><code>
+require 'mathly'
+display(cross({1, 2, 3}, {3, 4, 5}))
+-- {-2, 4, -2}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=diag href=#mathly><code>diag(A, ...)</code></a></h4>
+<ol>
+<li><code>diag( A, k )</code>, where <code>A</code> is a mathly <code>mxn</code> matrix, <code>m &ne; 1</code> and <code>n &ne; 1</code>.
+<p>Return the table of all entries of the <code>k</code>-th diagonal as a column vector.</p>
+<p>The second argument <code>k</code> is optional. Its default value is 0.</p>
+<p>Which diagonal? If <code>k = 0</code>, the main diagonal; if <code>k = j</code>, the diagonal <code>j</code> rows above (if <code>j &gt; 0</code>)
+or <code>-j</code> rows below the main diagonal (if <code>j &lt; 0</code>). E.g., if <code>k = 1</code>, the diagonal right above the main
+diagonal; if <code>k = -1</code>, the diagonal right below the main diagonal.</p></li>
+
+<li><code>diag(v)</code>, where <code>v</code> is a table or a row/column vector.
+<p>Return a <code>nxn</code> matrix with <code>v</code> as its main diagonal, where <code>n = length(v)</code>.</p></li>
+
+<li><code>diag(v, k)</code>, where <code>v</code> is a table or a row/column vector.
+<p>If <code>k &gt; 0</code>, return a matrix with <code>v</code> as the diagonal <code>k</code> rows above the main diagonal.</p>
+<p><code>If k &lt; 0</code>, return a matrix with <code>v</code> as the diagonal <code>-k</code> rows below the main diagonal</p>
+<p>If <code>k = 0</code>, same as <code>diag(v)</code>.</p></li>
+
+<li><code>diag(v, m, n)</code>, where <code>v</code> is a table or a row/column vector.</p>
+<p>Return a <code>mxn</code> matrix with vector v (or first elements in it) as its main diagonal.</p></li>
+</ol>
+<pre><code>
+m = require('mathly')
+a = m{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
+disp(a)
+-- 1  2  3
+-- 2  3  4
+-- 3  4  5
+-- 4  5  6
+disp(diag(a))
+-- 1
+-- 3
+-- 5
+disp(diag(a, 1))
+-- 2
+-- 4
+disp(diag(a, -2))
+-- 3
+-- 5
+diag({1, 2, 3})
+-- 1  0  0
+-- 0  2  0
+-- 0  0  3
+diag(cc{1, 2, 3, 4}, 3, 2)
+-- 1  0
+-- 0  2
+-- 0  0
+diag({1, 2, 3},2)
+-- 0  0  1  0  0
+-- 0  0  0  2  0
+-- 0  0  0  0  3
+-- 0  0  0  0  0
+-- 0  0  0  0  0
+diag({1, 2, 3},-1)
+-- 0  0  0  0
+-- 1  0  0  0
+-- 0  2  0  0
+-- 0  0  3  0
+diag({2,3,4,5}, 1) + diag({1,2,3,4,5}) + diag({3,4,5,6}, -1) -- See also: <a name=diag1></a><a href=#remake1>remake</a>
+-- 1  2  0  0  0
+-- 3  2  3  0  0
+-- 0  4  3  4  0
+-- 0  0  5  4  5
+-- 0  0  0  6  5
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=disp href=#mathly><code>disp(A)</code></a> - Print a mathly matrix. If <code>A</code> is not a mathly matrix, <code>display</code> is called to print it.</h4>
+<h4>&bull; &nbsp; <a name=display href=#mathly><code>display(x)</code></a> - Print a table with structure.</h4>
+<pre><code>
+require 'mathly'
+a = eye(3)
+disp(a)
+-- 1 0 0
+-- 0 1 0
+-- 0 0 1
+display(a)
+-- {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
+
+x = {1, 2, {3, 4, {5, 6, {7, 8, {9}}}}}
+display(x)
+-- {1, 2, {3, 4, {5, 6, {7, 8, {9}}}}}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=dot href=#mathly><code>dot(a, b)</code></a></h4>
+<P>Return the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ...}</code>
+and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ...}</code>.</P>
+<pre><code>
+require 'mathly'
+display(dot({1, 2, 3}, {3, 4, 5}))
+-- 26
+display(dot({1, 2}, {3, 4}))
+-- 11
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=expand href=#mathly><code>expand(A, m, n, v)</code></a></h4>
-<p>Return an expanded/shrinked mathly matrix with value v's added or entries dropped.</p>
+<p>Return an expanded/shrunk mathly matrix with value v's added or entries dropped.</p>
 <p>The default value of <code>v</code> is 0, and the default value of <code>n</code> is <code>m</code>.</p>
 <pre><code>
 mathly = require('mathly')
@@ -1113,28 +593,29 @@ disp(expand(a, 2))
 -- 52  67
 -- 82  15
 </code></pre>
-<h4>&bull; &nbsp; <a name=repmat href=#mathly><code>repmat(A, m, n)</code></a></h4>
-<p>Return a mxn block matrix with each entry a copy of matrix <code>A</code>. The default value of <code>n</code> is <code>m</code>.</p>
+
+<h4>&bull; &nbsp; <a name=flatten href=#mathly><code>flatten(x)</code></a></h4>
+<p>Remove the structure of table <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</p>
+<p>If <code>x</code> is a mathly matrix, it does rowwisely. For columnwise flattening, see <a href=#tt><code>tt(...)</code></a>.</p>
 <pre><code>
-mathly = require('mathly')
-a = mathly{{1, 2, 3}, {2, 3, 4}}
-disp(a)
--- 1  2  3
--- 2  3  4
-disp(repmat(a, 2))
--- 1  2  3  1  2  3
--- 2  3  4  2  3  4
--- 1  2  3  1  2  3
--- 2  3  4  2  3  4
-disp(repmat(a, 2, 3))
--- 1  2  3  1  2  3  1  2  3
--- 2  3  4  2  3  4  2  3  4
--- 1  2  3  1  2  3  1  2  3
--- 2  3  4  2  3  4  2  3  4
-disp(repmat(5, 2, 3)) -- same as mathly(2, 3, 5)
--- 5  5  5
--- 5  5  5
+m = require('mathly')
+x = {1, 2, {3, 4, {5, 6, {7, 8, {9}}}}}
+y = flatten(x)
+display(y)
+-- {1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+A = m{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
+-- 1 2 3
+-- 4 5 6
+-- 7 8 9
+a = flatten(A)
+display(a)
+-- {1, 2, 3, 4, 5, 6, 7, 8, 9} -- row wise
+b = flatten(A^T) -- or b = tt(A^T)
+display(b)
+-- {1, 4, 7, 2, 5, 8, 3, 6, 9} -- column wise
 </code></pre>
+
 <h4>&bull; &nbsp; <a name=fliplr></a><a name=flipud href=#mathly><code>flipud(A), fliplr</code></a></h4>
 <ol>
 <li>flipud(A): Return a matrix with rows of matrix <code>A</code> reversed. (ud: upside down)</li>
@@ -1153,7 +634,128 @@ disp(fliplr(a))
 -- 3  2  1
 -- 4  3  2
 </code></pre>
-</div>
+
+<h4>&bull; &nbsp; <a name=format href=#mathly><code>format(fmt)</code></a></h4>
+<p>Reset or specify the format of the output of <code>disp(...)</code>. <code>fmt</code> can be any of the following options.</p>
+<table><tbody>
+<tr><td width=20></td><td><code>'bank'</code></td><td> </td><td width=10> </td><td>2 decimal places</td></tr>
+<tr><td width=20></td><td><code>'short'</code></td><td> </td><td width=10> </td><td>4 decimal places (default).</td></tr>
+<tr><td width=20></td><td><code>'long'</code></td><td> </td><td width=10> </td><td>15 decimal places</td></tr>
+</tbody></table>
+
+<h4>&bull; &nbsp; <a name=hasindex href=#mathly><code>hasindex(table, index)</code></a></h4>
+<p>Check if <code>table</code> contains <code>index</code>.</p>
+<pre><code>
+require 'mathly'
+opt = {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}}
+print(hasindex(opt, 'grid'))
+-- true
+print(hasindex(opt, 'rows'))
+-- true
+print(hasindex(opt, 'color'))
+-- false
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=horzcat href=#mathly><code>horzcat(A, B, ...)</code></a></h4>
+<P>Concatenate matrices A, B, ... in order horizontally. Matrices must have the same number of rows.</P>
+<p><em>Operator .. can be used to repalce <code>horzcat</code>.</em></p>
+<p>See also: <a href=#vertcat><code>vertcat</code></a></p>
+<pre><code>
+m = require('mathly')
+A = m{{1, 2}, {3, 4}}
+disp(A)
+-- 1  2
+-- 3  4
+B = m{{5}, {6}}
+disp(B)
+-- 5
+-- 6
+C = m{{7, 8, 9}, {10, 11, 12}}
+disp(C)
+--  7  8  9
+-- 10 11 12
+D = A .. B .. C -- same as horzcat(A, B, C)
+disp(D)
+-- 1  2  5  7  8  9
+-- 3  4  6 10 11 12
+disp(rr{1, 2, 3} .. rr{4, 5})
+--  1  2  3  4  5
+
+b = {5, 6}
+disp(A .. cc(b)) -- augmented coefficient matrix for Ax = b
+-- 1  2  5
+-- 3  4  6
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=inv href=#mathly><code>inv(A)</code></a></h4>
+<p>Return the inverse of a square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</p>
+<pre><code>
+m = require('mathly')
+I = eye(3)
+A = m{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
+B = copy(A)
+C = inv(A) * B
+disp(C)
+--       1        0  -0.0000
+--  0.0000   1.0000   0.0000
+-- -0.0000  -0.0000        1
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=ismember href=#mathly><code>ismember(x, table)</code></a></h4>
+<p>Check if <code>x</code> is a member of <code>table</code>.</p>
+<pre><code>
+require 'mathly'
+x = {1, 2, 3, {4, 5, {6}}}
+print(ismember(3, x))
+-- true
+print(ismember(4, x))
+-- false
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=linsolve href=#mathly><code>linsolve(A, b, opt)</code></a></h4>
+<p>Solve a linear system <code>Ax = b</code> and return the solution.</p>
+<p>The argument <code>opt</code> is optional:</p>
+<ol>
+<li><code>'LT'</code>: <code>A</code> is lower triangular</li>
+<li><code>'UT'</code>: <code>A</code> is upper triangular</li>
+</ol>
+<p>If <code>A</code> is neither upper nor lower triangular, call <code>rref(A, b)</code> first, and <code>b</code> gives the solution, and both <code>A</code> and <code>b</code> are modified.</p>
+<pre><code>
+require 'mathly'
+a = randi(100, 3)
+aa = copy(a)
+b = randi(100, 3, 1)
+disp(a)
+--  58  18  88 -- it varies
+--  68  30  71
+--  14  75  49
+disp(b)
+-- 89
+-- 6
+-- 4
+
+x = linsolve(a, b)
+disp(x)
+-- -2.1499
+-- -1.3064
+--  2.6955
+
+x = linsolve(aa, {89, 6, 4}) -- or linsolve(aa, {{89}, {6}, {4}})
+disp(x)
+-- -2.1499
+-- -1.3064
+--  2.6955
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=linspace href=#mathly><code>linspace(x, y, n)</code></a></h4>
+<p>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</p>
+<pre><code>
+require 'mathly'
+x = linspace(0, 2*pi, 1000)
+y = cos(x)
+plot(x, y, '-or')
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=lu href=#mathly><code>lu(A)</code></a></h4>
 <p>Return <code>L</code> and <code>U</code> of LU factorization <code>A = LU</code>, where <code>L</code> and <code>U</code> are lower and upper triangular matrices, respectively.</p>
 <pre><code>
@@ -1173,6 +775,225 @@ disp(L * U - A)
 -- 0  0  0
 -- 0  0  0
 </code></pre>
+
+<h4>&bull; &nbsp; <a name=map href=#mathly><code>map(f, tbl)</code></a></h4>
+<p>Apply function <code>f</code> to each atomic element in table <code>tbl</code> and return the result with the same structure of the table.</p>
+<pre><code>
+m = require('mathly')
+a = range(1, 10) -- seq(1, 10) or seq(10)
+-- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+function f(x) return x ^ 2 end
+b = map(f, a)
+display(b)
+-- {1, 4, 9, 16, 25, 36, 49, 64, 81, 100}
+
+function g(x, y) return x + y end
+display(map(g, a, b))
+-- {2, 6, 12, 20, 30, 42, 56, 72, 90, 110}
+
+x = {1, 2, {3, 4, {5, 6, {7}}}}
+display(map(f, x))
+{1, 4, {9, 16, {25, 36, {49}}}}
+
+A = m{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
+map(f, A) -- A is a mathly matrix, the result of map(f, A) is a mathly matrix, too.
+-- 1   4   9
+-- 9  16  25
+-- 1   4   0
+
+A = {{1, 2, 3}, {2, 3, 4}}
+B = {{3, 4, 5}, {5, 6, 7}}
+C = map(function(x, y) return x * y end, A, B) -- MATHLAB: A .* B
+disp(C)
+-- {{3, 8, 15}, {10, 18, 28}}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=max></a><a name=min href=#mathly><code>max(x)</code>, <code>min(x))</code></a></h4>
+<p>If <code>x</code> is an array or row/column vector, return the largest/smallest of all elements in it; if it is a matrix, return a table consisting of the largest/smallest of each column of <code>x</code>.</p>
+<table><tbody>
+<pre><code>
+require 'mathly'
+
+x = {1, -10, 2, 31, 4, 7}
+print(min(x), max(x))
+-- -10  31
+
+a = randi({-50, 50}, 3, 5)
+disp(a)
+-- -12  -19   -15    6  -11
+--   3   43    36   29  -26
+-- -38   -9   -16   20   16
+display(min(a))
+-- {-38, -19, -16, 6, -26}
+disp(max(a))
+-- {3, 43, 36, 29, 16}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=mean href=#mathly><code>mean(x)</code></a></h4>
+<ol>
+<li>If <code>x</code> is a table or mathly row/column vector, return the mean of its elements;</li>
+<li>If <code>x</code> is a <code>mxn</code> matrix, return a row vector of which the <code>i</code>-th element is the mean of
+the <code>i</code>-th column of <code>x</code>.</p></li>
+</ol>
+<pre><code>
+mathly = require('mathly')
+disp(mean({1,2,3}))
+-- 2
+A = mathly{{1, 2, 3}, {2, 3, 4}, {3, 1, 2}}
+disp(A)
+-- 1  2  3
+-- 2  3  4
+-- 3  1  2
+disp(mean(A))
+-- 2  2  3
+print(mean('abc')) -- 'abc' --> {97, 98, 99}, string.byte('a') ...
+-- 98.0
+print(mean({'abc', 'de'})) --> strcat first: 'abcde' --> mean('abcde')
+-- 99.0
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=zeros></a><a name=rand></a><a name=randi></a><a name=ones href=#mathly><code>ones</code>, <code>zeros</code>, <code>rand</code>, <code>randi</code></a></h4>
+<p>The usage of these functions is the same except randi that can take more arguments.</p>
+<table><tbody>
+<tr><td width=20></td><td><code>ones(m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 1.</td></tr>
+<tr><td width=20></td><td><code>randi(...)</code></a></td><td> </td><td width=10> </td><td>Return a mathly matrix of which each element is a random integer in a specified range.</td></tr>
+<tr><td width=20></td><td><code>zeros(m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 0.</td></tr>
+<tr><td width=20></td><td><code>rand(m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is a random number in [0, 1].</td></tr>
+<tr><td width=20></td><td> </td><td> </td><td width=10> </td><td> </td></tr>
+<tr><td width=20></td><td> </td><td> </td><td width=10> </td><td><u>Note</u>: Each function returns a table rather than a mathly column vector if <code>m = 1</code>.</td></tr>
+</tbody></table>
+<pre><code>
+require 'mathly'
+A = ones(2) -- or ones(2, 2)
+disp(A)
+-- 1 1
+-- 1 1
+B = zeros(2, 3) + 5
+disp(B)
+-- 5 5 5
+-- 5 5 5
+disp(A * B)
+-- 10 10 10
+-- 10 10 10
+
+C = zeros(1, 5)  -- return a table rather than a mathly matrix
+-- C + 10 -- not allowed because C is not a mathly vector/matrix
+display(C)
+-- {0, 0, 0, 0, 0}
+
+D = zeros(3, 1)  -- a mathly column vector
+disp(D)
+-- 0
+-- 0
+-- 0
+display(D)
+-- {{0}, {0}, {0}}
+disp(2*D + 3)
+-- 3
+-- 3
+-- 3
+
+A = randi({0, 100}, 2, 3) -- each element is a random integer in [0, 100]
+disp(A)
+A = randi({50, 90}, 3, 1) -- each element is a random integer in [50, 90]
+display(A)
+A = randi({50, 90}, 1, 5) -- return a table rather than a mathly matrix
+display(A)
+</code></pre>
+<table><tbody>
+<p>&#x2713; &nbsp; The usage of <code>randi(...)</code> is different.</p>
+<tr><td><code>randi(imax)</code></td><td> </td><td width=10> </td><td>Return an random integer in <code>[1, imax]</code>.</tr>
+<tr><td><code>randi({imin, imax})</code></td><td> </td><td width=10> </td><td>Return an random integer in <code>[imin, imax]</code>.</tr>
+<tr><td><code>randi(imax, m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is in <code>[1, imax]</code>. (<code>n</code> is optional. The default is <code>m</code>.)</tr>
+<tr><td><code>randi({imin, imax}, m, n)</code></td><td> </td><td width=10> </td><td>Return a mxn mathly matrix of which each element is in <code>[imin, imax]</code>. (<code>n</code> is optional. The default is <code>m</code>.)</tr>
+</tbody></table>
+
+<h4>&bull; &nbsp; <a name=plot href=#mathly><code>plot(...)</code></a></h4>
+<p>Plot the graph(s) of functions defined by data points , using specifications/options.</p>
+<p><b>Some specifications:</b></p>
+<ol>
+<li>of a line, i.e., the graph of a function:<p><code>width</code>=5</p><p><code>style</code>=<code>'-'</code> [solid, <code>':'</code> (dot), or <code>'--'</code> (dash)]</p><p><code>mode</code>=<code>'lines+markers'</code>, <code>'lines'</code>, or <code>'markers'</code></p></li><p></p>
+<li>of a marker:<p><code>size</code>=10</p><p><code>symbol</code>=<code>'circle'</code></p>
+Some possible symbols are <code>circle</code>, <code>circle-open</code>, <code>circle-open-dot</code>, <code>cross</code>, <code>diamond</code>, <code>square</code>, <code>x</code>, <code>triangle-left</code>, <code>triangle-right</code>, <code>triangle-up</code>, <code>triangle-down</code>, <code>hexagram</code>, <code>star</code>, <code>hourglass</code>, <code>bowtie</code>.</li><p></p>
+<li>of a plot:<p><code>layout</code>={<code>width</code>=500, <code>height</code>=400, <code>grid</code>={<code>rows</code>=2, <code>columns</code>=2}, <code>title</code>='Demo'}</p></li>
+</ol>
+<p><b>Some examples:</b></p>
+<pre><code>
+require 'mathly'
+x = linspace(0, pi, 100)
+y1 = sin(x)
+y2 = map(math.cos, x)
+y3 = map(function(x) return x^2*math.sin(x) end, x)
+
+specs1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example'}}
+specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
+specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
+
+plot(math.sin, '--r') -- plot a function
+plot(x, y1)           -- plot a function defined by x and y1
+plot(x, y1, math.cos, x, y2, specs1, math.sin, '--r')
+plot(x, y1, '--xr', x, y2, {1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'})
+plot(x, y1, '--xr', x, y2, ':g')
+plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
+plot(x, y1, specs1, x, y2, x, y3, 'o')
+plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
+
+plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
+plot(rand(125, 4),{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
+plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}})
+plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
+plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=polyval href=#mathly><code>polyval(coefs, x)</code></a></h4>
+<p>Evaluate at <code>x</code> the value of a polynomial of which the coefficients are specified
+in a table <code>coefs</code>.</p>
+<p>For a polynomial of <code>p(x) = a<sub>n</sub>x<sup>n</sup> + a<sub>n-1</sub>x<sup>n-1</sup> + ... +
+a<sub>1</sub>x + a<sub>0</sub></code>,
+<code>coefs = {a<sub>n</sub>, a<sub>n-1</sub>, ..., a<sub>0</sub>}</code>.
+For example, <code>p(x) = -2x<sup>4</sup> + 4x<sup>2</sup> - 5x</code>, <code>coef = {-2, 0, 4, -5, 0}.</code></p>
+<pre><code>
+require 'mathly'
+x = polyval({1, 2, 1}, 0) -- evaluate x<sup>2</sup> + 2x + 1 at x = 0
+print(x)
+-- 1.0
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=sprintf></a><a name=printf href=#mathly><code>printf(...)</code>, <code>sprintf(...)</code></a></h4>
+<p>This kind of functions is a commonly used tool for printing or preparing a formatted string in many programming languages like C/C++ and MATLAB. They print or prepare a formatted string.</p>
+<p>These two functions depend on <a href="manual.html#pdf-string.format"><code>string.format</code></a>.</p>
+<table><tbody>
+<tr><td width=20></td><td><code>printf</code></td><td> </td><td width=10> </td><td>Print a formatted string.</td></tr>
+<tr><td width=20></td><td><code>sprintf</code></td><td> </td><td width=10> </td><td>Prepare a formatted string.</td></tr>
+</tbody></table>
+
+<h4>&bull; &nbsp; <a name=sum></a><a name=prod href=#mathly><code>prod(A)</code>, <code>sum(A)</code></a></h4>
+<ol>
+<li>If <code>A</code> is a table or mathly row/column vector, return the product/sum of its elements;</li>
+<li>If <code>A</code> is a <code>mxn</code> matrix, return a row vector of which the <code>i</code>-th element is the product/sum of
+the <code>i</code>-th column of <code>A</code>.</p></li>
+</ol>
+<pre><code>
+m = require('mathly')
+a = {1, 2, 3}
+print(sum(a))
+-- 6
+
+a = {{1}, {2}, {3}}
+print(sum(a))
+-- 6
+
+a = m{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}}
+disp(a)
+--  1  2  3
+--  2  3  4
+--  3  4  5
+disp(sum(a))
+-- {6, 9, 12}
+disp(prod(a))
+-- {6, 24, 60}
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=qr href=#mathly><code>qr(A)</code></a></h4>
 <p>Return <code>Q</code> and <code>R</code> of QR factorization <code>A = QR</code>, where <code>A</code> is a <code>mxn</code> matrix, <code>Q</code> is a <code>mxn</code> matrix with orthonormal
 column vectors, and <code>R</code> is an invertible upper triangular <code>nxn</code> matrix.</p>
@@ -1194,6 +1015,22 @@ disp(Q * R - A)
 --  0.0000   0.0000  -0.0000
 -- -0.0000  -0.0000  -0.0000
 </code></pre>
+
+<h4>&bull; &nbsp; <a name=range href=#mathly><code>range(x, y, s)</code></a></h4>
+<p>Return a table of numbers starting at <code>x</code>, in between <code>x</code> and <code>y</code>, and incrementing by <code>s</code> (1 by default).</p>
+<pre><code>
+require 'mathly'
+x = range(1, 10)
+disp(x)
+-- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+
+display(range(10, 1, -1))
+-- {10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
+
+disp(range(0, 6, 0.5))
+-- {0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6}
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=remake href=#mathly><code>remake(A, opt)</code></a></h4>
 <p>Generate a lower (opt = 'LT'), upper (opt = 'UT'), diagonal (opt = 'DIAG'), or symmetrical (opt = 'SYM') matrix from matrix <code>A</code>.</p>
 <p>If, say, <code>opt = {k<sub>1</sub>, k<sub>2</sub>, ..., k<sub>m</sub>}</code>, generate from matrix <code>A</code> a matrix which keeps the diagonal entries <code>k<sub>i</sub></code> rows above (<code>k<sub>i</sub> > 0</code>) or <code>-k<sub>i</sub></code> rows below (<code>k<sub>i</sub> < 0</code>) the main diagonal, <code>i = 1, 2, ..., m</code>.</p>
@@ -1232,43 +1069,154 @@ remake(A, {-1, seq(1,3)})
 -- 0  0   0  20   0
 remake(randi({-100, 100}, 6), 'LT') -- generate randomly a lower triangular matrix
 </code></pre>
-<h4>&bull; &nbsp; <a name=unique href=#mathly><code>unique(tbl)</code></a></h4>
-<p>Return the same data as in tbl but with no repetitions. Data is sorted.</p>
-<pre><code>
-require('mathly')
-display(unique({4,5,2,1,-2,2,4,2,7,6,19}))
--- {-2, 1, 2, 4, 5, 6, 7, 19}
-</code></pre>
-<h4>&bull; &nbsp; <a name=strcat href=#mathly><code>strcat(...)</code></a></h4>
-<p>Horizontally concatenate input strings and return the resulted string.</p>
-<p>See also: <a href=#tblcat><code>tblcat</code></a></p>
-<pre><code>
-require('mathly')
-print(strcat('Good', ' ', 'morning', '!'))
--- Good morning!
-</code></pre>
-<h4>&bull; &nbsp; <a name=mean href=#mathly><code>mean(x)</code></a></h4>
-<ol>
-<li>If <code>x</code> is a table or mathly row/column vector, return the mean of its elements;</li>
-<li>If <code>x</code> is a <code>mxn</code> matrix, return a row vector of which the <code>i</code>-th element is the mean of
-the <code>i</code>-th column of <code>x</code>.</p></li>
-</ol>
+
+<h4>&bull; &nbsp; <a name=repmat href=#mathly><code>repmat(A, m, n)</code></a></h4>
+<p>Return a mxn block matrix with each entry a copy of matrix <code>A</code>. The default value of <code>n</code> is <code>m</code>.</p>
 <pre><code>
 mathly = require('mathly')
-disp(mean({1,2,3}))
--- 2
-A = mathly{{1, 2, 3}, {2, 3, 4}, {3, 1, 2}}
-disp(A)
+a = mathly{{1, 2, 3}, {2, 3, 4}}
+disp(a)
 -- 1  2  3
 -- 2  3  4
--- 3  1  2
-disp(mean(A))
--- 2  2  3
-print(mean('abc')) -- 'abc' --> {97, 98, 99}, string.byte('a') ...
--- 98.0
-print(mean({'abc', 'de'})) --> strcat first: 'abcde' --> mean('abcde')
--- 99.0
+disp(repmat(a, 2))
+-- 1  2  3  1  2  3
+-- 2  3  4  2  3  4
+-- 1  2  3  1  2  3
+-- 2  3  4  2  3  4
+disp(repmat(a, 2, 3))
+-- 1  2  3  1  2  3  1  2  3
+-- 2  3  4  2  3  4  2  3  4
+-- 1  2  3  1  2  3  1  2  3
+-- 2  3  4  2  3  4  2  3  4
+disp(repmat(5, 2, 3)) -- same as mathly(2, 3, 5)
+-- 5  5  5
+-- 5  5  5
 </code></pre>
+
+<h4>&bull; &nbsp; <a name=reshape href=#mathly><code>reshape(A, m, n)</code></a></h4>
+<p>Rearrange existing elements in a table or mathly matrix <code>A</code> and return a new <code>mxn</code> mathly matrix.</p>
+<pre><code>
+m = require('mathly')
+reshape({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 3) -- return a 3x4 mathly matrix, where 4 is automatically determined
+-- 1  4  7  10
+-- 2  5  8  0
+-- 3  6  9  0
+
+reshape({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 3, 5) -- <b>column wise</b>; no sufficient numbers in a table? fill with 0
+-- 1  4  7  10  0
+-- 2  5  8  0   0
+-- 3  6  9  0   0
+
+a = m{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}}
+disp(a)
+-- 1  2  3
+-- 2  3  4
+-- 3  4  5
+b = reshape(a, 2)
+disp(a)
+disp(b)
+-- 1  3  3  3  5
+-- 2  2  4  4  0
+c = reshape(a, 2, 7)
+disp(c)
+-- 1  3  3  3  5  0  0
+-- 2  2  4  4  0  0  0
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=rref href=#mathly><code>rref(A, ...)</code></a></h4>
+<p>If there is one more argument, i.e., <code>rref(A, B)</code>, <code>A</code> and <code>B</code> will be merged horizontally into A.
+<p><code>A</code> and <code>B</code> must be mathly matrices with the same row number.</p>
+<p>Return the reduced row-echelon form of a mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> and <code>B</code> are modified.</p>
+<p>To solve <code>Ax = b</code>, call <code>rref(A, b)</code> first, and <code>b</code> gives the solution.</p>
+<pre><code>
+m = require('mathly')
+a = m{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
+disp(a)
+--  1  2  3
+--  2  3  4
+--  3  4  5
+--  4  5  6
+rref(a)
+disp(a)
+--  1  0 -1
+--  0  1  2
+--  0  0  0
+--  0  0  0
+
+-- To solve Ax = b<sub>1</sub>, Ax = b<sub>2</sub>, and Ax = b<sub>3</sub>:
+m = require('mathly')
+A = m{{1, 2, 3}, {2, 3, 4}, {0, -1, 2}}
+b1 = m{{1},{2},{3}}
+b2 = m{{1},{0},{5}}
+b3 = m{{-2},{1},{2}}
+
+B = m(horzcat(b1, b2, b3))
+rref(A, B)
+disp(B)
+--  1.7500  -1.2500   7.2500
+-- -1.5000  -1.5000  -3.5000
+--  0.7500   1.7500  -0.7500
+-- the solutions are
+display((B^T)[1])
+-- {1.7500, -1.5000, 0.7500}
+display((B^T)[2])
+-- {-1.2500, -1.5000, 1.7500}
+display((B^T)[3])
+-- {7.2500, -3.5000, -0.7500}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=save href=#mathly><code>save(datafile, ...)</code></a></h4>
+<p>Save specified or all user-defined variables and their values to file <code>datafile</code>.</p>
+<p>Note: If the name of <code>datafile</code> ends in <code>.m</code>, the data is saved in the format of MATLAB
+scripts. <em>Only matrices are saved as matrices.</em> All other types of tables will be flattened and
+saved as row vectors.</p>
+<pre><code>
+mathly = require 'mathly'
+a = randi(100, 3, 2)
+disp(a)
+--  48  43 -- it varies
+--  71  72
+--  66   5
+b = {1, 2, {3, {4, {5, 6, {7}}}}}
+c = 100
+save('data_1.lua')            -- save all user-defined variables and their values to a file,
+                              -- data_1.lua, in present working directory
+                              -- to save to different place? e.g., 'D:/Workspace/data_1.lua'
+save('data_2.lua', 'a', 'b')  -- save variables a, b, and their values to a file, data_2.lua,
+                              -- in present working directory
+
+save('data.m', 'a', 'b')      -- save variables a, b, and their values to a file, data.m, in the format
+                              -- of MATLAB scripts.
+
+clear()
+print(a, b, c)
+-- nil nil nil -- not defined
+
+dofile('data_2.lua') -- load/recover the data
+a = mathly(a)
+disp(a)
+--  48  43
+--  71  72
+--  66   5
+disp(b)
+-- {1, 2, {3, {4, {5, 6, {7}}}}}
+print(c)
+-- nil
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=seq href=#mathly><code>seq(x, y, n)</code></a></h4>
+<p>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</p>
+<pre><code>
+require 'mathly'
+x = seq(1, 10) -- same as range(1, 10)
+disp(x)
+-- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+
+x = seq(0, 1, 10) -- same as linspace(0, 1, 10)
+display(x)
+-- {0, 0.1111, 0.2222, 0.3333, 0.4444, 0.5556, 0.6667, 0.7778, 0.8889, 1.0000}
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=var></a><a name=std href=#mathly><code>std(x, opt)</code>, <code>var(x, opt)</code></a></h4>
 <ol>
 <li>If <code>x</code> is a table or mathly row/column vector, return the standard deviation of its elements;</li>
@@ -1294,39 +1242,132 @@ disp(var(A))
 disp(var(A, 1))
 -- 1.5556  4.6667  6.8889
 </code></pre>
-<h4>&bull; &nbsp; <a name=format href=#mathly><code>format(fmt)</code></a></h4>
-<p>Reset or specify the format of the output of <code>disp(...)</code>. <code>fmt</code> can be any of the following options.</p>
+
+<h4>&bull; &nbsp; <a name=strcat href=#mathly><code>strcat(...)</code></a></h4>
+<p>Horizontally concatenate input strings and return the resulted string.</p>
+<p>See also: <a href=#tblcat><code>tblcat</code></a></p>
+<pre><code>
+require('mathly')
+print(strcat('Good', ' ', 'morning', '!'))
+-- Good morning!
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=subtable href=#mathly><code>subtable(tbl, i, j, s)</code></a></h4>
+<p>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code> (default: 1).</p>
+<p>See also: <a href=#tt><code>tt(...)</code></a>.</p>
+<pre><code>
+m = require('mathly')
+x = {1, 2, {3}, 4, {{5, 6, {7}}}}
+display(subtable(x, 2, 4))
+-- {2, {3}, 4}
+
+a = m{1, 2, 3, 4, 5, 6, 7} -- {{1, 2, 3, 4, 5, 6, 7}}
+display(subtable(a[1], 3, 5))
+-- {3, 4, 5}
+
+x = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+y = subtable(x, 1, 11, 3)
+display(y)
+-- {1, 4, 7, 10}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=submatrix href=#mathly><code>submatrix(A, i, j, m, n, sr, sc)</code></a></h4>
+<p>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row
+and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column
+with row step <code>sr</code> and column step <code>sc</code>.</p>
+<pre><code>
+m = require('mathly')
+
+a = m{{22, 15, 94, 77, 48}, {43, 58, 96, 64,  5},
+      {20, 85, 90, 37, 92}, {16, 67,  9, 56, 33}}
+disp(a)
+-- 22  15  94  77  48
+-- 43  58  96  64   5
+-- 20  85  90  37  92
+-- 16  67   9  56  33
+b = submatrix(a, 3, 2, 4, 4) -- default value of sr and sc is 1 each
+disp(b)
+--  85  90  37
+--  67   9  56
+B = submatrix(a, 1, 1, 4, 4, 2, 1) -- or submatrix(a, 1, 1, 4, 4, 2)
+disp(B)
+-- 22  15  94  77
+-- 20  85  90  37
+C = submatrix(a, 2, 1, 5, 5, 2, 3) -- or submatrix(a, 1, 1, 4, 4, 2)
+disp(C)
+-- 43  64
+-- 16  56
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=tblcat href=#mathly><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></code></a></h4>
+<p>Concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers or strings.</p>
+<p>See also: <a href=#strcat><code>strcat</code></a></p>
+<pre><code>
+m = require('mathly')
+x = {1, 2}
+y = {3, 4, {5}}
+disp(tblcat(0, x, y, 10))
+-- {0, 1, 2, 3, 4, {5}, 10}
+
+z = m{{6}, {7}, {8}, {9}}
+disp(tblcat(x, z, 11)) -- a column vector is automatically converted into a row vector
+-- {1, 2, 6, 7, 8, 9, 11}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=toc></a><a name=tic href=#mathly><code>tic()</code>, <code>toc(...)</code></a></h4>
 <table><tbody>
-<tr><td width=20></td><td><code>'bank'</code></td><td> </td><td width=10> </td><td>2 decimal places</td></tr>
-<tr><td width=20></td><td><code>'short'</code></td><td> </td><td width=10> </td><td>4 decimal places (default).</td></tr>
-<tr><td width=20></td><td><code>'long'</code></td><td> </td><td width=10> </td><td>15 decimal places</td></tr>
+<tr><td width=20></td><td><code>tic()</code></td><td> </td><td width=10> </td><td>Start a wall-clock timer.</td></tr>
+<tr><td width=20></td><td><code>toc(...)</code></td><td> </td><td width=10> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
 </tbody></table>
-<h4>&bull; &nbsp; <a name=extract></a><a name=check href=#mathly><code>check(A, f)</code>, <code>extract(A, B)</code></a></h4>
-<p>The two functions are usually used together.</p>
-<ol>
-<li><code>check(A, f)</code>: Check if each element of matrix <code>A</code> makes <code>f(x)</code> true or not, return 1 or 0 for the element.</li><p></p>
-<li><code>extract(A, B)</code>: Return a column vector of elements of <code>A</code> columnwisely if the corresponding element of <code>B</code> is 1.</li>
-</ol>
-<p>Note: <code>f(x)</code> returns true or false (default: <code>x ~= 0</code>).</p></li>
+<pre><code>
+require 'mathly'
+
+tic() -- start recording the time
+for i = 1, 10000000 do
+  x = math.cos(i) * math.sin(i)
+end
+toc()
+
+x = toc(1) -- pass any none-nil value to toc to get the elapsed time; otherwise, print the elapsed time
+printf("The loop took %.2f seconds.", x)
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=unique href=#mathly><code>unique(tbl)</code></a></h4>
+<p>Return the same data as in tbl but with no repetitions. Data is sorted.</p>
+<pre><code>
+require('mathly')
+display(unique({4,5,2,1,-2,2,4,2,7,6,19}))
+-- {-2, 1, 2, 4, 5, 6, 7, 19}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=vertcat href=#mathly><code>vertcat(A, B, ...)</code></a></h4>
+<P>Concatenate matrices A, B, ... in order vertically. Matrices must have the same number of columns.</P>
+<p>See also: <a href=#horzcat><code>horzcat</code></a></p>
 <pre><code>
 mathly = require('mathly')
-A = mathly{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
+A = mathly{{1, 2, 3}}
 disp(A)
--- 1  2  3
--- 4  5  6
--- 7  8  9
-C = check(A, function(x) return x >= 2 and x % 2 == 0 end)
-disp(C)
--- 0  1  0
--- 1  0  1
--- 0  1  0
-B = extract(A, C)
+-- 1 2 3
+B = mathly{{4, 5, 6}, {7, 8, 9}}
 disp(B)
--- 4
--- 2
--- 8
--- 6
+-- 4 5 6
+-- 7 8 9
+C = mathly{{10, 11, 12}}
+disp(C)
+-- 10 11 12
+D = vertcat(A, B)
+disp(D)
+-- 1 2 3
+-- 4 5 6
+-- 7 8 9
+E = vertcat(A, B, C)
+disp(E)
+-- 1   2  3
+-- 4   5  6
+-- 7   8  9
+-- 10 11 12
 </code></pre>
+
 <hr>
 <h2 style="margin-left: 20px;">Note</h2>
 <ol>
