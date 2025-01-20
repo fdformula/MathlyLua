@@ -235,11 +235,13 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 <tr><td><code><a href=#remake>remake(A, opt)</a></code></td><td> </td><td>Generate a lower, upper, diagonal, symmetrical, or ...  matrix from matrix <code>A</code>.</td></tr>
 <tr><td><a href=#repmat><code>repmat(A, m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> block matrix with each entry a copy of matrix <code>A</code>.</td></tr>
 <tr><td><a href=#reshape><code>reshape(A, m, n)</code></a></td><td> </td><td>Rearrange existing elements in a table or mathly matrix <code>A</code> and return a new <code>mxn</code> mathly matrix.</td></tr>
+<tr><td><a href=#reverse><code>reverse(tbl)</code></a></td><td> </td><td>Return a table with order of elements in <code>tbl</code> reversed.</td></tr>
 <tr><td><a href=#rr><code>rr(x..)</code></a></td><td> </td><td>Convert a table <code>x</code> into a row vector or return specified rows(s) of a mathly matrix...</td></tr>
 <tr><td><a href=#rref><code>rref(A, ..)</code></a></td><td> </td><td>Return the reduced row-echelon form of a mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
 <tr><td><a href=#save><code>save(datafile, ...)</code></a></td><td> </td><td>Save specified or all user-defined variables and their values to file <code>datafile</code>.</td></tr>
 <tr><td><a href=#seq><code>seq(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</td></tr>
 <tr><td><code>size(A)</code></td><td> </td><td>Return the dimensions of a mathly matrix <code>A</code>.</td></tr>
+<tr><td><a href=#sort><code>sort(tbl, compf)</code></a></td><td> </td><td>Sort a table <code>tbl</code> and return the resulted table.</td></tr>
 <tr><td><a href=#printf><code>sprintf(...)</code></a></td><td> </td><td>Return a formatted string, while <code>printf</code> prints one.</td></tr>
 <tr><td><a href=#std><code>std(x, opt)</code></a></td><td> </td><td>Return the standard deviation of numbers in <code>x</code>.</td></tr>
 <tr><td><a href=#strcat><code>strcat(...)</code></a></td><td> </td><td>Horizontally concatenate input strings and return the resulted string.</td></tr>
@@ -1142,6 +1144,18 @@ disp(c)
 -- 2  2  4  4  0  0  0
 </code></pre>
 
+<h4>&bull; &nbsp; <a name=reverse href=#mathly><code>reverse(tbl)</code></a></h4>
+<p>Return a table with order of elements in <code>tbl</code> reversed.</p>
+<p>Note: If <code>tbl</code> is a matrix, it is flattened columnwisely first to a table and then reversed.</p>
+<pre><code>
+require('mathly')
+a = seq(10)
+disp(a)
+-- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+disp(reverse(a)) -- same as tt(a, #a, 1, -1) or tt(a, #a, 1)
+-- {10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=rref href=#mathly><code>rref(A, ...)</code></a></h4>
 <p>If there is one more argument, i.e., <code>rref(A, B)</code>, <code>A</code> and <code>B</code> will be merged horizontally into A.
 <p><code>A</code> and <code>B</code> must be mathly matrices with the same row number.</p>
@@ -1234,6 +1248,24 @@ disp(x)
 x = seq(0, 1, 10) -- same as linspace(0, 1, 10)
 display(x)
 -- {0, 0.1111, 0.2222, 0.3333, 0.4444, 0.5556, 0.6667, 0.7778, 0.8889, 1.0000}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=sort href=#mathly><code>sort(tbl, compf)</code></a></h4>
+<p>Sort a table <code>tbl</code> and return the resulted table.</p>
+<p>Provided for convenience, it is almost exactly the same of <a href="manual.html#pdf-table.sort"><code>table.sort(tbl, compf)</code></a>.</p>
+<p>For <code>table.sort(tbl)</code>, <code>tbl</code> must be a variable rather than a specific table. Otherwise, say, <code>table.sort({2, 0, 2, 4})</code> actually does nothing.</p>
+<p>Note: <code>tbl</code> is changed if it is a variable.</p>
+<pre><code>
+require('mathly')
+a = seq(10)
+disp(a)
+-- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+disp(sort(a, function(x, y) return x > y end))
+-- {10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
+disp(sort(a, function(x, y) return x < y end)) -- same as sort(a)
+-- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+disp(sort({2, 0, 2, 4}))
+-- {0, 2, 2, 4}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=var></a><a name=std href=#mathly><code>std(x, opt)</code>, <code>var(x, opt)</code></a></h4>

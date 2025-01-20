@@ -17,8 +17,8 @@ API and Usage
     expand, extract, eye, flatten, fliplr, flipud, format, hasindex, horzcat, inv, isinteger,
     ismember, length, linsolve, linspace, lu, map, max, mean, min, norm, ones, plot, polyval,
     printf, prod, qr, rand, randi, range, remake, repmat, reshape, rr, rref, save, seq, size,
-    sprintf, std, strcat, submatrix, subtable, sum, tblcat, tic, toc, transpose, tt, unique,
-    var, vertcat, who, zeros
+    sort, sprintf, std, strcat, submatrix, subtable, sum, tblcat, tic, toc, transpose, tt,
+    unique, var, vertcat, who, zeros
 
   See code and mathly.html.
 
@@ -1710,7 +1710,11 @@ end -- repmat
 -- Return a matrix with columns of matrix A reversed (from left to right)
 function flipud(A) return rr(A, range(#A, 1, -1)) end
 function fliplr(A) return cc(A, range(#A[1], 1, -1)) end
---function reverse(tbl) return tt(tbl, -1, 1, -1) end
+
+--// function reverse(tbl)
+-- reverse and return a table. if it is a matrix, it is flattened columnwisely first to a table and then reversed
+function reverse(tbl) return tt(tbl, -1, 1, -1) end
+function sort(tbl, compf) table.sort(tbl, compf); return tbl end
 
 --// function remake(A, opt)
 -- Make A a lower (opt = 'LT'), upper (opt = 'UT'), or a symmetric (opt = 'SYM') matrix by replacing entries with 0's or so
