@@ -322,7 +322,9 @@ as names of variables or so.</p>
 <ol>
 <li><code>i</code>, <code>i</code><sub>1</sub>, <code>i</code><sub>2</sub>, ..., <code>start</code>, and <code>stop</code> can be negative integers. E.g., if <code>i = -1</code>, it
 refers to the last row/column; if <code>i = -2</code>, it denotes the row/column right before the last row/column; ... <code><a href=#submatrix>submatrix</a></code> and <code><a href=#subtable>subtable</a></code> allow this usage, too.<p></p></li>
-<li><code>cc(A)</code> and <code>rr(A)</code> each flatten a matrix rowwisely, but <code>tt(A)</code> does it columnwisely.</li>
+<li>The default value of <code>step</code> depends on the values of <code>start</code> and <code>stop</code>. If <code>start &le; stop</code>, it is <code>1</code>; otherwise, it is <code>-1</code>.
+And the default value of <code>stop</code> is <code>-1</code>, i.e., the index of the last entry of a row/column.<p></p></li>
+<li><code>cc(A)</code> and <code>rr(A)</code> each flatten a matrix <em>rowwisely</em>, but <code>tt(A)</code> does it <em>columnwisely</em>.</li>
 </ol>
 <pre><code>
 mathly = require('mathly')
@@ -402,7 +404,7 @@ For row wise flattening, see also <a href=#cc><code>cc</code></a>, <a href=#rr><
 <table><tbody>
 <tr><td width=20></td><td><code>i1</code></td><td> </td><td width=10> </td><td>Initial value of index (default: 1).</td></tr>
 <tr><td></td><td><code>i2</code></td><td> </td><td> </td><td>Terminal value of index (default: size of the converted table of <code>x</code>).</td></tr>
-<tr><td></td><td><code>s</code></td><td> </td><td> </td><td>Step size (default: 1).</td></tr>
+<tr><td></td><td><code>s</code></td><td> </td><td> </td><td>Step size (default: <code>1</code> or <code>-1</code>, depending on the values of <code>i1</code> an <code>i2</code>).</td></tr>
 </tbody></table>
 <pre><code>
 mathly = require('mathly')
