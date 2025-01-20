@@ -1252,7 +1252,7 @@ display(x)
 
 <h4>&bull; &nbsp; <a name=sort href=#mathly><code>sort(tbl, compf)</code></a></h4>
 <p>Sort a table <code>tbl</code> and return the resulted table.</p>
-<p>Provided for convenience, it is almost exactly the same of <a href="manual.html#pdf-table.sort"><code>table.sort(tbl, compf)</code></a>.</p>
+<p>Provided for convenience, it is almost exactly the same as <a href="manual.html#pdf-table.sort"><code>table.sort(tbl, compf)</code></a>.</p>
 <p>For <code>table.sort(tbl)</code>, <code>tbl</code> must be a variable rather than a specific table. Otherwise, say, <code>table.sort({2, 0, 2, 4})</code> actually does nothing.</p>
 <p>Note: <code>tbl</code> is changed if it is a variable.</p>
 <pre><code>
@@ -1260,7 +1260,8 @@ require('mathly')
 a = seq(10)
 disp(a)
 -- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-disp(sort(a, function(x, y) return x > y end))
+sort(a, function(x, y) return x > y end)
+disp(a)
 -- {10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
 disp(sort(a, function(x, y) return x < y end)) -- same as sort(a)
 -- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
