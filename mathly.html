@@ -302,7 +302,7 @@ If you want full control, you can use functions <code>cc</code> or <code>rr</cod
 <tr><td></td><td><code>rr(x...)</code></td><td> </td><td> </td><td>Convert a table <code>x</code> into a row vector or return specified rows of a mathly matrix...</td></tr>
 <tr><td></td><td><code>tt(x...)</code></td><td> </td><td> </td><td>Convert a mathly matrix/vector or a table (of tables) <code>x</code> to an ordinary table and return a slice of it.</td></tr>
 </tbody></table>
-<p>Note: Why not <code>c</code>, <code>r</code>, and <code>t</code>? It is because they can be easily used
+<p>Note: Why not <code>c</code>, <code>r</code>, and <code>t</code>? It is because they can easily be used
 as names of variables or so.</p>
 <p>&#x2713; &nbsp; <code>rr</code> and <code>cc</code> have same usage, except that one is about row(s) and the other is about column(s). Take <code>rr</code> as the example:</p>
 <table><tbody>
@@ -314,13 +314,16 @@ as names of variables or so.</p>
 <code>start</code> to <code>stop</code> increasing by <code>step</code>.</td></tr>
 <tr><td width=20></td><td><code>rr(A, {i<sub>1</sub>, i<sub>2</sub>, ...}, start, stop)</code></td><td></td><td>Return a matrix consisting of rows <code>i<sub>1</sub></code>, <code>i<sub>2</sub></code>,
 ..., of <code>A</code>. Each row is a slice of the very row of <code>A</code> staring from column <code>start</code> to <code>stop</code> (default: last column of <code>A</code>).</td></tr>
+<tr><td width=20></td><td><code>rr(A, {i<sub>1</sub>, i<sub>2</sub>, ...}, start, stop, step)</code></td><td></td><td>Return a matrix consisting of rows <code>i<sub>1</sub></code>, <code>i<sub>2</sub></code>,
+..., of <code>A</code>. Each row is a slice of the very row of <code>A</code> staring from column <code>start</code> to <code>stop</code> increasing by <code>step</code></td></tr>
 <p></p>
 </tbody></table>
-<B><ol>
-<li><em><code>i</code>, <code>i</code><sub>1</sub>, <code>i</code><sub>2</sub>, ..., <code>start</code>, and <code>stop</code> can be negative integers. E.g., if <code>i = -1</code>, it
+<b><p>Notes:</p></b>
+<ol>
+<li><code>i</code>, <code>i</code><sub>1</sub>, <code>i</code><sub>2</sub>, ..., <code>start</code>, and <code>stop</code> can be negative integers. E.g., if <code>i = -1</code>, it
 refers to the last row/column; if <code>i = -2</code>, it denotes the row/column right before the last row/column; ... <code><a href=#submatrix>submatrix</a></code> and <code><a href=#subtable>subtable</a></code> allow this usage, too.<p></p></li>
-<li><code>cc(A)</code> and <code>rr(A)</code> each flatten a matrix rowwisely, but <code>tt(A)</code> does it columnwisely.</em></li>
-</ol></B>
+<li><code>cc(A)</code> and <code>rr(A)</code> each flatten a matrix rowwisely, but <code>tt(A)</code> does it columnwisely.</li>
+</ol>
 <pre><code>
 mathly = require('mathly')
 a = mathly({1, 2, 3}, 3)
@@ -359,11 +362,13 @@ cc(A, 1)        -- return the 1st column of A
 -- 3
 rr(A)           -- return a row vector with elements of a matrix flattened rowwisely
 --  1  2  3  4  2  3  4  5  3  4  5  6
+rr(A, 3)        -- return the 3rd row of A
+-- 3  4  5  6
 rr(A, 3, 2)     -- return the 3rd row of A starting from the 2nd entry to the last
 -- 4  5  6
 rr(A, 3, 2, 3)  -- return the 3rd row of A starting from the 2nd entry to the 3rd one
 -- 4  5
-rr(A, {1, -2, 1, -1}) -- rows can be rearranged in certain order with repetition allowed
+rr(A, {1, -2, 1, -1}) -- rows can be rearranged in certain order with repetitions allowed
 -- 1  2  3  4
 -- 2  3  4  5
 -- 1  2  3  4
@@ -373,6 +378,16 @@ rr(A, {1, -2, 1, -1}, 2, -1) -- or rr(A, {1, -2, 1, -1}, 2)
 -- 3  4  5
 -- 2  3  4
 -- 4  5  6
+rr(A, {1, -2, 1, -1}, 2, -1, 2) -- from the 2nd to the last
+-- 2  4
+-- 3  5
+-- 2  4
+-- 4  6
+rr(A, {1, -2, 1, -1}, -1, 2, -2) -- from the last to the second
+-- 4  2
+-- 5  3
+-- 4  2
+-- 6  4
 cc(A, {1, -2, 1, -1})
 -- 1  3  1  4
 -- 2  4  2  5
@@ -380,10 +395,6 @@ cc(A, {1, -2, 1, -1})
 cc(A, {1, -2, 1, -1}, 2, -1) -- or cc(A, {1, -2, 1, -1}, 2)
 -- 2  4  2  5
 -- 3  5  3  6
-rr(A, {1, 1, 2}, 1, -1, 2)
--- 1  3
--- 1  3
--- 2  4
 </code></pre>
 <p>&#x2713; &nbsp; <code>tt(x, i1, i2, s)</code> may be used to replace <a href=#subtable><code>subtable</code></a>. If <code>x</code> is a mathly matrix, it is converted to a table columnwisely first;
 if it is any other table, it is flattened first. Comparatively, <code>subtable</code> doesn't carry out any conversion.
@@ -1275,6 +1286,12 @@ x = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
 y = subtable(x, 1, 11, 3)
 display(y)
 -- {1, 4, 7, 10}
+display(subtable(x, 1, -1, 2)) -- -1? see <a href=#cc>notes</a>
+-- {1, 3, 5, 7, 9, 11}
+display(subtable(x, -1, 1, -1))
+-- {12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
+display(subtable(x, -1, 1, -2))
+-- {12, 10, 8, 6, 4, 2}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=submatrix href=#mathly><code>submatrix(A, i, j, m, n, sr, sc)</code></a></h4>
