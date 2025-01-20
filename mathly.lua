@@ -13,12 +13,12 @@ API and Usage
 
   List of functions provided in this module:
 
-    all, any, apply, cc, check, clear, clc, horzcat, copy, cross, det, diag, disp, display,
-    dot, expand, extract, eye, flatten, fliplr, flipud, hasindex, inv, isinteger, ismember,
-    length, linsolve, linspace, map, max, mean, min, norm, ones, plot, polyval, printf,
-    prod, rand, randi, rr, range, remake, repmat, reshape, rref, save, seq, size,
-    sprintf, std, strcat, submatrix, subtable, sum, tblcat, tt, tic, toc, unique, var,
-    vertcat, who, zeros
+    all, any, apply, cc, check, clc, clear, copy, cross, det, diag, disp, display, dot,
+    expand, extract, eye, flatten, fliplr, flipud, format, hasindex, horzcat, inv, isinteger,
+    ismember, length, linsolve, linspace, lu, map, max, mean, min, norm, ones, plot, polyval,
+    printf, prod, qr, rand, randi, range, remake, repmat, reshape, rr, rref, save, seq, size,
+    sprintf, std, strcat, submatrix, subtable, sum, tblcat, tic, toc, transpose, tt, unique,
+    var, vertcat, who, zeros
 
   See code and mathly.html.
 
@@ -102,12 +102,12 @@ end
 -- if i is a list of indice, return rows defined in the list and in order (the latter allows rearrangement and repetition of rows)
 --
 -- i = -1, last row; i = -2, the row before the last row; ... similar with start and stop
-function rr(x, I, start, stop)
+function rr(x, I, start, stop, step)
   if I == nil then
     return setmetatable({ flatten(x) }, mathly_meta) -- convert x to a row vector
   else
     assert(getmetatable(x) == mathly_meta, 'rr(x, i...): x must be a mathly matrix.')
-    start, stop = _adjust_index(#x[1], start, stop)
+    start, stop, step = _adjust_index_step(#x[1], start, stop, step)
     local rows = {}
     if type(I) ~= 'table' then I = { I } end
     for m = 1, #I do
@@ -117,7 +117,7 @@ function rr(x, I, start, stop)
       if i > 0 and i <= siz then
         local y = {}
         local k = 1
-        for j = start, stop do
+        for j = start, stop, step do
           y[k] = x[i][j]
           k = k + 1
         end
@@ -137,21 +137,21 @@ end
 --
 -- if i is a list of indice, return columns defined in the list and in order (the latter allows rearrangement and repetition of columns)
 -- i = -1, last columns; i = -2, the column before the last column; ...
-function cc(x, I, start, stop)
+function cc(x, I, start, stop, step)
   if I == nil then
     return setmetatable(map(function(x) return {x} end, flatten(x)), mathly_meta) -- convert x to a column vector
   else
     assert(getmetatable(x) == mathly_meta, 'cc(x, i...): x must be a mathly matrix.')
-    start, stop = _adjust_index(#x, start, stop)
+    start, stop, step = _adjust_index_step(#x, start, stop, step)
     if type(I) ~= 'table' then I = { I } end
-    local cols = mathly(stop - start + 1, #I, 0)
+    local cols = mathly(math.ceil((math.abs(stop - start) + 1) / math.abs(step)), #I, 0)
     for jj = 1, #I do
       local j = I[jj]
       local siz = #x[1]
       if j < 0 then j = siz + j + 1 end -- j = -1, -2, ...
       if j > 0 and j <= siz then
         local ii = 1
-        for i = start, stop do
+        for i = start, stop, step do
           cols[ii][jj] = x[i][j]
           ii = ii + 1
         end
@@ -159,7 +159,7 @@ function cc(x, I, start, stop)
         error('cc(x, i...): i = ' .. tostring(i) .. ' is out of range.')
       end
     end
-    return cols -- setmetatable(cols, mathly_meta)
+    return setmetatable(cols, mathly_meta)
   end
 end
 
