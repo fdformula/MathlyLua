@@ -87,7 +87,9 @@ end
 
 local function _adjust_index_step(siz, start, stop, step)
   start, stop = _adjust_index(siz, start, stop, false)
-  step = step or 1
+  if step == nil then
+    if start <= stop then step = 1 else step = -1 end
+  end
   if step == 0 or (step > 0 and start > stop) or (step < 0 and start < stop) then
     error('Invalid input, start, stop, step: ' .. tostring(start) .. ', ' .. tostring(stop) .. ', ' .. tostring(step) .. '.')
   end
@@ -1708,6 +1710,7 @@ end -- repmat
 -- Return a matrix with columns of matrix A reversed (from left to right)
 function flipud(A) return rr(A, range(#A, 1, -1)) end
 function fliplr(A) return cc(A, range(#A[1], 1, -1)) end
+--function reverse(tbl) return tt(tbl, -1, 1, -1) end
 
 --// function remake(A, opt)
 -- Make A a lower (opt = 'LT'), upper (opt = 'UT'), or a symmetric (opt = 'SYM') matrix by replacing entries with 0's or so
