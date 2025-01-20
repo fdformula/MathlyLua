@@ -64,8 +64,8 @@ See comments in the file.
 `all`, `any`, `apply`, `cc`, `check`, `clc`, `clear`, `copy`, `cross`, `det`, `diag`, `disp`, `display`, `dot`, `expand`, `extract`, `eye`,
 `flatten`,  `fliplr`, `flipud`, `format`, `hasindex`,  `horzcat`, `inv`, `isinteger`, `ismember`, `length`, `linsolve`, `linspace`, `lu`,
 `map`, `max`, `mean`, `min`, `norm`, `ones`, `plot`, `polyval`, `printf`, `prod`, `qr`, `rand`, `randi`, `range`, `remake`, `repmat`,
-`reshape`, `rr`, `rref`, `save`, `seq`, `size`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`, `tblcat`, `tic`, `toc`,
-`transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`
+`reshape`, `reverse`, `rr`, `rref`, `save`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`, `tblcat`,
+`tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`
 
 See mathly.html.
 
