@@ -715,9 +715,6 @@ A = m{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
 B = copy(A)
 C = inv(A) * B
 disp(C)
---  1.0000  0.0000 -0.0000
---  0.0000  1.0000  0.0000
--- -0.0000 -0.0000  1.0000
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=ismember href=#mathly><code>ismember(x, table)</code></a></h4>
@@ -782,17 +779,17 @@ mathly = require('mathly')
 A = mathly{{1, 2, 3}, {2, 3, 4}, {-1, 0, 2}}
 L, U = lu(A)
 disp(L)
---  1   0  0
---  2  -1  0
--- -1   2  1
+--  1       0       0
+--  2 -1.0000       0
+-- -1  2.0000  1.0000
 disp(U)
--- 1  2  3
--- 0  1  2
--- 0  0  1
+-- 1  2.0000  3.0000
+-- 0       1  2.0000
+-- 0       0       1
 disp(L * U - A)
--- 0  0  0
--- 0  0  0
--- 0  0  0
+--      0  0.0000  0.0000
+-- 0.0000  0.0000  0.0000
+-- 0.0000  0.0000  0.0000
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=map href=#mathly><code>map(f, tbl)</code></a></h4>
@@ -857,7 +854,7 @@ the <code>i</code>-th column of <code>x</code>.</p></li>
 <pre><code>
 mathly = require('mathly')
 disp(mean({1,2,3}))
--- 2
+-- 2.0000
 A = mathly{{1, 2, 3}, {2, 3, 4}, {3, 1, 2}}
 disp(A)
 -- 1  2  3
