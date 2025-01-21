@@ -502,8 +502,8 @@ end
 -- print a mathly matrix while display(x) prints a table with its structure
 -- disp({{1, 2, 3, 4}, {2, -3, 4, 5}, {3, 4, -5, 6}})
 function disp( A )
-  _set_disp_format(A)
   if getmetatable(A) == mathly_meta then
+    _set_disp_format(A)
     local rows, columns = size(A)
     for i = 1, rows do
       io.write('\n')
@@ -521,6 +521,7 @@ end -- disp
 -- print a table with its structure while disp(x) prints a matrix
 -- display({1, 2, 3, {3, 4, 5, 6, 7, 8, {1, 2, {-5, {-6, 9}}, 8}}})
 function display( x, first_itemq )
+  if type(x) == 'string' then print(x); return end
   local calledbyuserq = first_itemq == nil
   if calledbyuserq then
     first_itemq = true
