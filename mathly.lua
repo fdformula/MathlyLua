@@ -1780,12 +1780,11 @@ end -- remake
 --// function reshape( A, m, n )
 -- use entries of matrix A to generate a new mxn matrix, given that A is a valid vector or matrix
 function reshape( A, m, n )
-  local rows, columns
-  rows, columns = size(A)
+  local rows, columns = size(A)
   local total = rows * columns
   if n == nil then n = math.ceil(total / m) end
 
-  local tbl, B
+  local tbl
   if rows == 1 or columns == 1 then
     tbl = flatten(A)
   else
@@ -1797,7 +1796,8 @@ function reshape( A, m, n )
     end
   end
 
-  k = 1; B = {}
+  local B = {}
+  local k = 1
   for i = 1, m do B[i] = {} end
   for j = 1, n do
     for i = 1, m do
