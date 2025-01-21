@@ -715,9 +715,9 @@ A = m{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
 B = copy(A)
 C = inv(A) * B
 disp(C)
---       1        0  -0.0000
---  0.0000   1.0000   0.0000
--- -0.0000  -0.0000        1
+--  1.0000  0.0000 -0.0000
+--  0.0000  1.0000  0.0000
+-- -0.0000 -0.0000  1.0000
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=ismember href=#mathly><code>ismember(x, table)</code></a></h4>
@@ -1349,7 +1349,7 @@ B = submatrix(a, 1, 1, 4, 4, 2, 1) -- or submatrix(a, 1, 1, 4, 4, 2)
 disp(B)
 -- 22  15  94  77
 -- 20  85  90  37
-C = submatrix(a, 2, 1, 5, 5, 2, 3) -- or submatrix(a, 1, 1, 4, 4, 2)
+C = submatrix(a, 2, 1, 4, 4, 2, 3) -- or submatrix(a, 1, 1, 4, 4, 2)
 disp(C)
 -- 43  64
 -- 16  56
