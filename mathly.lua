@@ -1796,8 +1796,8 @@ function reshape( A, m, n )
     end
   end
 
-  local B = {}
   local k = 1
+  local B = {}
   for i = 1, m do B[i] = {} end
   for j = 1, n do
     for i = 1, m do
@@ -1869,7 +1869,7 @@ function diag( A, m, n )
   end
 
   local z, siz
-  if m == nil or (m ~= nil and n ~= nil) then
+  if m == nil or n ~= nil then
     if m == nil then m = #v; n = m end
     siz = math.min(#v, m, n)
     z = zeros(m, n)
