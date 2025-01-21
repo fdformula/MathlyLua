@@ -447,38 +447,76 @@ function extract( A, B )
   return setmetatable(x, mathly_meta)
 end
 
+--// function _largest_width_dplaces(tbl)
+-- find the largest width of integers/strings and number of decimal places
+-- -3.14 --> 1, 2; 123 --> 3, 0
+-- only format numbers in tables
+local function _largest_width_dplaces(tbl) -- works with strings, numbers, and table of tables
+  if type(tbl ) ~= 'table' then tbl = { tbl} end
+  local width, dplaces = 0, 0
+  local num, w, d
+  for i = 1, #tbl do
+    if type(tbl[i]) == 'table' then
+      w, d = _largest_width_dplaces(tbl[i])
+      if w > width then width = w end
+      if d > dplaces then dplaces = d end
+    elseif type(tbl[i]) ~= 'string' then
+      num = math.abs(tbl[i]) -- ignore sign
+      if type(num) == 'integer' then
+        w = #tostring(num)
+      else
+        w = #tostring(math.floor(tbl[i]))
+        d = #tostring(num) - w -- decimal point counted
+        if d > dplaces then dplaces = d end
+      end
+      if w > width then width = w end
+    end
+  end
+  return width, dplaces
+end
+
 --[[ Lua 5.4.6
 The largest number print or io.write prints each digit is ±9223372036854775807,
 otherwise, ±9.2233720368548e+18 is printed ---]]
 
 local function _set_disp_format( mtx ) -- mtx must be a mathly matrix
-  local width = 3
-  local y = flatten(mtx)
-  local allintq = all(y, isinteger) == 1
-  local x = math.max(table.unpack(abs(y)))
+  local iwidth, dplaces, dispwidth
+  iwidth, dplaces = _largest_width_dplaces(mtx)
 
-  local dplaces
-  if _disp_format == 'long' then
-    dplaces = 15
-  elseif _disp_format == 'short' then
-    dplaces = 4
-  else -- 'bank'
-    dplaces = 2
-  end
-  if x > 9999999999999 or (not isinteger(x) and x < 100000*eps) then
-    dplaces = dplaces + 1
-    _float_format  = string.format('%%%d.%dG', dplaces + 6, dplaces)
-    _float_format1 = string.format('%%.%dG', dplaces)
+  if iwidth > 12 or (iwidth + dplaces) > 16 then -- 1.2345e+3
+    if _disp_format == 'long' then
+      dplaces = 13
+    elseif _disp_format == 'short' then
+      dplaces = 4
+    else -- 'bank'
+      dplaces = 2
+    end
+
+    dispwidth = dplaces + 7 -- -1.2345e+10
+    _float_format  = string.format('%%%d.%de', dispwidth, dplaces)
+    _float_format1 = string.format('%%.%de', dplaces)
     _int_format    = _float_format
     _int_format1   = _float_format1
     return
   end
 
-  while x > 9 do width = width + 1; x = x // 10 end
-  _float_format  = string.format('%%%d.%df', width + dplaces, dplaces)
+  if dplaces > 0 then
+    if _disp_format == 'long' then
+      dplaces = math.min(13, dplaces)
+    elseif _disp_format == 'short' then
+      dplaces = math.min(4, dplaces)
+    else -- 'bank'
+      dplaces = math.min(2, dplaces)
+    end
+    dispwidth = math.max(iwidth + dplaces + 1) -- 1? sign
+  else
+    dispwidth = math.max(iwidth + 1)
+  end
+
+  _float_format  = string.format('%%%d.%df', dispwidth, dplaces)
   _float_format1 = string.format('%%.%df', dplaces)
-  if not allintq then width = width + dplaces end
-  _int_format    = string.format('%%%dd', width)
+
+  _int_format    = string.format('%%%dd', dispwidth)
   _int_format1   = '%d'
 end -- _set_disp_format
 
@@ -491,7 +529,9 @@ local function _tostring(x)
 end
 
 local function _tostring1(x)
-  if isinteger(x) then
+  if type(x) == 'string' then
+    return x
+  elseif isinteger(x) then
     return string.format(_int_format1, x)
   else
     return string.format(_float_format1, x)
@@ -521,7 +561,6 @@ end -- disp
 -- print a table with its structure while disp(x) prints a matrix
 -- display({1, 2, 3, {3, 4, 5, 6, 7, 8, {1, 2, {-5, {-6, 9}}, 8}}})
 function display( x, first_itemq )
-  if type(x) == 'string' then print(x); return end
   local calledbyuserq = first_itemq == nil
   if calledbyuserq then
     first_itemq = true
