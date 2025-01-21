@@ -801,7 +801,7 @@ disp(L * U - A)
 m = require('mathly')
 a = range(1, 10) -- seq(1, 10) or seq(10)
 -- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-function f(x) return x ^ 2 end
+function f(x) return x * x end
 b = map(f, a)
 display(b)
 -- {1, 4, 9, 16, 25, 36, 49, 64, 81, 100}
@@ -864,7 +864,7 @@ disp(A)
 -- 2  3  4
 -- 3  1  2
 disp(mean(A))
--- 2  2  3
+-- 2.0000  2.0000  3.0000
 print(mean('abc')) -- 'abc' --> {97, 98, 99}, string.byte('a') ...
 -- 98.0
 print(mean({'abc', 'de'})) --> strcat first: 'abcde' --> mean('abcde')
@@ -1030,9 +1030,9 @@ disp(R)
 --      0  1.5275  3.9280
 --      0       0  0.2673
 disp(Q * R - A)
---  0.0000   0.0000   0.0000
---  0.0000   0.0000  -0.0000
--- -0.0000  -0.0000  -0.0000
+--  2.2204E-16  4.4409E-16  9.3259E-15
+--  4.4409E-16  8.8818E-16 -6.2172E-15
+-- -2.2204E-16 -4.4409E-16 -3.7748E-15
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=range href=#mathly><code>range(x, y, s)</code></a></h4>
@@ -1047,7 +1047,7 @@ display(range(10, 1, -1))
 -- {10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
 
 disp(range(0, 6, 0.5))
--- {0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6}
+-- {0, 0.5000, 1.0000, 1.5000, 2.0000, 2.5000, 3.0000, 3.5000, 4.0000, 4.5000, 5.0000, 5.5000, 6.0000}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=remake href=#mathly><code>remake(A, opt)</code></a></h4>
@@ -1168,10 +1168,10 @@ disp(a)
 --  4  5  6
 rref(a)
 disp(a)
---  1  0 -1
---  0  1  2
---  0  0  0
---  0  0  0
+-- 1  0.0000 -1.0000
+-- 0       1  2.0000
+-- 0  0.0000  0.0000
+-- 0  0.0000  0.0000
 
 -- To solve Ax = b<sub>1</sub>, Ax = b<sub>2</sub>, and Ax = b<sub>3</sub>:
 m = require('mathly')
@@ -1276,7 +1276,7 @@ the <code>i</code>-th column of <code>x</code>.</p></li>
 <pre><code>
 mathly = require('mathly')
 disp(std({1,2,3}))
--- 1
+-- 1.0000
 disp(std({1,2,3}, 1))
 -- 0.8165
 A = mathly{{1, 2, 3}, {2, 3, 4}, {4, 7, 9}}

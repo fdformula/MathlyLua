@@ -453,17 +453,9 @@ otherwise, ±9.2233720368548e+18 is printed ---]]
 
 local function _set_disp_format( mtx ) -- mtx must be a mathly matrix
   local width = 3
-  local x = 1
-  local allintq = false
-  if type(x) ~= 'table' then
-    if type(x) == 'number' then
-      allintq = isinteger(x)
-      x = math.abs(x)
-    end
-  elseif #x > 0 then
-    allintq = sum(all(mtx, isinteger)) == #mtx[1]
-    x = max(max(abs(mtx)))
-  end
+  local y = flatten(mtx)
+  local allintq = all(y, isinteger) == 1
+  local x = math.max(table.unpack(abs(y)))
 
   local dplaces
   if _disp_format == 'long' then
@@ -2399,7 +2391,7 @@ end
 -- n is a nonnegative integer
 -- if m1 is square, m1 ^ n = m1 * m1 * ... * m1; if me1 is row/column vector, m1 ^ n ~ m1 .^ n as in MATLAB
 function mathly.pow( m1, n )
-	assert(n == math.floor(n) and n >= 0, "A ^ n: n must be a nonnegative integer.")
+	assert(isinteger(n) and n >= 0, "A ^ n: n must be a nonnegative integer.")
   local mtx = {}
 	if #m1 == 1 then -- row vector, element wise
     for i = 1, #m1[1] do
