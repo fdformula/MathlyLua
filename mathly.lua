@@ -2529,6 +2529,7 @@ for k,v in pairs( mathly ) do
   mathly_meta.__index[k] = v
 end
 
+--------------- end of mathly.lua -----------------
 
 
 --[[ The following code is obtained from URL: https://github.com/kenloen/plotly.lua
