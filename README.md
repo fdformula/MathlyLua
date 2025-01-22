@@ -14,7 +14,7 @@ functions. Therefore, graphs are shown in an internet browser.
 The entire mathly tool together with Lua is less than 5 MB, while providing enough features for instructors and
 college students to introduce and/or implement many numerical algorithms. Because it is super lightweight and fast as well,
 it can be employed to slow devices like old Microsoft Surface Pro 4. Imagine that the smallest size of GNU Octave
-is about 300 MB, MATLAB needs a few GB storage space, and Julia with graphing modules is huge, too. You can hardly
+is about 340 MB, MATLAB needs a few GB storage space, and Julia with graphing modules is huge, too. You can hardly
 install them on a quite old computer and run smoothly.
 
 Mathly is especially good for instructors of linear algebra and numerical computing for teaching. It takes no time to
