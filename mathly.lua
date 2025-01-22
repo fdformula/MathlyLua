@@ -512,10 +512,8 @@ local function _set_disp_format( mtx ) -- mtx must be a mathly matrix
 
   if allintq then
     dispwidth = iwidth + 1 -- 1 sign
-    -- _int_format = string.format('%%%dd', dispwidth)
   else
     dispwidth = iwidth + dplaces + 2 -- 1? 1 sign
-    -- _int_format = string.format('%%%d.%df', dispwidth, dplaces)
   end
   _float_format  = string.format('%%%d.%df', dispwidth, dplaces)
   _float_format1 = string.format('%%.%df', dplaces)
