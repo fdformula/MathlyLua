@@ -9,6 +9,12 @@ DESCRIPTION
   With provided functions, it is much easier and faster to do math,
   especially linear algebra, and plot graphs of functions.
 
+  Part of modules dkjson.lua, http://dkolf.de/dkjson-lua, and plotly.lua,
+  https://github.com/kenloen/plotly.lua, is merged into this project
+  to reduce dependecies and make it easier for users to download and use
+  mathly. Though some changes have been made, full credit belongs to
+  the original authors for whom I am grateful.
+
 API and Usage
 
   List of functions provided in this module:
@@ -21,10 +27,6 @@ API and Usage
     unique, var, vertcat, who, zeros
 
   See code and mathly.html.
-
-DEPENDENCIES
-
-  plotly: dkjson.lua, plotly-for-mathly.lua, plotly-2.9.0.min.js
 
 HOME PAGE
 
@@ -39,6 +41,7 @@ LICENSE
     David Wang - original author
 
 --]]
+require 'browser-setting'
 
 local mathly = {_TYPE='module', _NAME='mathly', _VERSION='12.25.2024.5'}
 
@@ -1296,12 +1299,8 @@ end
 
 --// plot(...)
 -- plots the graphs of functions in a way like in MATLAB
-local plotly = nil
+local plotly = {}
 function plot(...)
-  if plotly == nil then -- the plotly module is loaded once when needed
-    plotly = require("plotly-for-mathly")
-  end
-
   local args = {}
   local traces = {}
   local x_start = nil -- range of x for a plot
@@ -2529,6 +2528,583 @@ mathly_meta.__index = {}
 for k,v in pairs( mathly ) do
   mathly_meta.__index[k] = v
 end
+
+
+
+--[[ The following code is obtained from URL: https://github.com/kenloen/plotly.lua
+     David Wang makes all variables used in functions 'local' in addition to some minor
+     changes and has some functions removed. All credit belongs to the original auther.
+     12/12/2024 Thursday --]]
+
+local json = { version = "dkjson 2.8" }
+
+-- https://cdn.plot.ly/plotly-latest.min.js
+plotly.cdn_main = "<script src='" .. plotly_engine .. "' charset='utf-8'></script>" -- dwang
+plotly.header = ""
+plotly.body = ""
+plotly.id_count = 1
+plotly.gridq = false -- dwang, organize traces/figures according to specified grids, e.g., 2x2
+plotly.layout = {} -- dwang
+
+local writehtml_failedq = false -- dwang
+
+-- From: https://stackoverflow.com/questions/11163748/open-web-browser-using-lua-in-a-vlc-extension#18864453
+-- Attempts to open a given URL in the system default browser, regardless of Operating System.
+local open_cmd -- this needs to stay outside the function, or it'll re-sniff every time...
+local function open_url(url)
+  if not open_cmd then
+    if package.config:sub(1,1) == '\\' then -- windows
+      open_cmd = function(url)
+        -- Should work on anything since (and including) win'95
+        --- os.execute(string.format('start "%s"', url)) -- dwang
+        os.execute(string.format('"%s" %s', win_browser, url)) -- dwang
+      end
+    -- the only systems left should understand uname...
+    elseif (io.popen("uname -s"):read'*a') == "Darwin" then -- OSX/Darwin ? (I can not test.)
+      open_cmd = function(url)
+        -- I cannot test, but this should work on modern Macs.
+        -- os.execute(string.format('open "%s"', url)) -- dwang
+        os.execute(string.format('%s "%s"', mac_browser, url)) --dwang
+      end
+    else -- that ought to only leave Linux
+      open_cmd = function(url)
+        -- should work on X-based distros.
+        -- os.execute(string.format('xdg-open "%s"', url)) --dwang
+        os.execute(string.format('%s "%s"', linux_browser, url)) --dwang
+      end
+    end
+  end
+
+  open_cmd(url)
+end
+
+-- Figure metatable
+local figure = {}
+
+---Adding a trace for the figure. All options can be found here: https://plotly.com/javascript/reference/index/
+---Easy to call like: figure:add_trace{x=x, y=y, ...}
+---@param self table
+---@param trace table
+function figure.add_trace(self, trace)
+  self["data"][#self["data"]+1] = trace
+end
+
+local dash_style = {["-"] = "solid", [":"] = "dot", ["--"] = "dash"}
+local mode_shorthand = {["m"] = "markers", ["l"]="lines", ["m+l"]="lines+markers", ["l+m"]="lines+markers"}
+
+
+--[[Adding a trace for the figure with shorthand for common options (similar to matlab or matplotlib).
+All js options can be found here: https://plotly.com/javascript/reference/index/
+Easy to call like: figure:plot{x, y, ...}
+Shorthand options:
+| key | explanation |
+| :----: | :---------: |
+| *1* | x-values  |
+| *2* | y-values   |
+| *ls* | line-style (options: "-", ".", "--")  |
+| *lw* | line-width (numeric value - default 2) |
+| *ms* | marker-size (numeric value - default 2) |
+| *c* or *color* | sets color of line and marker |
+| *mode* | shorter mode forms (options: "m"="markers", "l"="lines", "m+l" or "l+m"="markers+lines") |
+| *title* | sets/updates the title of the figure |
+| *xlabel* | sets/updates the xlabel of the figure |
+| *ylabel* | sets/updates the ylabel of the figure |
+]]
+---@param self plotly.figure
+---@param trace table
+---@return plotly.figure
+function figure.plot(self, trace)
+  if not trace["line"] then
+    trace["line"] = {}
+  end
+  if not trace["marker"] then
+    trace["marker"] = {}
+  end
+  for name, val in pairs(trace) do
+    if name == 'layout' then -- dwang
+      if plotly.gridq then
+        print("Only the first option that defines 'layout' matters.")
+      else
+        if val['grid'] ~= nil then
+          if val['grid']['rows'] ~= nil and val['grid']['columns'] ~= nil then
+            plotly.gridq = true
+            plotly.layout = val
+            plotly.layout['grid']['pattern'] = 'independent'
+          else
+            print('Invalid grid: both rows and columns must be specified.')
+          end
+        end
+      end
+      trace[name] = nil
+    elseif name == "ls" or name == 'style' then -- dwang, name == 'style'
+      trace["line"]["dash"] = dash_style[val]
+      trace[name] = nil
+    elseif name == "lw" or name == 'width' then -- dwang, name == 'width'
+      trace["line"]["width"] = val
+      trace[name] = nil
+    elseif name == "title" then
+      if plotly.gridq == false or plotly.layout["title"] == nil then
+        plotly.layout["title"] = val
+      end
+      trace[name] = nil
+    elseif name == 1 then
+      trace["x"] = val
+      trace[name] = nil
+    elseif name == 2 then
+      trace["y"] = val
+      trace[name] = nil
+    elseif name == "ms" or name == 'size' then -- dwang, name == 'size'
+      trace["marker"]["size"] = val
+      trace[name] = nil
+    elseif name == 'symbol' then -- dwang
+      trace["marker"]["symbol"] = val
+      trace[name] = nil
+    elseif name == "c" or name == "color" then
+      trace["marker"]["color"] = val
+      trace["line"]["color"] = val
+      trace[name] = nil
+    elseif name == "mode" and mode_shorthand[val] then
+      trace["mode"] = mode_shorthand[val]
+    elseif name == "xlabel" then
+      if plotly.gridq == false or plotly.layout["xaxis"] == nil then
+        plotly.layout["xaxis"] = {title={text=val}}
+      end
+      trace[name] = nil
+    elseif name == "ylabel" then
+      if plotly.gridq == false or plotly.layout["yaxis"] == nil then
+        plotly.layout["yaxis"] = {title={text=val}}
+      end
+      trace[name] = nil
+    end
+  end
+
+  self:add_trace(trace)
+  self:update_layout(plotly.layout)
+  return self
+end
+
+---Updates the plotly figure layout (options can be seen here: https://plotly.com/javascript/reference/layout/)
+function figure.update_layout(self, layout)
+  for name, val in pairs(layout) do
+    self["layout"][name] = val
+  end
+end
+
+function figure.toplotstring(self)
+  if plotly.gridq then -- dwang
+    if type(self['layout']['grid']['rows']) == 'string' then
+      self['layout']['grid']['rows'] = tonumber(self['layout']['grid']['rows'])
+    end
+    if type(self['layout']['grid']['cloumns']) == 'string' then
+      self['layout']['grid']['cloumns'] = tonumber(self['layout']['grid']['cloumns'])
+    end
+
+    if self['layout']['grid']['rows'] * self['layout']['grid']['columns'] < #self['data'] then
+      return '<html><body>Invalid grid: rows * columns &lt; the number of traces.</body></html>'
+    end
+
+    self['layout']['xaxis'] = nil
+    self['layout']['yaxis'] = nil
+
+    -- plotly-2.9.0.min.js, hopefully all versions, determines if grid options are used
+    -- by checking whether the texts of xaxis and yaxis are different for traces
+    for i = 1,#self['data'] do
+      local s = tostring(i)
+      self['data'][i]['xaxis'] = 'x' .. s -- they are different :-)
+      self['data'][i]['yaxis'] = 'y' .. s
+    end
+  end
+
+  -- Converting input
+  local data_str = json.encode (self["data"])
+  local layout_str = json.encode (self["layout"])
+  local div_id -- dwang
+  if not self.div_id then div_id = "plot" .. plotly.id_count end
+  plotly.id_count = plotly.id_count+1
+  local plot = [[<div id='%s'>
+<script type="text/javascript" charset='utf-8'>
+  var data = %s
+  var layout = %s
+  Plotly.newPlot(%s, data, layout);
+</script></div>
+  ]] -- dwang, simplified
+  return string.format(plot, div_id, data_str, layout_str, div_id)
+end
+
+function figure.tohtmlstring(self)
+  -- Create header tags
+  local header = "<head>\n"..plotly.cdn_main.."\n"..plotly.header.."\n</head>\n"
+
+  -- Create body tags
+  local plot = self:toplotstring()
+
+  return header.."<body>\n"..plot.."</body>"
+end
+
+---Saves the figure to an HTML file with *filename*
+function figure.tofile(self, filename)
+  writehtml_failedq = false
+  local html_str = self:tohtmlstring()
+  local file = io.open(filename, "w")
+  if file ~= nil then -- dwang
+    file:write(html_str)
+    file:close()
+  else
+    writehtml_failedq = true
+    print(string.format("Failed to create %s. The very device might not be writable.", filename))
+  end
+  return self
+end
+
+---Opens/shows the plot in the browser
+function figure.show(self)
+  local filename = temp_plot_html_file
+  self:tofile(filename)
+  if not writehtml_failedq then open_url(filename) end -- keep the file
+end
+
+function plotly.figure()
+  local fig = {data={}, layout={}, config={}}
+  setmetatable(fig, {__index=figure})
+  return fig
+end
+
+--[[ plots multiple functions/traces on a single figure -- dwang --]]
+function plotly.plots(traces)
+  local fig = plotly.figure()
+  for i = 1, #traces do
+    fig:plot(traces[i])
+  end
+  return fig
+end
+
+
+
+--[[ The code above is obtained from URL: https://github.com/kenloen/plotly.lua
+     David Wang makes all variables used in functions 'local' in addition to some minor
+     changes and has some functions removed. All credit belongs to the original auther.
+     12/12/2024 Thursday --]]
+
+
+--[[ The following code is obtained from URL: http://dkolf.de/dkjson-lua
+     David Wang changes all names to _dk_ and has some functions or so removed.
+     All credit belongs to the original auther.
+     12/12/2024 Thursday --]]
+
+-- global dependencies:
+local _dk_pairs, _dk_type, _dk_tostring, _dk_getmetatable, _dk_setmetatable =
+      pairs, type, tostring, getmetatable, setmetatable
+local _dk_error, _dk_require, _dk_pcall = error, require, pcall
+local _dk_floor, _dk_huge = math.floor, math.huge
+local _dk_strrep, _dk_gsub, _dk_strsub, _dk_strbyte, _dk_strfind, _dk_strformat =
+      string.rep, string.gsub, string.sub, string.byte, string.find, string.format
+local _dk_strmatch = string.match
+local _dk_concat = table.concat
+
+local _ENV = nil -- blocking globals in Lua 5.2 and later
+
+_dk_pcall (function()
+  -- Enable access to blocked metatables.
+  -- Don't worry, this module doesn't change anything in them.
+  local debmeta = _dk_require "debug".getmetatable
+  if debmeta then _dk_getmetatable = debmeta end
+end)
+
+json.null = _dk_setmetatable ({}, {
+  __tojson = function () return "null" end
+})
+
+local function _dk_isarray (tbl)
+  local max, n, arraylen = 0, 0, 0
+  for k,v in _dk_pairs (tbl) do
+    if k == 'n' and _dk_type(v) == 'number' then
+      arraylen = v
+      if v > max then
+        max = v
+      end
+    else
+      if _dk_type(k) ~= 'number' or k < 1 or _dk_floor(k) ~= k then
+        return false
+      end
+      if k > max then
+        max = k
+      end
+      n = n + 1
+    end
+  end
+  if max > 10 and max > arraylen and max > n * 2 then
+    return false -- don't create an array with too many holes
+  end
+  return true, max
+end
+
+local _dk_escapecodes = {
+  ["\""] = "\\\"", ["\\"] = "\\\\", ["\b"] = "\\b", ["\f"] = "\\f",
+  ["\n"] = "\\n",  ["\r"] = "\\r",  ["\t"] = "\\t"
+}
+
+local function _dk_escapeutf8 (uchar)
+  local value = _dk_escapecodes[uchar]
+  if value then
+    return value
+  end
+  local a, b, c, d = _dk_strbyte (uchar, 1, 4)
+  a, b, c, d = a or 0, b or 0, c or 0, d or 0
+  if a <= 0x7f then
+    value = a
+  elseif 0xc0 <= a and a <= 0xdf and b >= 0x80 then
+    value = (a - 0xc0) * 0x40 + b - 0x80
+  elseif 0xe0 <= a and a <= 0xef and b >= 0x80 and c >= 0x80 then
+    value = ((a - 0xe0) * 0x40 + b - 0x80) * 0x40 + c - 0x80
+  elseif 0xf0 <= a and a <= 0xf7 and b >= 0x80 and c >= 0x80 and d >= 0x80 then
+    value = (((a - 0xf0) * 0x40 + b - 0x80) * 0x40 + c - 0x80) * 0x40 + d - 0x80
+  else
+    return ""
+  end
+  if value <= 0xffff then
+    return _dk_strformat ("\\u%.4x", value)
+  elseif value <= 0x10ffff then
+    -- encode as UTF-16 surrogate pair
+    value = value - 0x10000
+    local highsur, lowsur = 0xD800 + _dk_floor (value/0x400), 0xDC00 + (value % 0x400)
+    return _dk_strformat ("\\u%.4x\\u%.4x", highsur, lowsur)
+  else
+    return ""
+  end
+end
+
+local function _dk_fsub (str, pattern, repl)
+  -- gsub always builds a new string in a buffer, even when no match
+  -- exists. First using find should be more efficient when most strings
+  -- don't contain the pattern.
+  if _dk_strfind (str, pattern) then
+    return _dk_gsub (str, pattern, repl)
+  else
+    return str
+  end
+end
+
+local function _dk_quotestring (value)
+  -- based on the regexp "escapable" in https://github.com/douglascrockford/JSON-js
+  value = _dk_fsub (value, "[%z\1-\31\"\\\127]", _dk_escapeutf8)
+  if _dk_strfind (value, "[\194\216\220\225\226\239]") then
+    value = _dk_fsub (value, "\194[\128-\159\173]", _dk_escapeutf8)
+    value = _dk_fsub (value, "\216[\128-\132]", _dk_escapeutf8)
+    value = _dk_fsub (value, "\220\143", _dk_escapeutf8)
+    value = _dk_fsub (value, "\225\158[\180\181]", _dk_escapeutf8)
+    value = _dk_fsub (value, "\226\128[\140-\143\168-\175]", _dk_escapeutf8)
+    value = _dk_fsub (value, "\226\129[\160-\175]", _dk_escapeutf8)
+    value = _dk_fsub (value, "\239\187\191", _dk_escapeutf8)
+    value = _dk_fsub (value, "\239\191[\176-\191]", _dk_escapeutf8)
+  end
+  return "\"" .. value .. "\""
+end
+json._dk_quotestring = _dk_quotestring
+
+local function _dk_replace(str, o, n)
+  local i, j = _dk_strfind (str, o, 1, true)
+  if i then
+    return _dk_strsub(str, 1, i-1) .. n .. _dk_strsub(str, j+1, -1)
+  else
+    return str
+  end
+end
+
+-- locale independent _dk_num2str functions
+local _dk_decpoint, _dk_numfilter
+
+local function _dk_updatedecpoint ()
+  _dk_decpoint = _dk_strmatch(_dk_tostring(0.5), "([^05+])")
+  -- build a filter that can be used to remove group separators
+  _dk_numfilter = "[^0-9%-%+eE" .. _dk_gsub(_dk_decpoint, "[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%0") .. "]+"
+end
+
+_dk_updatedecpoint()
+
+local function _dk_num2str (num)
+  return _dk_replace(_dk_fsub(_dk_tostring(num), _dk_numfilter, ""), _dk_decpoint, ".")
+end
+
+local function _dk_addnewline2 (level, buffer, buflen)
+  buffer[buflen+1] = "\n"
+  buffer[buflen+2] = _dk_strrep ("  ", level)
+  buflen = buflen + 2
+  return buflen
+end
+
+local _dk_encode2 -- forward declaration
+
+local function _dk_addpair (key, value, prev, indent, level, buffer, buflen, tables, globalorder, state)
+  local kt = _dk_type (key)
+  if kt ~= 'string' and kt ~= 'number' then
+    return nil, "type '" .. kt .. "' is not supported as a key by JSON."
+  end
+  if prev then
+    buflen = buflen + 1
+    buffer[buflen] = ","
+  end
+  if indent then
+    buflen = _dk_addnewline2 (level, buffer, buflen)
+  end
+  -- When Lua is compiled with LUA_NOCVTN2S this will fail when
+  -- numbers are mixed into the keys of the table. JSON keys are always
+  -- strings, so this would be an implicit conversion too and the failure
+  -- is intentional.
+  buffer[buflen+1] = _dk_quotestring (key)
+  buffer[buflen+2] = ":"
+  return _dk_encode2 (value, indent, level, buffer, buflen + 2, tables, globalorder, state)
+end
+
+local function _dk_appendcustom(res, buffer, state)
+  local buflen = state.bufferlen
+  if _dk_type (res) == 'string' then
+    buflen = buflen + 1
+    buffer[buflen] = res
+  end
+  return buflen
+end
+
+local function _dk_exception(reason, value, state, buffer, buflen, defaultmessage)
+  defaultmessage = defaultmessage or reason
+  local handler = state._dk_exception
+  if not handler then
+    return nil, defaultmessage
+  else
+    state.bufferlen = buflen
+    local ret, msg = handler (reason, value, state, defaultmessage)
+    if not ret then return nil, msg or defaultmessage end
+    return _dk_appendcustom(ret, buffer, state)
+  end
+end
+
+_dk_encode2 = function (value, indent, level, buffer, buflen, tables, globalorder, state)
+  local valtype = _dk_type (value)
+  local valmeta = _dk_getmetatable (value)
+  valmeta = _dk_type (valmeta) == 'table' and valmeta -- only tables
+  local valtojson = valmeta and valmeta.__tojson
+  if valtojson then
+    if tables[value] then
+      return _dk_exception('reference cycle', value, state, buffer, buflen)
+    end
+    tables[value] = true
+    state.bufferlen = buflen
+    local ret, msg = valtojson (value, state)
+    if not ret then return _dk_exception('custom encoder failed', value, state, buffer, buflen, msg) end
+    tables[value] = nil
+    buflen = _dk_appendcustom(ret, buffer, state)
+  elseif value == nil then
+    buflen = buflen + 1
+    buffer[buflen] = "null"
+  elseif valtype == 'number' then
+    local s
+    if value ~= value or value >= _dk_huge or -value >= _dk_huge then
+      -- This is the behaviour of the original JSON implementation.
+      s = "null"
+    else
+      s = _dk_num2str (value)
+    end
+    buflen = buflen + 1
+    buffer[buflen] = s
+  elseif valtype == 'boolean' then
+    buflen = buflen + 1
+    buffer[buflen] = value and "true" or "false"
+  elseif valtype == 'string' then
+    buflen = buflen + 1
+    buffer[buflen] = _dk_quotestring (value)
+  elseif valtype == 'table' then
+    if tables[value] then
+      return _dk_exception('reference cycle', value, state, buffer, buflen)
+    end
+    tables[value] = true
+    level = level + 1
+    local isa, n = _dk_isarray (value)
+    if n == 0 and valmeta and valmeta.__jsontype == 'object' then
+      isa = false
+    end
+    local msg
+    if isa then -- JSON array
+      buflen = buflen + 1
+      buffer[buflen] = "["
+      for i = 1, n do
+        buflen, msg = _dk_encode2 (value[i], indent, level, buffer, buflen, tables, globalorder, state)
+        if not buflen then return nil, msg end
+        if i < n then
+          buflen = buflen + 1
+          buffer[buflen] = ","
+        end
+      end
+      buflen = buflen + 1
+      buffer[buflen] = "]"
+    else -- JSON object
+      local prev = false
+      buflen = buflen + 1
+      buffer[buflen] = "{"
+      local order = valmeta and valmeta.__jsonorder or globalorder
+      if order then
+        local used = {}
+        n = #order
+        for i = 1, n do
+          local k = order[i]
+          local v = value[k]
+          if v ~= nil then
+            used[k] = true
+            buflen, msg = _dk_addpair (k, v, prev, indent, level, buffer, buflen, tables, globalorder, state)
+            if not buflen then return nil, msg end
+            prev = true -- add a seperator before the next element
+          end
+        end
+        for k,v in _dk_pairs (value) do
+          if not used[k] then
+            buflen, msg = _dk_addpair (k, v, prev, indent, level, buffer, buflen, tables, globalorder, state)
+            if not buflen then return nil, msg end
+            prev = true -- add a seperator before the next element
+          end
+        end
+      else -- unordered
+        for k,v in _dk_pairs (value) do
+          buflen, msg = _dk_addpair (k, v, prev, indent, level, buffer, buflen, tables, globalorder, state)
+          if not buflen then return nil, msg end
+          prev = true -- add a seperator before the next element
+        end
+      end
+      if indent then
+        buflen = _dk_addnewline2 (level - 1, buffer, buflen)
+      end
+      buflen = buflen + 1
+      buffer[buflen] = "}"
+    end
+    tables[value] = nil
+  else
+    return _dk_exception ('unsupported type', value, state, buffer, buflen,
+      "type '" .. valtype .. "' is not supported by JSON.")
+  end
+  return buflen
+end
+
+function json.encode (value, state)
+  state = state or {}
+  local oldbuffer = state.buffer
+  local buffer = oldbuffer or {}
+  state.buffer = buffer
+  _dk_updatedecpoint()
+  local ret, msg = _dk_encode2 (value, state.indent, state.level or 0,
+                   buffer, state.bufferlen or 0, state.tables or {}, state.keyorder, state)
+  if not ret then
+    _dk_error (msg, 2)
+  elseif oldbuffer == buffer then
+    state.bufferlen = ret
+    return true
+  else
+    state.bufferlen = nil
+    state.buffer = nil
+    return _dk_concat (buffer)
+  end
+end
+
+--[[ The code above is obtained from URL: http://dkolf.de/dkjson-lua
+     David Wang changes all names to _dk_ and has some functions or so removed.
+     All credit belongs to the original auther.
+     12/12/2024 Thursday --]]
 
 
 return mathly
