@@ -38,9 +38,7 @@ The files may be placed in either
 ```
 lua.exe
 browser-setting.lua
-dkjson.lua
 mathly.lua
-plotly-for-mathly.lua
 plotly-2.9.0.min.js
 ```
 
