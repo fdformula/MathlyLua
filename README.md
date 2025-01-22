@@ -5,9 +5,6 @@ used MATLAB functions and features, for example,  `linspace`, `zeros`, `rand`, `
 and even `plot`. They make coding and testing a thought/algorithm much easier and faster than working in most other
 programming languages. If there is anything many love the most about MATLAB, these tools are.
 
-Mathly for Lua requires a small Lua module, plotly.lua (see https://github.com/kenloen/plotly.lua). The latter is
-modified to meet the needs of mathly, and it requires another Lua module, dkjson.lua (see http://dkolf.de/dkjson-lua).
-
 Mathly uses Plotly JavaScript graphing tools (see https://plotly.com/javascript/) to plot graphs of single-variable
 functions. Therefore, graphs are shown in an internet browser.
 
@@ -258,6 +255,11 @@ test()
 ### Note
 1. Most functions provided in this mathly module, e.g., `copy`, `disp`, and `display`, can't be applied to tables like
 `{1, 2, age=20, 10, year=2024}` with fields, i.e., *age* and *year* in the example. It is designed simply for numerical computing.
+
+1. Part of modules dkjson.lua, http://dkolf.de/dkjson-lua, and plotly.lua, https://github.com/kenloen/plotly.lua,
+is merged into this project to reduce dependecies and make it easier for users to download and use mathly. Though
+some changes have been made, full credit belongs to the original authors for whom the original author of mathly
+is very grateful.
 
 1. This project was started first right in the downloaded code of the Lua module, matrix.lua, found
 in https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua, to see if Lua is good for
