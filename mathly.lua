@@ -482,41 +482,44 @@ otherwise, ±9.2233720368548e+18 is printed ---]]
 local function _set_disp_format( mtx ) -- mtx must be a mathly matrix
   local iwidth, dplaces, dispwidth
   iwidth, dplaces = _largest_width_dplaces(mtx)
+  local allintq = dplaces == 0
 
-  if iwidth > 12 or (iwidth + dplaces) > 16 then -- 1.2345e+3
-    if _disp_format == 'long' then
-      dplaces = 13
-    elseif _disp_format == 'short' then
-      dplaces = 4
-    else -- 'bank'
-      dplaces = 2
-    end
+  if _disp_format == 'long' then
+    dplaces = 13
+  elseif _disp_format == 'short' then
+    dplaces = 4
+  else -- 'bank'
+    dplaces = 2
+  end
 
+  if (allintq and iwidth > 12) or (not allintq and iwidth + dplaces > 16) then -- 1.2345e+3
     dispwidth = dplaces + 7 -- -1.2345e+10
-    _float_format  = string.format('%%%d.%de', dispwidth, dplaces)
-    _float_format1 = string.format('%%.%de', dplaces)
-    _int_format    = _float_format
-    _int_format1   = _float_format1
+    _float_format   = string.format('%%%d.%de', dispwidth, dplaces)
+    _float_format1  = string.format('%%.%de', dplaces)
+    if iwidth < dispwidth then -- 1 sign
+      if allintq then
+        _int_format = string.format('%%%dd', iwidth)
+      else
+        _int_format = string.format('%%%dd', dispwidth)
+      end
+      _int_format1  = '%d'
+    else
+      _int_format   = _float_format
+      _int_format1  = _float_format1
+    end
     return
   end
 
-  if dplaces > 0 then
-    if _disp_format == 'long' then
-      dplaces = math.min(13, dplaces)
-    elseif _disp_format == 'short' then
-      dplaces = math.min(4, dplaces)
-    else -- 'bank'
-      dplaces = math.min(2, dplaces)
-    end
-    dispwidth = math.max(iwidth + dplaces + 1) -- 1? sign
+  if allintq then
+    dispwidth = iwidth + 1 -- 1 sign
+    -- _int_format = string.format('%%%dd', dispwidth)
   else
-    dispwidth = math.max(iwidth + 1)
+    dispwidth = iwidth + dplaces + 2 -- 1? 1 sign
+    -- _int_format = string.format('%%%d.%df', dispwidth, dplaces)
   end
-
   _float_format  = string.format('%%%d.%df', dispwidth, dplaces)
   _float_format1 = string.format('%%.%df', dplaces)
-
-  _int_format    = string.format('%%%dd', dispwidth)
+  _int_format = string.format('%%%dd', dispwidth)
   _int_format1   = '%d'
 end -- _set_disp_format
 
