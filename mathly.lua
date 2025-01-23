@@ -2540,8 +2540,6 @@ local json = { version = "dkjson 2.8" }
 
 -- https://cdn.plot.ly/plotly-latest.min.js
 plotly.cdn_main = "<script src='" .. plotly_engine .. "' charset='utf-8'></script>" -- dwang
-plotly.header = ""
-plotly.body = ""
 plotly.id_count = 1
 plotly.gridq = false -- dwang, organize traces/figures according to specified grids, e.g., 2x2
 plotly.layout = {} -- dwang
@@ -2732,9 +2730,8 @@ function figure.toplotstring(self)
 end
 
 function figure.tohtmlstring(self)
-  local header = "<head>\n"..plotly.cdn_main.."\n"..plotly.header.."\n</head>\n"
-  local plot = self:toplotstring()
-  return header.."<body>\n"..plot.."</body>"
+  local header = "<head>\n" .. plotly.cdn_main .. "\n</head>\n"
+  return header.."<body>\n" .. self:toplotstring() .. "\n</body>"
 end
 
 ---Saves the figure to an HTML file with *filename*
@@ -2786,28 +2783,14 @@ end
      All credit belongs to the original auther. --]]
 
 -- global dependencies:
-local _dk_pairs, _dk_type, _dk_tostring, _dk_getmetatable = --, _dk_setmetatable =
-      pairs, type, tostring, getmetatable --, setmetatable
-local _dk_error, _dk_require, _dk_pcall = error, require, pcall
+local _dk_pairs, _dk_type, _dk_tostring = pairs, type, tostring
+local _dk_error = error
 local _dk_floor, _dk_huge = math.floor, math.huge
-local _dk_strrep, _dk_gsub, _dk_strsub, _dk_strbyte, _dk_strfind, _dk_strformat =
-      string.rep, string.gsub, string.sub, string.byte, string.find, string.format
+local _dk_gsub, _dk_strsub, _dk_strbyte, _dk_strfind, _dk_strformat =
+      string.gsub, string.sub, string.byte, string.find, string.format
 local _dk_strmatch = string.match
 local _dk_concat = table.concat
 
--- local _ENV = nil -- blocking globals in Lua 5.2 and later
---[[
-_dk_pcall (function()
-  -- Enable access to blocked metatables.
-  -- Don't worry, this module doesn't change anything in them.
-  local debmeta = _dk_require "debug".getmetatable
-  if debmeta then _dk_getmetatable = debmeta end
-end)
-
-json.null = _dk_setmetatable ({}, {
-  __tojson = function () return "null" end
-})
---]]
 local function _dk_isarray (tbl)
   local max, n, arraylen = 0, 0, 0
   for k,v in _dk_pairs (tbl) do
@@ -2919,16 +2902,9 @@ local function _dk_num2str (num)
   return _dk_replace(_dk_fsub(_dk_tostring(num), _dk_numfilter, ""), _dk_decpoint, ".")
 end
 
-local function _dk_addnewline2 (level, buffer, buflen)
-  buffer[buflen+1] = "\n"
-  buffer[buflen+2] = _dk_strrep ("  ", level)
-  buflen = buflen + 2
-  return buflen
-end
-
 local _dk_encode2 -- forward declaration
 
-local function _dk_addpair (key, value, prev, indent, level, buffer, buflen, tables, globalorder, state)
+local function _dk_addpair (key, value, prev, level, buffer, buflen, tables, globalorder, state)
   local kt = _dk_type (key)
   if kt ~= 'string' and kt ~= 'number' then
     return nil, "type '" .. kt .. "' is not supported as a key by JSON."
@@ -2937,16 +2913,13 @@ local function _dk_addpair (key, value, prev, indent, level, buffer, buflen, tab
     buflen = buflen + 1
     buffer[buflen] = ","
   end
-  if indent then
-    buflen = _dk_addnewline2 (level, buffer, buflen)
-  end
   -- When Lua is compiled with LUA_NOCVTN2S this will fail when
   -- numbers are mixed into the keys of the table. JSON keys are always
   -- strings, so this would be an implicit conversion too and the failure
   -- is intentional.
   buffer[buflen+1] = _dk_quotestring (key)
   buffer[buflen+2] = ":"
-  return _dk_encode2 (value, indent, level, buffer, buflen + 2, tables, globalorder, state)
+  return _dk_encode2 (value, level, buffer, buflen + 2, tables, globalorder, state)
 end
 
 local function _dk_appendcustom(res, buffer, state)
@@ -2971,22 +2944,9 @@ local function _dk_exception(reason, value, state, buffer, buflen, defaultmessag
   end
 end
 
-_dk_encode2 = function (value, indent, level, buffer, buflen, tables, globalorder, state)
+_dk_encode2 = function (value, level, buffer, buflen, tables, globalorder, state)
   local valtype = _dk_type (value)
-  local valmeta = _dk_getmetatable (value)
-  valmeta = _dk_type (valmeta) == 'table' and valmeta -- only tables
-  local valtojson = valmeta and valmeta.__tojson
-  if valtojson then
-    if tables[value] then
-      return _dk_exception('reference cycle', value, state, buffer, buflen)
-    end
-    tables[value] = true
-    state.bufferlen = buflen
-    local ret, msg = valtojson (value, state)
-    if not ret then return _dk_exception('custom encoder failed', value, state, buffer, buflen, msg) end
-    tables[value] = nil
-    buflen = _dk_appendcustom(ret, buffer, state)
-  elseif value == nil then
+  if value == nil then
     buflen = buflen + 1
     buffer[buflen] = "null"
   elseif valtype == 'number' then
@@ -3012,15 +2972,12 @@ _dk_encode2 = function (value, indent, level, buffer, buflen, tables, globalorde
     tables[value] = true
     level = level + 1
     local isa, n = _dk_isarray (value)
-    if n == 0 and valmeta and valmeta.__jsontype == 'object' then
-      isa = false
-    end
     local msg
     if isa then -- JSON array
       buflen = buflen + 1
       buffer[buflen] = "["
       for i = 1, n do
-        buflen, msg = _dk_encode2 (value[i], indent, level, buffer, buflen, tables, globalorder, state)
+        buflen, msg = _dk_encode2 (value[i], level, buffer, buflen, tables, globalorder, state)
         if not buflen then return nil, msg end
         if i < n then
           buflen = buflen + 1
@@ -3033,7 +2990,7 @@ _dk_encode2 = function (value, indent, level, buffer, buflen, tables, globalorde
       local prev = false
       buflen = buflen + 1
       buffer[buflen] = "{"
-      local order = valmeta and valmeta.__jsonorder or globalorder
+      local order = globalorder
       if order then
         local used = {}
         n = #order
@@ -3042,27 +2999,24 @@ _dk_encode2 = function (value, indent, level, buffer, buflen, tables, globalorde
           local v = value[k]
           if v ~= nil then
             used[k] = true
-            buflen, msg = _dk_addpair (k, v, prev, indent, level, buffer, buflen, tables, globalorder, state)
+            buflen, msg = _dk_addpair (k, v, prev, level, buffer, buflen, tables, globalorder, state)
             if not buflen then return nil, msg end
             prev = true -- add a seperator before the next element
           end
         end
         for k,v in _dk_pairs (value) do
           if not used[k] then
-            buflen, msg = _dk_addpair (k, v, prev, indent, level, buffer, buflen, tables, globalorder, state)
+            buflen, msg = _dk_addpair (k, v, prev, level, buffer, buflen, tables, globalorder, state)
             if not buflen then return nil, msg end
             prev = true -- add a seperator before the next element
           end
         end
       else -- unordered
         for k,v in _dk_pairs (value) do
-          buflen, msg = _dk_addpair (k, v, prev, indent, level, buffer, buflen, tables, globalorder, state)
+          buflen, msg = _dk_addpair (k, v, prev, level, buffer, buflen, tables, globalorder, state)
           if not buflen then return nil, msg end
           prev = true -- add a seperator before the next element
         end
-      end
-      if indent then
-        buflen = _dk_addnewline2 (level - 1, buffer, buflen)
       end
       buflen = buflen + 1
       buffer[buflen] = "}"
@@ -3081,7 +3035,7 @@ function json.encode (value, state)
   local buffer = oldbuffer or {}
   state.buffer = buffer
   _dk_updatedecpoint()
-  local ret, msg = _dk_encode2 (value, state.indent, state.level or 0,
+  local ret, msg = _dk_encode2 (value, state.level or 0,
                    buffer, state.bufferlen or 0, state.tables or {}, state.keyorder, state)
   if not ret then
     _dk_error (msg, 2)
