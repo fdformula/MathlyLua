@@ -256,7 +256,7 @@ test()
 
 1. Part of modules dkjson.lua, http://dkolf.de/dkjson-lua, and plotly.lua, https://github.com/kenloen/plotly.lua,
 is merged into this project to reduce dependencies and make it easier for users to download and use mathly. Though
-some changes have been made, full credit belongs to the original authors for whom the original author of mathly
+some changes have been made, full credit belongs to the original authors for whom the author of mathly
 is very grateful.
 
 1. This project was started first right in the downloaded code of the Lua module, matrix.lua, found
