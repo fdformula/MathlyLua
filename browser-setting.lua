@@ -18,7 +18,7 @@ plotly_engine = 'file:///C:/cygwin/bin/plotly-2.9.0.min.js'
 -- using plotly graphing library (https://plotly.com/javascript/)
 --
 -- the file will stay until you delete it manually or so.
-local home = os.getenv("HOME")
+local home = os.getenv('HOME') or os.getenv('HOMEPATH')
 if home == nil then
   print('Please define your HOME directory and come back.\n')
   os.exit()
