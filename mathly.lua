@@ -3108,7 +3108,12 @@ return mathly
 like x = {1, 2, age=20, 10, year=2024} with fields, for instance, age. It is designed simply for numerical
 computing.
 
-2. This project was started first right in the downloaded code of the Lua module, matrix.lua, found
+2. Part of modules dkjson.lua (http://dkolf.de/dkjson-lua) and plotly.lua (https://github.com/kenloen/plotly.lua)
+is merged into this project to reduce dependencies and make it easier for users to download and use mathly. Though
+some changes have been made, full credit belongs to the original authors for whom the original author of mathly
+is very grateful.
+
+3. This project was started first right in the downloaded code of the Lua module, matrix.lua, found
 in https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua, to see if Lua is good for
 numerical computing. However, it failed to solve numerically a boundary value problem. The solution
 was obviously wrong because the boundary condition at one endpoint is not satisfied, but I could not find
