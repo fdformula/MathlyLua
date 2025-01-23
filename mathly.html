@@ -18,10 +18,6 @@ for example, <code>linspace</code>, <code>zeros</code>, <code>rand</code>, <code
 <code>plot</code>. They make coding and testing a thought/algorithm much easier and faster than working in most other
 programming languages. If there is anything many love the most about MATLAB, these tools are.</p>
 
-<p>Mathly for Lua requires a small Lua module, plotly.lua (see <a href="https://github.com/kenloen/plotly.lua">https://github.com/kenloen/plotly.lua</a>).
-The latter is modified to meet the needs of mathly, and it requires another Lua module, dkjson.lua
-(see <a href="http://dkolf.de/dkjson-lua">http://dkolf.de/dkjson-lua</a>).</p>
-
 <p>Mathly uses Plotly JavaScript graphing tools (see <a href="https://plotly.com/javascript/">https://plotly.com/javascript/</a>)
 to plot graphs of single-variable functions. Therefore, graphs are shown in an internet browser.</p>
 
@@ -1428,9 +1424,14 @@ disp(E)
 <code>display</code>, can't be applied to tables like <code>x = {1, 2, age=20, 10, year=2024}</code> with
 fields, i.e., <code>age</code> and <code>year</code> in the example. It is designed simply for numerical computing.</li>
 <p></p>
-<li>This project was started first right in the downloaded code of the Lua module, matrix.lua, found
-in <a href="https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua">https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua</a>, to see if Lua is good for
-numerical computing. However, it failed to solve numerically a boundary value problem. The solution
+<li>Part of modules <a href=http://dkolf.de/dkjson-lua>dkjson.lua</a> and <a href=https://github.com/kenloen/plotly.lua>plotly.lua</a>
+is merged into this project to reduce dependencies and make it easier for users to download and use mathly. Though
+some changes have been made, full credit belongs to the original authors for whom the original author of mathly
+is very grateful.</li>
+<p></p>
+<li>This project was started first right in the downloaded code of the Lua module,
+<a href="https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua">matrix.lua</a>, to see if Lua is good
+for numerical computing. However, it failed to solve numerically a boundary value problem. The solution
 was obviously wrong because the boundary condition at one endpoint is not satisfied, but I could not find
 anything wrong in both the algorithm and the code. I had to wonder if there were bugs in the module. In many
 cases, it is easier to start a small project from scratch than using and debugging others' code. In
