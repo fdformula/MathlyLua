@@ -5,10 +5,11 @@ linux_browser = 'firefox'
 mac_browser = 'firefox'
 
 -- plotly_engine = 'plotly-2.35.2.min.js'
-plotly_engine = 'file:///C:/cygwin/bin/plotly-2.9.0.min.js'
---plotly_engine = 'file:////usr/local/share/lua/5.4/plotly-2.9.0.min.js'
-
-
+if package.config:sub(1,1) == '\\' then -- windows
+  plotly_engine = 'file:///C:/cygwin/bin/plotly-2.9.0.min.js'
+else
+  plotly_engine = 'file:////usr/local/share/lua/5.4/plotly-2.9.0.min.js'
+end
 
 
 
