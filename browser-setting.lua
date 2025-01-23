@@ -24,5 +24,5 @@ if home == nil then
   os.exit()
 else
   home = string.gsub(home, '\\', '/')
-  temp_plot_html_file = home .. '/_tmp-plotlyjs_2-35_2.html'
+  tmp_plot_html_file = home .. '/_tmp-mathly_plot-6_4.html'
 end

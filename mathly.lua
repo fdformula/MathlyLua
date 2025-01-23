@@ -606,7 +606,7 @@ function who(usercalledq) -- ~R
       if not ismember(k, {'e', 'eps', 'pi', 'phi', 'T', 'mathly', 'm', '_G', 'coroutine',
                           'utf8', '_VERSION', 'io', 'package', 'os', 'arg', 'debug',
                           'string', 'table', 'math', 'linux_browser', 'mac_browser',
-                          'win_browser', 'plotly_engine', 'temp_plot_html_file'}) then
+                          'win_browser', 'plotly_engine', 'tmp_plot_html_file'}) then
         list[#list + 1] = k
       end
     end
@@ -2751,9 +2751,11 @@ end
 
 ---Opens/shows the plot in the browser
 function figure.show(self)
-  local filename = temp_plot_html_file
-  self:tofile(filename)
-  if not _writehtml_failedq then open_url(filename) end -- keep the file
+  self:tofile(tmp_plot_html_file)
+  if not _writehtml_failedq then
+    open_url(tmp_plot_html_file) -- keep the file
+    print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
+  end
 end
 
 function plotly.figure()
