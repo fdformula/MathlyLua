@@ -22,11 +22,15 @@ end
 -- using plotly graphing library (https://plotly.com/javascript/)
 --
 -- the file will stay until you delete it manually or so.
-local home = os.getenv('HOME') or os.getenv('HOMEPATH')
-if home == nil then
-  print('Please define your HOME directory and come back.\n')
-  os.exit()
-else
-  home = string.gsub(home, '\\', '/')
-  tmp_plot_html_file = home .. '/_tmp-mathly_plot-6_4.html'
+local home = os.getenv('HOME')
+if home == nil then -- windows
+  home = os.getenv('HOMEPATH')
+  if home == nil then
+    print('Please define your HOME directory and come back.\n')
+    os.exit()
+  else
+    home = 'C:' .. home
+  end
 end
+home = string.gsub(home, '\\', '/')
+tmp_plot_html_file = home .. '/_tmp-mathly_plot-6_4.html'
