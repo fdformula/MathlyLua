@@ -2533,9 +2533,8 @@ end
 
 
 --[[ The following code is obtained from URL: https://github.com/kenloen/plotly.lua
-     David Wang makes all variables used in functions 'local' in addition to some minor
-     changes and has some functions removed. All credit belongs to the original auther.
-     12/12/2024 Thursday --]]
+     All variables in functions are made 'local' in addition to some changes. Some
+     functions have been removed. All credit belongs to the original auther. --]]
 
 local json = { version = "dkjson 2.8" }
 
@@ -2547,28 +2546,28 @@ plotly.id_count = 1
 plotly.gridq = false -- dwang, organize traces/figures according to specified grids, e.g., 2x2
 plotly.layout = {} -- dwang
 
-local writehtml_failedq = false -- dwang
+local _writehtml_failedq = false -- dwang
 
 -- From: https://stackoverflow.com/questions/11163748/open-web-browser-using-lua-in-a-vlc-extension#18864453
 -- Attempts to open a given URL in the system default browser, regardless of Operating System.
-local open_cmd -- this needs to stay outside the function, or it'll re-sniff every time...
+local _open_cmd -- this needs to stay outside the function, or it'll re-sniff every time...
 local function open_url(url)
-  if not open_cmd then
+  if not _open_cmd then
     if package.config:sub(1,1) == '\\' then -- windows
-      open_cmd = function(url)
+      _open_cmd = function(url)
         -- Should work on anything since (and including) win'95
         --- os.execute(string.format('start "%s"', url)) -- dwang
         os.execute(string.format('"%s" %s', win_browser, url)) -- dwang
       end
     -- the only systems left should understand uname...
     elseif (io.popen("uname -s"):read'*a') == "Darwin" then -- OSX/Darwin ? (I can not test.)
-      open_cmd = function(url)
+      _open_cmd = function(url)
         -- I cannot test, but this should work on modern Macs.
         -- os.execute(string.format('open "%s"', url)) -- dwang
         os.execute(string.format('%s "%s"', mac_browser, url)) --dwang
       end
     else -- that ought to only leave Linux
-      open_cmd = function(url)
+      _open_cmd = function(url)
         -- should work on X-based distros.
         -- os.execute(string.format('xdg-open "%s"', url)) --dwang
         os.execute(string.format('%s "%s"', linux_browser, url)) --dwang
@@ -2576,7 +2575,7 @@ local function open_url(url)
     end
   end
 
-  open_cmd(url)
+  _open_cmd(url)
 end
 
 -- Figure metatable
@@ -2590,8 +2589,8 @@ function figure.add_trace(self, trace)
   self["data"][#self["data"]+1] = trace
 end
 
-local dash_style = {["-"] = "solid", [":"] = "dot", ["--"] = "dash"}
-local mode_shorthand = {["m"] = "markers", ["l"]="lines", ["m+l"]="lines+markers", ["l+m"]="lines+markers"}
+local _dash_style = {["-"] = "solid", [":"] = "dot", ["--"] = "dash"}
+local _mode_shorthand = {["m"] = "markers", ["l"]="lines", ["m+l"]="lines+markers", ["l+m"]="lines+markers"}
 
 
 --[[Adding a trace for the figure with shorthand for common options (similar to matlab or matplotlib).
@@ -2638,7 +2637,7 @@ function figure.plot(self, trace)
       end
       trace[name] = nil
     elseif name == "ls" or name == 'style' then -- dwang, name == 'style'
-      trace["line"]["dash"] = dash_style[val]
+      trace["line"]["dash"] = _dash_style[val]
       trace[name] = nil
     elseif name == "lw" or name == 'width' then -- dwang, name == 'width'
       trace["line"]["width"] = val
@@ -2664,8 +2663,8 @@ function figure.plot(self, trace)
       trace["marker"]["color"] = val
       trace["line"]["color"] = val
       trace[name] = nil
-    elseif name == "mode" and mode_shorthand[val] then
-      trace["mode"] = mode_shorthand[val]
+    elseif name == "mode" and _mode_shorthand[val] then
+      trace["mode"] = _mode_shorthand[val]
     elseif name == "xlabel" then
       if plotly.gridq == false or plotly.layout["xaxis"] == nil then
         plotly.layout["xaxis"] = {title={text=val}}
@@ -2733,25 +2732,21 @@ function figure.toplotstring(self)
 end
 
 function figure.tohtmlstring(self)
-  -- Create header tags
   local header = "<head>\n"..plotly.cdn_main.."\n"..plotly.header.."\n</head>\n"
-
-  -- Create body tags
   local plot = self:toplotstring()
-
   return header.."<body>\n"..plot.."</body>"
 end
 
 ---Saves the figure to an HTML file with *filename*
 function figure.tofile(self, filename)
-  writehtml_failedq = false
+  _writehtml_failedq = false
   local html_str = self:tohtmlstring()
   local file = io.open(filename, "w")
   if file ~= nil then -- dwang
     file:write(html_str)
     file:close()
   else
-    writehtml_failedq = true
+    _writehtml_failedq = true
     print(string.format("Failed to create %s. The very device might not be writable.", filename))
   end
   return self
@@ -2761,7 +2756,7 @@ end
 function figure.show(self)
   local filename = temp_plot_html_file
   self:tofile(filename)
-  if not writehtml_failedq then open_url(filename) end -- keep the file
+  if not _writehtml_failedq then open_url(filename) end -- keep the file
 end
 
 function plotly.figure()
@@ -2770,7 +2765,7 @@ function plotly.figure()
   return fig
 end
 
---[[ plots multiple functions/traces on a single figure -- dwang --]]
+-- dwang, plot multiple functions/traces on a single figure
 function plotly.plots(traces)
   local fig = plotly.figure()
   for i = 1, #traces do
@@ -2782,19 +2777,17 @@ end
 
 
 --[[ The code above is obtained from URL: https://github.com/kenloen/plotly.lua
-     David Wang makes all variables used in functions 'local' in addition to some minor
-     changes and has some functions removed. All credit belongs to the original auther.
-     12/12/2024 Thursday --]]
+     All variables in functions are made 'local' in addition to some changes. Some
+     functions have been removed. All credit belongs to the original auther. --]]
 
 
 --[[ The following code is obtained from URL: http://dkolf.de/dkjson-lua
-     David Wang changes all names to _dk_ and has some functions or so removed.
-     All credit belongs to the original auther.
-     12/12/2024 Thursday --]]
+     Names are changed to _dk_ and some functions or so have been removed.
+     All credit belongs to the original auther. --]]
 
 -- global dependencies:
-local _dk_pairs, _dk_type, _dk_tostring, _dk_getmetatable, _dk_setmetatable =
-      pairs, type, tostring, getmetatable, setmetatable
+local _dk_pairs, _dk_type, _dk_tostring, _dk_getmetatable = --, _dk_setmetatable =
+      pairs, type, tostring, getmetatable --, setmetatable
 local _dk_error, _dk_require, _dk_pcall = error, require, pcall
 local _dk_floor, _dk_huge = math.floor, math.huge
 local _dk_strrep, _dk_gsub, _dk_strsub, _dk_strbyte, _dk_strfind, _dk_strformat =
@@ -2802,8 +2795,8 @@ local _dk_strrep, _dk_gsub, _dk_strsub, _dk_strbyte, _dk_strfind, _dk_strformat 
 local _dk_strmatch = string.match
 local _dk_concat = table.concat
 
-local _ENV = nil -- blocking globals in Lua 5.2 and later
-
+-- local _ENV = nil -- blocking globals in Lua 5.2 and later
+--[[
 _dk_pcall (function()
   -- Enable access to blocked metatables.
   -- Don't worry, this module doesn't change anything in them.
@@ -2814,7 +2807,7 @@ end)
 json.null = _dk_setmetatable ({}, {
   __tojson = function () return "null" end
 })
-
+--]]
 local function _dk_isarray (tbl)
   local max, n, arraylen = 0, 0, 0
   for k,v in _dk_pairs (tbl) do
@@ -3102,10 +3095,9 @@ function json.encode (value, state)
   end
 end
 
---[[ The code above is obtained from URL: http://dkolf.de/dkjson-lua
-     David Wang changes all names to _dk_ and has some functions or so removed.
-     All credit belongs to the original auther.
-     12/12/2024 Thursday --]]
+--[[ The above code is obtained from URL: http://dkolf.de/dkjson-lua
+     Names are changed to _dk_ and some functions or so have been removed.
+     All credit belongs to the original auther. --]]
 
 
 return mathly
