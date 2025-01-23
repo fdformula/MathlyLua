@@ -4,13 +4,16 @@ win_browser = 'C:/Program Files/Mozilla Firefox/firefox.exe'
 linux_browser = 'firefox'
 mac_browser = 'firefox'
 
--- plotly_engine = 'plotly-2.35.2.min.js'
-if package.config:sub(1,1) == '\\' then -- windows
-  plotly_engine = 'file:///C:/cygwin/bin/plotly-2.9.0.min.js'
-else
-  plotly_engine = 'file:////usr/local/share/lua/5.4/plotly-2.9.0.min.js'
+plotly_engine = 'plotly-2.9.0.min.js'
+do
+  local dir
+  if package.config:sub(1,1) == '\\' then -- windows
+    dir = 'C:/cygwin/bin/' -- must end with '/'  ← ← ← ← ← windows users
+  else
+    dir = '/usr/local/share/lua/5.4/' -- ← ← ← users of other os systems
+  end
+  plotly_engine = 'file:///' .. dir .. plotly_engine
 end
-
 
 
 -- ↓ ↓ ↓ ↓ Do nothing below unless you know what you do!!! ↓ ↓ ↓ ↓ --
