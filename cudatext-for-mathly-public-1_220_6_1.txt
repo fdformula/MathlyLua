@@ -11,5 +11,7 @@ While in CudaText, press
 
 Other hotkeys? Refer to C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt.
 
-FYI. Quite a few CudaText plugins are included. Some plugins are customized,
-modified, and/or exapanded. 
+Note:
+----
+  Quite a few CudaText plugins are included. Some plugins are customized,
+  modified, and/or exapanded.
