@@ -7,7 +7,7 @@ While in CudaText, press
 
   F2      to start Lua with mathly loaded
   Ctrl-,  to run Lua command on current line in the editor
-  Ctrl-.  to run all Lua commands in current script file in the editor
+  Ctrl-.  to run all Lua script in the editor
 
 Other hotkeys? Refer to C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt.
 
