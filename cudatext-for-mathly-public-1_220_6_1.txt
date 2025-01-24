@@ -6,8 +6,8 @@ While in CudaText, press
   F1      to open help document on current Lua/mathly function
 
   F2      to start Lua with mathly loaded
-  Ctrl-,  to run Lua command on current line
-  Ctrl-.  to run all Lua commands in current script file
+  Ctrl-,  to run Lua command on current line in the editor
+  Ctrl-.  to run all Lua commands in current script file in the editor
 
 Other hotkeys? Refer to C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt.
 
