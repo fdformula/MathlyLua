@@ -9,9 +9,13 @@ While in CudaText, press
   Ctrl-,  to run Lua command on current line in the editor
   Ctrl-.  to run all Lua script in the editor
 
+F2, Ctrl-, and Ctrl-. work with Bash, Octave, R, and some other languages
+with interactive REPL terminal. CudaText detects and selects the very language
+according to the extension of the present filename.
+
 Other hotkeys? Refer to C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt.
 
 Note:
 ----
-  Quite a few CudaText plugins are included. Some plugins are customized,
-  modified, and/or exapanded.
+  Quite a few CudaText plugins are included. Some are customized and
+even have new useful features added.
