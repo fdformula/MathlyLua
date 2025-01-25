@@ -19,4 +19,4 @@ Other hotkeys? Refer to C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt.
 Note:
 ----
   Quite a few CudaText plugins are included. Some are customized and
-even have new useful features added.
+even have new features added.
