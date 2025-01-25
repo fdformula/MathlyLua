@@ -12,7 +12,15 @@ table, pre { margin: 1px 25px }
 <body>
 <div>
 <h2><a name=top></a><a href=#mathly>Mathly Turns Lua into a Tiny but Powerful MATLAB</a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &rArr; <a href=lua5_4.html>Lua 5.4 Manual</a></h2>
-
+<ol>
+<li><a href=#intro>Introduction</a></li>
+<li><a href=#version>Which version of Lua is needed?</a></li>
+<li><a href=#where>Where to place the downloaded files of this module?</a></li>
+<li><a href=#twothings>Two important things you need to know</a></li>
+<li><a href=#math>Basic mathematical functions and elementwise operations</a></li>
+<li><a href=#mathly>Table of other functions</a></li>
+</ol>
+<h2><a name=intro></a>Introduction</h2>
 <p>Mathly for <a href=https://www.lua.org>Lua</a> is a Lua module which turns Lua into a tiny but powerful MATLAB. It provides a group of commonly used MATLAB functions and features,
 for example, <code>linspace</code>, <code>zeros</code>, <code>rand</code>, <code>save</code>, convenient matrix operations, and even
 <code>plot</code>. They make coding and testing a thought/algorithm much easier and faster than working in most other
@@ -33,15 +41,18 @@ of course contents and never need to worry if their computers work too slowly or
 of using Lua is that Lua is so simple and natural a language that even students without programming skills can understand most
 of Lua scripts.</p>
 
-<h2>Which version of Lua is needed?</h2>
+<h2><a name=version></a>Which version of Lua is needed?</h2>
 <p>Mathly is developed in Lua 5.4.6. It works with the present newest version 5.4.7. It might work with previous versions.</p>
 <p>You may download Lua source code in <a href="https://lua.org/">https://lua.org/</a> and compile it yourself or simply
 download prebuilt binary commands for Microsoft Windows in, say,
 <a href="https://www.nuget.org/packages/lua/">https://www.nuget.org/packages/lua/</a>. Another way to get prebuilt Lua is to
 download <a href=https://studio.zerobrane.com/>ZeroBrane Studio</a>, a lightweight Lua IDE for various platforms. It may come with
 multiple versions of Lua.</p>
-<h2>Where to place the downloaded files of this module?</h2>
+<p>Windows users may download the file <a href=https://github.com/fdformula/MathlyLua>cudatext-for-mathly-win-*.7z</a>, including
+Lua 5.4.6. Run 7zip to extract it to <code>C:/</code> . <a href=https://cudatext.github.io/>CudaText</a> is a very good "IDE" for
+Lua and running mathly as well.</p>
 
+<h2><a name=where></a>Where to place the downloaded files of this module?</h2>
 <p>They can be placed in either</p>
 <ol>
 <li>the folder of your Lua code files to run/test or</li>
@@ -49,22 +60,18 @@ multiple versions of Lua.</p>
 <pre><code>...
 lua.exe
 browser-setting.lua
-dkjson.lua
 mathly.lua
-plotly.lua
 plotly-2.9.0.min.js
 ...
 </code></pre><p></p>
-(Linux) /usr/local/share/lua/5.4/
+(Linux) <code>/usr/local/share/lua/5.4/</code>
 </li></ol>
+<p><em>You may need to edit the file <code>browser-setting.lua</code>.</em> See comments in the very file.</p>
 <p>Note: The <code>*.lua</code> files can be compiled with <code>luac</code>. To use compiled modules, we set
 <code>package.path</code> first as follows:</p>
 <p><code>package.path = "./?.luac;;"</code></p>
 
-<h2>You may need to edit the file <code>browser-setting.lua</code>.</h2>
-<p>See comments in the very file.</p>
-
-<h2>Two important things you need to know</h2>
+<h2><a name=twothings></a>Two important things you need to know</h2>
 
 <p><B>1. The difference between Lua tables and mathly matrices</B></p>
 <p>Tables are the only data structure Lua offers. However, we may use it as arrays, vectors, matrices, dictionaries, and
@@ -156,21 +163,30 @@ address it conveniently like <code>x[i]</code> instead of <code>x[1][i]</code>. 
 
 <p>If you want full control, you can use <code>c</code> or <code>r</code> to convert an ordinary table to a column
 or row vector. (See <a href=#cc><code>cc(x...)</code>, <code>rr(x...)</code>, <code>tt(x...)</code></a>)</p>
-<h2><a name=math></a>Basic Mathematical Functions</h2>
-<p>Basic math functions are each now able to work on Lua tables, including mathly matrices. They are
+
+<h2><a name=math></a>Basic mathematical functions and elementwise operations</h2>
+<p>&#x2713; &nbsp; Basic mathematical functions</p>
+<p>Basic math functions are each now able to work <em>elementwisely</em> on Lua tables, including mathly matrices. They are
 <code>abs</code>, <code>acos</code>, <code>asin</code>, <code>atan</code>, <code>ceil</code>, <code>cos</code>,
 <code>deg</code>, <code>exp</code>, <code>floor</code>, <code>log</code>, <code>rad</code>, <code>random</code>,
 <code>sin</code>, <code>sqrt</code>, and <code>tan</code>. They evaluate a function at every number in a
 table and keep the structure of the table.</p>
+<pre><code>
+require('mathly')
+A = randi(100, 5, 6)
+disp(cos(A))
 
-<p>For example, <code>abs({1, -2, {-3, 4, {5, -6}}})</code> evaluates Lua built-in function <code>math.abs</code>
-at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
+x = {-1, 2, -3, {4, -5, {6}}}
+disp(abs(x))
+-- {1, 2, 3, {4, 5, {6}}}
+disp(log(abs(x)))
+</code></pre>
 
 <p>Note: With each of these functions, should we use, say, <code>sin(x)</code> or <code>math.sin(x)</code>?
 <B>You can always use <code>sin(x)</code>. However, if you know <code>x</code> is a number, you may call
 <code>math.sin(x)</code> to get a little improvement in performance.</p></B>
 
-<p>Mathly also provides four commonly used constants. They are:</p>
+<p>By the way, mathly provides four commonly used constants. They are:</p>
 <table><tbody>
 <tr><td><code>pi = 3.1415926535898</code></td><td width=40></td><td>It is simply <code>math.pi</code>.</td></tr>
 <tr><td><code>e = 2.718281828459</code></td><td width=40></td><td>It is <code>math.exp(1)</code>.</td></tr>
@@ -180,6 +196,30 @@ at every number in the table and thus gives {1, 2, {3, 4, {5, 6}}}.</p>
 </table>
 <p></p>
 <p><u>Note</u>: <code>T</code> is reserved by mathly for finding the transpose of a matrix, e.g., <code>A^T</code>, where <code>A</code> is a mathly matrix.</p>
+
+<p>&#x2713; &nbsp; Other elementwise operations
+<p>Let <code>x</code> and <code>y</code> be two tables of the same size. Then, <a href=#cc><code>cc(x) * cc(y)</code></a> or
+<a href=#cc><code>rr(x) * rr(y)</code></a> functions like <code>x .* y</code> in MATLAB. As per other cases or actually all cases, we
+can do elementwise operations, simple or complicated, through <a href=#map><code>map</code></a>.
+<pre><code>
+mathly = require('mathly')
+A = randi(100, 5, 7)  -- A, B can be any tables of numbers
+B = randi(100, 5, 7)
+C = map(function(x, y) return x * y end, A, B) -- A .* B
+disp(C)
+C = map(function(x, y) return x / y end, A, B) -- A ./ B
+disp(C)
+disp(map(function(x) return x ^ 2 end, A))     -- A .^ 2
+
+D = map(function(x, y, z)
+          if x % 2 == 0 then
+            return x - y + 3 * z
+          else
+            return x + y * y
+          end
+        end, A, B, C)
+disp(D)
+</code></pre>
 
 <a name=mathly></a><h2><a href=#top>The following table summarizes other functions provided by <code>mathly</code>.</a></h2>
 <table>
@@ -587,7 +627,7 @@ display(dot({1, 2}, {3, 4}))
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=expand href=#mathly><code>expand(A, m, n, v)</code></a></h4>
-<p>Return an expanded/shrunk mathly matrix with value v's added or entries dropped.</p>
+<p>Return an expanded/shrunk mathly matrix with value <code>v</code>'s added or entries dropped.</p>
 <p>The default value of <code>v</code> is 0, and the default value of <code>n</code> is <code>m</code>.</p>
 <pre><code>
 mathly = require('mathly')
