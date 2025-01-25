@@ -30,6 +30,19 @@ ZeroBrane Studio (https://studio.zerobrane.com/), a lightweight Lua IDE for vari
 
 Windows users may download on this very page the file, `cudatext-for-mathly-win-1_220_7_0.7z`, including Lua 5.4.6.
 Run [7zip](https://7-zip.org/) to extract it to C:/ . [CudaText](https://cudatext.github.io/) is a very good "IDE" for Lua and running mathly as well.
+Quite a few CudaText plugins are included. Some are customized and even have new features added. While in CudaText, press
+```
+  F1      to open help document on current Lua/mathly function
+
+  F2      to start Lua with mathly loaded
+  Ctrl-,  to run Lua command on current line in the editor
+  Ctrl-.  to run all Lua script in the editor
+```
+`F2`, `Ctrl-,`, and `Ctrl-.` work with Bash, Julia, Octave, Python, R, Ruby, and some other languages with interactive REPL terminal.
+CudaText detects and selects the very language according to the extension of the present filename (defaults to Lua). See: The first few
+lines of the file, `C:\cygwin\cudatext\py\cuda_ex_terminal\__init__.py`.
+
+Other hotkeys? Refer to `C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt`.
 
 ## Where to place the downloaded files?
 
