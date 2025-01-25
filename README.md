@@ -57,16 +57,14 @@ browser-setting.lua
 mathly.lua
 plotly-2.9.0.min.js
 ```
-
 ###  (Linux) /usr/local/share/lua/5.4/
+You may need to edit the file `browser-setting.lua`. See comments in the file.
 
 Note: The *.lua files can be compiled with `luac`. To use compiled modules, we set `package.path` first as follows:
 
 ```Lua
 package.path = "./?.luac;;"
 ```
-
-You may need to edit the file `browser-setting.lua`. See comments in the file.
 
 ## Functions provided in mathly
 
