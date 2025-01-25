@@ -35,7 +35,7 @@ Quite a few CudaText plugins are included. Some are customized and even have new
   F1      to open help document on current Lua/mathly function
 
   F2      to start Lua with mathly loaded
-  Ctrl-,  to run Lua command on current line in the editor
+  Ctrl-,  to run Lua commands on current line in the editor
   Ctrl-.  to run all Lua script in the editor
 ```
 `F2`, `Ctrl-,`, and `Ctrl-.` work with Bash, Julia, Octave, Python, R, Ruby, and some other languages with interactive REPL terminal.
