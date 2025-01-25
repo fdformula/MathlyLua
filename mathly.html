@@ -48,9 +48,23 @@ download prebuilt binary commands for Microsoft Windows in, say,
 <a href="https://www.nuget.org/packages/lua/">https://www.nuget.org/packages/lua/</a>. Another way to get prebuilt Lua is to
 download <a href=https://studio.zerobrane.com/>ZeroBrane Studio</a>, a lightweight Lua IDE for various platforms. It may come with
 multiple versions of Lua.</p>
-<p>Windows users may download the file <a href=https://github.com/fdformula/MathlyLua>cudatext-for-mathly-win-*.7z</a>, including
-Lua 5.4.6. Run 7zip to extract it to <code>C:/</code> . <a href=https://cudatext.github.io/>CudaText</a> is a very good "IDE" for
-Lua and running mathly as well.</p>
+<p>Windows users may download the file <a href=https://github.com/fdformula/MathlyLua><code>cudatext-for-mathly-win-*.7z</code></a>, including
+Lua 5.4.6. Run <a href=https://7-zip.org/>7zip</a> to extract it to <code>C:/</code> . <a href=https://cudatext.github.io/>CudaText</a> is a very good "IDE" for
+Lua and running mathly as well. Quite a few CudaText plugins are included. Some are customized and even have new features added.
+While in CudaText, press</p>
+<pre><code>
+  F1      to open help document on current Lua/mathly function
+
+  F2      to start Lua with mathly loaded
+  Ctrl-,  to run Lua command on current line in the editor
+  Ctrl-.  to run all Lua script in the editor
+</code></pre>
+<p><code>F2</code>, <code>Ctrl-,</code>, and <code>Ctrl-.</code> work with Bash, Julia, Octave, Python, R, Ruby, and some other
+languages with interactive REPL terminal. CudaText detects and selects the very language
+according to the extension of the present filename (defaults to Lua). See: The first few
+lines of the file, <code>C:\cygwin\cudatext\py\cuda_ex_terminal\__init__.py</code>.</p>
+
+<p>Other hotkeys? Refer to <code>C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt</code>.</p>
 
 <h2><a name=where></a>Where to place the downloaded files of this module?</h2>
 <p>They can be placed in either</p>
