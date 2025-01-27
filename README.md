@@ -32,11 +32,14 @@ Microsoft Windows users may download on this very page the file, `cudatext-for-m
 Run [7zip](https://7-zip.org/) to extract it to C:/ . [CudaText](https://cudatext.github.io/) is a very good "IDE" for Lua and running mathly as well.
 Quite a few CudaText plugins are included. Some are customized and even have new features added. While in CudaText, press
 ```
-  F1      to open help document on current Lua/mathly function
+  F1               to open help document on current Lua/mathly function
 
-  F2      to start Lua with mathly loaded
-  Ctrl-,  to run Lua commands on current line in the editor
-  Ctrl-.  to run all Lua script in the editor (HTML file? open it in a browser)
+  F2               to start Lua with mathly loaded
+  Ctrl-,           to run Lua command on current line in the editor
+  Ctrl-.           to run all Lua script in the editor (HTML file? open it in a browser)
+
+  Ctrl-Alt-Space   Auto lexical completion
+  Shift-Alt-Space  Auto text completion (Ctrl-p d, load an English dictionary as part of the text)
 ```
 `F2`, `Ctrl-,`, and `Ctrl-.` work with Bash, Julia, Octave, Python, R, Ruby, and some other languages with interactive REPL terminal.
 CudaText detects and selects the very language according to the extension of the present filename (defaults to Lua). See: The first few
