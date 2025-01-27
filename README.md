@@ -38,8 +38,8 @@ Quite a few CudaText plugins are included. Some are customized and even have new
   Ctrl-,           to run Lua command on current line in the editor
   Ctrl-.           to run all Lua script in the editor (HTML file? open it in a browser)
 
-  Ctrl-Alt-Space   Auto lexical completion
-  Shift-Alt-Space  Auto text completion (Ctrl-p d, load an English dictionary as part of the text)
+  Ctrl-Alt-Space   auto lexical completion
+  Shift-Alt-Space  auto text completion (Ctrl-p d, load an English dictionary as part of the text)
 ```
 `F2`, `Ctrl-,`, and `Ctrl-.` work with Bash, Julia, Octave, Python, R, Ruby, and some other languages with interactive REPL terminal.
 CudaText detects and selects the very language according to the extension of the present filename (defaults to Lua). See: The first few
