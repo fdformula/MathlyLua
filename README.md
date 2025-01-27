@@ -36,7 +36,7 @@ Quite a few CudaText plugins are included. Some are customized and even have new
 
   F2      to start Lua with mathly loaded
   Ctrl-,  to run Lua commands on current line in the editor
-  Ctrl-.  to run all Lua script in the editor
+  Ctrl-.  to run all Lua script in the editor (HTML file? open it in a browser)
 ```
 `F2`, `Ctrl-,`, and `Ctrl-.` work with Bash, Julia, Octave, Python, R, Ruby, and some other languages with interactive REPL terminal.
 CudaText detects and selects the very language according to the extension of the present filename (defaults to Lua). See: The first few
