@@ -20,7 +20,7 @@ API and Usage
   List of functions provided in this module:
 
     all, any, apply, cc, check, clc, clear, copy, cross, det, diag, disp, display, dot,
-    expand, extract, eye, flatten, fliplr, flipud, format, hasindex, horzcat, inv, isinteger,
+    expand, nonzeros, eye, flatten, fliplr, flipud, format, hasindex, horzcat, inv, isinteger,
     ismember, length, linsolve, linspace, lu, map, max, mean, min, norm, ones, plot, polyval,
     printf, prod, qr, rand, randi, range, remake, repmat, reshape, rr, rref, save, seq, size,
     sort, sprintf, std, strcat, submatrix, subtable, sum, tblcat, tic, toc, transpose, tt,
@@ -416,7 +416,7 @@ end
 --// function check( A, f ) -- not the one in MATLAB
 -- check if each element makes f(x) true or not, return 1 or 0 for the element
 --
--- used usually together with function 'extract'
+-- used usually together with function 'nonzeros'
 function check( A, f )
   assert(getmetatable(A) == mathly_meta, 'check(A, f): A must be a mathly matrix.')
   if f == nil then f = function(x) return math.abs(x) > eps end end
@@ -431,23 +431,27 @@ function check( A, f )
   return setmetatable(B, mathly_meta)
 end
 
---// function extract( A, B ) -- not the one in MATLAB
--- return a column vector of elements of A columnwisely if the corresponding element in B is 1
+--// function nonzeros( A, B ) -- not the one in MATLAB
+-- return a table of elements of A columnwisely if the corresponding element in B is nonzero
+-- B defaults to A
 --
 -- used usually together with function 'check'
-function extract( A, B )
-  assert(getmetatable(A) == mathly_meta and getmetatable(B) == mathly_meta, 'extract(A, B): A and B must be mathly matrices.')
+function nonzeros( A, B )
+  if getmetatable(A) ~= mathly_meta then A = mathly(A) end
+  if B == nil then B = A end
+  if getmetatable(B) ~= mathly_meta then B = mathly(B) end
+
   local m, n = size(A)
   local M, N = size(B)
-  assert(m <= M and n <= N, 'extract(A, B): B must be a matrix at least the same size of A.')
+  assert(m <= M and n <= N, 'nonzeros(A, B): B must be a matrix at least the same size of A.')
   local x = {}
   local k = 1
   for j = 1, n do
     for i = 1, m do
-      if B[i][j] == 1 then x[k] = {A[i][j]}; k = k + 1 end
+      if B[i][j] ~= 0 then x[k] = A[i][j]; k = k + 1 end
     end
   end
-  return setmetatable(x, mathly_meta)
+  return x
 end
 
 --// function _largest_width_dplaces(tbl)

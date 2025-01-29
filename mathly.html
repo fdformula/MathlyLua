@@ -256,7 +256,6 @@ disp(D)
 <tr><td><a href=#display><code>display(x)</code></a></td><td> </td><td>Print a table with structure.</td></tr>
 <tr><td><a href=#dot><code>dot(a, b)</code></a></td><td> </td><td>Calculate the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ..., a<sub>n</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ..., b<sub>n</sub>}</code>.</td></tr>
 <tr><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrunk <code>mxn</code> mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
-<tr><td><a href=#extract><code>extract(A, B)</code></a></td><td> </td><td>Return a column vector of elements of <code>A</code> columnwisely if the corresponding element of <code>B</code> is 1.</td></tr>
 <tr><td><code>eye(n)</code></td><td> </td><td>Return a <code>nxn</code> identity mathly matrix.</td></tr>
 <tr><td><a href=#flatten><code>flatten(x)</code></a></td><td> </td><td>Remove the structure of <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</td></tr>
 <tr><td><a href=#fliplr><code>fliplr(A)</code></a></td><td> </td><td>Return a matrix with columns of matrix <code>A</code> reversed.</td></tr>
@@ -275,6 +274,7 @@ disp(D)
 <tr><td><a href=#max><code>max(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the largest of all elements of the table; if it is a matrix, ...</td></tr>
 <tr><td><a href=#mean><code>mean(x)</code></a></td><td> </td><td>Return mean value of numbers in <code>x</code>.</td></tr>
 <tr><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
+<tr><td><a href=#nonzeros><code>nonzeros(A, B)</code></a></td><td> </td><td>Return a column vector of elements of <code>A</code> columnwisely if the corresponding element of <code>B</code> is 1.</td></tr>
 <tr><td><code>norm(x)</code></td><td> </td><td>Return the Euclidean norm of a row/column vector <code>x</code>.</td></tr>
 <tr><td><a href=#ones><code>ones(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 1. If <code>m = 1</code>, return a table.</td></tr>
 <tr><td><a href=#plot><code>plot(x, y, ...)</code></a></td><td> </td><td>Plot the graph(s) of functions defined by data points <code>x</code> and <code>y</code> and ...</td></tr>
@@ -491,11 +491,11 @@ display(tt(x, 2))
 -- {2, 3, 4, 5, 6, 7}
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=extract></a><a name=check href=#mathly><code>check(A, f)</code>, <code>extract(A, B)</code></a></h4>
+<h4>&bull; &nbsp; <a name=nonzeros></a><a name=check href=#mathly><code>check(A, f)</code>, <code>nonzeros(A, B)</code></a></h4>
 <p>The two functions are usually used together.</p>
 <ol>
 <li><code>check(A, f)</code>: Check if each element of matrix <code>A</code> makes <code>f(x)</code> true or not, return 1 or 0 for the element.</li><p></p>
-<li><code>extract(A, B)</code>: Return a column vector of elements of <code>A</code> columnwisely if the corresponding element of <code>B</code> is 1.</li>
+<li><code>nonzeros(A, B)</code>: Return a table of elements of <code>A</code> columnwisely if the corresponding element of <code>B</code> is nonzero.</li>
 </ol>
 <p>Note: <code>f(x)</code> returns true or false (default: <code>x ~= 0</code>).</p></li>
 <pre><code>
@@ -510,12 +510,21 @@ disp(C)
 -- 0  1  0
 -- 1  0  1
 -- 0  1  0
-B = extract(A, C)
+B = nonzeros(A, C)
 disp(B)
--- 4
--- 2
--- 8
--- 6
+{4, 2, 8, 6}
+
+A = mathly{{1, 0, 3}, {0, 5, 0}, {7, 8, 0}}
+disp(A)
+-- 1  0  3
+-- 0  5  0
+-- 7  8  0
+disp(nonzeros(A))
+{1, 7, 5, 8, 3}
+
+x = {0, 1, 2, 0, 0, 3, 0, 4, 0, 0}
+disp(nonzeros(x))
+{1, 2, 3, 4}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=copy href=#mathly><code>copy(x)</code></a></h4>
