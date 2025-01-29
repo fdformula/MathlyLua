@@ -443,16 +443,16 @@ function nonzeros( A, B )
 
   local m, n = size(A)
   local M, N = size(B)
-  assert(m <= M and n <= N, 'nonzeros(A, B): B must be a matrix at least the same size of A.')
+  assert(m <= M and n <= N, 'nonzeros(A, B): A and B must be matrices of the same size.')
   local x = {}
   local k = 1
   for j = 1, n do
     for i = 1, m do
-      if B[i][j] ~= 0 then x[k] = A[i][j]; k = k + 1 end
+      if math.abs(B[i][j]) > 10*eps then x[k] = A[i][j]; k = k + 1 end
     end
   end
   return x
-end
+end -- nonzeros
 
 --// function _largest_width_dplaces(tbl)
 -- find the largest width of integers/strings and number of decimal places
