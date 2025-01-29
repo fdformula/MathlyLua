@@ -414,7 +414,7 @@ function any( x, f )
 end
 
 --// function setzeros( A, f ) -- not the one in MATLAB
--- check if each element makes f(x) true or not, set 0 for the element
+-- if an element makes f(x) true, set 0 for the element.
 --
 -- used usually together with function 'getnonzeros'
 function setzeros( A, f )
@@ -425,7 +425,7 @@ function setzeros( A, f )
   for i = 1, m do
     B[i] = {}
     for j = 1, n do
-      if f(A[i][j]) then B[i][j] = A[i][j] else B[i][j] = 0 end
+      if f(A[i][j]) then B[i][j] = 0 else B[i][j] = A[i][j] end
     end
   end
   return setmetatable(B, mathly_meta)
