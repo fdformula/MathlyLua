@@ -53,11 +53,14 @@ Lua 5.4.6. Run <a href=https://7-zip.org/>7zip</a> to extract it to <code>C:/</c
 Lua and running mathly as well. Quite a few CudaText plugins are included. Some are customized and even have new features added.
 While in CudaText, press</p>
 <pre><code>
-  F1      to open help document on current Lua/mathly function
+  F1               to open help document on current Lua/mathly function
 
-  F2      to start Lua with mathly loaded
-  Ctrl-,  to run Lua command on current line in the editor
-  Ctrl-.  to run all Lua script in the editor
+  F2               to start Lua with mathly loaded
+  Ctrl-,           to run Lua command on current line in the editor
+  Ctrl-.           to run all Lua script in the editor (HTML file? open it in a browser)
+
+  Ctrl-Alt-Space   to trigger auto lexical completion
+  Shift-Alt-Space  to trigger auto text completion (Ctrl-p d, load an English dictionary as part of the text)
 </code></pre>
 <p><code>F2</code>, <code>Ctrl-,</code>, and <code>Ctrl-.</code> work with Bash, Julia, Octave, Python, R, Ruby, and some other
 languages with interactive REPL terminal. CudaText detects and selects the very language
@@ -613,7 +616,8 @@ diag({2,3,4,5}, 1) + diag({1,2,3,4,5}) + diag({3,4,5,6}, -1) -- See also: <a nam
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=disp href=#mathly><code>disp(A)</code></a> - Print a mathly matrix. If <code>A</code> is not a mathly matrix, <code>display</code> is called to print it.</h4>
-<h4>&bull; &nbsp; <a name=display href=#mathly><code>display(x)</code></a> - Print a table with structure.</h4>
+<h4>&bull; &nbsp; <a name=display href=#mathly><code>display(x)</code></a> - Print a table, including any mathly matrix, with structure.</h4>
+<p>Note: You can always use <code>disp</code> in all cases (except that you want to know the structure of a mathly matrix).</p>
 <pre><code>
 require 'mathly'
 a = eye(3)
