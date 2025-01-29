@@ -19,10 +19,10 @@ API and Usage
 
   List of functions provided in this module:
 
-    all, any, apply, cc, check, clc, clear, copy, cross, det, diag, disp, display, dot,
-    expand, nonzeros, eye, flatten, fliplr, flipud, format, hasindex, horzcat, inv, isinteger,
-    ismember, length, linsolve, linspace, lu, map, max, mean, min, norm, ones, plot, polyval,
-    printf, prod, qr, rand, randi, range, remake, repmat, reshape, rr, rref, save, seq, size,
+    all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display, dot, expand, eye,
+    flatten, fliplr, flipud, format, getnonzeros, hasindex, horzcat, inv, isinteger, ismember,
+    length, linsolve, linspace, lu, map, max, mean, min, norm, ones, plot, polyval, printf,
+    prod, qr, rand, randi, range, remake, repmat, reshape, rr, rref, save, seq, setzeros, size,
     sort, sprintf, std, strcat, submatrix, subtable, sum, tblcat, tic, toc, transpose, tt,
     unique, var, vertcat, who, zeros
 
@@ -413,37 +413,37 @@ function any( x, f )
   end
 end
 
---// function check( A, f ) -- not the one in MATLAB
--- check if each element makes f(x) true or not, return 1 or 0 for the element
+--// function setzeros( A, f ) -- not the one in MATLAB
+-- check if each element makes f(x) true or not, set 0 for the element
 --
--- used usually together with function 'nonzeros'
-function check( A, f )
-  assert(getmetatable(A) == mathly_meta, 'check(A, f): A must be a mathly matrix.')
+-- used usually together with function 'getnonzeros'
+function setzeros( A, f )
+  assert(getmetatable(A) == mathly_meta, 'setzeros(A, f): A must be a mathly matrix.')
   if f == nil then f = function(x) return math.abs(x) > eps end end
   local m, n = size(A)
   local B = {}
   for i = 1, m do
     B[i] = {}
     for j = 1, n do
-      if f(A[i][j]) then B[i][j] = 1 else B[i][j] = 0 end
+      if f(A[i][j]) then B[i][j] = A[i][j] else B[i][j] = 0 end
     end
   end
   return setmetatable(B, mathly_meta)
 end
 
---// function nonzeros( A, B ) -- not the one in MATLAB
+--// function getnonzeros( A, B ) -- not the one in MATLAB
 -- return a table of elements of A columnwisely if the corresponding element in B is nonzero
 -- B defaults to A
 --
--- used usually together with function 'check'
-function nonzeros( A, B )
+-- used usually together with function 'setzeros'
+function getnonzeros( A, B )
   if getmetatable(A) ~= mathly_meta then A = mathly(A) end
   if B == nil then B = A end
   if getmetatable(B) ~= mathly_meta then B = mathly(B) end
 
   local m, n = size(A)
   local M, N = size(B)
-  assert(m <= M and n <= N, 'nonzeros(A, B): A and B must be matrices of the same size.')
+  assert(m <= M and n <= N, 'getnonzeros(A, B): A and B must be matrices of the same size.')
   local x = {}
   local k = 1
   for j = 1, n do
@@ -452,7 +452,7 @@ function nonzeros( A, B )
     end
   end
   return x
-end -- nonzeros
+end -- getnonzeros
 
 --// function _largest_width_dplaces(tbl)
 -- find the largest width of integers/strings and number of decimal places

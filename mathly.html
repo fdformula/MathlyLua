@@ -245,7 +245,6 @@ disp(D)
 <tr><td><a href=#any><code>any(x, f)</code></a></td><td> </td><td>Test if there is any number in <code>x</code> such that <code>f(x)</code> is true.</td></tr>
 <tr><td><a href=#apply><code>apply(f, ...)</code></a></td><td> </td><td>As with some other programming languages like <i>Mathematica</i>, call function <code>f</code> with the arguments.</td></tr>
 <tr><td><a href=#cc><code>cc(x...)</code></a></td><td> </td><td>Convert a table <code>x</code> into a column vector or return specified column(s) of a mathly matrix...</td></tr>
-<tr><td><a href=#check><code>check(A, f)</code></a></td><td> </td><td>Check if each element of matrix <code>A</code> makes <code>f(x)</code> true or not, return 1 or 0 for the element.</td></tr>
 <tr><td><code>clc()</code></td><td> </td><td>Clear Lua console.</td></tr>
 <tr><td><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
 <tr><td><a href=#copy><code>copy(x)</code></a></td><td> </td><td>Make a deep copy of <code>x</code>.</td></tr>
@@ -261,6 +260,7 @@ disp(D)
 <tr><td><a href=#fliplr><code>fliplr(A)</code></a></td><td> </td><td>Return a matrix with columns of matrix <code>A</code> reversed.</td></tr>
 <tr><td><a href=#flipud><code>flipud(A)</code></a></td><td> </td><td>Return a matrix with rows of matrix <code>A</code> reversed.</td></tr>
 <tr><td><a href=#format><code>format(fmt)</code></a></td><td> </td><td>Reset or specify the format of the output of <code>disp(...)</code>.</td></tr>
+<tr><td><a href=#getnonzeros><code>getnonzeros(A, B)</code></a></td><td> </td><td>Return a column vector of elements of <code>A</code> columnwisely if the corresponding element of <code>B</code> is 1.</td></tr>
 <tr><td><a href=#hasindex><code>hasindex(table, index)</code></a></td><td> </td><td>Check if <code>table</code> contains <code>index</code>.</td></tr>
 <tr><td><a href=#horzcat><code>horzcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
 <tr><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of a square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
@@ -274,7 +274,6 @@ disp(D)
 <tr><td><a href=#max><code>max(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the largest of all elements of the table; if it is a matrix, ...</td></tr>
 <tr><td><a href=#mean><code>mean(x)</code></a></td><td> </td><td>Return mean value of numbers in <code>x</code>.</td></tr>
 <tr><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
-<tr><td><a href=#nonzeros><code>nonzeros(A, B)</code></a></td><td> </td><td>Return a column vector of elements of <code>A</code> columnwisely if the corresponding element of <code>B</code> is 1.</td></tr>
 <tr><td><code>norm(x)</code></td><td> </td><td>Return the Euclidean norm of a row/column vector <code>x</code>.</td></tr>
 <tr><td><a href=#ones><code>ones(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 1. If <code>m = 1</code>, return a table.</td></tr>
 <tr><td><a href=#plot><code>plot(x, y, ...)</code></a></td><td> </td><td>Plot the graph(s) of functions defined by data points <code>x</code> and <code>y</code> and ...</td></tr>
@@ -293,6 +292,7 @@ disp(D)
 <tr><td><a href=#rref><code>rref(A, ..)</code></a></td><td> </td><td>Return the reduced row-echelon form of a mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
 <tr><td><a href=#save><code>save(datafile, ...)</code></a></td><td> </td><td>Save specified or all user-defined variables and their values to file <code>datafile</code>.</td></tr>
 <tr><td><a href=#seq><code>seq(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</td></tr>
+<tr><td><a href=#setzeros><code>setzeros(A, f)</code></a></td><td> </td><td>Check if each element of matrix <code>A</code> makes <code>f(x)</code> true or not, set 0 for the element.</td></tr>
 <tr><td><code>size(A)</code></td><td> </td><td>Return the dimensions of a mathly matrix <code>A</code>.</td></tr>
 <tr><td><a href=#sort><code>sort(tbl, compf)</code></a></td><td> </td><td>Sort a table <code>tbl</code> and return the resulted table.</td></tr>
 <tr><td><a href=#printf><code>sprintf(...)</code></a></td><td> </td><td>Return a formatted string, while <code>printf</code> prints one.</td></tr>
@@ -491,11 +491,11 @@ display(tt(x, 2))
 -- {2, 3, 4, 5, 6, 7}
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=nonzeros></a><a name=check href=#mathly><code>check(A, f)</code>, <code>nonzeros(A, B)</code></a></h4>
+<h4>&bull; &nbsp; <a name=getnonzeros></a><a name=setzeros href=#mathly><code>setzeros(A, f)</code>, <code>getnonzeros(A, B)</code></a></h4>
 <p>The two functions are usually used together.</p>
 <ol>
-<li><code>check(A, f)</code>: Check if each element of matrix <code>A</code> makes <code>f(x)</code> true or not, return 1 or 0 for the element.</li><p></p>
-<li><code>nonzeros(A, B)</code>: Return a table of elements of <code>A</code> columnwisely if the corresponding element of <code>B</code> is nonzero.</li>
+<li><code>setzeros(A, f)</code>: Check if each element of matrix <code>A</code> makes <code>f(x)</code> true or not, set 0 for the element.</li><p></p>
+<li><code>getnonzeros(A, B)</code>: Return a table of elements of <code>A</code> columnwisely if the corresponding element of <code>B</code> is nonzero.</li>
 </ol>
 <p>Note: <code>f(x)</code> returns true or false (default: <code>x ~= 0</code>).</p></li>
 <pre><code>
@@ -505,12 +505,12 @@ disp(A)
 -- 1  2  3
 -- 4  5  6
 -- 7  8  9
-C = check(A, function(x) return x >= 2 and x % 2 == 0 end)
+C = setzeros(A, function(x) return x >= 2 and x % 2 == 0 end)
 disp(C)
--- 0  1  0
--- 1  0  1
--- 0  1  0
-B = nonzeros(A, C)
+-- 0  2  0
+-- 4  0  6
+-- 0  8  0
+B = getnonzeros(A, C)
 disp(B)
 {4, 2, 8, 6}
 
@@ -519,11 +519,11 @@ disp(A)
 -- 1  0  3
 -- 0  5  0
 -- 7  8  0
-disp(nonzeros(A))
+disp(getnonzeros(A))
 {1, 7, 5, 8, 3}
 
 x = {0, 1, 2, 0, 0, 3, 0, 4, 0, 0}
-disp(nonzeros(x))
+disp(getnonzeros(x))
 {1, 2, 3, 4}
 </code></pre>
 
