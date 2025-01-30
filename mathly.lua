@@ -20,9 +20,9 @@ API and Usage
   List of functions provided in this module:
 
     all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display, dot, expand, eye,
-    flatten, fliplr, flipud, format, getnonzeros, hasindex, horzcat, inv, isinteger, ismember,
+    flatten, fliplr, flipud, format, hasindex, horzcat, inv, isinteger, ismember,
     length, linsolve, linspace, lu, map, max, mean, min, norm, ones, plot, polyval, printf,
-    prod, qr, rand, randi, range, remake, repmat, reshape, rr, rref, save, seq, setzeros, size,
+    prod, qr, rand, randi, range, remake, repmat, reshape, rr, rref, save, select, seq, size,
     sort, sprintf, std, strcat, submatrix, subtable, sum, tblcat, tic, toc, transpose, tt,
     unique, var, vertcat, who, zeros
 
@@ -413,46 +413,53 @@ function any( x, f )
   end
 end
 
---// function setzeros( A, f ) -- not the one in MATLAB
--- if an element makes f(x) true, set 0 for the element.
---
--- used usually together with function 'getnonzeros'
-function setzeros( A, f )
-  assert(getmetatable(A) == mathly_meta, 'setzeros(A, f): A must be a mathly matrix.')
-  if f == nil then f = function(x) return math.abs(x) > eps end end
-  local m, n = size(A)
-  local B = {}
-  for i = 1, m do
-    B[i] = {}
-    for j = 1, n do
-      if f(A[i][j]) then B[i][j] = 0 else B[i][j] = A[i][j] end
-    end
+--// function select( A, f )
+-- f defaults to A
+-- if f is a function, return 1) a table of elements of A (columnwisely) that make f(x) true
+--   and 2) a table of elements of A (columnwisely) with elements replaced by 0 when they make f(x) false
+-- if f is a table/matrix, return 1) a table of elements of A (columnwisely) that correspond to nonzero
+--   elements of f and 2) f itself.
+function select( A, f )
+  local B
+  if type(A) == 'table' then
+    if getmetatable(A) ~= mathly_meta then A = mathly(A) end
+  else
+    error('select(A, ...): A must be a table.')
   end
-  return setmetatable(B, mathly_meta)
-end
 
---// function getnonzeros( A, B ) -- not the one in MATLAB
--- return a table of elements of A columnwisely if the corresponding element in B is nonzero
--- B defaults to A
---
--- used usually together with function 'setzeros'
-function getnonzeros( A, B )
-  if getmetatable(A) ~= mathly_meta then A = mathly(A) end
-  if B == nil then B = A end
-  if getmetatable(B) ~= mathly_meta then B = mathly(B) end
-
-  local m, n = size(A)
-  local M, N = size(B)
-  assert(m <= M and n <= N, 'getnonzeros(A, B): A and B must be matrices of the same size.')
-  local x = {}
-  local k = 1
-  for j = 1, n do
+  if f == nil then
+    B = A
+  elseif type(f) == 'function' then
+    local m, n = size(A)
+    B = {}
     for i = 1, m do
-      if math.abs(B[i][j]) > 10*eps then x[k] = A[i][j]; k = k + 1 end
+      B[i] = {}
+      for j = 1, n do
+        if f(A[i][j]) then B[i][j] = A[i][j] else B[i][j] = 0 end
+      end
     end
+    setmetatable(B, mathly_meta)
+  elseif type(f) == 'table' then
+    B = f
+    if getmetatable(B) ~= mathly_meta then B = mathly(B) end
+  else
+    error('select(A, f): f must be a boolean function or a table.')
   end
-  return x
-end -- getnonzeros
+
+  if type(A) == 'table' then
+    local m, n = size(A)
+    local M, N = size(B)
+    assert(m <= M and n <= N, 'select(A, B): A and B must be matrices of the same size.')
+    local x = {}
+    local k = 1
+    for j = 1, n do
+      for i = 1, m do
+        if math.abs(B[i][j]) > 10*eps then x[k] = A[i][j]; k = k + 1 end
+      end
+    end
+    return x, B
+  end
+end
 
 --// function _largest_width_dplaces(tbl)
 -- find the largest width of integers/strings and number of decimal places
