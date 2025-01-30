@@ -414,11 +414,14 @@ function any( x, f )
 end
 
 --// function select( A, f )
--- f defaults to A
--- if f is a function, return 1) a table of elements of A (columnwisely) that make f(x) true
---   and 2) a table of elements of A (columnwisely) with elements replaced by 0 when they make f(x) false
--- if f is a table/matrix, return 1) a table of elements of A (columnwisely) that correspond to nonzero
---   elements of f and 2) f itself.
+-- Return elements of A that satisfy specified conditions. (f defaults to A).
+--
+-- If f is a boolean function, return 1) a table of elements of A (columnwisely) that satisfy
+--   f(x) and 2) a table of elements of A (columnwisely) with those elements replaced by 0 when
+--   they fail to satisfy f(x).
+--
+-- If f is a table/matrix, return 1) a table of elements of A (columnwisely) that correspond
+-- to nonzero elements of f and 2) f itself.
 function select( A, f )
   local B
   if type(A) == 'table' then
