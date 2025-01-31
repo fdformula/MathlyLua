@@ -421,7 +421,7 @@ end
 --   they fail to satisfy f(x).
 --
 -- If f is a table/matrix, return 1) a table of elements of A (columnwisely) that correspond
--- to nonzero elements of f and 2) f itself.
+-- to nonzero elements of f and 2) A with entries replaced with corresponding zero elements of f.
 function select( A, f )
   local B
   if type(A) == 'table' then
@@ -433,35 +433,27 @@ function select( A, f )
   if f == nil then
     B = A
   elseif type(f) == 'function' then
-    local m, n = size(A)
-    B = {}
-    for i = 1, m do
-      B[i] = {}
-      for j = 1, n do
-        if f(A[i][j]) then B[i][j] = A[i][j] else B[i][j] = 0 end
-      end
-    end
-    setmetatable(B, mathly_meta)
+    B = map(function(x) if f(x) then return x else return 0 end end, A)
   elseif type(f) == 'table' then
     B = f
     if getmetatable(B) ~= mathly_meta then B = mathly(B) end
+    local m, n = size(A)
+    local M, N = size(B)
+    assert(m <= M and n <= N, 'select(A, B): A and B must be matrices of the same size.')
+    B = map(function(x, y) if math.abs(x) > 10*eps then return y else return 0 end end, B, A)
   else
     error('select(A, f): f must be a boolean function or a table.')
   end
 
-  if type(A) == 'table' then
-    local m, n = size(A)
-    local M, N = size(B)
-    assert(m <= M and n <= N, 'select(A, B): A and B must be matrices of the same size.')
-    local x = {}
-    local k = 1
-    for j = 1, n do
-      for i = 1, m do
-        if math.abs(B[i][j]) > 10*eps then x[k] = A[i][j]; k = k + 1 end
-      end
+  local m, n = size(A)
+  local x = {}
+  local k = 1
+  for j = 1, n do
+    for i = 1, m do
+      if math.abs(B[i][j]) > 10*eps then x[k] = A[i][j]; k = k + 1 end
     end
-    return x, B
   end
+  return x, B
 end
 
 --// function _largest_width_dplaces(tbl)
@@ -1759,7 +1751,13 @@ function fliplr(A) return cc(A, range(#A[1], 1, -1)) end
 
 --// function reverse(tbl)
 -- reverse and return a table. if it is a matrix, it is flattened columnwisely first to a table and then reversed
-function reverse(tbl) return tt(tbl, -1, 1, -1) end
+function reverse(tbl)
+  if type(tbl) == 'string' then
+    return string.reverse(tbl)
+  else
+    return tt(tbl, -1, 1, -1)
+  end
+end
 function sort(tbl, compf) table.sort(tbl, compf); return tbl end
 
 --// function remake(A, opt)
