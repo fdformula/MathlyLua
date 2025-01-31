@@ -493,7 +493,7 @@ display(tt(x, 2))
 <h4>&bull; &nbsp; <a name=select href=#mathly><code>select(tbl, f)</code></a></h4>
 <p>Return elements of <code>tbl</code> that satisfy specified conditions. (<code>f</code> defaults to <code>tbl</code>.)</p>
 <p>If <code>f</code> is a boolean function, return 1) a table of elements of <code>tbl</code> (row wise) that satisfy <code>f(x)</code>
-and 2) a table of elements of <code>tbl</code> (row wise) with those elements replaced by 0 when they fail to satisfy <code>f(x)</code>.</p>
+and 2) a table of elements of <code>tbl</code> with those elements replaced by 0 when they fail to satisfy <code>f(x)</code>.</p>
 <p>If <code>f</code> is a table/matrix, return 1) a table of elements of <code>tbl</code> (row wise) that correspond to nonzero
 elements of <code>f</code> and 2) <code>tbl</code> with entries replaced with corresponding zero elements of <code>f</code>.</p>
 <pre><code>

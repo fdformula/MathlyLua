@@ -417,7 +417,7 @@ end
 -- Return elements of A that satisfy specified conditions. (f defaults to A).
 --
 -- If f is a boolean function, return 1) a table of elements of A (rowwisely) that satisfy
---   f(x) and 2) a table of elements of A (rowwisely) with those elements replaced by 0 when
+--   f(x) and 2) a table of elements of A with those elements replaced by 0 when
 --   they fail to satisfy f(x).
 --
 -- If f is a table/matrix, return 1) a table of elements of A (rowwisely) that correspond
