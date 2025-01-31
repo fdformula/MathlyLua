@@ -423,13 +423,13 @@ end
 -- If f is a table/matrix, return 1) a table of elements of A (columnwisely) that correspond
 -- to nonzero elements of f and 2) A with entries replaced with corresponding zero elements of f.
 function select( A, f )
-  local B
   if type(A) == 'table' then
     if getmetatable(A) ~= mathly_meta then A = mathly(A) end
   else
     error('select(A, ...): A must be a table.')
   end
 
+  local B
   if f == nil then
     B = A
   elseif type(f) == 'function' then
@@ -454,7 +454,7 @@ function select( A, f )
     end
   end
   return x, B
-end
+end -- select
 
 --// function _largest_width_dplaces(tbl)
 -- find the largest width of integers/strings and number of decimal places
