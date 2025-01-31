@@ -290,7 +290,7 @@ disp(D)
 <tr><td><a href=#rr><code>rr(x..)</code></a></td><td> </td><td>Convert a table <code>x</code> into a row vector or return specified rows(s) of a mathly matrix...</td></tr>
 <tr><td><a href=#rref><code>rref(A, ..)</code></a></td><td> </td><td>Return the reduced row-echelon form of a mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
 <tr><td><a href=#save><code>save(datafile, ...)</code></a></td><td> </td><td>Save specified or all user-defined variables and their values to file <code>datafile</code>.</td></tr>
-<tr><td><a href=#select><code>select(A, f)</code></a></td><td> </td><td>Return elements of <code>A</code> that satisfy specified conditions.</td></tr>
+<tr><td><a href=#select><code>select(tbl, f)</code></a></td><td> </td><td>Return elements of <code>tbl</code> that satisfy specified conditions.</td></tr>
 <tr><td><a href=#seq><code>seq(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</td></tr>
 <tr><td><code>size(A)</code></td><td> </td><td>Return the dimensions of a mathly matrix <code>A</code>.</td></tr>
 <tr><td><a href=#sort><code>sort(tbl, compf)</code></a></td><td> </td><td>Sort a table <code>tbl</code> and return the resulted table.</td></tr>
@@ -490,12 +490,12 @@ display(tt(x, 2))
 -- {2, 3, 4, 5, 6, 7}
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=select href=#mathly><code>select(A, f)</code></a></h4>
-<p>Return elements of <code>A</code> that satisfy specified conditions. (<code>f</code> defaults to <code>A</code>.)</p>
-<p>If <code>f</code> is a boolean function, return 1) a table of elements of <code>A</code> (columnwisely) that satisfy <code>f(x)</code>
-and 2) a table of elements of <code>A</code> (columnwisely) with those elements replaced by 0 when they fail to satisfy <code>f(x)</code>.</p>
-<p>If <code>f</code> is a table/matrix, return 1) a table of elements of <code>A</code> (columnwisely) that correspond to nonzero
-elements of <code>f</code> and 2) <code>A</code> with entries replaced with corresponding zero elements of <code>f</code>.</p>
+<h4>&bull; &nbsp; <a name=select href=#mathly><code>select(tbl, f)</code></a></h4>
+<p>Return elements of <code>tbl</code> that satisfy specified conditions. (<code>f</code> defaults to <code>tbl</code>.)</p>
+<p>If <code>f</code> is a boolean function, return 1) a table of elements of <code>tbl</code> (row wise) that satisfy <code>f(x)</code>
+and 2) a table of elements of <code>tbl</code> (row wise) with those elements replaced by 0 when they fail to satisfy <code>f(x)</code>.</p>
+<p>If <code>f</code> is a table/matrix, return 1) a table of elements of <code>tbl</code> (row wise) that correspond to nonzero
+elements of <code>f</code> and 2) <code>tbl</code> with entries replaced with corresponding zero elements of <code>f</code>.</p>
 <pre><code>
 mathly = require('mathly')
 A = mathly{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
@@ -505,14 +505,14 @@ disp(A)
 -- 7  8  9
 x, C = select(A, function(x) return x > 4 and x % 2 == 0 end)
 disp(x)
--- {8, 6}
+-- {6, 8}
 disp(C)
 -- 0  0  0
 -- 0  0  6
 -- 0  8  0
 B = select(A, C)
 disp(B)
--- {8, 6}
+-- {6, 8}
 A =  mathly{{2, 3, 4}, {5, 6, 7}, {8, 9, 10}}
 disp(A)
 -- 2  3  4
@@ -520,7 +520,7 @@ disp(A)
 -- 8  9 10
 x, D = select(A, C)
 disp(x)
--- {9, 7}
+-- {7, 9}
 disp(D)
 -- 0  0  0
 -- 0  0  7
@@ -532,11 +532,18 @@ disp(A)
 -- 0  5  0
 -- 7  8  0
 disp(select(A))
--- {1, 7, 5, 8, 3}
+-- {1, 3, 5, 7, 8}
 
 x = {0, 1, 2, 0, 0, 3, 0, 4, 0, 0}
 disp(select(x))
 -- {1, 2, 3, 4}
+
+x = {1, 2, {3, 4, 5, {6, 7, 8, {9, 10}}, 11, 12}, 13, 14}
+y, A = select(x, function(x) return x % 2 == 0 end)
+disp(y)
+-- {2, 4, 6, 8, 10, 12, 14}
+disp(A)
+-- {0, 2, {0, 4, 0, {6, 0, 8, {0, 10}}, 0, 12}, 0, 14}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=copy href=#mathly><code>copy(x)</code></a></h4>

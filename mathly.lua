@@ -416,44 +416,29 @@ end
 --// function select( A, f )
 -- Return elements of A that satisfy specified conditions. (f defaults to A).
 --
--- If f is a boolean function, return 1) a table of elements of A (columnwisely) that satisfy
---   f(x) and 2) a table of elements of A (columnwisely) with those elements replaced by 0 when
+-- If f is a boolean function, return 1) a table of elements of A (rowwisely) that satisfy
+--   f(x) and 2) a table of elements of A (rowwisely) with those elements replaced by 0 when
 --   they fail to satisfy f(x).
 --
--- If f is a table/matrix, return 1) a table of elements of A (columnwisely) that correspond
+-- If f is a table/matrix, return 1) a table of elements of A (rowwisely) that correspond
 -- to nonzero elements of f and 2) A with entries replaced with corresponding zero elements of f.
 function select( A, f )
-  if type(A) == 'table' then
-    if getmetatable(A) ~= mathly_meta then A = mathly(A) end
-  else
-    error('select(A, ...): A must be a table.')
-  end
-
+  if type(A) ~= 'table' then error('select(A, ...): A must be a table.') end
   local B
   if f == nil then
     B = A
   elseif type(f) == 'function' then
     B = map(function(x) if f(x) then return x else return 0 end end, A)
   elseif type(f) == 'table' then
-    B = f
-    if getmetatable(B) ~= mathly_meta then B = mathly(B) end
-    local m, n = size(A)
-    local M, N = size(B)
-    assert(m <= M and n <= N, 'select(A, B): A and B must be matrices of the same size.')
-    B = map(function(x, y) if math.abs(x) > 10*eps then return y else return 0 end end, B, A)
+    B = map(function(x, y) if math.abs(x) > 10*eps then return y else return 0 end end, f, A)
   else
     error('select(A, f): f must be a boolean function or a table.')
   end
 
-  local m, n = size(A)
-  local x = {}
+  local X = {}
   local k = 1
-  for j = 1, n do
-    for i = 1, m do
-      if math.abs(B[i][j]) > 10*eps then x[k] = A[i][j]; k = k + 1 end
-    end
-  end
-  return x, B
+  map(function(x, y) if math.abs(x) > 10*eps then X[k] = y; k = k + 1 end end, B, A)
+  return X, B
 end -- select
 
 --// function _largest_width_dplaces(tbl)
