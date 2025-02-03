@@ -847,6 +847,7 @@ disp(x)
 
 <h4>&bull; &nbsp; <a name=linspace href=#mathly><code>linspace(x, y, n)</code></a></h4>
 <p>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</p>
+<p>See also: <a href=#range><code>range</code></a>, <a href=#seq><code>seq</code></a>.</p>
 <pre><code>
 require 'mathly'
 x = linspace(0, 2*pi, 1000)
@@ -1116,6 +1117,7 @@ disp(Q * R - A)
 
 <h4>&bull; &nbsp; <a name=range href=#mathly><code>range(x, y, s)</code></a></h4>
 <p>Return a table of numbers starting at <code>x</code>, in between <code>x</code> and <code>y</code>, and incrementing by <code>s</code> (1 by default).</p>
+<p>See also: <a href=#linspace><code>linspace</code></a>, <a href=#seq><code>seq</code></a>.</p>
 <pre><code>
 require 'mathly'
 x = range(1, 10)
@@ -1132,6 +1134,7 @@ disp(range(0, 6, 0.5))
 <h4>&bull; &nbsp; <a name=remake href=#mathly><code>remake(A, opt)</code></a></h4>
 <p>Generate a lower (opt = 'LT'), upper (opt = 'UT'), diagonal (opt = 'DIAG'), or symmetrical (opt = 'SYM') matrix from matrix <code>A</code>.</p>
 <p>If, say, <code>opt = {k<sub>1</sub>, k<sub>2</sub>, ..., k<sub>m</sub>}</code>, generate from matrix <code>A</code> a matrix which keeps the diagonal entries <code>k<sub>i</sub></code> rows above (<code>k<sub>i</sub> > 0</code>) or <code>-k<sub>i</sub></code> rows below (<code>k<sub>i</sub> < 0</code>) the main diagonal, <code>i = 1, 2, ..., m</code>.</p>
+<p>See also: <a href=#reshape><code>reshape</code></a>.</p>
 <pre><code>
 mathly = require('mathly')
 A = reshape(seq(1, 25), 5, 5)
@@ -1193,6 +1196,7 @@ disp(repmat(5, 2, 3)) -- same as mathly(2, 3, 5)
 
 <h4>&bull; &nbsp; <a name=reshape href=#mathly><code>reshape(A, m, n)</code></a></h4>
 <p>Rearrange columnwisely existing elements in a table or mathly matrix <code>A</code> and return a new <code>mxn</code> mathly matrix.</p>
+<p>See also: <a href=#remake><code>remake</code></a>.</p>
 <pre><code>
 m = require('mathly')
 reshape({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 3) -- return a 3x4 mathly matrix, where 4 is automatically determined
@@ -1315,6 +1319,7 @@ print(c)
 
 <h4>&bull; &nbsp; <a name=seq href=#mathly><code>seq(x, y, n)</code></a></h4>
 <p>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</p>
+<p>See also: <a href=#linspace><code>linspace</code></a>, <a href=#range><code>range</code></a>.</p>
 <pre><code>
 require 'mathly'
 x = seq(1, 10) -- same as range(1, 10)
