@@ -262,6 +262,7 @@ disp(D)
 <tr><td><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
 <tr><td><a href=#ismember><code>ismember(x, table)</code></a></td><td> </td><td>Check if <code>x</code> is a member of <code>table</code>.</td></tr>
 <tr><td><code>length(x)</code></td><td> </td><td>Return the length of a table or string.</td></tr>
+<tr><td><a href=#lagrangepoly><code>lagrangepoly(x, y, xx)</code></a></td><td> </td><td>Return the Lagrange interpolating polynomial, defined by data <code>x</code> and <code>y</code>, or the value(s) of the polynomial at <code>xx</code>.</td></tr>
 <tr><td><a href=#linsolve><code>linsolve(A, b, opt)</code></a></td><td> </td><td>Solve a linear system <code>Ax = b</code> and return the solution. <u>Note</u>: Both <code>A</code> and <code>b</code> can be modified.</td></tr>
 <tr><td><a href=#linspace><code>linspace(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</td></tr>
 <tr><td><a href=#lu><code>lu(A)</code></a></td><td> </td><td>Return <code>L</code> and <code>U</code> of LU factorization <code>A = LU</code>.</td></tr>
@@ -588,7 +589,7 @@ diagonal; if <code>k = -1</code>, the diagonal right below the main diagonal.</p
 <li><code>diag(v, m, n)</code>, where <code>v</code> is a table or a row/column vector.</p>
 <p>Return a <code>mxn</code> matrix with vector v (or first elements in it) as its main diagonal.</p></li>
 </ol>
-<p>See also: <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>.</p>
+<p>See also: <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <code><a href=#select>select</a></code>; <code><a href=#select>select</a></code>.</p>
 <pre><code>m = require('mathly')
 a = m{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
 disp(a)
@@ -663,7 +664,7 @@ display(dot({1, 2}, {3, 4}))
 <h4>&bull; &nbsp; <a name=expand href=#mathly><code>expand(A, m, n, v)</code></a></h4>
 <p>Return an expanded/shrunk mathly matrix with value <code>v</code>'s added or entries dropped.</p>
 <p>The default value of <code>v</code> is 0, and the default value of <code>n</code> is <code>m</code>.</p>
-<p>See also: <a href=#diag><code>diag</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>.</p>
+<p>See also: <a href=#diag><code>diag</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <code><a href=#select>select</a></code>.</p>
 <pre><code>mathly = require('mathly')
 a = mathly{{52, 67, 82}, {82, 15, 70}, {94, 82, 50}}
 disp(a)
@@ -709,7 +710,7 @@ display(b)
 <li><code>flipud(A)</code>: Return a matrix with rows of matrix <code>A</code> reversed. (ud: upside down)</li>
 <li><code>fliplr(A)</code>: Return a matrix with columns of matrix <code>A</code> reversed. (lr: from left to right) </li>
 </ol>
-<p>See also: <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>.</p>
+<p>See also: <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <code><a href=#select>select</a></code>.</p>
 <pre><code>mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}}
 disp(a)
@@ -746,7 +747,7 @@ print(hasindex(opt, 'color'))
 <h4>&bull; &nbsp; <a name=horzcat href=#mathly><code>horzcat(A, B, ...)</code></a></h4>
 <P>Concatenate matrices A, B, ... in order horizontally. Matrices must have the same number of rows.</P>
 <p><em>Operator <code>..</code> can be used to repalce <code>horzcat</code>.</em></p>
-<p>See also: <a href=#vertcat><code>vertcat</code></a>; <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>.</p>
+<p>See also: <a href=#vertcat><code>vertcat</code></a>; <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>; <code><a href=#select>select</a></code>.</p>
 <pre><code>m = require('mathly')
 A = m{{1, 2}, {3, 4}}
 disp(A)
@@ -791,6 +792,28 @@ print(ismember(3, x))
 -- true
 print(ismember(4, x))
 -- false
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=lagrangepoly href=#mathly><code>lagrangepoly(x, y, xx)</code></a></h4>
+<p>Return the Lagrange interpolating polynomial, defined by data <code>x</code> and <code>y</code>, or the value(s) of the polynomial at <code>xx</code>.</p>
+<p>If <code>xx</code> is provided, return the value(s) of the Lagrange polynomial defined by data <code>(x, y)</code>'s;
+otherwise, return the string of the Lagrange polynomial.</p>
+<pre><code>require 'mathly'
+disp(lagrangepoly({1, 2}, {3, 4}))
+-- function f(x) return -3.0*(x - 2) + 4.0*(x - 1) end
+disp(lagrangepoly({1, 2}, {3, 4}, 5))
+-- 7.0000
+disp(lagrangepoly({1, 2}, {3, 4}, {5, -6, 100}))
+-- {7.0000, -4.0000, 102.0000}
+
+s = lagrangepoly({1, 2, 3}, {3, 4, 5})
+disp(s)
+-- function f(x) return 1.5*(x - 2)*(x - 3) - 4.0*(x - 1)*(x - 3) + 2.5*(x - 1)*(x - 2) end
+load(s)() -- activate the function
+f(10)
+-- 12.0
+disp(lagrangepoly({1, 2, 3}, {3, 4, 5}, {10, 1, -5}))
+-- {12.0000, 3.0000, -3.0000}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=linsolve href=#mathly><code>linsolve(A, b, opt)</code></a></h4>
@@ -1105,7 +1128,7 @@ disp(range(0, 6, 0.5))
 <h4>&bull; &nbsp; <a name=remake href=#mathly><code>remake(A, opt)</code></a></h4>
 <p>Generate a lower (opt = 'LT'), upper (opt = 'UT'), diagonal (opt = 'DIAG'), or symmetrical (opt = 'SYM') matrix from matrix <code>A</code>.</p>
 <p>If, say, <code>opt = {k<sub>1</sub>, k<sub>2</sub>, ..., k<sub>m</sub>}</code>, generate from matrix <code>A</code> a matrix which keeps the diagonal entries <code>k<sub>i</sub></code> rows above (<code>k<sub>i</sub> > 0</code>) or <code>-k<sub>i</sub></code> rows below (<code>k<sub>i</sub> < 0</code>) the main diagonal, <code>i = 1, 2, ..., m</code>.</p>
-<p>See also: <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>.</p>
+<p>See also: <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <code><a href=#select>select</a></code>.</p>
 <pre><code>mathly = require('mathly')
 A = reshape(seq(1, 25), 5, 5)
 disp(A)
@@ -1143,7 +1166,7 @@ remake(randi({-100, 100}, 6), 'LT') -- generate randomly a lower triangular matr
 
 <h4>&bull; &nbsp; <a name=repmat href=#mathly><code>repmat(A, m, n)</code></a></h4>
 <p>Return a <code>mxn</code> block matrix with each entry a copy of matrix <code>A</code>. The default value of <code>n</code> is <code>m</code>.</p>
-<p>See also: <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>.</p>
+<p>See also: <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <code><a href=#select>select</a></code>.</p>
 <pre><code>mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}}
 disp(a)
@@ -1166,7 +1189,7 @@ disp(repmat(5, 2, 3)) -- same as mathly(2, 3, 5)
 
 <h4>&bull; &nbsp; <a name=reshape href=#mathly><code>reshape(A, m, n)</code></a></h4>
 <p>Rearrange columnwisely existing elements in a table or mathly matrix <code>A</code> and return a new <code>mxn</code> mathly matrix.</p>
-<p>See also: <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>.</p>
+<p>See also: <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <code><a href=#select>select</a></code>.</p>
 <pre><code>m = require('mathly')
 reshape({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 3) -- return a 3x4 mathly matrix, where 4 is automatically determined
 -- 1  4  7  10
@@ -1375,7 +1398,7 @@ display(subtable(x, -1, 1, -2))
 <p>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row
 and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column
 with row step <code>sr</code> and column step <code>sc</code>.</p>
-<p>See also: <a href=#cc><code>cc, rr, tt</code></a>; <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>.</p>
+<p>See also: <a href=#cc><code>cc, rr, tt</code></a>; <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <code><a href=#select>select</a></code>.</p>
 <pre><code>m = require('mathly')
 
 a = m{{22, 15, 94, 77, 48}, {43, 58, 96, 64,  5},
@@ -1440,7 +1463,7 @@ display(unique({4,5,2,1,-2,2,4,2,7,6,19}))
 
 <h4>&bull; &nbsp; <a name=vertcat href=#mathly><code>vertcat(A, B, ...)</code></a></h4>
 <P>Concatenate matrices <code>A</code>, <code>B</code>, ... in order vertically. Matrices must have the same number of columns.</P>
-<p>See also: <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>.</p>
+<p>See also: <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>; <code><a href=#select>select</a></code>.</p>
 <pre><code>mathly = require('mathly')
 A = mathly{{1, 2, 3}}
 disp(A)

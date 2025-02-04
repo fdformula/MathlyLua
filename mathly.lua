@@ -20,7 +20,7 @@ API and Usage
   List of functions provided in this module:
 
     all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display, dot, expand, eye,
-    flatten, fliplr, flipud, format, hasindex, horzcat, inv, isinteger, ismember,
+    flatten, fliplr, flipud, format, hasindex, horzcat, inv, isinteger, ismember, lagrangepoly,
     length, linsolve, linspace, lu, map, max, mean, min, norm, ones, plot, polyval, printf,
     prod, qr, rand, randi, range, remake, repmat, reshape, rr, rref, save, select, seq, size,
     sort, sprintf, std, strcat, submatrix, subtable, sum, tblcat, tic, toc, transpose, tt,
@@ -1010,6 +1010,66 @@ function range( start, stop, step ) -- ~Python but inclusive
   end
   return v
 end -- range
+
+--// lagrangepoly(x, y, xx)
+-- return the Lagrange function or the value(s) of the Lagrange function defined by data x and y, tables of numbers
+--
+-- if xx is provided, return the value(s) of the Lagrange polynomial for data (x, y)'s
+-- otherwise, return the string of the Lagrange polynomial for data (x, y)'s, e.g, 'function f(x) return -3*(x - 2) + 4*(x - 1) end'
+function lagrangepoly(x, y, xx)
+  assert(type(x) == 'table' and type(y) == 'table' and #x == #y, 'lagrangepoly(x, y ...): x and y must be tables of the same size.')
+  local coefs = {}
+  local k = 1
+  for i = 1, #x do
+    local tmp = y[i]
+    for j = 1, #x do
+      if j ~= i then
+        tmp = tmp / (x[i] - x[j])
+      end
+    end
+    coefs[k] = tmp; k = k + 1
+  end
+
+  if xx == nil then -- print Lagrange polynomial
+    local str = 'function f(x) return '
+    for i = 1, #x do
+      if i == 1 then
+        str = str .. tostring(coefs[i])
+      elseif coefs[i] > 0 then
+        str = str .. ' + ' .. tostring(coefs[i])
+      else
+        str = str .. ' - ' .. tostring(-coefs[i])
+      end
+      for j = 1, #x do
+        if j ~= i then
+          if x[j] > 0 then
+            str = str .. '*(x - ' .. tostring(x[j]) .. ')'
+          else
+            str = str .. '*(x + ' .. tostring(-x[j]) .. ')'
+          end
+        end
+      end
+    end
+    return str .. ' end'
+  else -- evaluate Lagrange polynomial at points sepecified in xx
+    if type(xx) ~= 'table' then xx = { xx } end
+    local vals = {}
+    for k = 1, #xx do
+      local val = 0
+      for i = 1, #x do
+        local tmp = 1
+        for j = 1, #x do
+          if i ~= j then
+            tmp = tmp * (xx[k] - x[j])
+          end
+        end
+        val = val + coefs[i] * tmp
+      end
+      vals[#vals + 1] = val
+    end
+    if #vals == 1 then return vals[1] else return vals end
+  end
+end -- lagrangepoly
 
 --// polyval( p, x )
 -- evaluate a polynomial p at x
