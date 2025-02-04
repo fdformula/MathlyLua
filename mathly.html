@@ -796,8 +796,8 @@ print(ismember(4, x))
 
 <h4>&bull; &nbsp; <a name=lagrangepoly href=#mathly><code>lagrangepoly(x, y, xx)</code></a></h4>
 <p>Return the Lagrange interpolating polynomial, defined by data <code>x</code> and <code>y</code>, or the value(s) of the polynomial at <code>xx</code>.</p>
-<p>If <code>xx</code> is provided, return the value(s) of the Lagrange polynomial defined by data <code>(x, y)</code>'s;
-otherwise, return the string of the Lagrange polynomial.</p>
+<p>If <code>xx</code> is provided, return the value(s) of the polynomial at <code>xx</code>;
+otherwise, return the string of the polynomial.</p>
 <pre><code>require 'mathly'
 disp(lagrangepoly({1, 2}, {3, 4}))
 -- function f(x) return -3.0*(x - 2) + 4.0*(x - 1) end
