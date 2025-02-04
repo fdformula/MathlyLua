@@ -21,7 +21,7 @@ API and Usage
 
     all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display, dot, expand, eye,
     flatten, fliplr, flipud, format, hasindex, horzcat, inv, isinteger, ismember, lagrangepoly,
-    length, linsolve, linspace, lu, map, max, mean, min, norm, ones, plot, polyval, printf,
+    length, linsolve, linspace, lu, map, max, mean, min, norm, ones, plot, polynomial, polyval, printf,
     prod, qr, rand, randi, range, remake, repmat, reshape, rr, rref, save, select, seq, size,
     sort, sprintf, std, strcat, submatrix, subtable, sum, tblcat, tic, toc, transpose, tt,
     unique, var, vertcat, who, zeros
@@ -1070,6 +1070,79 @@ function lagrangepoly(x, y, xx)
     if #vals == 1 then return vals[1] else return vals end
   end
 end -- lagrangepoly
+
+--// polynomial(x, y, xx)
+-- if xx is provided, return the value(s) of a polynomial, defined by data (x, y)'s, at xx;
+-- otherwise, return the string of the polynomial
+function polynomial(x, y, xx)
+  assert(type(x) == 'table' and type(y) == 'table' and #x == #y and #x > 1,
+         'polynomial(x, y...): x and y must be tables of same size and the size must be greater than 1.')
+  local A = {}
+  local B = {}
+  for i = 1, #x do
+    A[i] = {}
+    for j = 1, #x-2 do
+      A[i][j] = x[i] ^ (#x - j)
+    end
+    A[i][#x - 1] = x[i]
+    A[i][#x] = 1
+    B[i] = y[i]
+  end
+  B = mathly(B)^T
+  rref(mathly(A), B)
+  B = tt(B)
+
+  if xx == nil then
+    local str = 'function p(x) return '
+    local firstq = true
+    for i = 1, #B do
+      local op = ' + '
+      local num = B[i]
+      if B[i] < 0 then op = ' - '; num = -num end
+      if i == #B then
+        if B[i] ~= 0 then
+          if firstq then
+            str = str .. tostring(B[i]); firstq = false
+          else
+            str = str .. op .. tostring(num)
+          end
+        end
+      elseif i == #B - 1 then
+        if B[i] ~= 0 then
+          if firstq then
+            str = str .. tostring(B[i]) .. '*x'; firstq = false
+          else
+            str = str .. op .. tostring(num) .. '*x'
+          end
+        end
+      elseif B[i] ~= 0 then
+        if firstq then
+          str = str .. tostring(B[i]) .. '*x^' .. tostring(#B - i); firstq = false
+        else
+          str = str .. op .. tostring(num) .. '*x^' .. tostring(#B - i)
+        end
+      end
+    end
+    return str .. ' end', B
+  else
+    local vals = {}
+    if type(xx) ~= 'table' then xx = { xx } end
+    for k = 1, #xx do
+      local val = 0
+      for i = 1, #B do
+        if i == #B then
+          val = val + B[i]
+        elseif i == #B - 1 then
+          val = val + B[i] * xx[k]
+        else
+          val = val + B[i] * xx[k] ^ (#B - i)
+        end
+      end
+      vals[#vals + 1] = val
+    end
+    if #vals == 1 then return vals[1] else return vals end
+  end
+end -- polynomial
 
 --// polyval( p, x )
 -- evaluate a polynomial p at x
