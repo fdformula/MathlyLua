@@ -70,14 +70,8 @@ eps = 2.220446049250313e-16  -- machine epsilon
 phi = 1.6180339887499        -- golden radio
 T = 'T' -- reserved by mathly, transpose of a matrix, A^T
 
-function div(a, d) -- d is always possitive
-  assert(d > 0, 'div(a, d): d must be positive.')
-  return a // d
-end
-function mod(a, d) -- d is always possitive
-    assert(d > 0, 'mod(a, d): d must be positive.')
-  return a % d
-end
+function div(a, d) return a // d end
+function mod(a, d) return a % d  end
 
 function  printf(...) io.write(string.format(table.unpack{...})) end
 function sprintf(...) return string.format(table.unpack{...}) end
@@ -1021,12 +1015,26 @@ function range( start, stop, step ) -- ~Python but inclusive
   return v
 end -- range
 
+--// for lagrangepoly(...) and polynomial(...)
+local function _converse_poly_input(data) -- {{x1, y1}, {x2, y2}, ...}
+  local x, y = {}, {}
+  if type(data) == 'table' and type(data[1]) == 'table' then
+    for i = 1, #data do
+      x[i] = data[i][1]
+      y[i] = data[i][2]
+    end
+  end
+  return x, y
+end -- _converse_poly_input
+
 --// lagrangepoly(x, y, xx)
 -- return the Lagrange function or the value(s) of the Lagrange function defined by data x and y, tables of numbers
 --
 -- if xx is provided, return the value(s) of the Lagrange polynomial for data (x, y)'s
 -- otherwise, return the string of the Lagrange polynomial for data (x, y)'s, e.g, 'function f(x) return -3*(x - 2) + 4*(x - 1) end'
 function lagrangepoly(x, y, xx)
+  local X, Y = _converse_poly_input(x)
+  if #X ~= 0 then xx = y; x, y = X, Y end
   assert(type(x) == 'table' and type(y) == 'table' and #x == #y, 'lagrangepoly(x, y ...): x and y must be tables of the same size.')
   local coefs = {}
   local k = 1
@@ -1082,6 +1090,8 @@ end -- lagrangepoly
 -- if xx is provided, return the value(s) of a polynomial, defined by data (x, y)'s, at xx;
 -- otherwise, return the string and the coefficeints of the polynomial
 function polynomial(x, y, xx)
+  local X, Y = _converse_poly_input(x)
+  if #X ~= 0 then xx = y; x, y = X, Y end
   assert(type(x) == 'table' and type(y) == 'table' and #x == #y and #x > 1,
          'polynomial(x, y...): x and y must be tables of same size and the size must be greater than 1.')
   local A = {}
