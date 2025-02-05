@@ -79,7 +79,7 @@ package.path = "./?.luac;;"
 
 See mathly.html.
 
-## Two important things you need to know:
+## Two important things you need to know
 
 ### 1. A mathly matrix is a table (of tables), but a table may not be a mathly matrix.
 
