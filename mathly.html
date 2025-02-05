@@ -200,17 +200,6 @@ disp(log(abs(x)))
 <B>You can always use <code>sin(x)</code>. However, if you know <code>x</code> is a number, you may call
 <code>math.sin(x)</code> to get a little improvement in performance.</p></B>
 
-<p>By the way, mathly provides four commonly used constants. They are:</p>
-<table><tbody>
-<tr><td><code>pi = 3.1415926535898</code></td><td width=40></td><td>It is simply <code>math.pi</code>.</td></tr>
-<tr><td><code>e = 2.718281828459</code></td><td width=40></td><td>It is <code>math.exp(1)</code>.</td></tr>
-<tr><td><code>eps = 2.220446049250313e-16</code></td><td width=40></td><td>It is the machine epsilon, i.e., the smallest difference between any two numbers.</td></tr>
-<tr><td><code>phi = 1.6180339887499</code></td><td width=40></td><td>It is the golden ratio, <code>(1 + math.sqrt(5)) / 2</code>.</td></tr>
-</tbody>
-</table>
-<p></p>
-<p><u>Note</u>: <code>T</code> is reserved by mathly for finding the transpose of a matrix, e.g., <code>A^T</code>, where <code>A</code> is a mathly matrix.</p>
-
 <p>&#x2713; &nbsp; Other elementwise operations
 <p>Let <code>x</code> and <code>y</code> be two tables of the same size. Then, <a href=#cc><code>cc(x) * cc(y)</code></a> or
 <a href=#cc><code>rr(x) * rr(y)</code></a> functions like <code>x .* y</code> in MATLAB. As per other cases or actually all cases, we
@@ -233,6 +222,21 @@ D = map(function(x, y, z)
         end, A, B, C)
 disp(D)
 </code></pre>
+
+<p>&#x2713; &nbsp; <a name=div></a><a name=mod></a>Functions <code>div</code> and <code>mod</code> are simply the names of Lua operators <code>//</code> and <code>%</code>, respectively.
+They make Lua code more understandable to people who are new to Lua. They follow the definition: if <code>d &gt; 0</code>, <code>r = mod(a, d)</code> is the remainder of <code>a</code>
+divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d)</code> gives the quotient.</p>
+
+<p>By the way, mathly provides four commonly used constants. They are:</p>
+<table><tbody>
+<tr><td><code>pi = 3.1415926535898</code></td><td width=40></td><td>It is simply <code>math.pi</code>.</td></tr>
+<tr><td><code>e = 2.718281828459</code></td><td width=40></td><td>It is <code>math.exp(1)</code>.</td></tr>
+<tr><td><code>eps = 2.220446049250313e-16</code></td><td width=40></td><td>It is the machine epsilon, i.e., the smallest difference between any two numbers.</td></tr>
+<tr><td><code>phi = 1.6180339887499</code></td><td width=40></td><td>It is the golden ratio, <code>(1 + math.sqrt(5)) / 2</code>.</td></tr>
+</tbody>
+</table>
+<p></p>
+<p><u>Note</u>: <code>T</code> is reserved by mathly for finding the transpose of a matrix, e.g., <code>A^T</code>, where <code>A</code> is a mathly matrix.</p>
 
 <a name=mathly></a><h2><a href=#top>The following table summarizes other functions provided by <code>mathly</code>.</a></h2>
 <table>
