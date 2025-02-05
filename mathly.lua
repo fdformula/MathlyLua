@@ -19,12 +19,13 @@ API and Usage
 
   List of functions provided in this module:
 
-    all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display, dot, expand, eye,
-    flatten, fliplr, flipud, format, hasindex, horzcat, inv, isinteger, ismember, lagrangepoly,
-    length, linsolve, linspace, lu, map, max, mean, min, norm, ones, plot, polynomial, polyval, printf,
-    prod, qr, rand, randi, range, remake, repmat, reshape, rr, rref, save, select, seq, size,
-    sort, sprintf, std, strcat, submatrix, subtable, sum, tblcat, tic, toc, transpose, tt,
-    unique, var, vertcat, who, zeros
+    all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display,
+    dot, expand, eye, flatten, fliplr, flipud, format, hasindex, horzcat,
+    inv, isinteger, ismember, lagrangepoly, length, linsolve, linspace, lu,
+    map, max, mean, min, norm, ones, plot, polynomial, polyval, printf,
+    prod, qr, rand, randi, range, remake, repmat, reshape, rr, rref, save,
+    select, seq, size, sort, sprintf, std, strcat, submatrix, subtable,
+    sum, tblcat, tic, toc, transpose, tt, unique, var, vertcat, who, zeros
 
   See code and mathly.html.
 
@@ -68,6 +69,15 @@ e = math.exp(1)
 eps = 2.220446049250313e-16  -- machine epsilon
 phi = 1.6180339887499        -- golden radio
 T = 'T' -- reserved by mathly, transpose of a matrix, A^T
+
+function div(a, d) -- d is always possitive
+  assert(d > 0, 'div(a, d): d must be positive.')
+  return a // d
+end
+function mod(a, d) -- d is always possitive
+    assert(d > 0, 'mod(a, d): d must be positive.')
+  return a % d
+end
 
 function  printf(...) io.write(string.format(table.unpack{...})) end
 function sprintf(...) return string.format(table.unpack{...}) end
@@ -1022,63 +1032,59 @@ function lagrangepoly(x, y, xx)
   local k = 1
   for i = 1, #x do
     local tmp = y[i]
-    for j = 1, #x do
-      if j ~= i then
-        tmp = tmp / (x[i] - x[j])
+    if math.abs(tmp) > 10*eps then -- tmp ~= 0
+      for j = 1, #x do
+        if j ~= i then
+          tmp = tmp / (x[i] - x[j])
+        end
       end
+    else
+      tmp = 0
     end
     coefs[k] = tmp; k = k + 1
   end
 
-  if xx == nil then -- print Lagrange polynomial
-    local str = 'function f(x) return '
-    for i = 1, #x do
-      if i == 1 then
-        str = str .. tostring(coefs[i])
-      elseif coefs[i] > 0 then
-        str = str .. ' + ' .. tostring(coefs[i])
-      else
-        str = str .. ' - ' .. tostring(-coefs[i])
-      end
+  local str = ''
+  local non1stq = false
+  for i = 1, #x do
+    if coefs[i] ~= 0 then
+      local op = ' + '
+      local coef = coefs[i]
+      if non1stq and coef < 0 then op = ' - '; coef = -coef end
+      coef = tostring(coef)
+      if non1stq then str = str .. op end
+      str = str .. coef
+      non1stq = true
       for j = 1, #x do
         if j ~= i then
-          if x[j] > 0 then
-            str = str .. '*(x - ' .. tostring(x[j]) .. ')'
+          if math.abs(x[j]) > 10*eps then
+            if x[j] > 0 then
+              str = str .. '*(x - ' .. tostring(x[j]) .. ')'
+            else
+              str = str .. '*(x + ' .. tostring(-x[j]) .. ')'
+            end
           else
-            str = str .. '*(x + ' .. tostring(-x[j]) .. ')'
+            str = str .. '*x'
           end
         end
       end
     end
-    return str .. ' end'
-  else -- evaluate Lagrange polynomial at points sepecified in xx
-    if type(xx) ~= 'table' then xx = { xx } end
-    local vals = {}
-    for k = 1, #xx do
-      local val = 0
-      for i = 1, #x do
-        local tmp = 1
-        for j = 1, #x do
-          if i ~= j then
-            tmp = tmp * (xx[k] - x[j])
-          end
-        end
-        val = val + coefs[i] * tmp
-      end
-      vals[#vals + 1] = val
-    end
-    if #vals == 1 then return vals[1] else return vals end
   end
+  if xx == nil then return 'function f(x) return ' .. str .. ' end' end
+
+  load('function _lagRaNgEtMp(x) return ' .. str .. ' end')()
+  local tmp = map(_lagRaNgEtMp, xx) -- evaluate the polynomial at points xx
+  _lagRaNgEtMp = nil -- delete it
+  return tmp
 end -- lagrangepoly
 
 --// polynomial(x, y, xx)
 -- if xx is provided, return the value(s) of a polynomial, defined by data (x, y)'s, at xx;
--- otherwise, return the string of the polynomial
+-- otherwise, return the string and the coefficeints of the polynomial
 function polynomial(x, y, xx)
   assert(type(x) == 'table' and type(y) == 'table' and #x == #y and #x > 1,
          'polynomial(x, y...): x and y must be tables of same size and the size must be greater than 1.')
   local A = {}
-  local B = {}
   for i = 1, #x do
     A[i] = {}
     for j = 1, #x-2 do
@@ -1086,62 +1092,34 @@ function polynomial(x, y, xx)
     end
     A[i][#x - 1] = x[i]
     A[i][#x] = 1
-    B[i] = y[i]
   end
-  B = mathly(B)^T
-  rref(mathly(A), B)
-  B = tt(B)
+  local B = tt(linsolve(mathly(A), y)) -- coefs of polynomial
 
-  if xx == nil then
-    local str = 'function p(x) return '
-    local firstq = true
-    for i = 1, #B do
+  local str = ''
+  local not1stq = false
+  for i = 1, #B do
+    if math.abs(B[i]) > 10*eps then -- B[i] ~= 0
       local op = ' + '
-      local num = B[i]
-      if B[i] < 0 then op = ' - '; num = -num end
+      local coef = B[i]
+      if not1stq and B[i] < 0 then op = ' - '; coef = -coef end
+      coef = tostring(coef)
+      if not1stq then str = str .. op end
       if i == #B then
-        if B[i] ~= 0 then
-          if firstq then
-            str = str .. tostring(B[i]); firstq = false
-          else
-            str = str .. op .. tostring(num)
-          end
-        end
+        str = str .. coef
       elseif i == #B - 1 then
-        if B[i] ~= 0 then
-          if firstq then
-            str = str .. tostring(B[i]) .. '*x'; firstq = false
-          else
-            str = str .. op .. tostring(num) .. '*x'
-          end
-        end
-      elseif B[i] ~= 0 then
-        if firstq then
-          str = str .. tostring(B[i]) .. '*x^' .. tostring(#B - i); firstq = false
-        else
-          str = str .. op .. tostring(num) .. '*x^' .. tostring(#B - i)
-        end
+        str = str .. coef .. '*x'
+      else
+        str = str .. coef .. '*x^' .. tostring(#B - i)
       end
+      not1stq = true
     end
-    return str .. ' end', B
-  else
-    local vals = {}
-    if type(xx) ~= 'table' then xx = { xx } end
-    for k = 1, #xx do
-      local val = 0
-      for i = 1, #B do
-        if i == #B then
-          val = val + B[i]
-        elseif i == #B - 1 then
-          val = val + B[i] * xx[k]
-        else
-          val = val + B[i] * xx[k] ^ (#B - i)
-        end
-      end
-      vals[#vals + 1] = val
-    end
-    if #vals == 1 then return vals[1] else return vals end
   end
+  if xx == nil then return 'function p(x) return ' .. str .. ' end', B end
+
+  load('function _polynOmiAlTmP(x) return ' .. str .. ' end')()
+  local tmp = map(_polynOmiAlTmP, xx)
+  _polynOmiAlTmP = nil -- delete it
+  return tmp
 end -- polynomial
 
 --// polyval( p, x )
