@@ -2657,7 +2657,7 @@ end
 local json = { version = "dkjson 2.8" }
 
 -- https://cdn.plot.ly/plotly-latest.min.js
-plotly.cdn_main = "<script src='" .. plotly_engine .. "' charset='utf-8'></script>" -- dwang
+plotly.cdn_main = "<script src='" .. plotly_engine .. "'></script>" -- dwang
 plotly.id_count = 1
 plotly.gridq = false -- dwang, organize traces/figures according to specified grids, e.g., 2x2
 plotly.layout = {} -- dwang
@@ -2838,18 +2838,19 @@ function figure.toplotstring(self)
   if not self.div_id then div_id = "plot" .. plotly.id_count end
   plotly.id_count = plotly.id_count+1
   local plot = [[<div id='%s'>
-<script type="text/javascript" charset='utf-8'>
+<script type="text/javascript">
   var data = %s
   var layout = %s
   Plotly.newPlot(%s, data, layout);
-</script></div>
-  ]] -- dwang, simplified
+</script>
+</div>
+]] -- dwang, simplified
   return string.format(plot, div_id, data_str, layout_str, div_id)
 end
 
 function figure.tohtmlstring(self)
-  local header = "<head>\n" .. plotly.cdn_main .. "\n</head>\n"
-  return header.."<body>\n" .. self:toplotstring() .. "\n</body>"
+  local header = "<html>\n<meta charset=\"utf-8\">\n<head>" .. plotly.cdn_main .. "</head>\n"
+  return header.."<body>\n" .. self:toplotstring() .. "</body>\n</html>"
 end
 
 ---Saves the figure to an HTML file with *filename*
