@@ -1618,11 +1618,6 @@ function plot(...)
   plotly.layout = {}
 end -- plot
 
--- to-do list
--- rref
--- transpose
--- size
-
 --// transpose ( A )
 -- transpose a matrix
 function transpose( A )
