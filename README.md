@@ -79,7 +79,7 @@ package.path = "./?.luac;;"
 
 `arc`, `circle`, `hist`, `line`, `parametriccurve`, `pie`, `plot`, `point`, `polygon`, `wedge`
 
-See mathly.html.
+See mathly.html. 
 
 ## Two important things you need to know
 
