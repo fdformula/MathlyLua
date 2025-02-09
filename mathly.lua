@@ -19,13 +19,14 @@ API and Usage
 
   List of functions provided in this module:
 
-    all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display,
-    dot, expand, eye, flatten, fliplr, flipud, format, hasindex, horzcat,
-    inv, isinteger, ismember, lagrangepoly, length, linsolve, linspace, lu,
-    map, max, mean, min, norm, ones, plot, polynomial, polyval, printf,
-    prod, qr, rand, randi, range, remake, repmat, reshape, rr, rref, save,
-    select, seq, size, sort, sprintf, std, strcat, submatrix, subtable,
-    sum, tblcat, tic, toc, transpose, tt, unique, var, vertcat, who, zeros
+    all, any, apply, arc, cc, circle, clc, clear, copy, cross, det, diag, disp,
+    display, dot, expand, eye, flatten, fliplr, flipud, format, hasindex, hist,
+    horzcat, inv, isinteger, ismember, lagrangepoly, length, line, linsolve,
+    linspace, lu, map, max, mean, min, norm, ones, parametriccurve, pie, plot,
+    point, polygon, polynomial, polyval, printf, prod, qr, rand, randi, range,
+    remake, repmat, reshape, rr, rref, save, select, seq, size, sort, sprintf,
+    std, strcat, submatrix, subtable, sum, tblcat, tic, toc, transpose, tt,
+    unique, var, vertcat, wedge, who, zeros
 
   See code and mathly.html.
 
@@ -1377,6 +1378,13 @@ function hasindex( tbl, idx )
   end
 end -- hasindex
 
+local function _hasanyindex(tbl, indice)
+  for i = 1, #indice do
+    if hasindex(tbl, indice[i]) then return true end
+  end
+  return false
+end
+
 function isinteger( x ) return math.type(x) == 'integer' end
 
 --// function ismember( x, v )
@@ -1414,15 +1422,30 @@ end
 local plotly = {}
 function plot(...)
   local args = {}
-  local traces = {}
   local x_start = nil -- range of x for a plot
   local x_stop
+  local traces = {}
   for _, v in pairs{...} do
-    args[#args + 1] = v
+    if type(v) == 'table' and v[1] == 'graph' then -- graph objects: {'graph', x, y, style}
+      for i = 2, #v, 3 do
+        local xmin, xmax = min(v[i]), max(v[i])
+        if x_start == nil then
+          x_start, x_stop = xmin, xmax
+        else
+          x_start, x_stop = math.min(xmin, x_start), math.max(xmax, x_stop)
+        end
+        args[#args + 1] = v[i]     -- x
+        args[#args + 1] = v[i + 1] -- y
+        args[#args + 1] = v[i + 2] -- style
+      end
+    else
+      args[#args + 1] = v
+    end
   end
 
   plotly.gridq = false
   plotly.layout = {}
+
   local i = 1
   while i <= #args do
     if type(args[i]) == 'function' then
@@ -1445,6 +1468,8 @@ function plot(...)
           local x = seq(1, #args[i]) -- the range of x: 1 to # of rows
           if x_start == nil then
             x_start, x_stop = 1, #args[i]
+          else
+            x_start, x_stop = math.min(1, x_start), math.max(#args[i], x_stop)
           end
           for j = 1,#args[i][1] do
             local y = {}
@@ -1460,9 +1485,7 @@ function plot(...)
 
           local names = {}
           if i <= #args and type(args[i]) == 'table' then
-            if (hasindex(args[i], 'layout') or hasindex(args[i], 'width') or
-                hasindex(args[i], 'height') or hasindex(args[i], 'title') or
-                hasindex(args[i], 'names')) then
+            if _hasanyindex(args[i], {'layout', 'width', 'height', 'title', 'names'}) then
               local optq = false
               if args[i]['layout'] ~= nil then
                 trace['layout'] = args[i]['layout']
@@ -1535,6 +1558,16 @@ function plot(...)
                 trace['color'] = 'white'
               end
 
+              if string.find(specs, 'fs') then     -- fill to Self
+                trace['fill'] = 'toself'
+              elseif string.find(specs, 'fn') then -- No fill
+                trace['fill'] = 'none'
+              elseif string.find(specs, 'fa') then -- fill to the x-Axis
+                trace['fill'] = 'tozeroy'
+              elseif string.find(specs, 'ff') then -- fill to previous Function
+                trace['fill'] = 'tonexty'
+              end
+
               local symbol = ''
               if string.find(specs, 'o') then
                 symbol = 'circle'
@@ -1603,8 +1636,10 @@ function plot(...)
   end
 
   if x_start == nil then
-    x_start, x_stop = -7, 7
+    x_start, x_stop = -5, 5
   end
+  x_start = x_start - 0.1
+  x_stop = x_stop + 0.1
   for i = 1, #traces do
     if #traces[i][1] >=2 and type(traces[i][1][2]) == 'function' then
       local func = traces[i][1][2]
@@ -1614,9 +1649,181 @@ function plot(...)
   end
 
   plotly.plots(traces):show()
-  plotly.gridq = false
+  plotly.gridq = false2
   plotly.layout = {}
 end -- plot
+
+local function _freq_distro(xs, nbins)
+  nbins = nbins or 10
+  xs = sort(flatten(xs))
+  local xmin, xmax = xs[1], xs[#xs]
+  local width = math.ceil((xmax - xmin + 0.5) / nbins)
+  local freqs = {}
+  local x1 = xmin
+  local j = 1
+  for k = 1, nbins do
+    freqs[k] = 0
+    local x2 =  x1 + width
+    while j <= #xs do
+      if xs[j] < x2 then
+        freqs[k] = freqs[k] + 1
+        j = j + 1
+      else
+        break
+      end
+    end
+    freqs[k] = freqs[k] / #xs -- relative freq
+    x1 = x2
+  end
+  return freqs, xmin, xmax, width
+end -- _freq_distro
+
+function hist(x, nbins, style)
+  nbins = nbins or 10
+  local freqs, xmin, xmax, width = _freq_distro(x, nbins)
+  local data = {'graph'}
+  local x1 = xmin
+  for i = 1, nbins do
+    local x2 = x1 + width
+    local gobj = polygon({{x1, 0}, {x1, freqs[i]}, {x2, freqs[i]}, {x2, 0}}, style)
+    data[#data + 1] = gobj[2]
+    data[#data + 1] = gobj[3]
+    data[#data + 1] = gobj[4]
+    x1 = x2
+  end
+  return data
+end -- hist
+
+function pie(x, radius, nbins, style)
+  nbins = nbins or 10
+  local freqs, xmin, xmax, width = _freq_distro(x, nbins)
+  local data = {'graph'}
+  local angle1 = 0
+  for i = 1, nbins do
+    local angle2 = angle1 + freqs[i]*2*pi
+    local v = wedge(radius, {0, 0}, {angle1, angle2}, style)
+    data[#data + 1] = v[2]
+    data[#data + 1] = v[3]
+    data[#data + 1] = v[4]
+    angle1 = angle2
+  end
+  return data
+end -- pie
+
+--// plot a wedge of a disk/circle
+-- radius: r
+-- center: center {x, y}
+-- angles: {angle1, angle2}
+function wedge(r, center, angles, style, wedgeq)
+  center = center or {0, 0}
+  angles = angles or {0, 2*pi}
+  if wedgeq == nil then wedgeq = true end
+  if angles[2] < angles[1] then angles[1], angles[2] = angles[2], angles[1] end
+  local theta = angles[2] - angles[1]
+  local arcpts = math.ceil(300 * theta/(2*pi))
+  local inc = theta / arcpts
+  local x = {}
+  local y = {}
+  local k = 1
+  theta =  angles[1]
+  if wedgeq then
+    x[1] = center[1]
+    y[1] = center[2]
+    k = k + 1
+  end
+  for i = 1, arcpts + 1 do
+    x[k] = center[1] + r * math.cos(theta)
+    y[k] = center[2] + r * math.sin(theta)
+    k = k + 1
+    theta = theta + inc
+  end
+  local data = {'graph'}
+  local defaultstyle = '-'
+  if wedgeq then
+    x[k] = center[1]
+    y[k] = center[2]
+    defaultstyle = '-fs'
+  end
+  data[2] = x
+  data[3] = y
+  if style == nil then
+    data[4] = defaultstyle
+  else
+    data[4] = style
+  end
+  return data
+end -- wedge
+
+--// plot an arc of a circle
+-- radius: r
+-- center: center {x, y}
+-- angles: {angle1, angle2}
+function arc(r, center, angles, style)
+  return wedge(r, center, angles, style, false)
+end
+
+function circle(r, center, style)
+  return arc(r, center, {0, 2*pi}, style)
+end
+
+function polygon(xy, style)
+  local x, y = {}, {}
+  local k = 1
+  for i = 1, #xy do
+    x[k], y[k] = xy[i][1], xy[i][2]
+    k = k + 1
+  end
+  x[k] = xy[1][1]
+  y[k] = xy[1][2]
+  local data = {'graph', x, y}
+  if style == nil then
+    data[4] = '-fs'
+  else
+    data[4] = style
+  end
+  return data
+end -- polygon
+
+function line(x1y1, x2y2, style)
+  local data = {'graph', {x1y1[1], x2y2[1]}, {x1y1[2], x2y2[2]}}
+  if style == nil then data[4] = '-' else data[4] = style end
+  return data
+end
+
+-- style: e.g., {symbol='circle-open', size=10, color='blue'}
+function point(x, y, style)  -- plot a point at (x, y)
+  if type(x) == 'table' then
+    style = y
+  else
+    x = {{x, y}}
+  end
+  local data = {'graph'}
+  for i = 1, #x do
+    data[#data + 1] = {x[i][1]}
+    data[#data + 1] = {x[i][2]}
+    if style == nil then
+      data[#data + 1] = {symbol='circle', size=8}
+    else
+      data[#data + 1] = style
+    end
+  end
+  return data
+end -- point
+
+function parametriccurve(fs, x, style)
+  x = x or {-5, 5}
+  if x[1] > x[2] then x[1], x[2] = x[2], x[1] end
+  local data = {'graph'}
+  x = linspace(x[1], x[2], 200)
+  data[2] = map(fs[1], x)
+  data[3] = map(fs[2], x)
+  if style == nil then
+    data[4] = '-'
+  else
+    data[4] = style
+  end
+  return data
+end
 
 --// transpose ( A )
 -- transpose a matrix

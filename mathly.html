@@ -244,7 +244,9 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td width="25%"><a href=#all><code>all(x, f)</code></a></td><td width=1%> </td><td width=74%>Test if <code>f(x)</code> is true for every number in <code>x</code>.</td></tr>
 <tr><td><a href=#any><code>any(x, f)</code></a></td><td> </td><td>Test if there is any number in <code>x</code> such that <code>f(x)</code> is true.</td></tr>
 <tr><td><a href=#apply><code>apply(f, ...)</code></a></td><td> </td><td>As with some other programming languages like <i>Mathematica</i>, call function <code>f</code> with the arguments.</td></tr>
+<tr><td><a href=#arc><code>arc(r, center, angles, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot an arc of a circle.</td></tr>
 <tr><td><a href=#cc><code>cc(x...)</code></a></td><td> </td><td>Convert a table <code>x</code> into a column vector or return specified column(s) of a mathly matrix...</td></tr>
+<tr><td><a href=#circle><code>circle(r, center, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a circle.</td></tr>
 <tr><td><code>clc()</code></td><td> </td><td>Clear Lua console.</td></tr>
 <tr><td><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
 <tr><td><a href=#copy><code>copy(x)</code></a></td><td> </td><td>Make a deep copy of <code>x</code>.</td></tr>
@@ -261,12 +263,14 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#flipud><code>flipud(A)</code></a></td><td> </td><td>Return a matrix with rows of matrix <code>A</code> reversed.</td></tr>
 <tr><td><a href=#format><code>format(fmt)</code></a></td><td> </td><td>Reset or specify the format of the output of <code>disp(...)</code>.</td></tr>
 <tr><td><a href=#hasindex><code>hasindex(table, index)</code></a></td><td> </td><td>Check if <code>table</code> contains <code>index</code>.</td></tr>
+<tr><td><a href=#hist><code>hist(x, nbins, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a histogram.</td></tr>
 <tr><td><a href=#horzcat><code>horzcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
 <tr><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of a square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
 <tr><td><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
 <tr><td><a href=#ismember><code>ismember(x, table)</code></a></td><td> </td><td>Check if <code>x</code> is a member of <code>table</code>.</td></tr>
 <tr><td><a href=#lagrangepoly><code>lagrangepoly(...)</code></a></td><td> </td><td>Return the Lagrange interpolating polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
 <tr><td><code>length(x)</code></td><td> </td><td>Return the length of a table or string.</td></tr>
+<tr><td><a href=#line><code>line(point1, point2, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a straight line.</td></tr>
 <tr><td><a href=#linsolve><code>linsolve(A, b, opt)</code></a></td><td> </td><td>Solve a linear system <code>Ax = b</code> and return the solution. <u>Note</u>: Both <code>A</code> and <code>b</code> can be modified.</td></tr>
 <tr><td><a href=#linspace><code>linspace(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</td></tr>
 <tr><td><a href=#lu><code>lu(A)</code></a></td><td> </td><td>Return <code>L</code> and <code>U</code> of LU factorization <code>A = LU</code>.</td></tr>
@@ -276,7 +280,11 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
 <tr><td><code>norm(x)</code></td><td> </td><td>Return the Euclidean norm of a row/column vector <code>x</code>.</td></tr>
 <tr><td><a href=#ones><code>ones(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 1. If <code>m = 1</code>, return a table.</td></tr>
+<tr><td><a href=#parametriccurve><code>parametriccurve({x(t), y(t)}, range, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a parametric curve.</td></tr>
+<tr><td><a href=#pie><code>pie(x, radius, nbins, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a pie chart.</td></tr>
 <tr><td><a href=#plot><code>plot(x, y, ...)</code></a></td><td> </td><td>Plot the graph(s) of functions defined by data points <code>x</code> and <code>y</code> and ...</td></tr>
+<tr><td><a href=#point><code>point(x, y, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a point.</td></tr>
+<tr><td><a href=#polygon><code>polygon(vertices, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a polygon.</td></tr>
 <tr><td><a href=#polynomial><code>polynomial(...)</code></a></td><td> </td><td>Return the polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
 <tr><td><a href=#polyval><code>polyval(coefs, x)</code></a></td><td> </td><td>Evaluate at <code>x</code> the value of a polynomial of which the coefficients are specified in a table <code>coefs</code>.</td></tr>
 <tr><td><a href=#printf><code>printf(...)</code></a></td><td> </td><td>Print formatted text like <code>printf</code> in C/C++.</td></tr>
@@ -309,6 +317,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#unique><code>unique(tbl)</code></a></td><td> </td><td>Return the same data as in tbl but with no repetitions.</td></tr>
 <tr><td><a href=#var><code>var(x, opt)</code></a></td><td> </td><td>Return the variance of numbers in <code>x</code>.</td></tr>
 <tr><td><a href=#vertcat><code>vertcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order vertically. Matrices must have the same number of columns.</td></tr>
+<tr><td><a href=#wedge><code>wedge(r, center, angles, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a wedge of a disk.</td></tr>
 <tr><td><code>who()</code></td><td> </td><td>List all user-defined variables in the memory.</td></tr>
 <tr><td><a href=#zeros><code>zeros</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 0. If <code>m = 1</code>, return a table.</td></tr>
 </tbody>
@@ -1017,42 +1026,6 @@ display(A)
 <tr><td><code>randi({imin, imax}, m, n)</code></td><td> </td><td width=10> </td><td>Return a mxn mathly matrix of which each element is in <code>[imin, imax]</code>. (<code>n</code> is optional. The default is <code>m</code>.)</tr>
 </tbody></table>
 
-<h4>&bull; &nbsp; <a name=plot href=#mathly><code>plot(...)</code></a></h4>
-<p>Plot the graph(s) of functions defined by data points , using specifications/options.</p>
-<p><b>Some specifications:</b></p>
-<ol>
-<li>of a line, i.e., the graph of a function:<p><code>width</code>=5</p><p><code>style</code>=<code>'-'</code> [solid, <code>':'</code> (dot), or <code>'--'</code> (dash)]</p><p><code>mode</code>=<code>'lines+markers'</code>, <code>'lines'</code>, or <code>'markers'</code></p></li><p></p>
-<li>of a marker:<p><code>size</code>=10</p><p><code>symbol</code>=<code>'circle'</code></p>
-Some possible symbols are <code>circle</code>, <code>circle-open</code>, <code>circle-open-dot</code>, <code>cross</code>, <code>diamond</code>, <code>square</code>, <code>x</code>, <code>triangle-left</code>, <code>triangle-right</code>, <code>triangle-up</code>, <code>triangle-down</code>, <code>hexagram</code>, <code>star</code>, <code>hourglass</code>, <code>bowtie</code>.</li><p></p>
-<li>of a plot:<p><code>layout</code>={<code>width</code>=500, <code>height</code>=400, <code>grid</code>={<code>rows</code>=2, <code>columns</code>=2}, <code>title</code>='Demo'}</p></li>
-</ol>
-<p><b>Some examples:</b></p>
-<pre><code>require 'mathly'
-x = linspace(0, pi, 100)
-y1 = sin(x)
-y2 = map(math.cos, x)
-y3 = map(function(x) return x^2*math.sin(x) end, x)
-
-specs1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example'}}
-specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
-specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
-
-plot(math.sin, '--r') -- plot a function
-plot(x, y1)           -- plot a function defined by x and y1
-plot(x, y1, math.cos, x, y2, specs1, math.sin, '--r')
-plot(x, y1, '--xr', x, y2, {1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'})
-plot(x, y1, '--xr', x, y2, ':g')
-plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
-plot(x, y1, specs1, x, y2, x, y3, 'o')
-plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
-
-plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
-plot(rand(125, 4),{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
-plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}})
-plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
-plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
-</code></pre>
-
 <h4>&bull; &nbsp; <a name=polynomial href=#mathly><code>polynomial({x1, x2, ...}, {y1, y2, ...}, xx), polynomial({{x1, y1}, {x2, y2}, ...}, xx)</code></a></h4>
 <p>Return the polynomial, defined by data <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>, or the value(s) of the polynomial at <code>xx</code>.</p>
 <p>If <code>xx</code> is provided, return the value(s) of the polynomial at <code>xx</code>;
@@ -1534,6 +1507,103 @@ disp(E)
 -- 7   8  9
 -- 10 11 12
 </code></pre>
+
+<h4>&bull; &nbsp; <a name=plot href=#mathly><code>plot(...)</code></a></h4>
+<p>Plot the graph(s) of functions defined by data points , using specifications/options.</p>
+<p><b>Some specifications:</b></p>
+<ol>
+<li>of a line, i.e., the graph of a function:<p><code>width</code>=5</p><p><code>style</code>=<code>'-'</code> [solid, <code>':'</code> (dot), or <code>'--'</code> (dash)]</p><p><code>mode</code>=<code>'lines+markers'</code>, <code>'lines'</code>, or <code>'markers'</code></p></li><p></p>
+<li>of a marker:<p><code>size</code>=10</p><p><code>symbol</code>=<code>'circle'</code></p>
+Some possible symbols are <code>circle</code>, <code>circle-open</code>, <code>circle-open-dot</code>, <code>cross</code>, <code>diamond</code>, <code>square</code>, <code>x</code>, <code>triangle-left</code>, <code>triangle-right</code>, <code>triangle-up</code>, <code>triangle-down</code>, <code>hexagram</code>, <code>star</code>, <code>hourglass</code>, <code>bowtie</code>.</li><p></p>
+<li>of a plot:<p><code>layout</code>={<code>width</code>=500, <code>height</code>=400, <code>grid</code>={<code>rows</code>=2, <code>columns</code>=2}, <code>title</code>='Demo'}</p></li>
+</ol>
+<p><b>Some examples:</b></p>
+<pre><code>require 'mathly'
+x = linspace(0, pi, 100)
+y1 = sin(x)
+y2 = map(math.cos, x)
+y3 = map(function(x) return x^2*math.sin(x) end, x)
+
+specs1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example'}}
+specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
+specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
+
+plot(math.sin, '--r') -- plot a function
+plot(x, y1)           -- plot a function defined by x and y1
+plot(x, y1, math.cos, x, y2, specs1, math.sin, '--r')
+plot(x, y1, '--xr', x, y2, {1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'})
+plot(x, y1, '--xr', x, y2, ':g')
+plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
+plot(x, y1, specs1, x, y2, x, y3, 'o')
+plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
+
+plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
+plot(rand(125, 4),{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
+plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}})
+plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
+plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=plot href=#mathly><code>arc, circle, hist, line, parametriccurve, pie, point, polygon, wedge</code></a></h4>
+<table><tbody>
+<tr><td><a href=#mathly name=arc><code>arc(r, center, angles, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot an arc of a circle.</td></tr>
+<tr><td><a href=#mathly name=circle><code>circle(r, center, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a circle.</td></tr>
+<tr><td><a href=#mathly name=hist><code>hist(x, nbins, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a histogram.</td></tr>
+<tr><td><a href=#mathly name=line><code>line(point1, point2, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a straight line.</td></tr>
+<tr><td><a href=#mathly name=parametriccurve><code>parametriccurve({x(t), y(t)}, range, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a parametric curve.</td></tr>
+<tr><td><a href=#mathly name=pie><code>pie(x, radius, nbins, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a pie chart.</td></tr>
+<tr><td><a href=#mathly name=point><code>point(x, y, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a point.</td></tr>
+<tr><td><a href=#mathly name=polygon><code>polygon(vertices, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polygon.</td></tr>
+<tr><td><a href=#mathly name=wedge><code>wedge(r, center, angles, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a wedge of a disk.</td></tr>
+</tbody></table>
+<p>For most of these graph objects, you may use the following specifications.</p>
+<table><tbody>
+<tr><td><code>'fa'</code></td><td> - </td><td>Fill to the x-Axis</td></tr>
+<tr><td><code>'ff'</code></td><td> - </td><td>Fill to to the previous Function</td></tr>
+<tr><td><code>'fn'</code></td><td> - </td><td>No filling</td></tr>
+<tr><td><code>'fs'</code></td><td> - </td><td>Fill to Self</td></tr>
+</tbody></table>
+<pre><code>
+require 'mathly'
+x = (0.5 - rand(2,100)) * 100
+x = flatten(x)
+
+function n(x, mu, sigma)
+  local tmp = (x - mu) / sigma
+  return math.exp(-1/2 * tmp^2) / (math.sqrt(2 * pi) * sigma)
+end
+
+xmax = max(abs(min(x)), abs(max(x)))
+xmin = -xmax
+X = linspace(xmin, xmax, 200)
+mu, sigma = mean(x), std(x)
+Y = map(function(x) return n(x, mu, sigma) * 8 end, X)
+
+gobj = hist(x)
+plot(gobj, X, Y, '--r')
+
+plot(point({{1, 2}, {2, -1}, {2.2, 2}}), point(-1, 1, {symbol='circle-open', size=18, color='red'}))
+
+plot(pie(x,1))
+plot(hist(x))
+
+plot(polygon({{1, 2}, {2, 3}, {5, -1}}),
+     polygon({{-1, 2}, {2, 0}, {3, 1}, {0, -1}}, '-rfn'),
+     circle(1),
+     point(3, 2, {symbol='circle', size=36, color='red'}),
+     circle(1, {1,1}, '-bfn'))
+
+plot(math.sin, '-rfa')
+
+xf1 = linspace(-1, 2, 100)
+xf2 = linspace(-5, 5, 200)
+plot(xf2, cos(xf2), xf2, sin(xf2), '-rff')
+plot(xf1, cos(xf1), xf1, sin(xf1), '-rff', xf2, cos(xf2), xf2, sin(xf2))
+
+plot(parametriccurve({function(t) return math.cos(t) end, function(t) return math.sin(t) end}))
+plot(parametriccurve({math.cos, math.sin}, {0, pi/2}, '-fs'))
+</code>
+</pre>
 <p></p>
 <hr>
 <h2 style="margin-left: 20px;">Note</h2>
