@@ -77,7 +77,7 @@ package.path = "./?.luac;;"
 `reshape`, `reverse`, `rr`, `rref`, `save`, `select`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`, `tblcat`,
 `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`
 
-`arc`, `circle`, `hist`, `line`, `parametriccurve`, `pie`, `plot`, `point`, `polygon`, `wedge`
+`arc`, `circle`, `hist`, `line`, `parametriccurve`, `pie`, `plot`, `point`, `polarcurve`, `polygon`, `scatter`, `wedge`
 
 See mathly.html.
 
