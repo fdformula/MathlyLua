@@ -73,9 +73,11 @@ package.path = "./?.luac;;"
 
 `..` (or `horzcat`), `all`, `any`, `apply`, `cc`, `clc`, `clear`, `copy`, `cross`, `det`, `diag`, `disp`, `display`, `div`, `dot`, `expand`, `eye`,
 `flatten`,  `fliplr`, `flipud`, `format`, `hasindex`, `inv`, `isinteger`, `ismember`, `lagrangepoly`, `length`, `linsolve`, `linspace`, `lu`,
-`map`, `max`, `mean`, `min`, `mod`, `norm`, `ones`, `plot`, `polynomial`, `polyval`, `printf`, `prod`, `qr`, `rand`, `randi`, `range`, `remake`, `repmat`,
+`map`, `max`, `mean`, `min`, `mod`, `norm`, `ones`, `polynomial`, `polyval`, `printf`, `prod`, `qr`, `rand`, `randi`, `range`, `remake`, `repmat`,
 `reshape`, `reverse`, `rr`, `rref`, `save`, `select`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`, `tblcat`,
 `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`
+
+`arc`, `circle`, `hist`, `line`, `parametriccurve`, `pie`, `plot`, `point`, `polygon`, `wedge`
 
 See mathly.html.
 
