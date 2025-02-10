@@ -322,6 +322,13 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#wedge><code>wedge(r, center, angles, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a wedge of a disk.</td></tr>
 <tr><td><code>who()</code></td><td> </td><td>List all user-defined variables in the memory.</td></tr>
 <tr><td><a href=#zeros><code>zeros</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 0. If <code>m = 1</code>, return a table.</td></tr>
+<tr><td> </td><td> </td><td><p><hr></p> </td></tr>
+<tr><td><a href=#axissquare><code>axissquare()</code></a></td><td> </td><td>Force a square axis aspect ratio.</td></tr>
+<tr><td><a href=#axisnotsquare><code>axisnotsquare()</code></a></td><td> </td><td>Remove the square axis aspect ratio.</td></tr>
+<tr><td><a href=#axisvisible><code>axisvisible()</code></a></td><td> </td><td>Force to show axes.</td></tr>
+<tr><td><a href=#axisnotvisible><code>axisnotvisible()</code></a></td><td> </td><td>Do not show axes.</td></tr>
+<tr><td><a href=#gridlinevisible><code>gridlinevisible()</code></a></td><td> </td><td>Force to show gridlines.</td></tr>
+<tr><td><a href=#axisnotvisible><code>gridlinenotvisible()</code></a></td><td> </td><td>Do not show gridlines.</td></tr>
 </tbody>
 </table>
 
@@ -1553,7 +1560,7 @@ plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(
 <tr><td><code>hist(x, nbins, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers and <code>nbins</code> is the number of bins (default: 10).</td></tr>
 <tr><td><code>line(point1, point2, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a straight line, where <code>point1 = {x1, y1}</code> and <code>point2 = {x2, y2}</code>.</td></tr>
 <tr><td><code>parametriccurve({x(t), y(t)}, range, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a parametric curve, where <code>x(t)</code> and <code>y(t)</code> are parametric functions, and <code>range = {t1, t2}</code> indicating <code>t</code> changes from <code>t1</code> to <code>t2</code>.</td></tr>
-<tr><td><code>pie(x, nbins, radius, style, offcenter)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a pie chart, where <code>nbins</code> is the number of bins / wedges (default: 10), <code>radius</code> is the radius of the pie disk (default: 1), and <code>offcenter</code> specifies which wedges are away from the center by certain distances (default: 0).</td></tr>
+<tr><td><code>pie(x, nbins, radius, style, offcenter)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a pie chart, where <code>nbins</code> is the number of bins / wedges (default: 10), <code>radius</code> is the radius of the pie disk (default: 1), and <code>offcenter</code> specifies which wedges are away from the center by certain distances (default: 0). Note: <code>pie({bins = {freq1, freq2, ...}}, radius, style, offcenter)</code> is for plotting a pie chart for bins with frequences <code>freq1, freq2, ..., in order</code>.</td></tr>
 <tr><td><code>point(x, y, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a point, where <code>(x, y)</code> are the coordinates of the point. Note: <code>point({{x1, y1}, {x2, y2}}, style)</code> is for plotting multiple points.</td></tr>
 <tr><td><code>polarcurve(r(&theta;), range, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polar curve, where <code>r(&theta;)</code> is a polar function, and <code>range = {&theta;1, &theta;2}</code> indicating <code>&theta;</code> changes from &theta;1 to &theta;2.</td></tr>
 <tr><td><code>polygon(vertices, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polygon, where <code>vertices = {{x1, y1}, {x2, y2}, ..., {xn, yn}}</code> specifies the coordinates of each vertex in order so that there is an edge connecting any two consecutive vertices. There is an edge connecting <code>{x1, y1}</code> and <code>{xn, yn}</code>.</td></tr>
@@ -1584,13 +1591,24 @@ mu, sigma = mean(x), std(x)
 Y = map(function(x) return n(x, mu, sigma) * 7 end, X)
 
 gobj = hist(x, 12)
+axisnotsquare()
 plot(gobj, X, Y, '--r')
 
 plot(point({{1, 2}, {2, -1}, {2.2, 2}}), point(-1, 1, {symbol='circle-open', size=18, color='red'}))
 
+axissquare()
 plot(pie(x))
 plot(pie(x, nil, nil, nil, 0.1)) -- each bin is away from the center by 0.1
 plot(pie(x, nil, nil, nil, {{5, 0.2}, {1, 0.1}})) -- the 1st and 5th bins are away from the center by ...
+plot(pie({bins = {4, 5, 1, 12, 6, 15}}, nil, nil, nil, {{3, 0.3}, {5, 0.1}, {1, 0.15}}))
+plot(pie({bins = {0.0930, 0.1163, 0.0233, 0.2791, 0.1395, 0.3488}}, nil, nil, nil, {{3, 0.3}, {5, 0.1}, {1, 0.15}}))
+
+axisnotvisible()
+plot(pie(x))
+
+gridlinevisible()
+plot(pie({bins = {0.0930, 0.1163, 0.0233, 0.2791, 0.1395, 0.3488}}, nil, nil, nil, {{3, 0.3}, {5, 0.1}, {1, 0.15}}))
+
 -- nil? the default value of a correspoind argument will be used
 
 plot(scatter(x, cos(x)))
@@ -1625,6 +1643,16 @@ plot({layout={width=1900, height=1400, grid={rows=2, columns=3}},
       names={'i=1', 'i=2', 'i=3', 'i=4', 'i=5', 'i=6'}}, table.unpack(gobjs))
 </code>
 </pre>
+<h4>&bull; &nbsp; <a name=axissquare></a><a name=axisnotsquare></a><a name=axisvisible></a><a name=axisnotvisible></a><a name=gridlinevisible></a><a name=axisnotvisible></a>axissquare, axisnotsquare; axisvisible, axisnotvisible; gridlinevisible, axisnotvisible</h4>
+<table><tbody>
+<tr><td><code>axissquare()</code></td><td> - </td><td>Force a square axis aspect ratio.</td></tr>
+<tr><td><code>axisnotsquare()</code></td><td> - </td><td>Remove the square axis aspect ratio.</td></tr>
+<tr><td><code>axisvisible()</code></td><td> - </td><td>Force to show axes.</td></tr>
+<tr><td><code>axisnotvisible()</code></td><td> - </td><td>Do not show axes.</td></tr>
+<tr><td><code>gridlinevisible()</code></td><td> - </td><td>Force to show gridlines.</td></tr>
+<tr><td><code>gridlinenotvisible()</code></td><td> - </td><td>Do not show gridlines.</td></tr>
+</tbody></table>
+<p>Example: See <a href=#arc>pie</a>.</p>
 <p></p>
 <hr>
 <h2 style="margin-left: 20px;">Note</h2>

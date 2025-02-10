@@ -30,6 +30,9 @@ API and Usage
     arc, circle, hist, line, parametriccurve, pie, plot, point, polarcurve,
     polygon, scatter, wedge
 
+    axissquare, axisnotsquare; axisvisible, axisnotvisible; gridlinevisible,
+    gridlinenotvisible
+
   See code and mathly.html.
 
 HOME PAGE
@@ -1693,9 +1696,16 @@ end -- hist
 --  1. 0.1, all bins are away from the center by 0.1
 --  2. {{2, 0.1}, {5, 0.3}, ...}, the 2nd, 5th ... bins are away from the center by ...
 function pie(x, nbins, radius, style, offcenter)
-  nbins = nbins or 10
+  local freqs
+  if x['bins'] ~= nil then
+    freqs = x['bins']
+    freqs = tt(rr(freqs) / sum(freqs))
+    nbins = #freqs
+  else
+    nbins = nbins or 10
+    freqs = _freq_distro(x, nbins)
+  end
   radius = radius or 1
-  local freqs, xmin, xmax, width = _freq_distro(x, nbins)
   local data = {'graph'}
   local angle1 = 0
   for i = 1, nbins do
@@ -1875,6 +1885,19 @@ function scatter(x, y, style)
   end
   return data
 end -- scatter
+
+local _axis_equalq       = false -- 2/10/25
+local _axis_visibleq     = true
+local _gridline_visibleq = true
+
+function axissquare()    _axis_equalq = true  end
+function axisnotsquare() _axis_equalq = false end
+
+function axisvisible()    _axis_visibleq = true  end
+function axisnotvisible() _axis_visibleq = false end
+
+function gridlinevisible()    _gridline_visibleq = true; _axis_visibleq = true  end
+function gridlinenotvisible() _gridline_visibleq = false end
 
 --// transpose ( A )
 -- transpose a matrix
@@ -2945,7 +2968,7 @@ local function open_url(url)
   end
 
   _open_cmd(url)
-end
+end -- open_url
 
 -- Figure metatable
 local figure = {}
@@ -3050,7 +3073,7 @@ function figure.plot(self, trace)
   self:add_trace(trace)
   self:update_layout(plotly.layout)
   return self
-end
+end -- figure.plot
 
 ---Updates the plotly figure layout (options can be seen here: https://plotly.com/javascript/reference/layout/)
 function figure.update_layout(self, layout)
@@ -3084,6 +3107,22 @@ function figure.toplotstring(self)
     end
   end
 
+  if _axis_equalq then -- dwang, 2/10/25, JavaScript: var layout = {"xaxis":{"scaleanchor":"y"}, "yaxis":{"scaleratio":1}}
+    if self['layout'] == nil then self['layout'] = {} end
+    if self['layout']['xaxis'] == nil then self['layout']['xaxis'] = {} end
+    self['layout']['xaxis']['scaleanchor'] = 'y'
+    if self['layout']['yaxis'] == nil then self['layout']['yaxis'] = {} end
+    self['layout']['yaxis']['scaleratio'] = 1
+  end
+
+  if self['layout'] == nil then self['layout'] = {} end
+  if self['layout']['xaxis'] == nil then self['layout']['xaxis'] = {} end
+  if self['layout']['yaxis'] == nil then self['layout']['yaxis'] = {} end
+  self['layout']['xaxis']['visible'] = _axis_visibleq
+  self['layout']['xaxis']['showgrid'] = _gridline_visibleq
+  self['layout']['yaxis']['visible'] = _axis_visibleq
+  self['layout']['yaxis']['showgrid'] = _gridline_visibleq
+
   -- Converting input
   local data_str = json.encode (self["data"])
   local layout_str = json.encode (self["layout"])
@@ -3099,7 +3138,7 @@ function figure.toplotstring(self)
 </div>
 ]] -- dwang, simplified
   return string.format(plot, div_id, data_str, layout_str, div_id)
-end
+end -- figure.toplotstring
 
 function figure.tohtmlstring(self)
   local header = "<html>\n<meta charset=\"utf-8\">\n<head>" .. plotly.cdn_main .. "</head>\n"
@@ -3119,7 +3158,7 @@ function figure.tofile(self, filename)
     print(string.format("Failed to create %s. The very device might not be writable.", filename))
   end
   return self
-end
+end -- figure.tofile
 
 ---Opens/shows the plot in the browser
 function figure.show(self)
@@ -3187,7 +3226,7 @@ local function _dk_isarray (tbl)
     return false -- don't create an array with too many holes
   end
   return true, max
-end
+end -- _dk_isarray
 
 local _dk_escapecodes = {
   ["\""] = "\\\"", ["\\"] = "\\\\", ["\b"] = "\\b", ["\f"] = "\\f",
@@ -3222,7 +3261,7 @@ local function _dk_escapeutf8 (uchar)
   else
     return ""
   end
-end
+end -- _dk_escapeutf8
 
 local function _dk_fsub (str, pattern, repl)
   -- gsub always builds a new string in a buffer, even when no match
@@ -3233,7 +3272,7 @@ local function _dk_fsub (str, pattern, repl)
   else
     return str
   end
-end
+end -- _dk_fsub
 
 local function _dk_quotestring (value)
   -- based on the regexp "escapable" in https://github.com/douglascrockford/JSON-js
@@ -3249,7 +3288,7 @@ local function _dk_quotestring (value)
     value = _dk_fsub (value, "\239\191[\176-\191]", _dk_escapeutf8)
   end
   return "\"" .. value .. "\""
-end
+end -- _dk_quotestring
 json._dk_quotestring = _dk_quotestring
 
 local function _dk_replace(str, o, n)
@@ -3294,7 +3333,7 @@ local function _dk_addpair (key, value, prev, level, buffer, buflen, tables, glo
   buffer[buflen+1] = _dk_quotestring (key)
   buffer[buflen+2] = ":"
   return _dk_encode2 (value, level, buffer, buflen + 2, tables, globalorder, state)
-end
+end -- _dk_addpair
 
 local function _dk_appendcustom(res, buffer, state)
   local buflen = state.bufferlen
@@ -3303,7 +3342,7 @@ local function _dk_appendcustom(res, buffer, state)
     buffer[buflen] = res
   end
   return buflen
-end
+end -- _dk_appendcustom
 
 local function _dk_exception(reason, value, state, buffer, buflen, defaultmessage)
   defaultmessage = defaultmessage or reason
@@ -3316,7 +3355,7 @@ local function _dk_exception(reason, value, state, buffer, buflen, defaultmessag
     if not ret then return nil, msg or defaultmessage end
     return _dk_appendcustom(ret, buffer, state)
   end
-end
+end -- _dk_exception
 
 _dk_encode2 = function (value, level, buffer, buflen, tables, globalorder, state)
   local valtype = _dk_type (value)
@@ -3401,7 +3440,7 @@ _dk_encode2 = function (value, level, buffer, buflen, tables, globalorder, state
       "type '" .. valtype .. "' is not supported by JSON.")
   end
   return buflen
-end
+end -- _dk_encode2
 
 function json.encode (value, state)
   state = state or {}
@@ -3421,7 +3460,7 @@ function json.encode (value, state)
     state.buffer = nil
     return _dk_concat (buffer)
   end
-end
+end -- json.encode
 
 --[[ The above code is obtained from URL: http://dkolf.de/dkjson-lua
      Names are changed to _dk_ and some functions or so have been removed.
