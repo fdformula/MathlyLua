@@ -1692,8 +1692,9 @@ end -- hist
 -- offcenter:
 --  1. 0.1, all bins are away from the center by 0.1
 --  2. {{2, 0.1}, {5, 0.3}, ...}, the 2nd, 5th ... bins are away from the center by ...
-function pie(x, radius, nbins, style, offcenter)
+function pie(x, nbins, radius, style, offcenter)
   nbins = nbins or 10
+  radius = radius or 1
   local freqs, xmin, xmax, width = _freq_distro(x, nbins)
   local data = {'graph'}
   local angle1 = 0

@@ -1545,22 +1545,22 @@ plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, tit
 plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
 plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
 </code></pre>
-
-<h4>&bull; &nbsp; <a name=plot href=#mathly><code>arc, circle, hist, line, parametriccurve, pie, point, polygon, wedge</code></a></h4>
+<h4>&bull; &nbsp; <a name=circle></a><a name=hist></a><a name=line></a><a name=parametriccurve></a><a name=pie></a>
+<a name=point></a><a name=polarcurve></a><a name=polygon></a><a name=scatter></a><a name=wedge></a><a name=arc href=#mathly><code>arc, circle, hist, line, parametriccurve, pie, point, polygon, wedge</code></a></h4>
 <table><tbody>
-<tr><td><a href=#mathly name=arc><code>arc(r, center, angles, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot an arc of a circle.</td></tr>
-<tr><td><a href=#mathly name=circle><code>circle(r, center, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a circle.</td></tr>
-<tr><td><a href=#mathly name=hist><code>hist(x, nbins, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a histogram.</td></tr>
-<tr><td><a href=#mathly name=line><code>line(point1, point2, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a straight line.</td></tr>
-<tr><td><a href=#mathly name=parametriccurve><code>parametriccurve({x(t), y(t)}, range, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a parametric curve.</td></tr>
-<tr><td><a href=#mathly name=pie><code>pie(x, radius, nbins, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a pie chart.</td></tr>
-<tr><td><a href=#mathly name=point><code>point(x, y, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a point.</td></tr>
-<tr><td><a href=#mathly name=polarcurve><code>polarcurve(r(t), range, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polar curve.</td></tr>
-<tr><td><a href=#mathly name=polygon><code>polygon(vertices, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polygon.</td></tr>
-<tr><td><a href=#mathly name=scatter><code>scatter(x, y, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a scatter plot.</td></tr>
-<tr><td><a href=#mathly name=wedge><code>wedge(r, center, angles, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a wedge of a disk.</td></tr>
+<tr><td><code>arc(radius, center, angles, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot an arc of a circle, where <code>angles: {angle1, angle2}</code> (default: <code>{0, 2&pi;}</code>).</td></tr>
+<tr><td><code>circle(radius, center, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a circle, where <code>center: {x, y} (default: {0, 0})</code>.</td></tr>
+<tr><td><code>hist(x, nbins, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers and <code>nbins</code> is the number of bins (default: 10).</td></tr>
+<tr><td><code>line(point1, point2, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a straight line, where <code>point1 = {x1, y1}</code> and <code>point2 = {x2, y2}</code>.</td></tr>
+<tr><td><code>parametriccurve({x(t), y(t)}, range, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a parametric curve, where <code>x(t)</code> and <code>y(t)</code> are parametric functions, and <code>range = {t1, t2}</code> indicating <code>t</code> changes from <code>t1</code> to <code>t2</code>.</td></tr>
+<tr><td><code>pie(x, nbins, radius, style, offcenter)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a pie chart, where <code>nbins</code> is the number of bins / wedges (default: 10), <code>radius</code> is the radius of the pie disk (default: 1), and <code>offcenter</code> specifies which wedges are away from the center by certain distances (default: 0).</td></tr>
+<tr><td><code>point(x, y, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a point, where <code>(x, y)</code> are the coordinates of the point. Note: <code>point({{x1, y1}, {x2, y2}}, style)</code> is for plotting multiple points.</td></tr>
+<tr><td><code>polarcurve(r(&theta;), range, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polar curve, where <code>r(&theta;)</code> is a polar function, and <code>range = {&theta;1, &theta;2}</code> indicating <code>&theta;</code> changes from &theta;1 to &theta;2.</td></tr>
+<tr><td><code>polygon(vertices, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polygon, where <code>vertices = {{x1, y1}, {x2, y2}, ..., {xn, yn}}</code> specifies the coordinates of each vertex in order so that there is an edge connecting any two consecutive vertices. There is an edge connecting <code>{x1, y1}</code> and <code>{xn, yn}</code>.</td></tr>
+<tr><td><code>scatter(x, y, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a scatter plot, where <code>x = {x1, x2 ,...}</code> and <code>y = {y1, y2, ...}</code> specify the coordinates of all points <code>{x1, y1}, {x2, y2}, ...</code></td></tr>
+<tr><td><code>wedge(radius, center, angles, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a wedge of a disk, where <code>angles = {&theta;1, &theta;2}</code> indicating &theta; changes from &theta;1 to &theta;2.</td></tr>
 </tbody></table>
-<p>For most of these graph objects, you may use the following specifications.</p>
+<p>&#x2713; &nbsp; For most of these graph objects, you may use the following specifications in <code>style</code>.</p>
 <table><tbody>
 <tr><td><code>'fa'</code></td><td> - </td><td>Fill to the x-Axis</td></tr>
 <tr><td><code>'ff'</code></td><td> - </td><td>Fill to to the previous Function</td></tr>
@@ -1588,9 +1588,10 @@ plot(gobj, X, Y, '--r')
 
 plot(point({{1, 2}, {2, -1}, {2.2, 2}}), point(-1, 1, {symbol='circle-open', size=18, color='red'}))
 
-plot(pie(x, 1))
-plot(pie(x, 1, nil, nil, 0.1)) -- each bin is away from the center by 0.1
-plot(pie(x, 1, nil, nil, {{5, 0.2}, {1, 0.1}})) -- the 1st and 5th bins are away from the center by ...
+plot(pie(x))
+plot(pie(x, nil, nil, nil, 0.1)) -- each bin is away from the center by 0.1
+plot(pie(x, nil, nil, nil, {{5, 0.2}, {1, 0.1}})) -- the 1st and 5th bins are away from the center by ...
+-- nil? the default value of a correspoind argument will be used
 
 plot(scatter(x, cos(x)))
 
