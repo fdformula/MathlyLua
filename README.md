@@ -79,6 +79,8 @@ package.path = "./?.luac;;"
 
 `arc`, `circle`, `hist`, `line`, `parametriccurve`, `pie`, `plot`, `point`, `polarcurve`, `polygon`, `scatter`, `wedge`
 
+`axissquare`, `axisnotsquare`; `axisvisible`, `axisnotvisible`; `gridlinevisible`, `gridlinenotvisible`
+
 See mathly.html.
 
 ## Two important things you need to know
