@@ -382,7 +382,7 @@ function all( x, f )
   else
     error('all(x, f): x must be a table or mathly matrix.')
   end
-end
+end -- all
 
 --// function any( x, f )
 -- x is a table or row/column vector: return 1 if there is any element of the table which makes f(x) true.
@@ -416,7 +416,7 @@ function any( x, f )
   else
     error('all(x, f): x must be a table or mathly matrix.')
   end
-end
+end -- any
 
 --// function select( A, f )
 -- Return elements of A that satisfy specified conditions. (f defaults to A).
@@ -1645,7 +1645,12 @@ local function _freq_distro(x, nbins)
   nbins = nbins or 10
   x = sort(flatten(x))
   local xmin, xmax = x[1], x[#x]
-  local width = math.ceil((xmax - xmin + 0.1) / nbins)
+  local width
+  if all(x, isinteger) == 1 then
+    width = math.ceil((xmax - xmin + 1) / nbins)
+  else
+    width = (xmax - xmin) / nbins
+  end
   local freqs = {}
   local x1 = xmin
   local j = 1
