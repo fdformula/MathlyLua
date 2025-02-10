@@ -1425,6 +1425,7 @@ function plot(...)
   local x_start = nil -- range of x for a plot
   local x_stop
   local traces = {}
+  local layout_arg = nil
   for _, v in pairs{...} do
     if type(v) == 'table' and v[1] == 'graph' then -- graph objects: {'graph', x, y, style}
       for i = 2, #v, 3 do
@@ -1451,6 +1452,9 @@ function plot(...)
     if type(args[i]) == 'function' then
       args[i] = {0, args[i]}
       table.insert(args, i + 1, {0, 0}) -- pretend to be x, y, ...; to be modified before plotting
+    elseif i <= #args and type(args[i]) == 'table' and _hasanyindex(args[i], {'layout', 'names'})  then
+      layout_arg = args[i] -- to be processed finally
+      i = i + 1
     else
       local trace = {}
       -- input may be {{1, 2, ...}} or {{1}, {2}, ...}
@@ -1483,37 +1487,8 @@ function plot(...)
           end
           i = i + 1 -- the item has been processed
 
-          local names = {}
-          if i <= #args and type(args[i]) == 'table' then
-            if _hasanyindex(args[i], {'layout', 'width', 'height', 'title', 'names'}) then
-              local optq = false
-              if args[i]['layout'] ~= nil then
-                trace['layout'] = args[i]['layout']
-                optq = true
-              end
-
-              local function test_and_set(key)
-                if args[i][key] ~= nil then
-                  if trace['layout'] == nil then trace['layout'] = {} end
-                  trace['layout'][key] = args[i][key]
-                end
-              end
-              test_and_set('title')
-              test_and_set('width')
-              test_and_set('height')
-              if args[i]['names'] ~= nil then names = args[i]['names'] end
-              i = i + 1
-            end
-          end
           traces_tmp[#traces_tmp + 1] = trace
-
-          if #names > 0 then
-            i = i + 1
-            for j = 1,#traces_tmp do
-              traces_tmp[j]['name'] = names[j]
-            end
-          end
-          for j = 1,#traces_tmp do
+          for j = 1, #traces_tmp do
             traces[#traces + 1] = traces_tmp[j]
             traces_tmp[j] = nil
           end
@@ -1635,6 +1610,19 @@ function plot(...)
     end
   end
 
+  if layout_arg ~= nil then  -- processed finally, 2/9/25
+    local names = {} -- layout settings are merged into the last graph object
+    for k, v in pairs(layout_arg) do
+      if k ~= 'names' then traces[#traces][k] = v end
+    end
+    if layout_arg['names'] ~= nil then names = layout_arg['names'] end
+    if #names > 0 then
+      for j = 1, #traces do
+        traces[j]['name'] = names[j]
+      end
+    end
+  end
+
   if x_start == nil then
     x_start, x_stop = -5, 5
   end
@@ -1649,30 +1637,30 @@ function plot(...)
   end
 
   plotly.plots(traces):show()
-  plotly.gridq = false2
+  plotly.gridq = false
   plotly.layout = {}
 end -- plot
 
-local function _freq_distro(xs, nbins)
+local function _freq_distro(x, nbins)
   nbins = nbins or 10
-  xs = sort(flatten(xs))
-  local xmin, xmax = xs[1], xs[#xs]
-  local width = math.ceil((xmax - xmin + 0.5) / nbins)
+  x = sort(flatten(x))
+  local xmin, xmax = x[1], x[#x]
+  local width = math.ceil((xmax - xmin + 0.1) / nbins)
   local freqs = {}
   local x1 = xmin
   local j = 1
   for k = 1, nbins do
     freqs[k] = 0
     local x2 =  x1 + width
-    while j <= #xs do
-      if xs[j] < x2 then
+    while j <= #x do
+      if x[j] < x2 then
         freqs[k] = freqs[k] + 1
         j = j + 1
       else
         break
       end
     end
-    freqs[k] = freqs[k] / #xs -- relative freq
+    freqs[k] = freqs[k] / #x -- relative freq
     x1 = x2
   end
   return freqs, xmin, xmax, width
@@ -1738,16 +1726,16 @@ function wedge(r, center, angles, style, wedgeq)
     theta = theta + inc
   end
   local data = {'graph'}
-  local defaultstyle = '-'
+  local opt = '-'
   if wedgeq then
     x[k] = center[1]
     y[k] = center[2]
-    defaultstyle = '-fs'
+    opt = '-fs'
   end
   data[2] = x
   data[3] = y
   if style == nil then
-    data[4] = defaultstyle
+    data[4] = opt
   else
     data[4] = style
   end
@@ -1823,7 +1811,37 @@ function parametriccurve(fs, x, style)
     data[4] = style
   end
   return data
-end
+end -- parametriccurve
+
+function polarcurve(f, t, style)
+  local r = f
+  if type(f) ~= 'function' then function r(t) return f end end
+  t = t or {0, 2*pi}
+  if t[1] > t[2] then t[1], t[2] = t[2], t[1] end
+  local data = {'graph'}
+  t = linspace(t[1], t[2], (t[2] - t[1])*80)
+  data[2] = map(function(t) return r(t) * math.cos(t) end, t)
+  data[3] = map(function(t) return r(t) * math.sin(t) end, t)
+  if style == nil then
+    data[4] = '-'
+  else
+    data[4] = style
+  end
+  return data
+end -- polarcurve
+
+function scatter(x, y, style)
+  x = flatten(x)
+  y = flatten(y)
+  assert(#x == #y, 'scatter(x, y): x and y must be tables of the same size.')
+  local data = {'graph', x, y}
+  if style == nil then
+    data[4] = {symbol='circle-open', size=8}
+  else
+    data[4] = style
+  end
+  return data
+end -- scatter
 
 --// transpose ( A )
 -- transpose a matrix
