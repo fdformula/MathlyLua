@@ -19,14 +19,16 @@ API and Usage
 
   List of functions provided in this module:
 
-    all, any, apply, arc, cc, circle, clc, clear, copy, cross, det, diag, disp,
-    display, dot, expand, eye, flatten, fliplr, flipud, format, hasindex, hist,
-    horzcat, inv, isinteger, ismember, lagrangepoly, length, line, linsolve,
-    linspace, lu, map, max, mean, min, norm, ones, parametriccurve, pie, plot,
-    point, polygon, polynomial, polyval, printf, prod, qr, rand, randi, range,
-    remake, repmat, reshape, rr, rref, save, select, seq, size, sort, sprintf,
-    std, strcat, submatrix, subtable, sum, tblcat, tic, toc, transpose, tt,
-    unique, var, vertcat, wedge, who, zeros
+    all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display,
+    dot, expand, eye, flatten, fliplr, flipud, format, hasindex, horzcat,
+    inv, isinteger, ismember, lagrangepoly, length, linsolve, linspace, lu,
+    map, max, mean, min, norm, ones, polynomial, polyval, printf, prod, qr,
+    rand, randi, range, remake, repmat, reshape, rr, rref, save, select, seq,
+    size, sort, sprintf, std, strcat, submatrix, subtable, sum, tblcat, tic,
+    toc, transpose, tt, unique, var, vertcat, who, zeros
+
+    arc, circle, hist, line, parametriccurve, pie, plot, point, polarcurve,
+    polygon, scatter, wedge
 
   See code and mathly.html.
 
