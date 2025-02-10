@@ -1581,7 +1581,7 @@ xmax = max(abs(min(x)), abs(max(x)))
 xmin = -xmax
 X = linspace(xmin, xmax, 200)
 mu, sigma = mean(x), std(x)
-Y = map(function(x) return n(x, mu, sigma) * 8 end, X)
+Y = map(function(x) return n(x, mu, sigma) * 7 end, X)
 
 gobj = hist(x, 12)
 plot(gobj, X, Y, '--r')
