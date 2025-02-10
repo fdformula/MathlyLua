@@ -1589,7 +1589,8 @@ plot(gobj, X, Y, '--r')
 plot(point({{1, 2}, {2, -1}, {2.2, 2}}), point(-1, 1, {symbol='circle-open', size=18, color='red'}))
 
 plot(pie(x, 1))
-plot(hist(x))
+plot(pie(x, 1, nil, nil, 0.1)) -- each bin is away from the center by 0.1
+plot(pie(x, 1, nil, nil, {{5, 0.2}, {1, 0.1}})) -- the 1st and 5th bins are away from the center by ...
 
 plot(scatter(x, cos(x)))
 

@@ -1689,14 +1689,39 @@ function hist(x, nbins, style)
   return data
 end -- hist
 
-function pie(x, radius, nbins, style)
+-- offcenter:
+--  1. 0.1, all bins are away from the center by 0.1
+--  2. {{2, 0.1}, {5, 0.3}, ...}, the 2nd, 5th ... bins are away from the center by ...
+function pie(x, radius, nbins, style, offcenter)
   nbins = nbins or 10
   local freqs, xmin, xmax, width = _freq_distro(x, nbins)
   local data = {'graph'}
   local angle1 = 0
   for i = 1, nbins do
-    local angle2 = angle1 + freqs[i]*2*pi
-    local v = wedge(radius, {0, 0}, {angle1, angle2}, style)
+    local angle2
+    if i == nbins then
+      angle2 = 2 * pi
+    else
+      angle2 = angle1 + freqs[i]*2*pi
+    end
+    local center = {0, 0}
+    local off = 0
+    if offcenter ~= nil then
+      if type(offcenter) == 'number' then
+        off = offcenter
+      elseif type(offcenter) == 'table' and type(offcenter[1]) == 'table' then
+        for j = 1, #offcenter do
+          if offcenter[j][1] == i then
+            off = offcenter[j][2]
+            break
+          end
+        end
+      end
+      local mid = (angle1 + angle2) / 2
+      local r = math.abs(off)
+      center[1], center[2] = r * math.cos(mid), r * math.sin(mid)
+    end
+    local v = wedge(radius, center, {angle1, angle2}, style)
     data[#data + 1] = v[2]
     data[#data + 1] = v[3]
     data[#data + 1] = v[4]
