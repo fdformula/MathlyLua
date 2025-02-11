@@ -1601,7 +1601,6 @@ plot(pie(x))
 plot(pie(x, nil, nil, nil, 0.1)) -- each bin is away from the center by 0.1
 plot(pie(x, nil, nil, nil, {{5, 0.2}, {1, 0.1}})) -- the 1st and 5th bins are away from the center by ...
 plot(pie({bins = {4, 5, 1, 12, 6, 15}}, nil, nil, nil, {{3, 0.3}, {5, 0.1}, {1, 0.15}}))
-plot(pie({bins = {0.0930, 0.1163, 0.0233, 0.2791, 0.1395, 0.3488}}, nil, nil, nil, {{3, 0.3}, {5, 0.1}, {1, 0.15}}))
 
 axisnotvisible()
 plot(pie(x))
@@ -1643,14 +1642,14 @@ plot({layout={width=1900, height=1400, grid={rows=2, columns=3}},
       names={'i=1', 'i=2', 'i=3', 'i=4', 'i=5', 'i=6'}}, table.unpack(gobjs))
 </code>
 </pre>
-<h4>&bull; &nbsp; <a name=axissquare></a><a name=axisnotsquare></a><a name=axisvisible></a><a name=axisnotvisible></a><a name=gridlinevisible></a><a name=axisnotvisible></a>axissquare, axisnotsquare; axisvisible, axisnotvisible; gridlinevisible, axisnotvisible</h4>
+<h4>&bull; &nbsp; <a name=axissquare></a><a name=axisnotsquare></a><a name=axisvisible></a><a name=axisnotvisible></a><a name=gridlinevisible></a><a name=gridlinenotvisible></a>axissquare, axisnotsquare; axisvisible, axisnotvisible; gridlinevisible, axisnotvisible</h4>
 <table><tbody>
-<tr><td><code>axissquare()</code></td><td> - </td><td>Force a square axis aspect ratio.</td></tr>
-<tr><td><code>axisnotsquare()</code></td><td> - </td><td>Remove the square axis aspect ratio.</td></tr>
-<tr><td><code>axisvisible()</code></td><td> - </td><td>Force to show axes.</td></tr>
-<tr><td><code>axisnotvisible()</code></td><td> - </td><td>Do not show axes.</td></tr>
-<tr><td><code>gridlinevisible()</code></td><td> - </td><td>Force to show gridlines.</td></tr>
-<tr><td><code>gridlinenotvisible()</code></td><td> - </td><td>Do not show gridlines.</td></tr>
+<tr><td><code>axissquare()</code></td><td> &nbsp; </td><td>Force a square axis aspect ratio</td></tr>
+<tr><td><code>axisnotsquare()</code></td><td> &nbsp; </td><td>Remove the square axis aspect ratio</td></tr>
+<tr><td><code>axisvisible()</code></td><td> &nbsp; </td><td>Force to show axes</td></tr>
+<tr><td><code>axisnotvisible()</code></td><td> &nbsp; </td><td>Do not show axes</td></tr>
+<tr><td><code>gridlinevisible()</code></td><td> &nbsp; </td><td>Force to show gridlines</td></tr>
+<tr><td><code>gridlinenotvisible()</code></td><td> &nbsp; </td><td>Do not show gridlines</td></tr>
 </tbody></table>
 <p>Example: See <a href=#arc>pie</a>.</p>
 <p></p>
