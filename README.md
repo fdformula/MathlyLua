@@ -77,9 +77,10 @@ package.path = "./?.luac;;"
 `reshape`, `reverse`, `rr`, `rref`, `save`, `select`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`, `tblcat`,
 `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`
 
-`arc`, `circle`, `hist`, `line`, `parametriccurve`, `pie`, `plot`, `point`, `polarcurve`, `polygon`, `scatter`, `wedge`
+`arc`, `circle`, `hist`, `hist1`, `line`, `parametriccurve`, `pie`, `plot`, `point`, `polarcurve`, `polygon`, `scatter`, `wedge`
 
-`axissquare`, `axisnotsquare`; `axisvisible`, `axisnotvisible`; `gridlinevisible`, `gridlinenotvisible`
+`axissquare`, `axisnotsquare`; `showaxes`, `shownotaxes`; `showxaxis`, `shownotxaxis`; `showyaxis`, `shownotyaxis`; `showgridlines`, `shownotgridlines`;
+`showlegend`, `shownotlegend`
 
 See mathly.html.
 
