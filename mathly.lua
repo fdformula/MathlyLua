@@ -1663,17 +1663,7 @@ end -- plot
 local function _freq_distro(x, nbins, xmin, xmax, width)
   local freqs
   nbins = nbins or 10
-  if width ~= nil then -- for plotting a matrix
-    x = sort(x)
-  else
-    x = sort(flatten(x))
-    xmin, xmax = x[1], x[#x]
-    if all(x, isinteger) == 1 then
-      width = math.ceil((xmax - xmin + 1) / nbins)
-    else
-      width = (xmax - xmin) / nbins
-    end
-  end
+  x = sort(x)
 
   local freqs = {}
   local x1 = xmin
@@ -1692,25 +1682,32 @@ local function _freq_distro(x, nbins, xmin, xmax, width)
     freqs[k] = freqs[k] / #x -- relative freq
     x1 = x2
   end
-  return freqs, xmin, xmax, width
+  return freqs
 end -- _freq_distro
 
 --// hist(x, nbins, style)
 -- if x is mxn matrix, each column is a data set; otherwise, x is a table and a single data set.
-function hist(x, nbins, style)
+function hist(x, nbins, style, xrange)
   local xmin, xmax, width
   local gdata = {'graph-hist'} -- special graph object, https://plotly.com/javascript/bar-charts/
   local freqs = {}
+  local allintq
   nbins = nbins or 10
   if type(x) == 'table' and type(x[1]) == 'table' then -- mathly matrix
     if getmetatable(x) ~= mathly_meta then  x = mathly(x) end
     x = x^T
+    allintq = sum(all(x, isinteger)) == #x[1]
   else
     x = rr(flatten(x))
+    allintq = all(x, isinteger) == 1
   end
 
-  local allintq = sum(all(x, isinteger)) == #x
-  xmin, xmax = min(min(x)), max(max(x))
+  if xrange ~= nil then
+    xmin, xmax = xrange[1], xrange[2]
+    if xmin > xmax then xmin, xmax = xmax, xmin end
+  else
+    xmin, xmax = min(min(x)), max(max(x))
+  end
   if allintq then
     width = math.ceil((xmax - xmin + 1) / nbins)
   else
@@ -1740,15 +1737,34 @@ function hist(x, nbins, style)
   return gdata
 end -- hist
 
+local function _xmin_xmax_width(x, xrange, nbins, allintq)
+  local xmin, xmax, width
+  if xrange ~= nil then
+    xmin, xmax = xrange[1], xrange[2]
+    if xmin > xmax then xmin, xmax = xmax, xmin end
+  else
+    xmin, xmax = x[1], x[#x]
+  end
+  if allintq then
+    width = math.ceil((xmax - xmin + 1) / nbins)
+  else
+    width = (xmax - xmin) / nbins
+  end
+  return xmin, xmax, width
+end
+
 --// function hist1(x, nbins, style)
 -- another version of histogram, as see in most textbooks
 -- the output can be treated as an ordinary graph object such as a curve
-function hist1(x, nbins, style)
+function hist1(x, nbins, style, xrange)
   if type(x) == 'table' and type(x[1]) == 'table' then -- mathly matrix
     hist(x, nbins, style)
   end
+
   nbins = nbins or 10
-  local freqs, xmin, xmax, width = _freq_distro(x, nbins)
+  x = sort(flatten(x))
+  local xmin, xmax, width = _xmin_xmax_width(x, xrange, nbins, all(x, isinteger) == 1)
+  local freqs = _freq_distro(x, nbins, xmin, xmax, width)
   local gdata = {'graph'}
   local x1 = xmin
   for i = 1, nbins do
@@ -1773,7 +1789,9 @@ function pie(x, nbins, radius, style, offcenter)
     nbins = #freqs
   else
     nbins = nbins or 10
-    freqs = _freq_distro(x, nbins)
+    x = sort(flatten(x))
+    local xmin, xmax, width = _xmin_xmax_width(x, nil, nbins, all(x, isinteger) == 1)
+    freqs = _freq_distro(x, nbins, xmin, xmax, width)
   end
   radius = radius or 1
   local data = {'graph'}

@@ -263,8 +263,8 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#flipud><code>flipud(A)</code></a></td><td> </td><td>Return a matrix with rows of matrix <code>A</code> reversed.</td></tr>
 <tr><td><a href=#format><code>format(fmt)</code></a></td><td> </td><td>Reset or specify the format of the output of <code>disp(...)</code>.</td></tr>
 <tr><td><a href=#hasindex><code>hasindex(table, index)</code></a></td><td> </td><td>Check if <code>table</code> contains <code>index</code>.</td></tr>
-<tr><td><a href=#hist><code>hist(x, nbins, style)</code></a></td><td> </td><td>Return a special graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table or a matrix of numbers and <code>nbins</code> is the number of bins (default: 10).</td></tr>
-<tr><td><a href=#hist1><code>hist1(x, nbins, style)</code></a></td><td> </td><td>Return an ordinary graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers.</td></tr>
+<tr><td><a href=#hist><code>hist(x, nbins, style, xrange)</code></a></td><td> </td><td>Return a special graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table or a matrix of numbers and <code>nbins</code> is the number of bins (default: 10).</td></tr>
+<tr><td><a href=#hist1><code>hist1(x, nbins, style, xrange)</code></a></td><td> </td><td>Return an ordinary graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers.</td></tr>
 <tr><td><a href=#horzcat><code>horzcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
 <tr><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of a square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
 <tr><td><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
@@ -1558,8 +1558,8 @@ plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(
 <table><tbody>
 <tr><td><code>arc(radius, center, angles, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot an arc of a circle, where <code>angles: {angle1, angle2}</code> (default: <code>{0, 2&pi;}</code>).</td></tr>
 <tr><td><code>circle(radius, center, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a circle, where <code>center: {x, y} (default: {0, 0})</code>.</td></tr>
-<tr><td><code>hist(x, nbins, style)</code></td><td> </td><td>Return a special graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers and <code>nbins</code> is the number of bins (default: 10). If <code>x</code> is a matrix, each column is a data set and each bin of the histogram contains one bar per column of of the matrix.</td></tr>
-<tr><td><code>hist1(x, nbins, style)</code></td><td> </td><td>Return an ordinary graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers and <code>nbins</code> is the number of bins (default: 10).</td></tr>
+<tr><td><code>hist(x, nbins, style, xrange)</code></td><td> </td><td>Return a special graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers and <code>nbins</code> is the number of bins (default: 10). If <code>x</code> is a matrix, each column is a data set and each bin of the histogram contains one bar per column of of the matrix. <code>xrange = {xmin, xmax}</code> specifies the range of data values. If not provided, it is determined by the lowest and largest values in <code>x</code>.</td></tr>
+<tr><td><code>hist1(x, nbins, style, xrange)</code></td><td> </td><td>Return an ordinary graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers and <code>nbins</code> is the number of bins (default: 10). <code>xrange</code>? See <code>hist</code>.</td></tr>
 <tr><td><code>line(point1, point2, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a straight line, where <code>point1 = {x1, y1}</code> and <code>point2 = {x2, y2}</code>.</td></tr>
 <tr><td><code>parametriccurve({x(t), y(t)}, range, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a parametric curve, where <code>x(t)</code> and <code>y(t)</code> are parametric functions, and <code>range = {t1, t2}</code> indicating <code>t</code> changes from <code>t1</code> to <code>t2</code>.</td></tr>
 <tr><td><code>pie(x, nbins, radius, style, offcenter)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a pie chart, where <code>nbins</code> is the number of bins / wedges (default: 10), <code>radius</code> is the radius of the pie disk (default: 1), and <code>offcenter</code> specifies which wedges are away from the center by certain distances (default: 0). Note: <code>pie({bins = {freq1, freq2, ...}}, radius, style, offcenter)</code> is for plotting a pie chart for bins with frequences <code>freq1, freq2, ..., in order</code>.</td></tr>
@@ -1598,22 +1598,24 @@ plot(gobj, X, Y, '--r')
 
 showaxes()
 plot(hist(rand(1, 100)))
-plot(hist(randi({-99, 99}, 200, 4)))
+plot(hist(randi({0, 99}, 200, 4), nil, nil, {0, 99})) -- nil? the default value will be used
 
-plot(point({{1, 2}, {2, -1}, {2.2, 2}}), point(-1, 1, {symbol='circle-open', size=18, color='red'}))
+plot(math.sin, point({{-3, 2}, {2, -1}, {3.2, 2}}), point(-1, 1, {symbol='circle-open', size=18, color='red'}))
 
 axissquare()
 plot(pie(x))
-plot(pie(x, nil, nil, nil, 0.1)) -- each bin is away from the center by 0.1; nil? the default value will be used
+plot(pie(x, nil, nil, nil, 0.1)) -- each bin is away from the center by 0.1
 plot(pie(x, nil, nil, nil, {{5, 0.2}, {1, 0.1}})) -- the 1st and 5th bins are away from the center by ...
-plot(pie({bins = {4, 5, 1, 12, 6, 15}}, nil, nil, nil, {{3, 0.3}, {5, 0.1}, {1, 0.15}}))
+plot(pie({bins = {4, 5, 1, 12, 6, 15}}, nil, nil, nil, {{3, 0.6}, {5, 0.1}, {1, 0.15}}))
 
 shownotaxes()
 plot(pie(x))
 
+showaxes()
 showgridlines()
-plot(pie({bins = {0.0930, 0.1163, 0.0233, 0.2791, 0.1395, 0.3488}}, nil, nil, nil, {{3, 0.3}, {5, 0.1}, {1, 0.15}}))
+plot(pie({bins = {0.0930, 0.1163, 0.0233, 0.2791, 0.1395, 0.3488}}, nil, nil, nil, {{3, 0.6}, {5, 0.1}, {1, 0.15}}))
 
+x = (0.5 - rr(rand(1, 100))) * 10
 plot(scatter(x, cos(x)))
 
 plot(polygon({{1, 2}, {2, 3}, {5, -1}}),
@@ -1642,7 +1644,7 @@ gobjs = {}
 for i = 1, 6 do
   gobjs[i] = polarcurve(function(t) return math.sin(1.6 * t^2) + math.cos(i * t)^5 end, {0, 6*pi}, '-sfn')
 end
-plot({layout={width=1900, height=1400, grid={rows=2, columns=3}, title='Example'},
+plot({layout={width=1900, height=1300, grid={rows=2, columns=3}, title='Example'},
       names={'i=1', 'i=2', 'i=3', 'i=4', 'i=5', 'i=6'}}, table.unpack(gobjs))
 </code></pre>
 <h4>&bull; &nbsp; <a name=showlegend></a><a name=shownotlegend></a><a name=shownotyaxis></a><a name=showyaxis></a><a name=shownotxaxis></a><a name=showxaxis></a><a name=axissquare></a><a name=axisnotsquare></a><a name=showaxes></a><a name=shownotaxes></a><a name=showgridlines></a><a name=shownotgridlines></a><a href=#mathly>axissquare, axisnotsquare; showaxes, shownotaxes ...</a></h4>
