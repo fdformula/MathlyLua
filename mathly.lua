@@ -3202,6 +3202,7 @@ function figure.toplotstring(self)
   self['layout']['xaxis']['showgrid'] = _gridline_visibleq
   self['layout']['yaxis']['visible'] = _yaxis_visibleq
   self['layout']['yaxis']['showgrid'] = _gridline_visibleq
+  self['layout']['showlegend'] = _showlegendq
 
   -- Converting input
   local data_str = json.encode (self["data"])
