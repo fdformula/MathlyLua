@@ -263,7 +263,8 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#flipud><code>flipud(A)</code></a></td><td> </td><td>Return a matrix with rows of matrix <code>A</code> reversed.</td></tr>
 <tr><td><a href=#format><code>format(fmt)</code></a></td><td> </td><td>Reset or specify the format of the output of <code>disp(...)</code>.</td></tr>
 <tr><td><a href=#hasindex><code>hasindex(table, index)</code></a></td><td> </td><td>Check if <code>table</code> contains <code>index</code>.</td></tr>
-<tr><td><a href=#hist><code>hist(x, nbins, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a histogram.</td></tr>
+<tr><td><a href=#hist><code>hist(x, nbins, style)</code></a></td><td> </td><td>Return a special graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table or a matrix of numbers and <code>nbins</code> is the number of bins (default: 10).</td></tr>
+<tr><td><a href=#hist1><code>hist1(x, nbins, style)</code></a></td><td> </td><td>Return an ordinary graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers.</td></tr>
 <tr><td><a href=#horzcat><code>horzcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
 <tr><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of a square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
 <tr><td><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
@@ -323,12 +324,12 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><code>who()</code></td><td> </td><td>List all user-defined variables in the memory.</td></tr>
 <tr><td><a href=#zeros><code>zeros</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 0. If <code>m = 1</code>, return a table.</td></tr>
 <tr><td> </td><td> </td><td><p><hr></p> </td></tr>
-<tr><td><a href=#axissquare><code>axissquare()</code></a></td><td> </td><td>Force a square axis aspect ratio.</td></tr>
-<tr><td><a href=#axisnotsquare><code>axisnotsquare()</code></a></td><td> </td><td>Remove the square axis aspect ratio.</td></tr>
-<tr><td><a href=#axisvisible><code>axisvisible()</code></a></td><td> </td><td>Force to show axes.</td></tr>
-<tr><td><a href=#axisnotvisible><code>axisnotvisible()</code></a></td><td> </td><td>Do not show axes.</td></tr>
-<tr><td><a href=#gridlinevisible><code>gridlinevisible()</code></a></td><td> </td><td>Force to show gridlines.</td></tr>
-<tr><td><a href=#axisnotvisible><code>gridlinenotvisible()</code></a></td><td> </td><td>Do not show gridlines.</td></tr>
+<tr><td><a href=#axissquare><code>axissquare(), axisnotsquare()</code></a></td><td> </td><td>Force/stop a square axis aspect ratio</td></tr>
+<tr><td><a href=#showaxes><code>showaxes(), shownotaxes()</code></a></td><td> </td><td>Show/hide axes</td></tr>
+<tr><td><a href=#showxaxis><code>showxaxis(), shownotxaxis()</code></a></td><td> </td><td>Show/hide the x-axes</td></tr>
+<tr><td><a href=#showyaxis><code>showyaxis(), shownotyaxis</code></a></td><td> </td><td>Show/hide the y-axis</td></tr>
+<tr><td><a href=#showlegend><code>showlegend(), shownotlegend()</code></a></td><td> </td><td>Show/hide the legend</td></tr>
+<tr><td><a href=#showgridlines><code>showgridlines(), shownotgridlines()</code></a></td><td> </td><td>Show/hide gridlines</td></tr>
 </tbody>
 </table>
 
@@ -1552,12 +1553,13 @@ plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, tit
 plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
 plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
 </code></pre>
-<h4>&bull; &nbsp; <a name=circle></a><a name=hist></a><a name=line></a><a name=parametriccurve></a><a name=pie></a>
+<h4>&bull; &nbsp; <a name=circle></a><a name=hist></a><a name=hist1></a><a name=line></a><a name=parametriccurve></a><a name=pie></a>
 <a name=point></a><a name=polarcurve></a><a name=polygon></a><a name=scatter></a><a name=wedge></a><a name=arc href=#mathly><code>arc, circle, hist, line, parametriccurve, pie, point, polygon, wedge</code></a></h4>
 <table><tbody>
 <tr><td><code>arc(radius, center, angles, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot an arc of a circle, where <code>angles: {angle1, angle2}</code> (default: <code>{0, 2&pi;}</code>).</td></tr>
 <tr><td><code>circle(radius, center, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a circle, where <code>center: {x, y} (default: {0, 0})</code>.</td></tr>
-<tr><td><code>hist(x, nbins, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers and <code>nbins</code> is the number of bins (default: 10).</td></tr>
+<tr><td><code>hist(x, nbins, style)</code></td><td> </td><td>Return a special graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers and <code>nbins</code> is the number of bins (default: 10). If <code>x</code> is a matrix, each column is a data set and each bin of the histogram contains one bar per column of of the matrix.</td></tr>
+<tr><td><code>hist1(x, nbins, style)</code></td><td> </td><td>Return an ordinary graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers and <code>nbins</code> is the number of bins (default: 10).</td></tr>
 <tr><td><code>line(point1, point2, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a straight line, where <code>point1 = {x1, y1}</code> and <code>point2 = {x2, y2}</code>.</td></tr>
 <tr><td><code>parametriccurve({x(t), y(t)}, range, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a parametric curve, where <code>x(t)</code> and <code>y(t)</code> are parametric functions, and <code>range = {t1, t2}</code> indicating <code>t</code> changes from <code>t1</code> to <code>t2</code>.</td></tr>
 <tr><td><code>pie(x, nbins, radius, style, offcenter)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a pie chart, where <code>nbins</code> is the number of bins / wedges (default: 10), <code>radius</code> is the radius of the pie disk (default: 1), and <code>offcenter</code> specifies which wedges are away from the center by certain distances (default: 0). Note: <code>pie({bins = {freq1, freq2, ...}}, radius, style, offcenter)</code> is for plotting a pie chart for bins with frequences <code>freq1, freq2, ..., in order</code>.</td></tr>
@@ -1590,25 +1592,27 @@ X = linspace(xmin, xmax, 200)
 mu, sigma = mean(x), std(x)
 Y = map(function(x) return n(x, mu, sigma) * 7 end, X)
 
-gobj = hist(x, 12)
+gobj = hist1(x, 12)
 axisnotsquare()
 plot(gobj, X, Y, '--r')
+
+showaxes()
+plot(hist(rand(1, 100)))
+plot(hist(randi({-99, 99}, 200, 4)))
 
 plot(point({{1, 2}, {2, -1}, {2.2, 2}}), point(-1, 1, {symbol='circle-open', size=18, color='red'}))
 
 axissquare()
 plot(pie(x))
-plot(pie(x, nil, nil, nil, 0.1)) -- each bin is away from the center by 0.1
+plot(pie(x, nil, nil, nil, 0.1)) -- each bin is away from the center by 0.1; nil? the default value will be used
 plot(pie(x, nil, nil, nil, {{5, 0.2}, {1, 0.1}})) -- the 1st and 5th bins are away from the center by ...
 plot(pie({bins = {4, 5, 1, 12, 6, 15}}, nil, nil, nil, {{3, 0.3}, {5, 0.1}, {1, 0.15}}))
 
-axisnotvisible()
+shownotaxes()
 plot(pie(x))
 
-gridlinevisible()
+showgridlines()
 plot(pie({bins = {0.0930, 0.1163, 0.0233, 0.2791, 0.1395, 0.3488}}, nil, nil, nil, {{3, 0.3}, {5, 0.1}, {1, 0.15}}))
-
--- nil? the default value of a correspoind argument will be used
 
 plot(scatter(x, cos(x)))
 
@@ -1620,7 +1624,7 @@ plot(polygon({{1, 2}, {2, 3}, {5, -1}}),
 
 plot(math.sin, '-rfa')
 
-x = linspace(-1, 2, 100)
+x = linspace(-2.337, 0.779, 100)
 X = linspace(-5, 5, 200)
 plot(X, cos(X), X, sin(X), '-rff') -- shade regions between two curves
 plot(x, cos(x), x, sin(x), '-rff', X, cos(X), X, sin(X)) -- shade part of  ...
@@ -1638,18 +1642,17 @@ gobjs = {}
 for i = 1, 6 do
   gobjs[i] = polarcurve(function(t) return math.sin(1.6 * t^2) + math.cos(i * t)^5 end, {0, 6*pi}, '-sfn')
 end
-plot({layout={width=1900, height=1400, grid={rows=2, columns=3}},
+plot({layout={width=1900, height=1400, grid={rows=2, columns=3}, title='Example'},
       names={'i=1', 'i=2', 'i=3', 'i=4', 'i=5', 'i=6'}}, table.unpack(gobjs))
-</code>
-</pre>
-<h4>&bull; &nbsp; <a name=axissquare></a><a name=axisnotsquare></a><a name=axisvisible></a><a name=axisnotvisible></a><a name=gridlinevisible></a><a name=gridlinenotvisible></a>axissquare, axisnotsquare; axisvisible, axisnotvisible; gridlinevisible, axisnotvisible</h4>
+</code></pre>
+<h4>&bull; &nbsp; <a name=showlegend></a><a name=shownotlegend></a><a name=shownotyaxis></a><a name=showyaxis></a><a name=shownotxaxis></a><a name=showxaxis></a><a name=axissquare></a><a name=axisnotsquare></a><a name=showaxes></a><a name=shownotaxes></a><a name=showgridlines></a><a name=shownotgridlines></a><a href=#mathly>axissquare, axisnotsquare; showaxes, shownotaxes ...</a></h4>
 <table><tbody>
-<tr><td><code>axissquare()</code></td><td> &nbsp; </td><td>Force a square axis aspect ratio</td></tr>
-<tr><td><code>axisnotsquare()</code></td><td> &nbsp; </td><td>Remove the square axis aspect ratio</td></tr>
-<tr><td><code>axisvisible()</code></td><td> &nbsp; </td><td>Force to show axes</td></tr>
-<tr><td><code>axisnotvisible()</code></td><td> &nbsp; </td><td>Do not show axes</td></tr>
-<tr><td><code>gridlinevisible()</code></td><td> &nbsp; </td><td>Force to show gridlines</td></tr>
-<tr><td><code>gridlinenotvisible()</code></td><td> &nbsp; </td><td>Do not show gridlines</td></tr>
+<tr><td><code>axissquare(),    axisnotsquare()</code></td><td> &nbsp; </td><td>Force or stop a square axis aspect ratio (default: not square)</td></tr>
+<tr><td><code>showaxes(),      shownotaxes()</code></td><td> &nbsp; </td><td>Show/hide axes (all default: show)</td></tr>
+<tr><td><code>showxaxis(),     shownotxaxis()</code></td><td> &nbsp; </td><td>Show/hide the x-axis</td></tr>
+<tr><td><code>showyaxis(),     shownotyaxis()</code></td><td> &nbsp; </td><td>Show/hide the y-axis</td></tr>
+<tr><td><code>showgridlines(), shownotgridlines()</code></td><td> &nbsp; </td><td>Show/hide gridlines</td></tr>
+<tr><td><code>showlegend(),    shownotlegend()</code></td><td> &nbsp; </td><td>Show/hide the legend</td></tr>
 </tbody></table>
 <p>Example: See <a href=#arc>pie</a>.</p>
 <p></p>

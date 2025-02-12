@@ -30,8 +30,9 @@ API and Usage
     arc, circle, hist, line, parametriccurve, pie, plot, point, polarcurve,
     polygon, scatter, wedge
 
-    axissquare, axisnotsquare; axisvisible, axisnotvisible; gridlinevisible,
-    gridlinenotvisible
+    axissquare, axisnotsquare; showaxes, shownotaxes; showxaxis, shownotxaxis;
+    showyaxis, shownotyaxis; showgridlines, shownotgridlines;
+    showlegend, shownotlegend
 
   See code and mathly.html.
 
@@ -1432,8 +1433,21 @@ function plot(...)
   local traces = {}
   local layout_arg = nil
   for _, v in pairs{...} do
-    if type(v) == 'table' and v[1] == 'graph' then -- graph objects: {'graph', x, y, style}
+    if type(v) == 'table' and v[1] == 'graph-hist' then -- group histogram graph object: {'graph-hist', x, y}
+      for i = 2, #v, 2 do
+        local trace = {}
+        trace[1] = v[i]
+        trace[2] = v[i + 1]
+        trace['type'] = 'bar'
+        traces[#traces + 1] = trace
+      end
+      layout_arg = {layout={barmode='group', bargap=0.01}}
+    elseif type(v) == 'table' and v[1] == 'graph' then -- graph objects: {'graph', x, y, style}
       for i = 2, #v, 3 do
+        if type(v[i]) == 'table' and _hasanyindex(v[i], {'layout', 'names'}) then  -- last item as seen in hist1(...)!
+          args[#args + 1] = v[i]
+          break
+        end
         local xmin, xmax = min(v[i]), max(v[i])
         if x_start == nil then
           x_start, x_stop = xmin, xmax
@@ -1616,13 +1630,13 @@ function plot(...)
   end
 
   if layout_arg ~= nil then  -- processed finally, 2/9/25
-    local names = {} -- layout settings are merged into the last graph object
-    for k, v in pairs(layout_arg) do
-      if k ~= 'names' then traces[#traces][k] = v end
+    local names = {}
+    for k, v in pairs(layout_arg) do -- layout settings are merged into the 1st trace
+      if k ~= 'names' then traces[1][k] = v end
     end
     if layout_arg['names'] ~= nil then names = layout_arg['names'] end
     if #names > 0 then
-      for j = 1, #traces do
+      for j = 1, math.min(#traces, #names) do
         traces[j]['name'] = names[j]
       end
     end
@@ -1646,16 +1660,21 @@ function plot(...)
   plotly.layout = {}
 end -- plot
 
-local function _freq_distro(x, nbins)
+local function _freq_distro(x, nbins, xmin, xmax, width)
+  local freqs
   nbins = nbins or 10
-  x = sort(flatten(x))
-  local xmin, xmax = x[1], x[#x]
-  local width
-  if all(x, isinteger) == 1 then
-    width = math.ceil((xmax - xmin + 1) / nbins)
+  if width ~= nil then -- for plotting a matrix
+    x = sort(x)
   else
-    width = (xmax - xmin) / nbins
+    x = sort(flatten(x))
+    xmin, xmax = x[1], x[#x]
+    if all(x, isinteger) == 1 then
+      width = math.ceil((xmax - xmin + 1) / nbins)
+    else
+      width = (xmax - xmin) / nbins
+    end
   end
+
   local freqs = {}
   local x1 = xmin
   local j = 1
@@ -1676,21 +1695,72 @@ local function _freq_distro(x, nbins)
   return freqs, xmin, xmax, width
 end -- _freq_distro
 
+--// hist(x, nbins, style)
+-- if x is mxn matrix, each column is a data set; otherwise, x is a table and a single data set.
 function hist(x, nbins, style)
+  local xmin, xmax, width
+  local gdata = {'graph-hist'} -- special graph object, https://plotly.com/javascript/bar-charts/
+  local freqs = {}
+  nbins = nbins or 10
+  if type(x) == 'table' and type(x[1]) == 'table' then -- mathly matrix
+    if getmetatable(x) ~= mathly_meta then  x = mathly(x) end
+    x = x^T
+  else
+    x = rr(flatten(x))
+  end
+
+  local allintq = sum(all(x, isinteger)) == #x
+  xmin, xmax = min(min(x)), max(max(x))
+  if allintq then
+    width = math.ceil((xmax - xmin + 1) / nbins)
+  else
+    width = (xmax - xmin) / nbins
+  end
+
+  for i = 1, #x do
+    freqs[i] = _freq_distro(x[i], nbins, xmin, xmax, width)
+  end
+
+  local labels = {}
+  local x1 = xmin
+  for i = 1, nbins do
+    local x2 = x1 + width
+    if allintq then
+      labels[#labels + 1] = sprintf("[%d, %d]", x1, x2 - 1)
+    else
+      labels[#labels + 1] = sprintf("[%.4f, %.4f)", x1, x2)
+    end
+    x1 = x2
+  end
+
+  for j = 1, #x do
+    gdata[#gdata + 1] = labels
+    gdata[#gdata + 1] = freqs[j]
+  end
+  return gdata
+end -- hist
+
+--// function hist1(x, nbins, style)
+-- another version of histogram, as see in most textbooks
+-- the output can be treated as an ordinary graph object such as a curve
+function hist1(x, nbins, style)
+  if type(x) == 'table' and type(x[1]) == 'table' then -- mathly matrix
+    hist(x, nbins, style)
+  end
   nbins = nbins or 10
   local freqs, xmin, xmax, width = _freq_distro(x, nbins)
-  local data = {'graph'}
+  local gdata = {'graph'}
   local x1 = xmin
   for i = 1, nbins do
     local x2 = x1 + width
     local gobj = polygon({{x1, 0}, {x1, freqs[i]}, {x2, freqs[i]}, {x2, 0}}, style)
-    data[#data + 1] = gobj[2]
-    data[#data + 1] = gobj[3]
-    data[#data + 1] = gobj[4]
+    gdata[#gdata + 1] = gobj[2]
+    gdata[#gdata + 1] = gobj[3]
+    gdata[#gdata + 1] = gobj[4]
     x1 = x2
   end
-  return data
-end -- hist
+  return gdata
+end -- hist1
 
 -- offcenter:
 --  1. 0.1, all bins are away from the center by 0.1
@@ -1887,17 +1957,27 @@ function scatter(x, y, style)
 end -- scatter
 
 local _axis_equalq       = false -- 2/10/25
-local _axis_visibleq     = true
+local _xaxis_visibleq    = true
+local _yaxis_visibleq    = true
 local _gridline_visibleq = true
+local _showlegendq       = true
 
 function axissquare()    _axis_equalq = true  end
 function axisnotsquare() _axis_equalq = false end
 
-function axisvisible()    _axis_visibleq = true  end
-function axisnotvisible() _axis_visibleq = false end
+function showaxes()    _xaxis_visibleq = true;  _yaxis_visibleq = true  end
+function shownotaxes() _xaxis_visibleq = false; _yaxis_visibleq = false end
 
-function gridlinevisible()    _gridline_visibleq = true; _axis_visibleq = true  end
-function gridlinenotvisible() _gridline_visibleq = false end
+function showxaxis()    _xaxis_visibleq = true  end
+function shownotxaxis() _xaxis_visibleq = false end
+function showyaxis()    _yaxis_visibleq = true  end
+function shownotyaxis() _yaxis_visibleq = false end
+
+function showgridlines()    _gridline_visibleq = true end
+function shownotgridlines() _gridline_visibleq = false end
+
+function showlegend()    _showlegendq = true  end
+function shownotlegend() _showlegendq = false end
 
 --// transpose ( A )
 -- transpose a matrix
@@ -3118,9 +3198,9 @@ function figure.toplotstring(self)
   if self['layout'] == nil then self['layout'] = {} end
   if self['layout']['xaxis'] == nil then self['layout']['xaxis'] = {} end
   if self['layout']['yaxis'] == nil then self['layout']['yaxis'] = {} end
-  self['layout']['xaxis']['visible'] = _axis_visibleq
+  self['layout']['xaxis']['visible'] = _xaxis_visibleq
   self['layout']['xaxis']['showgrid'] = _gridline_visibleq
-  self['layout']['yaxis']['visible'] = _axis_visibleq
+  self['layout']['yaxis']['visible'] = _yaxis_visibleq
   self['layout']['yaxis']['showgrid'] = _gridline_visibleq
 
   -- Converting input
