@@ -1757,9 +1757,6 @@ end
 -- another version of histogram, as see in most textbooks
 -- the output can be treated as an ordinary graph object such as a curve
 function hist1(x, nbins, style, xrange, paretoq, freqpolygonq, histq)
-  if type(x) == 'table' and type(x[1]) == 'table' then -- mathly matrix
-    hist(x, nbins, style)
-  end
   if histq == nil then histq = true end
   nbins = nbins or 10
   x = sort(flatten(x))
@@ -1820,7 +1817,7 @@ function pareto(x, nbins, style, xrange)
   return hist1(x, nbins, style, xrange, true, nil, false)
 end
 
-function hist_pareto(x, nbins, style, xrange)
+function histpareto(x, nbins, style, xrange)
   return hist1(x, nbins, style, xrange, true)
 end
 
@@ -1828,7 +1825,7 @@ function freqpolygon(x, nbins, style, xrange)
   return hist1(x, nbins, style, xrange, nil, true, false)
 end
 
-function hist_freqpolygon(x, nbins, style, xrange)
+function histfreqpolygon(x, nbins, style, xrange)
   return hist1(x, nbins, style, xrange, nil, true)
 end
 
