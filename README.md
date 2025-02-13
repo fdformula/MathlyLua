@@ -81,9 +81,6 @@ package.path = "./?.luac;;"
 
 `freqpolygon`, `hist`, `hist1`, `histfreqpolygon`, `histpareto`, `pareto`, `pie`
 
-`axissquare`, `axisnotsquare`; `showaxes`, `shownotaxes`; `showxaxis`, `shownotxaxis`; `showyaxis`, `shownotyaxis`; `showgridlines`, `shownotgridlines`;
-`showlegend`, `shownotlegend`
-
 See mathly.html.
 
 ## Two important things you need to know
