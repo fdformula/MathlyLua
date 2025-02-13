@@ -1756,27 +1756,81 @@ end
 --// function hist1(x, nbins, style)
 -- another version of histogram, as see in most textbooks
 -- the output can be treated as an ordinary graph object such as a curve
-function hist1(x, nbins, style, xrange)
+function hist1(x, nbins, style, xrange, paretoq, freqpolygonq, histq)
   if type(x) == 'table' and type(x[1]) == 'table' then -- mathly matrix
     hist(x, nbins, style)
   end
-
+  if histq == nil then histq = true end
   nbins = nbins or 10
   x = sort(flatten(x))
   local xmin, xmax, width = _xmin_xmax_width(x, xrange, nbins, all(x, isinteger) == 1)
   local freqs = _freq_distro(x, nbins, xmin, xmax, width)
   local gdata = {'graph'}
   local x1 = xmin
+  local pareto_xy = {{xmin}, {0}}
+  local freqp_xy = {{xmin - width / 2}, {0}}
   for i = 1, nbins do
     local x2 = x1 + width
-    local gobj = polygon({{x1, 0}, {x1, freqs[i]}, {x2, freqs[i]}, {x2, 0}}, style)
-    gdata[#gdata + 1] = gobj[2]
-    gdata[#gdata + 1] = gobj[3]
-    gdata[#gdata + 1] = gobj[4]
+    if histq then
+      local gobj = polygon({{x1, 0}, {x1, freqs[i]}, {x2, freqs[i]}, {x2, 0}}, style)
+      gdata[#gdata + 1] = gobj[2]
+      gdata[#gdata + 1] = gobj[3]
+      gdata[#gdata + 1] = gobj[4]
+    end
+    if paretoq then
+      pareto_xy[1][i + 1] = x2
+      pareto_xy[2][i + 1] = pareto_xy[2][i] + freqs[i]
+    end
+    if freqpolygonq then
+      freqp_xy[1][i + 1] = x1 + width / 2
+      freqp_xy[2][i + 1] = freqs[i]
+    end
     x1 = x2
   end
+  if freqpolygonq then
+    freqp_xy[1][nbins + 2] = x1 + width / 2
+    freqp_xy[2][nbins + 2] = 0
+  end
+
+  if paretoq then
+    gdata[#gdata + 1] = pareto_xy[1]
+    gdata[#gdata + 1] = pareto_xy[2]
+    gdata[#gdata + 1] = '-r'
+    for i = 1, nbins + 1 do -- points
+      gdata[#gdata + 1] = {pareto_xy[1][i]}
+      gdata[#gdata + 1] = {pareto_xy[2][i]}
+      gdata[#gdata + 1] = {symbol='circle', size=8, color='red'}
+    end
+  end
+  if freqpolygonq then
+    gdata[#gdata + 1] = freqp_xy[1]
+    gdata[#gdata + 1] = freqp_xy[2]
+    gdata[#gdata + 1] = '-b'
+    for i = 1, nbins + 2 do -- points
+      gdata[#gdata + 1] = {freqp_xy[1][i]}
+      gdata[#gdata + 1] = {freqp_xy[2][i]}
+      gdata[#gdata + 1] = {symbol='circle', size=8, color='blue'}
+    end
+  end
+
   return gdata
 end -- hist1
+
+function pareto(x, nbins, style, xrange)
+  return hist1(x, nbins, style, xrange, true, nil, false)
+end
+
+function hist_pareto(x, nbins, style, xrange)
+  return hist1(x, nbins, style, xrange, true)
+end
+
+function freqpolygon(x, nbins, style, xrange)
+  return hist1(x, nbins, style, xrange, nil, true, false)
+end
+
+function hist_freqpolygon(x, nbins, style, xrange)
+  return hist1(x, nbins, style, xrange, nil, true)
+end
 
 -- offcenter:
 --  1. 0.1, all bins are away from the center by 0.1
