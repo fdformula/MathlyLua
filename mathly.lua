@@ -359,32 +359,40 @@ end
 --   if all of the elements of the corresponding column of the matrix make f(x) true.
 --
 -- f(x) return true or false (default to: x ~= 0)
-function all( x, f )
-  local X = x
+--
+-- mathlymatrixq? usually, ignore it. if just need yes (1) or no (0), set it to false.
+function all( x, f, mathlymatrixq )
+  if mathlymatrixq == nil then mathlymatrixq = true end
   if f == nil then f = function(x) return math.abs(x) > eps end end -- x ~= 0
-  if getmetatable(x) == mathly_meta then
-    local m, n = size(x)
-    if m > 1 and n > 1 then
-      local y = zeros(1, #x[1])
-      for j = 1, #x[1] do
-        local i = 1
-        while i <= #x do
-          if not f(x[i][j]) then break end
-          i = i + 1
+  local function traverse(x)
+    for i = 1, #x do
+      if type(x[i]) == 'table' then
+        if traverse(x[i]) == 0 then return 0 end
+      elseif not f(x[i]) then return 0 end
+    end
+    return 1
+  end
+
+  if mathlymatrixq then
+    if getmetatable(x) == mathly_meta then
+      local m, n = size(x)
+      if m > 1 and n > 1 then
+        local y = zeros(1, #x[1])
+        for j = 1, #x[1] do
+          local i = 1
+          while i <= #x do
+            if not f(x[i][j]) then break end
+            i = i + 1
+          end
+          if i > #x then y[j] = 1 end
         end
-        if i > #x then y[j] = 1 end
+        return setmetatable(rr(y), mathly_meta)
       end
-      return setmetatable(rr(y), mathly_meta)
-    else
-      X = flatten(x)
     end
   end
 
-  if type(X) == 'table' and type(X[1]) ~= 'table' then
-    for i = 1, #X do
-      if not f(X[i]) then return 0 end
-    end
-    return 1
+  if type(x) == 'table' then
+    return traverse(x)
   else
     error('all(x, f): x must be a table or mathly matrix.')
   end
@@ -396,31 +404,39 @@ end -- all
 --   if there is any element of the corresponding column of the matrix which makes f(x) true.
 --
 -- f(x) return true or false (default to: x ~= 0)
-function any( x, f )
-  local X = x
+--
+-- mathlymatrixq? usually, ignore it. if just need yes (1) or no (0), set it to false.
+function any( x, f, mathlymatrixq )
+  if mathlymatrixq == nil then mathlymatrixq = true end
   if f == nil then f = function(x) return math.abs(x) > eps end end -- x ~= 0
-  if getmetatable(x) == mathly_meta then
-    local m, n = size(x)
-    if m > 1 and n > 1 then
-      local y = zeros(1, #x[1])
-      for j = 1, #x[1] do
-        for i = 1, #x do
-          if f(x[i][j]) then y[j] = 1; break end
+  local function traverse(x)
+    for i = 1, #x do
+      if type(x[i]) == 'table' then
+        if traverse(x[i]) == 1 then return 1 end
+      elseif f(x[i]) then return 1 end
+    end
+    return 0
+  end
+
+  if mathlymatrixq then
+    if getmetatable(x) == mathly_meta then
+      local m, n = size(x)
+      if m > 1 and n > 1 then
+        local y = zeros(1, #x[1])
+        for j = 1, #x[1] do
+          for i = 1, #x do
+            if f(x[i][j]) then y[j] = 1; break end
+          end
         end
+        return setmetatable(rr(y), mathly_meta)
       end
-      return setmetatable(rr(y), mathly_meta)
-    else
-      X = flatten(x)
     end
   end
 
-  if type(X) == 'table' and type(X[1]) ~= 'table' then
-    for i = 1, #X do
-      if f(X[i]) then return 1 end
-    end
-    return 0
+  if type(x) == 'table' then
+    return traverse(x)
   else
-    error('all(x, f): x must be a table or mathly matrix.')
+    error('any(x, f): x must be a table or mathly matrix.')
   end
 end -- any
 
@@ -1430,33 +1446,50 @@ function plot(...)
   local args = {}
   local x_start = nil -- range of x for a plot
   local x_stop
+  local adjustxrangeq = true
   local traces = {}
   local layout_arg = nil
   for _, v in pairs{...} do
-    if type(v) == 'table' and v[1] == 'graph-hist' then -- group histogram graph object: {'graph-hist', x, y}
-      for i = 2, #v, 2 do
-        local trace = {}
-        trace[1] = v[i]
-        trace[2] = v[i + 1]
-        trace['type'] = 'bar'
-        traces[#traces + 1] = trace
-      end
-      layout_arg = {layout={barmode='group', bargap=0.01}}
-    elseif type(v) == 'table' and v[1] == 'graph' then -- graph objects: {'graph', x, y, style}
-      for i = 2, #v, 3 do
-        if type(v[i]) == 'table' and _hasanyindex(v[i], {'layout', 'names'}) then  -- last item as seen in hist1(...)!
-          args[#args + 1] = v[i]
-          break
+    if type(v) == 'table' then
+      if v[1] == 'graph-hist' then -- group histogram graph object: {'graph-hist', x, y}
+        for i = 2, #v, 2 do
+          local trace = {}
+          trace[1] = v[i]
+          trace[2] = v[i + 1]
+          trace['type'] = 'bar'
+          traces[#traces + 1] = trace
         end
-        local xmin, xmax = min(v[i]), max(v[i])
-        if x_start == nil then
-          x_start, x_stop = xmin, xmax
-        else
-          x_start, x_stop = math.min(xmin, x_start), math.max(xmax, x_stop)
+        layout_arg = {layout={barmode='group', bargap=0.01}}
+        adjustxrangeq = false
+      elseif v[1] == 'graph-box' then -- boxplot: {'graph-box', 'x', data}, 'x' or 'y'
+        local count = #v
+        if type(v[count][1]) == 'string' then count = count - 1 end -- it is names
+        for i = 3, count do
+          local trace = {}
+          if v[2] == 'x' then trace['x'] = v[i] else trace['y'] = v[i] end
+          trace['type'] = 'box'
+          traces[#traces + 1] = trace
+          adjustxrangeq = false
         end
-        args[#args + 1] = v[i]     -- x
-        args[#args + 1] = v[i + 1] -- y
-        args[#args + 1] = v[i + 2] -- style
+        if count < #v then args[#args + 1] = {names = v[#v]} end
+      elseif v[1] == 'graph' then -- graph objects: {'graph', x, y, style}
+        for i = 2, #v, 3 do
+          if type(v[i]) == 'table' and _hasanyindex(v[i], {'layout', 'names'}) then  -- last item as seen in hist1(...)!
+            args[#args + 1] = v[i]
+            break
+          end
+          local xmin, xmax = min(v[i]), max(v[i])
+          if x_start == nil then
+            x_start, x_stop = xmin, xmax
+          else
+            x_start, x_stop = math.min(xmin, x_start), math.max(xmax, x_stop)
+          end
+          args[#args + 1] = v[i]     -- x
+          args[#args + 1] = v[i + 1] -- y
+          args[#args + 1] = v[i + 2] -- style
+        end
+      else
+        args[#args + 1] = v
       end
     else
       args[#args + 1] = v
@@ -1642,16 +1675,18 @@ function plot(...)
     end
   end
 
-  if x_start == nil then
-    x_start, x_stop = -5, 5
-  end
-  x_start = x_start - 0.1
-  x_stop = x_stop + 0.1
-  for i = 1, #traces do
-    if #traces[i][1] >=2 and type(traces[i][1][2]) == 'function' then
-      local func = traces[i][1][2]
-      traces[i][1] = linspace(x_start, x_stop, math.ceil(math.abs(x_stop - x_start)) * 10)
-      traces[i][2] = map(func, traces[i][1])
+  if adjustxrangeq then
+    if x_start == nil then
+      x_start, x_stop = -5, 5
+    end
+    x_start = x_start - 0.1
+    x_stop = x_stop + 0.1
+    for i = 1, #traces do
+      if #traces[i][1] >=2 and type(traces[i][1][2]) == 'function' then
+        local func = traces[i][1][2]
+        traces[i][1] = linspace(x_start, x_stop, math.ceil(math.abs(x_stop - x_start)) * 10)
+        traces[i][2] = map(func, traces[i][1])
+      end
     end
   end
 
@@ -1686,27 +1721,30 @@ local function _freq_distro(x, nbins, xmin, xmax, width)
 end -- _freq_distro
 
 --// hist(x, nbins, style)
--- if x is mxn matrix, each column is a data set; otherwise, x is a table and a single data set.
+-- if x is a table of tables/rows, each row is a data set; otherwise, x is a table and a single data set.
 function hist(x, nbins, style, xrange)
+  if _isnamedargs(x) then
+    x, nbins, style, xrange = x[1] or x.x, x[2] or x.nbins, x[3] or x.style, x[4] or x.xrange
+  end
+
+  if type(x) == 'table' then
+    if type(x[1]) ~= 'table' then x = { x } end
+  else
+    error('hist(x, ...): x must be a table.')
+  end
+
   local xmin, xmax, width
   local gdata = {'graph-hist'} -- special graph object, https://plotly.com/javascript/bar-charts/
   local freqs = {}
-  local allintq
+  local allintq = all(x, isinteger, false) == 1
   nbins = nbins or 10
-  if type(x) == 'table' and type(x[1]) == 'table' then -- mathly matrix
-    if getmetatable(x) ~= mathly_meta then  x = mathly(x) end
-    x = x^T
-    allintq = sum(all(x, isinteger)) == #x[1]
-  else
-    x = rr(flatten(x))
-    allintq = all(x, isinteger) == 1
-  end
 
   if xrange ~= nil then
     xmin, xmax = xrange[1], xrange[2]
     if xmin > xmax then xmin, xmax = xmax, xmin end
   else
-    xmin, xmax = min(min(x)), max(max(x))
+    local tmp = flatten(x)
+    xmin, xmax = min(tmp), max(tmp)
   end
   if allintq then
     width = math.ceil((xmax - xmin + 1) / nbins)
@@ -1751,12 +1789,17 @@ local function _xmin_xmax_width(x, xrange, nbins, allintq)
     width = (xmax - xmin) / nbins
   end
   return xmin, xmax, width
-end
+end -- _xmin_xmax_width
 
 --// function hist1(x, nbins, style)
 -- another version of histogram, as see in most textbooks
 -- the output can be treated as an ordinary graph object such as a curve
-function hist1(x, nbins, style, xrange, paretoq, freqpolygonq, histq)
+function hist1(x, nbins, style, xrange, paretoq, freqpolygonq, style1, histq) -- style1: for pareto & freqpolygon
+  if _isnamedargs(x) then
+    x, nbins, style, xrange, paretoq, freqpolygonq, style1, histq =
+    x[1] or x.x, x[2] or x.nbins, x[3] or x.style, x[4] or x.xrange, x[5] or x.paretoq, x[6] or x.freqpolygonq, x[7] or x.style1, x[8] or x.histq
+  end
+
   if histq == nil then histq = true end
   nbins = nbins or 10
   x = sort(flatten(x))
@@ -1790,60 +1833,117 @@ function hist1(x, nbins, style, xrange, paretoq, freqpolygonq, histq)
   end
 
   if paretoq then
+    style1 = style1 or '-ro'
     gdata[#gdata + 1] = pareto_xy[1]
     gdata[#gdata + 1] = pareto_xy[2]
-    gdata[#gdata + 1] = '-r'
+    gdata[#gdata + 1] = style1
     for i = 1, nbins + 1 do -- points
       gdata[#gdata + 1] = {pareto_xy[1][i]}
       gdata[#gdata + 1] = {pareto_xy[2][i]}
-      gdata[#gdata + 1] = {symbol='circle', size=8, color='red'}
+      gdata[#gdata + 1] = style1 -- {symbol='circle', size=8, color='red'}
     end
   end
   if freqpolygonq then
+    style1 = style1 or '-ro'
     gdata[#gdata + 1] = freqp_xy[1]
     gdata[#gdata + 1] = freqp_xy[2]
-    gdata[#gdata + 1] = '-b'
+    gdata[#gdata + 1] = style1
     for i = 1, nbins + 2 do -- points
       gdata[#gdata + 1] = {freqp_xy[1][i]}
       gdata[#gdata + 1] = {freqp_xy[2][i]}
-      gdata[#gdata + 1] = {symbol='circle', size=8, color='blue'}
+      gdata[#gdata + 1] = style1
     end
   end
 
   return gdata
-end -- hist1
+end -- hist1(x, nbins, style, xrange, paretoq, freqpolygonq, style1, histq)
 
 function pareto(x, nbins, style, xrange)
-  return hist1(x, nbins, style, xrange, true, nil, false)
+  if _isnamedargs(x) then
+    x, nbins, style, xrange = x[1] or x.x, x[2] or x.nbins, x[3] or x.style, x[4] or x.xrange
+  end
+  return hist1(x, nbins, nil, xrange, true, nil, style, false)
 end
 
-function histpareto(x, nbins, style, xrange)
-  return hist1(x, nbins, style, xrange, true)
+function histpareto(x, nbins, style, xrange, style1) -- style1: for paretor
+  if _isnamedargs(x) then
+    x, nbins, style, xrange, style1 = x[1] or x.x, x[2] or x.nbins, x[3] or x.style, x[4] or x.xrange, x[5] or x.style1
+  end
+  return hist1(x, nbins, style, xrange, true, nil, style1, true)
 end
 
 function freqpolygon(x, nbins, style, xrange)
-  return hist1(x, nbins, style, xrange, nil, true, false)
+  if _isnamedargs(x) then
+    x, nbins, style, xrange = x[1] or x.x, x[2] or x.nbins, x[3] or x.style, x[4] or x.xrange
+  end
+  return hist1(x, nbins, nil, xrange, nil, true, style, false)
 end
 
-function histfreqpolygon(x, nbins, style, xrange)
-  return hist1(x, nbins, style, xrange, nil, true)
+function histfreqpolygon(x, nbins, style, xrange, style1)
+  if _isnamedargs(x) then
+    x, nbins, style, xrange, style1 = x[1] or x.x, x[2] or x.nbins, x[3] or x.style, x[4] or x.xrange, x[5] or x.style1
+  end
+  return hist1(x, nbins, style, xrange, nil, true, style1, true)
 end
+
+--// boxplot(x, nbins, style)
+-- if x is a table of tables/rows, each row is a data set; otherwise, x is a table and a single data set.
+function boxplot(x, names)
+  if type(x) == 'table' then
+    if type(x[1]) ~= 'table' then x = { x } end
+  else
+    error('boxplot(x, ...): x must be a table.')
+  end
+
+  local gdata = {'graph-box'} -- special graph object, https://plotly.com/javascript/bar-charts/
+  gdata[2] = 'x' -- horizontal -- gobj: {'graph-box', 'x', data...}, 'x' or 'y'
+  if #x > 3 then gdata[2] = 'y' end -- vertical
+  for j = 1, #x do
+    gdata[j + 2] = x[j]
+  end
+  if names ~= nil then gdata[#gdata + 1] = names end
+  return gdata
+end -- boxplot
+
+function _isnamedargs(x)
+  if x.bins ~= nil then return false end
+  for k, v in pairs(x) do
+    if type(k) == 'string' then return true end
+  end
+  if x[1] ~= nil and type(x[1]) == 'table' and x[1].bins ~= nil then
+    return true
+  end
+  local typ = 0
+  for k, v in pairs(x) do
+    if typ == 0 then
+      typ = type(v)
+    elseif typ ~= type(v) then
+      return true
+    end
+  end
+  return false
+end -- _isnamedargs
 
 -- offcenter:
 --  1. 0.1, all bins are away from the center by 0.1
 --  2. {{2, 0.1}, {5, 0.3}, ...}, the 2nd, 5th ... bins are away from the center by ...
-function pie(x, nbins, radius, style, offcenter)
-  local freqs
-  if x['bins'] ~= nil then
+function pie(x, nbins, radius, style, offcenter, names) -- nbins, ..., names: space hodlers, also saving the step: local nbins, ..., names
+  if _isnamedargs(x) then
+    x, nbins, radius, style, offcenter, names = x[1] or x.x, x[2] or x.nbins, x[3] or x.radius, x[4] or x.style, x[5] or x.offcenter, x[6] or x.names
+  end
+  local freqs, xmin, xmax, width
+  local binsq = x['bins'] ~= nil
+  if binsq then
     freqs = x['bins']
     freqs = tt(rr(freqs) / sum(freqs))
     nbins = #freqs
   else
     nbins = nbins or 10
     x = sort(flatten(x))
-    local xmin, xmax, width = _xmin_xmax_width(x, nil, nbins, all(x, isinteger) == 1)
+    xmin, xmax, width = _xmin_xmax_width(x, nil, nbins, all(x, isinteger) == 1)
     freqs = _freq_distro(x, nbins, xmin, xmax, width)
   end
+
   radius = radius or 1
   local data = {'graph'}
   local angle1 = 0
@@ -1877,6 +1977,36 @@ function pie(x, nbins, radius, style, offcenter)
     data[#data + 1] = v[4]
     angle1 = angle2
   end
+
+  local labels = {}
+  local allintq = all(x, isinteger, false)
+  if binsq then
+    for i = 1, nbins do labels[i] = '' end
+  else
+    local x1 = xmin
+    local allintq = all(x, isinteger, false) == 1
+    for i = 1, nbins do
+      local x2 = x1 + width
+      if allintq then
+        labels[i] = sprintf("[%d, %d]", x1, x2 - 1)
+      else
+        labels[#labels + 1] = sprintf("[%.2f, %.2f)", x1, x2)
+      end
+      x1 = x2
+    end
+  end
+  for i = 1, nbins do
+    if binsq then
+      if type(names) == 'table' and i <= #names then
+        labels[i] = names[i] .. sprintf(" (%.2f%%)", freqs[i] * 100)
+      else
+        labels[i] = sprintf("%.2f%%", freqs[i] * 100)
+      end
+    else
+      labels[i] = labels[i] .. sprintf(" (%.2f%%)", freqs[i] * 100)
+    end
+  end
+  data[#data + 1] = {names=labels}
   return data
 end -- pie
 
