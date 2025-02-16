@@ -83,6 +83,35 @@ function mod(a, d) return a % d  end
 function  printf(...) io.write(string.format(table.unpack{...})) end
 function sprintf(...) return string.format(table.unpack{...}) end
 
+-- 'global' variable tmp_eval_file, defined in browser-setting.lua
+function eval(str)
+  local file = io.open(tmp_eval_file, "w")
+  if file ~= nil then
+    str = string.match(str, "^%s*(.*)%s*$") -- trim off spaces nat two ends of str
+    str = 'return ' .. str
+    file:write(str)
+    file:close()
+    v = dofile(tmp_eval_file)
+    os.remove(tmp_eval_file)
+    return v
+  else
+    error(string.format("Failed to create %s. The device might not be writable.", tmp_eval_file))
+  end
+end
+
+--// input(prompt, s)
+-- s = 's' --> return input as a string; otherwise, evaluate the input expression and return the result
+function input(prompt, s)
+  local ans
+  io.write(prompt)
+  ans = io.read()
+  if s == 's' then -- no evaluation
+    return ans
+  else
+    return eval(ans)
+  end
+end
+
 --// _adjust_index(siz, start, stop, normalq)
 -- adjust values of indices, start and stop. they must be in the range from 1 to siz. the can be -1, -2, ...
 -- if normalq is missing, start <= stop is required
@@ -624,7 +653,7 @@ function who(usercalledq) -- ~R
       if not ismember(k, {'e', 'eps', 'pi', 'phi', 'T', 'mathly', 'm', '_G', 'coroutine',
                           'utf8', '_VERSION', 'io', 'package', 'os', 'arg', 'debug',
                           'string', 'table', 'math', 'linux_browser', 'mac_browser',
-                          'win_browser', 'plotly_engine', 'tmp_plot_html_file'}) then
+                          'win_browser', 'plotly_engine', 'tmp_eval_file', 'tmp_plot_html_file'}) then
         list[#list + 1] = k
       end
     end
@@ -764,7 +793,7 @@ function save(fname, ...)
     end
     file:close()
   else
-    print(string.format("Failed to create %s. The device might not be writable.", fname))
+    error(string.format("Failed to create %s. The device might not be writable.", fname))
   end
 end -- save
 

@@ -257,6 +257,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#disp><code>disp(x)</code></a></td><td> </td><td>Print a mathly matrix.</td></tr>
 <tr><td><a href=#display><code>display(x)</code></a></td><td> </td><td>Print a table with structure.</td></tr>
 <tr><td><a href=#dot><code>dot(a, b)</code></a></td><td> </td><td>Calculate the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ..., a<sub>n</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ..., b<sub>n</sub>}</code>.</td></tr>
+<tr><td><a href=#eval><code>eval(str)</code></a></td><td> </td><td>Evaluate the expression in <code>str</code> and return the resulted value.</td></tr>
 <tr><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrunk <code>mxn</code> mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
 <tr><td><code>eye(n)</code></td><td> </td><td>Return a <code>nxn</code> identity mathly matrix.</td></tr>
 <tr><td><a href=#flatten><code>flatten(x)</code></a></td><td> </td><td>Remove the structure of <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</td></tr>
@@ -270,6 +271,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#histpareto><code>histpareto(x, nbins, style, xrange, style1)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a histogram plus a pareto chart, where <code>x</code> is a table of numbers.</td></tr>
 <tr><td><a href=#histfreqpolygon><code>histfreqpolygon(x, nbins, style, xrange, style1)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a histogram plus a frequency polygon, where <code>x</code> is a table of numbers.</td></tr>
 <tr><td><a href=#horzcat><code>horzcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
+<tr><td><a href=#input><code>input(prompt, s)</code></a></td><td> </td><td>Input from keyboard, return a string (if <code>s = 's'</code>); otherwise, evaluate the input expression, and return the result.</td></tr>
 <tr><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of a square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
 <tr><td><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
 <tr><td><a href=#ismember><code>ismember(x, table)</code></a></td><td> </td><td>Check if <code>x</code> is a member of <code>table</code>.</td></tr>
@@ -690,6 +692,28 @@ display(dot({1, 2}, {3, 4}))
 -- 11
 </code></pre>
 
+<h4>&bull; &nbsp; <a name=eval href=#mathly><code>eval(str)</code></a></h4>
+<p>Evaluate the expression in <code>str</code> and return the resulted value.</p>
+<p>It implements the functionality of <code>loadstring</code> of some earlier versions
+of Lua and <code>eval</code> of Python and some other programming languages.</p>
+<pre><code>require('mathly')
+x = eval('    2 * 3 - 5   ')
+print(x)
+-- 1
+
+x = eval('3.14   ')
+print(x * 2)
+-- 6.28
+
+x = eval('    2*pi   ')
+print(x)
+-- 6.2831853071796
+
+x = eval('cos{0, pi/6, pi/4, pi/3, pi/2, pi}')
+disp(x)
+-- {1.0000, 0.8660, 0.7071, 0.5000, 0.0000, -1.0000}
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=expand href=#mathly><code>expand(A, m, n, v)</code></a></h4>
 <p>Return an expanded/shrunk mathly matrix with value <code>v</code>'s added or entries dropped.</p>
 <p>The default value of <code>v</code> is 0, and the default value of <code>n</code> is <code>m</code>.</p>
@@ -801,6 +825,25 @@ b = {5, 6}
 disp(A .. cc(b)) -- augmented coefficient matrix for Ax = b
 -- 1  2  5
 -- 3  4  6
+</code></pre>
+
+<h4>&bull; &nbsp; <a href=#mathly name=input><code>input(prompt, s)</code></a></h4>
+<p>Take user's input from keyboard, and return a string if <code>s = 's'</code>; otherwise, evaluate the input expression and return the result.</p>
+<p><code>prompt</code> is the text displayed to user. <code>s</code> defaults to <code>nil</code>.</p>
+<pre><code>m = require('mathly')
+x = input('Please enter a number: ')
+print(x * 10)
+
+x = input('Do you want to continue (Y/N)? ', 's')
+s = string.match(x, "^%s*(%w+)")
+if s == nil then
+  print("No valid input was entered.")
+else
+  printf("You entered %s.", string.upper(s))
+end
+
+x = input('Expression to evaluate: ') -- you may enter sin(pi/2), {1, {2, {3}}}, 1 + 2 * 3, etc.
+print(x)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=inv href=#mathly><code>inv(A)</code></a></h4>
