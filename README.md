@@ -73,7 +73,7 @@ package.path = "./?.luac;;"
 
 `..` (or `horzcat`), `all`, `any`, `apply`, `cc`, `clc`, `clear`, `copy`, `cross`, `det`, `diag`, `disp`, `display`, `div`, `dot`, `eval`, `expand`, `eye`,
 `flatten`,  `fliplr`, `flipud`, `format`, `hasindex`, `input`, `inv`, `isinteger`, `ismember`, `lagrangepoly`, `length`, `linsolve`, `linspace`, `lu`,
-`map`, `max`, `mean`, `min`, `mod`, `norm`, `ones`, `polynomial`, `polyval`, `printf`, `prod`, `qr`, `rand`, `randi`, `range`, `remake`, `repmat`,
+`map`, `max`, `mean`, `min`, `mod`, `norm`, `ones`, `polynomial`, `polyval`, `printf`, `prod`, `qr`, `rand`, `randi`, `randn`, `range`, `remake`, `repmat`,
 `reshape`, `reverse`, `rr`, `rref`, `save`, `select`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`, `tblcat`,
 `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`
 
@@ -87,7 +87,7 @@ See mathly.html.
 
 ### 1. A mathly matrix is a table (of tables), but a table may not be a mathly matrix.
 
-#### a. Mathly 'constructor', `diag`, `expand`, `flipfr`, `flipud`, `horzcat`, `lu`, `ones`, `zeros`, `rand`, `randi`, `remake`, `reshape`, `submatrix`, `vertcat`, `cc`, `rr`, and matrix operations can generate mathly matrices.
+#### a. Mathly 'constructor', `diag`, `expand`, `flipfr`, `flipud`, `horzcat`, `lu`, `ones`, `zeros`, `rand`, `randi`, `randn`, `remake`, `reshape`, `submatrix`, `vertcat`, `cc`, `rr`, and matrix operations can generate mathly matrices.
 ```Lua
 mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d, A, B, C, D, and E are all mathly matrices
@@ -120,7 +120,7 @@ disp(D)
 E = A .. cc{1, 2, 3}
 disp(E)
 ```
-#### b. `ones`, `zeros`, `rand` and `randi` generate each an ordinary table rather than a mathly matrix if used this way, say, `ones(1, 100)`.
+#### b. `ones`, `zeros`, `rand`, `randi`, and `randn` generate each an ordinary table rather than a mathly matrix if used this way, say, `ones(1, 100)`.
 This allows us to generate a table of specified length and address it conveniently like `x[i]` instead of `x[1][i]`.
 
 #### c. Mathly matrix operations can only be applied on mathly matrices; if a matrix operation involves two objects, one must be a mathly matrix.
