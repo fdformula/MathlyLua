@@ -1232,21 +1232,47 @@ function norm( v )
   return math.sqrt(dot(v, v))
 end
 
---// create_table( r, c, val )
+-- https://en.wikipedia.org/wiki/Box-Muller_transform
+_next_gaussian_rand = nil -- reset
+local function _gaussian_rand()
+  if _next_gaussian_rand ~= nil then
+    local tmp = _next_gaussian_rand
+    _next_gaussian_rand = nil
+    return tmp
+  end
+
+  local theta, rho, x, y
+  theta = 2 * pi * math.random()
+  rho = math.sqrt(-2 * math.log(1 - math.random()))
+  x = rho * math.cos(theta)
+  y = rho * math.sin(theta)
+  _next_gaussian_rand = y
+  return x
+end
+
+--// _create_table( r, c, val )
 -- generates a table of r subtables of which each has c elements, with each element equal to val
 -- if c == nil, c = r;
 -- if r == 1 or c == 1, return a simple table (so that it can be accessed like a[i] as in MATLAB)
 -- if val == nil, it is a random number.
-local function create_table( row, col, val, metaq )
+local function _create_table( row, col, val, metaq )
   if metaq == nil then metaq = false end
   local x = {}
   if col == nil then col = row end
-  if val == nil then
+  if val == 'random' then
     -- math.randomseed(os.time()) -- keep generating same seq? Lua 5.4.6
     for i = 1,row do
       x[i] = {}
       for j = 1,col do
         x[i][j] = math.random()
+      end
+    end
+  elseif val == 'gaussian' then
+    -- math.randomseed(os.time()) -- keep generating same seq? Lua 5.4.6
+    for i = 1,row do
+      x[i] = {}
+      for j = 1,col do
+        x[i][j] = _gaussian_rand()
       end
     end
   else
@@ -1262,7 +1288,7 @@ local function create_table( row, col, val, metaq )
   else
     return setmetatable(x, mathly_meta)
   end
-end -- create_table
+end -- _create_table
 
 --// mathly:new ( rows [, columns [, value]] )
 function mathly:new( rows, columns, value )
@@ -1296,7 +1322,7 @@ function mathly:new( rows, columns, value )
 	end
 
   assert(columns ~= nil, 'mathly(rows, columns): rows and columns must be both specified.')
-  return create_table(rows, columns, value, true)
+  return _create_table(rows, columns, value, true)
 end -- mathly:new
 
 --// eye( r )
@@ -1314,16 +1340,31 @@ end -- eye
 --// ones( r, c )
 -- generates a table of r subtables of which each has c elements, with each element equal to 1
 -- if c == nil, c = r.
-function ones( row, col ) return create_table(row, col, 1) end
+function ones( row, col ) return _create_table(row, col, 1) end
 
 -- generates a table of r subtables of which each has c elements, with each element equal to 0
 -- if c == nil, c = r.
-function zeros( row, col ) return create_table(row, col, 0) end
+function zeros( row, col ) return _create_table(row, col, 0) end
 
 --// rand( r, c )
 -- generates a table of r subtables of which each has c elements, with each element equal to a random number
 -- if c == nil, c = r.
-function rand( row, col ) return create_table(row, col) end
+function rand( row, col ) return _create_table(row, col, 'random') end
+
+--// function randn( row, col, mu, sigma )
+-- return a matrix with normally distributed random numbers
+-- mu and sigma default to 0 and 1, respectively
+function randn( row, col, mu, sigma )
+  mu = mu or 0
+  sigma = sigma or 1
+  _next_gaussian_rand = nil -- 'global', reset
+  local x = _create_table(row, col, 'gaussian')
+  if mu == 0 and sigma == 1 then
+    return x
+  else
+    return map(function(x) return mu + sigma * x end, x)
+  end
+end -- randn
 
 --// function randi( imax, m, n )
 -- generate a mxn matrix of which each entry is a random integer in [1, imax]

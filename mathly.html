@@ -257,7 +257,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#disp><code>disp(x)</code></a></td><td> </td><td>Print a mathly matrix.</td></tr>
 <tr><td><a href=#display><code>display(x)</code></a></td><td> </td><td>Print a table with structure.</td></tr>
 <tr><td><a href=#dot><code>dot(a, b)</code></a></td><td> </td><td>Calculate the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ..., a<sub>n</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ..., b<sub>n</sub>}</code>.</td></tr>
-<tr><td><a href=#eval><code>eval(str)</code></a></td><td> </td><td>Evaluate the expression in <code>str</code> and return the resulted value.</td></tr>
+<tr><td><a href=#eval><code>eval(str)</code></a></td><td> </td><td>Evaluate the expression in <code>str</code> and return the result.</td></tr>
 <tr><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrunk <code>mxn</code> mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
 <tr><td><code>eye(n)</code></td><td> </td><td>Return a <code>nxn</code> identity mathly matrix.</td></tr>
 <tr><td><a href=#flatten><code>flatten(x)</code></a></td><td> </td><td>Remove the structure of <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</td></tr>
@@ -299,8 +299,9 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#printf><code>printf(...)</code></a></td><td> </td><td>Print formatted text like <code>printf</code> in C/C++.</td></tr>
 <tr><td><a href=#prod><code>prod(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the product of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
 <tr><td><a href=#qr><code>qr(A)</code></a></td><td> </td><td>Return <code>Q</code> and <code>R</code> of QR factorization <code>A = QR</code>.</td></tr>
-<tr><td><a href=#rand><code>rand(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is a random number in [0, 1]. If <code>m = 1</code>, return a table.</td></tr>
-<tr><td><a href=#randi><code>randi(...)</code></a></td><td> </td><td>Return a mathly matrix of which each element is a random integer in a specified range.</td></tr>
+<tr><td><a href=#rand><code>rand(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> matrix of which each element is a random number in [0, 1]. If <code>m = 1</code>, return a table.</td></tr>
+<tr><td><a href=#randi><code>randi(...)</code></a></td><td> </td><td>Return a matrix of which each element is a random integer in a specified range.</td></tr>
+<tr><td><a href=#randn><code>randn(...)</code></a></td><td> </td><td>Return a matrix of normally distributed numbers.</td></tr>
 <tr><td><a href=#range><code>range(x, y, s)</code></a></td><td> </td><td>Return a table of numbers starting at <code>x</code>, in between <code>x</code> and <code>y</code>, and incrementing by <code>s</code>.</td></tr>
 <tr><td><code><a href=#remake>remake(A, opt)</a></code></td><td> </td><td>Generate a lower, upper, diagonal, symmetrical, or ...  matrix from matrix <code>A</code>.</td></tr>
 <tr><td><a href=#repmat><code>repmat(A, m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> block matrix with each entry a copy of matrix <code>A</code>.</td></tr>
@@ -693,7 +694,7 @@ display(dot({1, 2}, {3, 4}))
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=eval href=#mathly><code>eval(str)</code></a></h4>
-<p>Evaluate the expression in <code>str</code> and return the resulted value.</p>
+<p>Evaluate the expression in <code>str</code> and return the result.</p>
 <p>It implements the functionality of <code>loadstring</code> of some earlier versions
 of Lua and <code>eval</code> of Python and some other programming languages.</p>
 <pre><code>require('mathly')
@@ -1029,17 +1030,19 @@ print(mean({'abc', 'de'})) --> strcat first: 'abcde' --> mean('abcde')
 -- 99.0
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=zeros></a><a name=rand></a><a name=randi></a><a name=ones href=#mathly><code>ones</code>, <code>zeros</code>, <code>rand</code>, <code>randi</code></a></h4>
+<h4>&bull; &nbsp; <a name=zeros></a><a name=rand></a><a name=randi></a><a name=randn></a><a name=ones href=#mathly><code>ones</code>, <code>zeros</code>, <code>rand</code>, <code>randi</code></a></h4>
 <p>The usage of these functions is the same except randi that can take more arguments.</p>
 <table><tbody>
 <tr><td width=20></td><td><code>ones(m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 1.</td></tr>
 <tr><td width=20></td><td><code>randi(x, m, n)</code></a></td><td> </td><td width=10> </td><td>Return a mathly matrix of which each element is a random integer in a specified range.</td></tr>
 <tr><td width=20></td><td><code>zeros(m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 0.</td></tr>
 <tr><td width=20></td><td><code>rand(m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is a random number in [0, 1].</td></tr>
+<tr><td width=20></td><td><code>randn(m, n, &mu;, &sigma;)</code></a></td><td> </td><td width=10> </td><td>Return a mathly matrix of normally distributed numbers (&mu; and &sigma; default to 0 and 1, respectively).</td></tr>
 <tr><td width=20></td><td> </td><td> </td><td width=10> </td><td> </td></tr>
 <tr><td width=20></td><td> </td><td> </td><td width=10> </td><td><u>Note</u>: Each function returns a table rather than a mathly column vector if <code>m = 1</code>.</td></tr>
 </tbody></table>
-<pre><code>require 'mathly'
+<pre><code>
+require 'mathly'
 A = ones(2) -- or ones(2, 2)
 disp(A)
 -- 1 1
@@ -1075,6 +1078,9 @@ A = randi({50, 90}, 3, 1) -- each element is a random integer in [50, 90]
 display(A)
 A = randi({50, 90}, 1, 5) -- return a table rather than a mathly matrix
 display(A)
+
+disp(randn(3, 5))
+disp(randn(3, 5, 70, 12.55))
 </code></pre>
 <table><tbody>
 <p>&#x2713; &nbsp; The usage of <code>randi(...)</code> is different.</p>
@@ -1085,8 +1091,8 @@ display(A)
 </tbody></table>
 
 <h4>&bull; &nbsp; <a name=polynomial href=#mathly><code>polynomial({x1, x2, ...}, {y1, y2, ...}, xx), polynomial({{x1, y1}, {x2, y2}, ...}, xx)</code></a></h4>
-<p>Return the polynomial, defined by data <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>, or the value(s) of the polynomial at <code>xx</code>.</p>
-<p>If <code>xx</code> is provided, return the value(s) of the polynomial at <code>xx</code>;
+<p>Construct a polynomial, defined by data <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>.</p>
+<p>If <code>xx</code> is provided, return the value(s) of the polynomial at (each of) <code>xx</code>;
 otherwise, return the string and the coefficients of the polynomial.</p>
 <p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
 <pre><code>require 'mathly'
@@ -1752,21 +1758,19 @@ plot(boxplot(data1))
 plot(boxplot({data1, data2}, {"name 1", "name 2"}))
 plot(boxplot({data1, data2, data3, {2, 3, 5, 7, 11, 20, 1, 2, 3}}))
 
-x = flatten((0.5 - rand(2,100)) * 100)
+mu, sigma = 72.11, 13.36
+x = flatten(randn(1, 5000, mu, sigma))
 
 function n(x, mu, sigma)
-  local tmp = (x - mu) / sigma
-  return math.exp(-1/2 * tmp^2) / (math.sqrt(2 * pi) * sigma)
+  local z = (x - mu) / sigma
+  return math.exp(-0.5 * z^2) / (math.sqrt(2 * pi) * sigma)
 end
 
-xmax = max(abs(min(x)), abs(max(x)))
-xmin = -xmax
-X = linspace(xmin, xmax, 200)
-mu, sigma = mean(x), std(x)
-Y = map(function(x) return n(x, mu, sigma) * 7 end, X)
+X = linspace(mu - 4 * sigma, mu + 4 * sigma, 5000)
+Y = map(function(x) return n(x, mu, sigma) * 7.8 end, X)
 
 gobj = hist1(x, 12)
-axisnotsquare()
+axisnotsquare(); shownotlegend()
 plot(gobj, X, Y, '--r')
 plot(freqpolygon(x))
 plot(freqpolygon{x, style='--r*'})
@@ -1778,7 +1782,7 @@ plot(pareto(x))
 plot(pareto{x, style='--r*'}) -- {symbol='circle', size=8, color='red'}
 
 showaxes()
-plot(hist(rand(1, 100)))
+plot(hist(randn(1, 100)))
 
 A = randi({0, 99}, 3, 50)
 plot(hist(A)) -- nil? the default value will be used
