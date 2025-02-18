@@ -27,8 +27,11 @@ API and Usage
     size, sort, sprintf, std, strcat, submatrix, subtable, sum, tblcat, tic,
     toc, transpose, tt, unique, var, vertcat, who, zeros
 
-    arc, circle, hist, line, parametriccurve2d, parametriccurve3d, pie, plot, point, polarcurve,
-    polygon, scatter, wedge
+    arc, circle, line, parametriccurve2d, parametriccurve3d,
+    parametricsurface3d, parametriccurve3d, plot, plot3d, point,
+    polarcurve2d, polygon, scatter, sphericalplot3d, wedge
+
+    freqpolygon, hist, hist1, histfreqpolygon, histpareto, pareto, pie
 
     axissquare, axisnotsquare; showaxes, shownotaxes; showxaxis, shownotxaxis;
     showyaxis, shownotyaxis; showgridlines, shownotgridlines;
@@ -1785,7 +1788,6 @@ local _3d_plotq = false
 
 -- if f is a function, xrange = {xstart, xstop}, y = {ystart, ystop}
 -- otherwise, X = f, Y = xrange, Z = yrange, which allows users to set up data and use it to display a graph
--- e,g, plot3d(function(x, y) return x^2 + y^2 end, {-3, 3}, {-3, 3}, 'Demo')
 function plot3d(f, xrange, yrange, title)
   local X, Y, Z = {}, {}, {}
   if type(f) == 'function' then
@@ -1820,13 +1822,14 @@ function plot3d(f, xrange, yrange, title)
   _3d_plotq = false
 end -- plot3d
 
---// function sphericalplot(rho, thetarange, phirange, title)
--- rho is a spherical function of theta and phi, where theta is in the range thetarange = {θ1, θ2}
+--// function sphericalplot3d(rho, thetarange, phirange, title)
+-- plot rho, a spherical function of theta and phi, where theta is in the range thetarange = {θ1, θ2}
 -- and phi is in the range phirange = {φ1, φ2}
---
--- sphericalplot(function(theta, phi) return 1 end, {0, 2*pi}, {0, pi})
--- sphericalplot(function(theta, phi) return theta + 2 * phi end, {0, 4*pi}, {0, pi})
-function sphericalplot(rho, thetarange, phirange, title)
+function sphericalplot3d(rho, thetarange, phirange, title)
+  if type(rho) == 'number' then
+    local tmp = rho
+    rho = function(t, p) return tmp end
+  end
   thetarange[1], thetarange[2] = _correct_range(thetarange[1], thetarange[2])
   phirange[1], phirange[2] = _correct_range(phirange[1], phirange[2])
 
@@ -1848,16 +1851,11 @@ function sphericalplot(rho, thetarange, phirange, title)
     Z[i] = z
   end
   plot3d(X, Y, Z, title)
-end -- sphericalplot
+end -- sphericalplot3d
 
---// function parametricsurface(x, y, z, urange, vrange, title)
--- Surface is defined by xyz = {x(u, v), y(u, v), z(u,v)}.
---
--- parametricsurface({function(u,v) return u end, function(u,v) return math.sin(u) + v end, function(u,v) return v^2 end}, {-3,3}, {-3,3})
--- parametricsurface({function(u,v) return u end, function(u,v) return v end, function(u,v) return math.sqrt(u^2 + v^2) end}, {-3,3}, {-3,3}, 'Demo')
--- parametricsurface({function(u,v) return 2*math.sin(u)*math.cos(v) end, function(u,v) return 2*math.sin(u)*math.sin(v) end, function(u,v) return 2*math.cos(v) end}, {0, pi}, {0, 2*pi})
--- parametricsurface({function(u,v) return 2*math.sin(u)*math.cos(v) end, function(u,v) return 2*math.sin(u)*math.sin(v) end, function(u,v) return 2*math.cos(u) end}, {0, pi}, {0, 2*pi})
-function parametricsurface(xyz, urange, vrange, title)
+--// function parametricsurface3d(x, y, z, urange, vrange, title)
+-- Plot a surface defined by xyz = {x(u, v), y(u, v), z(u,v)}.
+function parametricsurface3d(xyz, urange, vrange, title)
   urange[1], urange[2] = _correct_range(urange[1], urange[2])
   vrange[1], vrange[2] = _correct_range(vrange[1], vrange[2])
 
@@ -1878,14 +1876,11 @@ function parametricsurface(xyz, urange, vrange, title)
     z[i] = ztmp
   end
   plot3d(x, y, z, title)
-end -- parametricsurface
+end -- parametricsurface3d
 
 --// function parametriccurve3d(xyz, trange, title)
 -- xyz = { ... }, the parametric equations, x(t), y(t), z(t), in order, of a space curve,
 -- trange is the range of t
---
--- parametriccurve3d({function(t) return t end, function(t) return t^2 end, function(t) return t^3 end}, {-5,5}, "Twisted Curve")
--- parametriccurve3d({function(t) return math.cos(t) end, function(t) return math.sin(t) end, function(t) return t end}, {0,6*pi}, "Helix")
 function parametriccurve3d(xyz, trange, title)
   trange[1], trange[2] = _correct_range(trange[1], trange[2])
 
@@ -2337,9 +2332,11 @@ function parametriccurve2d(xy, x, style)
   return data
 end -- parametriccurve2d
 
-function polarcurve(r, trange, style)
-  local f = r
-  if type(r) ~= 'function' then function r(t) return f end end
+function polarcurve2d(r, trange, style)
+  if type(r) == 'number' then
+    local f = r
+    r = function(t) return f end
+  end
   trange = trange or {0, 2*pi}
   trange[1], trange[2] = _correct_range(trange[1], trange[2])
   trange = linspace(trange[1], trange[2], math.max(200, math.ceil((trange[2] - trange[1])*100)))
@@ -2352,7 +2349,7 @@ function polarcurve(r, trange, style)
     data[4] = style
   end
   return data
-end -- polarcurve
+end -- polarcurve2d
 
 function scatter(x, y, style)
   x = flatten(x)
