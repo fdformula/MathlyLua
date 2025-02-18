@@ -287,7 +287,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
 <tr><td><code>norm(x)</code></td><td> </td><td>Return the Euclidean norm of a row/column vector <code>x</code>.</td></tr>
 <tr><td><a href=#ones><code>ones(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 1. If <code>m = 1</code>, return a table.</td></tr>
-<tr><td><a href=#parametriccurve><code>parametriccurve({x(t), y(t)}, range, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a parametric curve.</td></tr>
+<tr><td><a href=#parametriccurve2d><code>parametriccurve2d({x(t), y(t)}, range, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a parametric curve.</td></tr>
 <tr><td><a href=#pareto><code>pareto(x, nbins, style, xrange)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a pareto chart, where <code>x</code> is a table of numbers.</td></tr>
 <tr><td><a href=#pie><code>pie(x, radius, nbins, style, offcenter, names)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a pie chart.</td></tr>
 <tr><td><a href=#plot><code>plot(x, y, ...)</code></a></td><td> </td><td>Plot the graph(s) of functions defined by data points <code>x</code> and <code>y</code> and ...</td></tr>
@@ -1606,7 +1606,7 @@ Some possible symbols are <code>circle</code>, <code>circle-open</code>, <code>c
 <tr><td><code>w</code></td><td> &nbsp; <td>white</td></tr>
 </tbody></table>
 <p></p>
-<p>As per filling regions, see <a href=#gobjspecs><code>arc, circle, line, parametriccurve, point, polygon, wedge</code></a>.</p>
+<p>As per filling regions, see <a href=#gobjspecs><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a>.</p>
 <p></p>
 <p><b>Some examples</b></p>
 <pre><code>require 'mathly'
@@ -1634,13 +1634,13 @@ plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, tit
 plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
 plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
 </code></pre>
-<h4>&bull; &nbsp; <a name=circle></a><a name=line></a><a name=parametriccurve></a><a name=point></a><a name=polarcurve></a><a name=polygon></a><a name=scatter></a><a name=wedge></a>
-<a name=arc href=#mathly><code>arc, circle, line, parametriccurve, point, polygon, wedge</code></a></h4>
+<h4>&bull; &nbsp; <a name=circle></a><a name=line></a><a name=parametriccurve2d></a><a name=point></a><a name=polarcurve></a><a name=polygon></a><a name=scatter></a><a name=wedge></a>
+<a name=arc href=#mathly><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a></h4>
 <table><tbody>
 <tr><td><code>arc(radius, center, angles, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot an arc of a circle, where <code>angles: {angle1, angle2}</code> (default: <code>{0, 2&pi;}</code>).</td></tr>
 <tr><td><code>circle(radius, center, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a circle, where <code>center: {x, y} (default: {0, 0})</code>.</td></tr>
 <tr><td><code>line(point1, point2, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a straight line, where <code>point1 = {x1, y1}</code> and <code>point2 = {x2, y2}</code>.</td></tr>
-<tr><td><code>parametriccurve({x(t), y(t)}, range, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a parametric curve, where <code>x(t)</code> and <code>y(t)</code> are parametric functions, and <code>range = {t1, t2}</code> indicating <code>t</code> changes from <code>t1</code> to <code>t2</code>.</td></tr>
+<tr><td><code>parametriccurve2d({x(t), y(t)}, range, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a parametric curve, where <code>x(t)</code> and <code>y(t)</code> are parametric functions, and <code>range = {t1, t2}</code> indicating <code>t</code> changes from <code>t1</code> to <code>t2</code>.</td></tr>
 <tr><td><code>point(x, y, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a point, where <code>(x, y)</code> are the coordinates of the point. Note: <code>point({{x1, y1}, {x2, y2}}, style)</code> is for plotting multiple points.</td></tr>
 <tr><td><code>polarcurve(r(&theta;), range, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polar curve, where <code>r(&theta;)</code> is a polar function, and <code>range = {&theta;1, &theta;2}</code> indicating <code>&theta;</code> changes from &theta;1 to &theta;2.</td></tr>
 <tr><td><code>polygon(vertices, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polygon, where <code>vertices = {{x1, y1}, {x2, y2}, ..., {xn, yn}}</code> specifies the coordinates of each vertex in order so that there is an edge connecting any two consecutive vertices. There is an edge connecting <code>{x1, y1}</code> and <code>{xn, yn}</code>.</td></tr>
@@ -1663,6 +1663,7 @@ plot(math.sin, point({{-3, 2}, {2, -1}, {3.2, 2}}), point(-1, 1, {symbol='circle
 
 x = (0.5 - rr(rand(1, 100))) * 10
 plot(scatter(x, cos(x)))
+plot(scatter(randi(99,1,200), randi(1000,1,200)))
 
 plot(polygon({{1, 2}, {2, 3}, {5, -1}}),
      polygon({{-1, 2}, {1, 1}, {3, 1}, {0, -1}}, '-rfn'),
@@ -1681,10 +1682,10 @@ axissquare()
 function f(x) return math.sin(x) end
 plot(
   polarcurve(1),
-  parametriccurve({function(t) return math.cos(t) end, f}, {0, 2*pi}, '-k'),
+  parametriccurve2d({function(t) return math.cos(t) end, f}, {0, 2*pi}, '-k'),
   polarcurve(function(t) return t * math.sin(t) end, {0, 3*pi}, '-r'),
   polarcurve(function(x) return math.cos(4*x) end, {0, 2*pi}, '-gfs'),
-  parametriccurve({math.cos, math.sin}, {0, pi/2}, '-fs')
+  parametriccurve2d({math.cos, math.sin}, {0, pi/2}, '-fs')
 )
 
 gobjs = {}
@@ -1724,7 +1725,7 @@ plot({layout={width=1900, height=1300, grid={rows=2, columns=3}, title='Example'
 <tr><td><code>style</code></td><td> &nbsp; </td><td>E.g., <code>'-r', '-rfs'. </code>See also: <a href=#gobjspecs><code>'fa', 'ff', 'fn', 'fs'</code></a></td></tr>
 <tr><td><code>xrange</code></td><td> &nbsp; </td><td>In the format <code>{xmin, xmax}</code>, specifying the range of data values in <code>x</code>. If not provided, it is determined by the lowest and largest values in <code>x</code>.</td></tr>
 </tbody></table>
-<p>See also: <a href=#arc><code>arc, circle, line, parametriccurve, point, polygon, wedge</code></a></p>
+<p>See also: <a href=#arc><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a></p>
 <p><a name=namedargs><b>Named arguments for this group of functions:</b></p>
 <p>To make it easier to use this group of functions, if necessary or if convenient, each function may be called in two more ways, <code>pie({...})</code> or <code>pie{...}</code>. There are rules to follow: 1) We may not use names at all; 2) We use names for all arguments; 3) Arugments without names must be the first ones and in defined order. Take <code>pie</code> as an example,</p>
 <pre><code>require 'mathly'
