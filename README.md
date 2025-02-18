@@ -77,7 +77,8 @@ package.path = "./?.luac;;"
 `reshape`, `reverse`, `rr`, `rref`, `save`, `select`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`, `tblcat`,
 `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`
 
-`arc`, `circle`, `line`, `parametriccurve`, `plot`, `point`, `polarcurve`, `polygon`, `scatter`, `wedge`
+`arc`, `circle`, `line`, `parametriccurve2d`, `parametriccurve3d`, `parametricsurface3d`, `parametriccurve3d`, `plot`, `plot3d`, `point`, `polarcurve2d`,
+`polygon`, `scatter`, `sphericalplot3d`, `wedge`
 
 `freqpolygon`, `hist`, `hist1`, `histfreqpolygon`, `histpareto`, `pareto`, `pie`
 
