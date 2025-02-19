@@ -338,10 +338,11 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td> </td><td><p><hr></p> </td></tr>
 <tr><td><a href=#axissquare><code>axissquare(), axisnotsquare()</code></a></td><td> </td><td>Force/stop a square axis aspect ratio</td></tr>
 <tr><td><a href=#showaxes><code>showaxes(), shownotaxes()</code></a></td><td> </td><td>Show/hide axes</td></tr>
-<tr><td><a href=#showxaxis><code>showxaxis(), shownotxaxis()</code></a></td><td> </td><td>Show/hide the x-axes</td></tr>
-<tr><td><a href=#showyaxis><code>showyaxis(), shownotyaxis</code></a></td><td> </td><td>Show/hide the y-axis</td></tr>
+<tr><td><a href=#showxaxis><code>showxaxis(), shownotxaxis()</code></a></td><td> </td><td>Show/hide the <code>x</code>-axis</td></tr>
+<tr><td><a href=#showyaxis><code>showyaxis(), shownotyaxis</code></a></td><td> </td><td>Show/hide the <code>y</code>-axis</td></tr>
 <tr><td><a href=#showlegend><code>showlegend(), shownotlegend()</code></a></td><td> </td><td>Show/hide the legend</td></tr>
 <tr><td><a href=#showgridlines><code>showgridlines(), shownotgridlines()</code></a></td><td> </td><td>Show/hide gridlines</td></tr>
+<tr><td> </td><td> </td><td><b>Note</b>: This group of functions are not valid for 3D graphs.</td></tr>
 </tbody>
 </table>
 
@@ -1648,12 +1649,32 @@ plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=plot3d href=#mathly><code>plot3d(f, xrange, yrange, title)</code></a></h4>
-<p>Plot a surface defined by <code>z = f(x, y)</code>. It is not designed as general as <code>plot(...)</code> for 2D graphs.
+<p>Plot a surface defined by <code>z = f(x, y)</code>. It is not designed as complicated as <code>plot(...)</code> for 2D graphs. It can only plot one surface at a time.</p>
 <p>If <code>f</code> is a function, <code>xrange = {xstart, xstop}</code> and <code>y = {ystart, ystop}</code> define the ranges
 for <code>x</code> and <code>y</code>; otherwise, the first 3 arguments are tables of <code>x, y</code>, and <code>z</code> values,
-which allows users to set up data and use this function to display a graph.</p>
+which allows users to set up data and use this function to display a graph. Given that <code>x = {x1, x2, ..., xn}</code> and
+<code>y = {y1, y2, ..., yn}</code>, the data passed to <code>plot3(X, Y, Z, title)</code> are as follows:</p>
+<code><pre>
+X = {{x1, x1, ..., x1}, {x2, x2, ..., x2}, ..., {xn, xn, ..., xn}}
+Y = {{y1, y2, ..., yn}, {y1, y2, ..., yn}, ..., {y1, y2, ..., yn}}
+Z = {{z11,  ...,  z1n}, {z21,  ...,  z2n}, ..., {zn1,  ...,  zn2}}
+</pre></code>
+<p>where <code>zij = f(xi, yj)</code>, if a surface is defined by <code>z = f(x, y)</code>.</p>
+
 <pre><code>require 'mathly'
 plot3d(function(x, y) return x^2 + y^2 end, {-3, 3}, {-3, 3}, 'Demo')
+
+n = 100
+x = linspace(0, 2*pi, n)
+y = linspace(-pi, pi, n)
+X, Y = {}, {}
+for i = 1, n do
+  X[i] = tt(mathly(1, n, x[i]))
+  Y[i] = y
+end
+function f(x, y) return math.sin(x) * math.cos(y) end
+Z = map(f, X, Y)
+plot3d(X, Y, Z, 'Demo 2')
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=circle></a><a name=line></a><a name=parametriccurve2d></a><a name=point></a><a name=polarcurve2d></a><a name=polygon></a><a name=scatter></a><a name=wedge></a>
@@ -1761,6 +1782,7 @@ parametricsurface3d(
 <tr><td><code>showgridlines(), shownotgridlines()</code></td><td> &nbsp; </td><td>Show/hide gridlines</td></tr>
 <tr><td><code>showlegend(),    shownotlegend()</code></td><td> &nbsp; </td><td>Show/hide the legend</td></tr>
 </tbody></table>
+<p>Note: These functions are not valid for 3D graphs.</p>
 <p>Example: See <a href=#arc>pie</a>.</p>
 
 <h4>&bull; &nbsp; <a name=pareto></a><a name=freqpolygon></a><a name=histpareto></a><a name=histfreqpolygon></a><a name=hist></a><a name=hist1></a>

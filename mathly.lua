@@ -1793,7 +1793,7 @@ function plot3d(f, xrange, yrange, title)
   if type(f) == 'function' then
     xrange[1], xrange[2] = _correct_range(xrange[1], xrange[2])
     yrange[1], yrange[2] = _correct_range(yrange[1], yrange[2])
-    local n = max(math.ceil(max(xrange[2] - xrange[1], yrange[2] - yrange[1])) * 10, 200)
+    local n = max(math.ceil(max(xrange[2] - xrange[1], yrange[2] - yrange[1])) * 10, 100)
     local x = linspace(xrange[1], xrange[2], n)
     local y = linspace(yrange[1], yrange[2], n)
     for i = 1, #x do
@@ -1949,7 +1949,7 @@ function hist(x, nbins, style, xrange)
   nbins = nbins or 10
 
   if xrange ~= nil then
-    xmin, xmax = _correct_range(xrange[1], xrange[2])    
+    xmin, xmax = _correct_range(xrange[1], xrange[2])
   else
     local tmp = flatten(x)
     xmin, xmax = min(tmp), max(tmp)
@@ -3585,7 +3585,7 @@ function figure.toplotstring(self)
 
     self['layout']['xaxis'] = nil
     self['layout']['yaxis'] = nil
-    if _3d_plotq then self['layout']['xaxis'] = nil end
+    if _3d_plotq then self['layout']['zaxis'] = nil end
 
     -- plotly-2.9.0.min.js, hopefully all versions, determines if grid options are used
     -- by checking whether the texts of xaxis and yaxis are different for traces
@@ -3597,27 +3597,26 @@ function figure.toplotstring(self)
     end
   end
 
-  if _axis_equalq then -- dwang, 2/10/25, JavaScript: var layout = {"xaxis":{"scaleanchor":"y"}, "yaxis":{"scaleratio":1}}
+  if (not _3d_plotq) and _axis_equalq then -- dwang, 2/10/25
     if self['layout'] == nil then self['layout'] = {} end
     if self['layout']['xaxis'] == nil then self['layout']['xaxis'] = {} end
     self['layout']['xaxis']['scaleanchor'] = 'y'
     if self['layout']['yaxis'] == nil then self['layout']['yaxis'] = {} end
     self['layout']['yaxis']['scaleratio'] = 1
-    if _3d_plotq then
-      if self['layout']['zaxis'] == nil then self['layout']['zaxis'] = {} end
-      self['layout']['zaxis']['scaleratio'] = 1
-    end
   end
 
   if self['layout'] == nil then self['layout'] = {} end
   if self['layout']['xaxis'] == nil then self['layout']['xaxis'] = {} end
   if self['layout']['yaxis'] == nil then self['layout']['yaxis'] = {} end
-  if _3d_plotq and self['layout']['zaxis'] == nil then self['layout']['zaxis'] = {} end
-  self['layout']['xaxis']['visible'] = _xaxis_visibleq
-  self['layout']['xaxis']['showgrid'] = _gridline_visibleq
-  self['layout']['yaxis']['visible'] = _yaxis_visibleq
-  self['layout']['yaxis']['showgrid'] = _gridline_visibleq
-  self['layout']['showlegend'] = _showlegendq
+  if _3d_plotq then
+    if self['layout']['zaxis'] == nil then self['layout']['zaxis'] = {} end
+  else -- only valid for 2d graphs
+    self['layout']['xaxis']['visible'] = _xaxis_visibleq
+    self['layout']['xaxis']['showgrid'] = _gridline_visibleq
+    self['layout']['yaxis']['visible'] = _yaxis_visibleq
+    self['layout']['yaxis']['showgrid'] = _gridline_visibleq
+    self['layout']['showlegend'] = _showlegendq
+  end
 
   -- Converting input
   local data_str = json.encode (self["data"])
@@ -3635,65 +3634,6 @@ function figure.toplotstring(self)
 ]] -- dwang, simplified
   return string.format(plot, div_id, data_str, layout_str, div_id)
 end -- figure.toplotstring
-
-function figure.toplotstring3d(self)
-  if plotly.gridq then -- dwang
-    if type(self['layout']['grid']['rows']) == 'string' then
-      self['layout']['grid']['rows'] = tonumber(self['layout']['grid']['rows'])
-    end
-    if type(self['layout']['grid']['cloumns']) == 'string' then
-      self['layout']['grid']['cloumns'] = tonumber(self['layout']['grid']['cloumns'])
-    end
-
-    if self['layout']['grid']['rows'] * self['layout']['grid']['columns'] < #self['data'] then
-      return '<html><body>Invalid grid: rows * columns &lt; the number of traces.</body></html>'
-    end
-
-    self['layout']['xaxis'] = nil
-    self['layout']['yaxis'] = nil
-
-    -- plotly-2.9.0.min.js, hopefully all versions, determines if grid options are used
-    -- by checking whether the texts of xaxis and yaxis are different for traces
-    for i = 1,#self['data'] do
-      local s = tostring(i)
-      self['data'][i]['xaxis'] = 'x' .. s -- they are different :-)
-      self['data'][i]['yaxis'] = 'y' .. s
-    end
-  end
-
-  if _axis_equalq then -- dwang, 2/10/25, JavaScript: var layout = {"xaxis":{"scaleanchor":"y"}, "yaxis":{"scaleratio":1}}
-    if self['layout'] == nil then self['layout'] = {} end
-    if self['layout']['xaxis'] == nil then self['layout']['xaxis'] = {} end
-    self['layout']['xaxis']['scaleanchor'] = 'y'
-    if self['layout']['yaxis'] == nil then self['layout']['yaxis'] = {} end
-    self['layout']['yaxis']['scaleratio'] = 1
-  end
-
-  if self['layout'] == nil then self['layout'] = {} end
-  if self['layout']['xaxis'] == nil then self['layout']['xaxis'] = {} end
-  if self['layout']['yaxis'] == nil then self['layout']['yaxis'] = {} end
-  self['layout']['xaxis']['visible'] = _xaxis_visibleq
-  self['layout']['xaxis']['showgrid'] = _gridline_visibleq
-  self['layout']['yaxis']['visible'] = _yaxis_visibleq
-  self['layout']['yaxis']['showgrid'] = _gridline_visibleq
-  self['layout']['showlegend'] = _showlegendq
-
-  -- Converting input
-  local data_str = json.encode (self["data"])
-  local layout_str = json.encode (self["layout"])
-  local div_id -- dwang
-  if not self.div_id then div_id = "plot" .. plotly.id_count end
-  plotly.id_count = plotly.id_count+1
-  local plot = [[<div id='%s'>
-<script type="text/javascript">
-  var data = %s
-  var layout = %s
-  Plotly.newPlot(%s, data, layout);
-</script>
-</div>
-]] -- dwang, simplified
-  return string.format(plot, div_id, data_str, layout_str, div_id)
-end -- figure.toplotstring3d
 
 function figure.tohtmlstring(self)
   local header = "<html>\n<meta charset=\"utf-8\">\n<head>" .. plotly.cdn_main .. "</head>\n"
