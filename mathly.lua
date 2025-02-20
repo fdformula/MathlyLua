@@ -1492,8 +1492,6 @@ function ismember( x, v )
   return false
 end
 
-local _yaxis_tickfmt     = ''
-
 --[[
   ---------------------- plot, options, and some examples ----------------------
 
@@ -1780,7 +1778,6 @@ function plot(...)
   plotly.plots(traces):show()
   plotly.gridq = false
   plotly.layout = {}
-  _yaxis_tickfmt = ''
 end -- plot
 
 local function _correct_range(start, stop)
@@ -2088,14 +2085,13 @@ function pareto(data, style, style1) -- style1: for freq curve
   end
   local freqs = {}
   for i = 1, #dat do
-    freqs[i] = dat[i][2] / total
+    freqs[i] = dat[i][2] -- / total
   end
 
   local gdata = {'pareto'}
   local x1 = 0
   local freqxy = {{0}, {0}}
   local width = 20
-  local names = {}
   for i = 1, #dat do
     local x2 = x1 + width
     local gobj = polygon({{x1, 0}, {x1, freqs[i]}, {x2, freqs[i]}, {x2, 0}}, style)
@@ -2104,11 +2100,7 @@ function pareto(data, style, style1) -- style1: for freq curve
     gdata[#gdata + 1] = gobj[4]
     freqxy[1][i + 1] = x2
     freqxy[2][i + 1] = freqxy[2][i] + freqs[i]
-    names[i] = dat[i][1]
     x1 = x2
-  end
-  for i = 1, #dat do
-    names[#names + 1] = dat[i][1] .. '(' .. tostring(dat[i][2]) .. ')'
   end
 
   gdata[#gdata + 1] = freqxy[1]
@@ -2120,15 +2112,30 @@ function pareto(data, style, style1) -- style1: for freq curve
     gdata[#gdata + 1] = style1 -- {symbol='circle', size=8, color='red'}
   end
 
-  _yaxis_tickfmt = '.0%' -- percentage
   -- 'plot' the names
   x1 = 0
   local texts = {}
+  local shiftx, shifty = width * 0.3, dat[1][2]*0.04
   for i = 1, #dat do
-    texts[i] = text(x1 + (width - #dat[i][1])/2, -0.05, data[i][1])
+    local shift = (width - #dat[i][1])/2
+    if shift < shiftx then shift = shiftx end
+    texts[i] = text(x1 + shift, -shifty, data[i][1])
     x1 = x1 + width
   end
+
+  x1 = #dat * width + shiftx
+  local n, percent = 5, 20
+  if #dat > 10 then n, percent = 10, 10 end
+  for i = 1, n do
+    local scale = i * percent
+    local y1 = (scale / 100) * total + shifty
+    texts[#texts + 1] = text(x1, y1, tostring(scale) .. '%')
+  end
+
+  local names = {}
+  for i = 1, #dat * 5 do names[i] = '' end
   gdata[#gdata + 1] = {names = names}
+
   gdata[#gdata + 1] = texts
   shownotxaxis(); shownotlegend()
   return gdata
@@ -3681,9 +3688,6 @@ function figure.toplotstring(self)
     self['layout']['yaxis']['visible'] = _yaxis_visibleq
     self['layout']['yaxis']['showgrid'] = _gridline_visibleq
     self['layout']['showlegend'] = _showlegendq
-    if _yaxis_tickfmt ~= '' then
-      self['layout']['yaxis']['tickformat'] = _yaxis_tickfmt
-    end
   end
 
   -- Converting input
