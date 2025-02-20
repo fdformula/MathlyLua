@@ -268,7 +268,6 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#hasindex><code>hasindex(table, index)</code></a></td><td> </td><td>Check if <code>table</code> contains <code>index</code>.</td></tr>
 <tr><td><a href=#hist><code>hist(x, nbins, style, xrange)</code></a></td><td> </td><td>Return a special graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table or a matrix of numbers and <code>nbins</code> is the number of bins (default: 10).</td></tr>
 <tr><td><a href=#hist1><code>hist1(x, nbins, style, xrange)</code></a></td><td> </td><td>Return an ordinary graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers.</td></tr>
-<tr><td><a href=#histpareto><code>histpareto(x, nbins, style, xrange, style1)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a histogram plus a pareto chart, where <code>x</code> is a table of numbers.</td></tr>
 <tr><td><a href=#histfreqpolygon><code>histfreqpolygon(x, nbins, style, xrange, style1)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a histogram plus a frequency polygon, where <code>x</code> is a table of numbers.</td></tr>
 <tr><td><a href=#horzcat><code>horzcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
 <tr><td><a href=#input><code>input(prompt, s)</code></a></td><td> </td><td>Input from keyboard, return a string (if <code>s = 's'</code>); otherwise, evaluate the input expression, and return the result.</td></tr>
@@ -290,7 +289,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#parametriccurve2d><code>parametriccurve2d({x(t), y(t)}, range, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a parametric curve.</td></tr>
 <tr><td><a href=#parametriccurve3d><code>parametriccurve3d({x(t), y(t), z(t)}, trange, title)</code></a></td><td> </td><td>Plot a space curve defined by <code>{x(t), y(t), z(t)}</code>.</td></tr>
 <tr><td><a href=#parametricsurface3d><code>parametricsurface3d({x(u, v), y(u, v), z(u, v)}, urange, vrange, title)</code></a></td><td> </td><td>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u, v)</code>.</td></tr>
-<tr><td><a href=#pareto><code>pareto(x, nbins, style, xrange)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a pareto chart, where <code>x</code> is a table of numbers.</td></tr>
+<tr><td><a href=#pareto><code>pareto(data, style, style1)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a pareto chart.</td></tr>
 <tr><td><a href=#pie><code>pie(x, radius, nbins, style, offcenter, names)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a pie chart.</td></tr>
 <tr><td><a href=#plot><code>plot(x, y, ...)</code></a></td><td> </td><td>Plot the graph(s) of functions defined by data points <code>x</code> and <code>y</code> and ...</td></tr>
 <tr><td><a href=#plot3d><code>plot3d(f, xrange, yrange, title)</code></a></td><td> </td><td>Plot the 3D graph of <code>z = f(x, y)</code>.</td></tr>
@@ -326,9 +325,10 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#subtable><code>subtable(tbl, i, j, s)</code></a></td><td> </td><td>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code>.</td></tr>
 <tr><td><a href=#sum><code>sum(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the sum of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
 <tr><td><a href=#tblcat><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers or strings.</td></tr>
-<tr><td><code><a href=#cc>tt(x, i1, i2, s)</a></code></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and return a specified slice of the resulted table.</td></tr>
 <tr><td><a href=#tic><code>tic()</code></a></td><td> </td><td>Start a wall-clock timer.</td></tr>
+<tr><td><a href=#text><code>text(x, y, txt)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to write a text string on a graph.</td></tr>
 <tr><td><a href=#toc><code>toc</code></a></td><td> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
+<tr><td><code><a href=#cc>tt(x, i1, i2, s)</a></code></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and return a specified slice of the resulted table.</td></tr>
 <tr><td><a href=#unique><code>unique(tbl)</code></a></td><td> </td><td>Return the same data as in tbl but with no repetitions.</td></tr>
 <tr><td><a href=#var><code>var(x, opt)</code></a></td><td> </td><td>Return the variance of numbers in <code>x</code>.</td></tr>
 <tr><td><a href=#vertcat><code>vertcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order vertically. Matrices must have the same number of columns.</td></tr>
@@ -1677,8 +1677,15 @@ Z = map(f, X, Y)
 plot3d(X, Y, Z, 'Demo 2')
 </code></pre>
 
+<h4>&bull; &nbsp; <a name=text href=#mathly><code>text(x, y, txt)</code></a></h4>
+<p>Return a text object for <code><a href=#plot>plot</a></code> to write a text string <code>txt</code> at the point <code>(x, y)</code> on a graph.</p>
+<pre><code>require 'mathly'
+x = linspace(-pi, pi, 200)
+plot(x, cos(x), point(-pi/3, math.cos(-pi/3)), text(-pi/3, math.cos(-pi/3) - 0.2, 'Point A'), point(pi/3, math.cos(pi/3)), text(pi/3, math.cos(pi/3) - 0.2, 'Point B'))
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=circle></a><a name=line></a><a name=parametriccurve2d></a><a name=point></a><a name=polarcurve2d></a><a name=polygon></a><a name=scatter></a><a name=wedge></a>
-<a name=arc href=#mathly><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a></h4>
+<a name=arc href=#mathly><code>arc, circle, line, parametriccurve2d, point, polygon, text, wedge</code></a></h4>
 <table><tbody>
 <tr><td><code>arc(radius, center, angles, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot an arc of a circle, where <code>angles: {angle1, angle2}</code> (default: <code>{0, 2&pi;}</code>).</td></tr>
 <tr><td><code>circle(radius, center, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a circle, where <code>center: {x, y} (default: {0, 0})</code>.</td></tr>
@@ -1785,16 +1792,15 @@ parametricsurface3d(
 <p>Note: These functions are not valid for 3D graphs.</p>
 <p>Example: See <a href=#arc>pie</a>.</p>
 
-<h4>&bull; &nbsp; <a name=pareto></a><a name=freqpolygon></a><a name=histpareto></a><a name=histfreqpolygon></a><a name=hist></a><a name=hist1></a>
-<a name=pie href=#mathly><code>freqpolygon, hist, histfreqpolygon, histpareto, pareto, pie</code></a></h4>
+<h4>&bull; &nbsp; <a name=pareto></a><a name=freqpolygon></a><a name=histfreqpolygon></a><a name=hist></a><a name=hist1></a>
+<a name=pie href=#mathly><code>freqpolygon, hist, hist1, histfreqpolygon, pareto, pie</code></a></h4>
 <table><tbody>
 <tr><td><code>boxplot(x, names)</code></td><td> </td><td>Return a special graph object for <code><a href=#plot>plot</a></code> to plot a box (or box-and-whisker) plot, where <code>x</code> is a table or a matrix of numbers. <code>names = {'name1', 'name2', ...}</code> is optional. If <code>x</code> is a matrix or a table of tables/rows, each row is a data set and thus has a box plot.</td></tr>
 <tr><td><code>freqpolygon(x, nbins, style, xrange)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a frequency polygon.</td></tr>
 <tr><td><code>hist(x, nbins, style, xrange)</code></td><td> </td><td>Return a special graph object for <code><a href=#plot>plot</a></code> to plot a histogram. If <code>x</code> is a matrix or a table of tables/rows, each row is a data set and each bin of the histogram contains one bar per row of the matrix.</td></tr>
 <tr><td><code>hist1(x, nbins, style, xrange)</code></td><td> </td><td>Return an ordinary graph object for <code><a href=#plot>plot</a></code> to plot a histogram.</td></tr>
-<tr><td><code>histpareto(x, nbins, style, xrange, style1)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a histogram plus a pareto chart, where <code>style</code> defines the style of the histogram while <code>style1</code> specifies the style of the pareto chart.</td></tr>
 <tr><td><code>histfreqpolygon(x, nbins, style, xrange, style1)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a histogram plus a frequency polygon, where <code>style</code> defines the style of the histogram while <code>style1</code> specifies the style of the frequency polygon.</td></tr>
-<tr><td><code>pareto(x, nbins, style, xrange)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a pareto chart.</td></tr>
+<tr><td><code>pareto(data, style, style1)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a pareto chart.</td></tr>
 <tr><td><code>pie(x, nbins, radius, style, offcenter, names)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a pie chart, where <code>radius</code> is the radius of the pie disk (default: 1), and <code>offcenter</code> specifies which wedges are away from the center by given distances (default: 0). Note: <code>pie({bins = {freq1, freq2, ...}}...)</code> is for plotting a pie chart for bins with frequences <code>freq1, freq2, ..., in order</code>, and <code>names = {'name1', 'name2', ...}</code> can be given in this situation.</td></tr>
 </tbody></table>
 <p>With this group of functions,</p>
@@ -1856,10 +1862,11 @@ plot(freqpolygon(x))
 plot(freqpolygon{x, style='--r*'})
 plot(histfreqpolygon(x))
 plot(histfreqpolygon{x, style='-bfs', style1='--r*'})
-plot(histpareto(x))
-plot(histpareto{x, style1='-bo'})
+
+x = {{'Apple', 382}, {'Orange', 22}, {'Pearl', 91}, {'Peach', 53}, {'Banana', 19}, {'Strawberry', 35}}
 plot(pareto(x))
-plot(pareto{x, style='--r*'}) -- {symbol='circle', size=8, color='red'}
+plot(pareto(x, '-bfs'))
+plot(pareto(x, nil, '--gx'))  -- "yaxis2":{"tickformat":".0%", "overlaying": 'y', "side": 'right' }
 
 showaxes()
 plot(hist(randn(1, 100)))

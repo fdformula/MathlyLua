@@ -24,14 +24,14 @@ API and Usage
     inv, isinteger, ismember, lagrangepoly, length, linsolve, linspace, lu,
     map, max, mean, min, norm, ones, polynomial, polyval, printf, prod, qr,
     rand, randi, range, remake, repmat, reshape, rr, rref, save, select, seq,
-    size, sort, sprintf, std, strcat, submatrix, subtable, sum, tblcat, tic,
-    toc, transpose, tt, unique, var, vertcat, who, zeros
+    size, sort, sprintf, std, strcat, submatrix, subtable, sum, tblcat,
+    text, tic, toc, transpose, tt, unique, var, vertcat, who, zeros
 
     arc, circle, line, parametriccurve2d, parametriccurve3d,
     parametricsurface3d, parametriccurve3d, plot, plot3d, point,
-    polarcurve2d, polygon, scatter, sphericalplot3d, wedge
+    polarcurve2d, polygon, scatter, sphericalplot3d, text, wedge
 
-    freqpolygon, hist, hist1, histfreqpolygon, histpareto, pareto, pie
+    boxplot, freqpolygon, hist, hist1, histfreqpolygon, pareto, pie
 
     axissquare, axisnotsquare; showaxes, shownotaxes; showxaxis, shownotxaxis;
     showyaxis, shownotyaxis; showgridlines, shownotgridlines;
@@ -1492,6 +1492,8 @@ function ismember( x, v )
   return false
 end
 
+local _yaxis_tickfmt     = ''
+
 --[[
   ---------------------- plot, options, and some examples ----------------------
 
@@ -1523,10 +1525,20 @@ function plot(...)
   local x_stop
   local adjustxrangeq = true
   local traces = {}
-  local layout_arg = nil
+  local layout_arg = {}
   for _, v in pairs{...} do
     if type(v) == 'table' then
-      if v[1] == 'graph-hist' then -- group histogram graph object: {'graph-hist', x, y}
+      if v[1] == 'pareto' then
+        for i = 1, #v[#v] do
+          traces[#traces + 1] = v[#v][i][2]
+        end
+        v[#v] = nil
+        v[1] = 'graph'
+      end
+
+      if v[1] == 'text' then -- text graph object: {'text', trace}
+        traces[#traces + 1] = v[2]
+      elseif v[1] == 'graph-hist' then -- group histogram graph object: {'graph-hist', x, y}
         for i = 2, #v, 2 do
           local trace = {}
           trace[1] = v[i]
@@ -1534,7 +1546,7 @@ function plot(...)
           trace['type'] = 'bar'
           traces[#traces + 1] = trace
         end
-        layout_arg = {layout={barmode='group', bargap=0.01}}
+        layout_arg[#layout_arg + 1] = {layout={barmode='group', bargap=0.01}}
         adjustxrangeq = false
       elseif v[1] == 'graph-box' then -- boxplot: {'graph-box', 'x', data}, 'x' or 'y'
         local count = #v
@@ -1580,7 +1592,7 @@ function plot(...)
       args[i] = {0, args[i]}
       table.insert(args, i + 1, {0, 0}) -- pretend to be x, y, ...; to be modified before plotting
     elseif i <= #args and type(args[i]) == 'table' and _hasanyindex(args[i], {'layout', 'names'})  then
-      layout_arg = args[i] -- to be processed finally
+      layout_arg[#layout_arg + 1] = args[i] -- to be processed finally
       i = i + 1
     else
       local trace = {}
@@ -1737,12 +1749,12 @@ function plot(...)
     end
   end
 
-  if layout_arg ~= nil then  -- processed finally, 2/9/25
+  for i = 1, #layout_arg do  -- processed finally, 2/9/25
     local names = {}
-    for k, v in pairs(layout_arg) do -- layout settings are merged into the 1st trace
+    for k, v in pairs(layout_arg[i]) do -- layout settings are merged into the 1st trace
       if k ~= 'names' then traces[1][k] = v end
     end
-    if layout_arg['names'] ~= nil then names = layout_arg['names'] end
+    if layout_arg[i]['names'] ~= nil then names = layout_arg[i]['names'] end
     if #names > 0 then
       for j = 1, math.min(#traces, #names) do
         traces[j]['name'] = names[j]
@@ -1768,6 +1780,7 @@ function plot(...)
   plotly.plots(traces):show()
   plotly.gridq = false
   plotly.layout = {}
+  _yaxis_tickfmt = ''
 end -- plot
 
 local function _correct_range(start, stop)
@@ -2001,10 +2014,10 @@ end -- _xmin_xmax_width
 --// function hist1(x, nbins, style)
 -- another version of histogram, as see in most textbooks
 -- the output can be treated as an ordinary graph object such as a curve
-function hist1(x, nbins, style, xrange, paretoq, freqpolygonq, style1, histq) -- style1: for pareto & freqpolygon
+function hist1(x, nbins, style, xrange, freqpolygonq, style1, histq) -- style1: for freqpolygon
   if _isnamedargs(x) then
-    x, nbins, style, xrange, paretoq, freqpolygonq, style1, histq =
-    x[1] or x.x, x[2] or x.nbins, x[3] or x.style, x[4] or x.xrange, x[5] or x.paretoq, x[6] or x.freqpolygonq, x[7] or x.style1, x[8] or x.histq
+    x, nbins, style, xrange, freqpolygonq, style1, histq =
+    x[1] or x.x, x[2] or x.nbins, x[3] or x.style, x[4] or x.xrange, x[5] or x.freqpolygonq, x[6] or x.style1, x[7] or x.histq
   end
 
   if histq == nil then histq = true end
@@ -2014,7 +2027,6 @@ function hist1(x, nbins, style, xrange, paretoq, freqpolygonq, style1, histq) --
   local freqs = _freq_distro(x, nbins, xmin, xmax, width)
   local gdata = {'graph'}
   local x1 = xmin
-  local pareto_xy = {{xmin}, {0}}
   local freqp_xy = {{xmin - width / 2}, {0}}
   for i = 1, nbins do
     local x2 = x1 + width
@@ -2023,10 +2035,6 @@ function hist1(x, nbins, style, xrange, paretoq, freqpolygonq, style1, histq) --
       gdata[#gdata + 1] = gobj[2]
       gdata[#gdata + 1] = gobj[3]
       gdata[#gdata + 1] = gobj[4]
-    end
-    if paretoq then
-      pareto_xy[1][i + 1] = x2
-      pareto_xy[2][i + 1] = pareto_xy[2][i] + freqs[i]
     end
     if freqpolygonq then
       freqp_xy[1][i + 1] = x1 + width / 2
@@ -2039,17 +2047,6 @@ function hist1(x, nbins, style, xrange, paretoq, freqpolygonq, style1, histq) --
     freqp_xy[2][nbins + 2] = 0
   end
 
-  if paretoq then
-    style1 = style1 or '-ro'
-    gdata[#gdata + 1] = pareto_xy[1]
-    gdata[#gdata + 1] = pareto_xy[2]
-    gdata[#gdata + 1] = style1
-    for i = 1, nbins + 1 do -- points
-      gdata[#gdata + 1] = {pareto_xy[1][i]}
-      gdata[#gdata + 1] = {pareto_xy[2][i]}
-      gdata[#gdata + 1] = style1 -- {symbol='circle', size=8, color='red'}
-    end
-  end
   if freqpolygonq then
     style1 = style1 or '-ro'
     gdata[#gdata + 1] = freqp_xy[1]
@@ -2063,34 +2060,92 @@ function hist1(x, nbins, style, xrange, paretoq, freqpolygonq, style1, histq) --
   end
 
   return gdata
-end -- hist1(x, nbins, style, xrange, paretoq, freqpolygonq, style1, histq)
+end -- hist1(x, nbins, style, xrange, freqpolygonq, style1, histq)
 
-function pareto(x, nbins, style, xrange)
-  if _isnamedargs(x) then
-    x, nbins, style, xrange = x[1] or x.x, x[2] or x.nbins, x[3] or x.style, x[4] or x.xrange
+--// function pareto(data, style, style1) -- style1: for freq curve
+-- data = {{label1, value1}, {label2, value2}, ..., {namen, valuen}}
+function pareto(data, style, style1) -- style1: for freq curve
+  if _isnamedargs(data) then
+    data, style, style1 = x[1] or data.data, x[2] or data.style, x[3] or x.style1
   end
-  return hist1(x, nbins, nil, xrange, true, nil, style, false)
-end
+  if style == nil then style = '-fs' end
+  if style1 == nil then style1 = '-ro' end
 
-function histpareto(x, nbins, style, xrange, style1) -- style1: for paretor
-  if _isnamedargs(x) then
-    x, nbins, style, xrange, style1 = x[1] or x.x, x[2] or x.nbins, x[3] or x.style, x[4] or x.xrange, x[5] or x.style1
+  local total = 0
+  local dat = {}
+  for i = 1, #data do
+    total = total + data[i][2]
+    dat[i] = data[i]
   end
-  return hist1(x, nbins, style, xrange, true, nil, style1, true)
-end
+  for i = 1, #dat - 1 do -- sort data by values from highest to lowest; same data set, no performance issue
+    local maxi, maxx = i, dat[i][2]
+    for j = i + 1, #dat do
+      if dat[j][2] > maxx then maxi, maxx = j, dat[j][2] end
+    end
+    if maxi ~= i then
+      dat[i], dat[maxi] = dat[maxi], dat[i]
+    end
+  end
+  local freqs = {}
+  for i = 1, #dat do
+    freqs[i] = dat[i][2] / total
+  end
+
+  local gdata = {'pareto'}
+  local x1 = 0
+  local freqxy = {{0}, {0}}
+  local width = 20
+  local names = {}
+  for i = 1, #dat do
+    local x2 = x1 + width
+    local gobj = polygon({{x1, 0}, {x1, freqs[i]}, {x2, freqs[i]}, {x2, 0}}, style)
+    gdata[#gdata + 1] = gobj[2]
+    gdata[#gdata + 1] = gobj[3]
+    gdata[#gdata + 1] = gobj[4]
+    freqxy[1][i + 1] = x2
+    freqxy[2][i + 1] = freqxy[2][i] + freqs[i]
+    names[i] = dat[i][1]
+    x1 = x2
+  end
+  for i = 1, #dat do
+    names[#names + 1] = dat[i][1] .. '(' .. tostring(dat[i][2]) .. ')'
+  end
+
+  gdata[#gdata + 1] = freqxy[1]
+  gdata[#gdata + 1] = freqxy[2]
+  gdata[#gdata + 1] = style1
+  for i = 1, #dat + 1 do -- points
+    gdata[#gdata + 1] = {freqxy[1][i]}
+    gdata[#gdata + 1] = {freqxy[2][i]}
+    gdata[#gdata + 1] = style1 -- {symbol='circle', size=8, color='red'}
+  end
+
+  _yaxis_tickfmt = '.0%' -- percentage
+  -- 'plot' the names
+  x1 = 0
+  local texts = {}
+  for i = 1, #dat do
+    texts[i] = text(x1 + (width - #dat[i][1])/2, -0.05, data[i][1])
+    x1 = x1 + width
+  end
+  gdata[#gdata + 1] = {names = names}
+  gdata[#gdata + 1] = texts
+  shownotxaxis(); shownotlegend()
+  return gdata
+end -- pareto(data, style, style1)
 
 function freqpolygon(x, nbins, style, xrange)
   if _isnamedargs(x) then
     x, nbins, style, xrange = x[1] or x.x, x[2] or x.nbins, x[3] or x.style, x[4] or x.xrange
   end
-  return hist1(x, nbins, nil, xrange, nil, true, style, false)
+  return hist1(x, nbins, nil, xrange, true, style, false)
 end
 
 function histfreqpolygon(x, nbins, style, xrange, style1)
   if _isnamedargs(x) then
     x, nbins, style, xrange, style1 = x[1] or x.x, x[2] or x.nbins, x[3] or x.style, x[4] or x.xrange, x[5] or x.style1
   end
-  return hist1(x, nbins, style, xrange, nil, true, style1, true)
+  return hist1(x, nbins, style, xrange, true, style1, true)
 end
 
 --// boxplot(x, nbins, style)
@@ -2316,6 +2371,16 @@ function point(x, y, style)  -- plot a point at (x, y)
   end
   return data
 end -- point
+
+function text(x, y, txt)
+  local trace = {{x}, {y}}
+  trace['text'] = txt
+  trace['mode'] = 'text'
+  trace['type'] = 'scatter'
+  trace['textposition'] = 'bottom'
+  trace['name'] = ''
+  return {'text', trace}
+end -- text
 
 function parametriccurve2d(xy, x, style)
   x = x or {-5, 5}
@@ -3616,6 +3681,9 @@ function figure.toplotstring(self)
     self['layout']['yaxis']['visible'] = _yaxis_visibleq
     self['layout']['yaxis']['showgrid'] = _gridline_visibleq
     self['layout']['showlegend'] = _showlegendq
+    if _yaxis_tickfmt ~= '' then
+      self['layout']['yaxis']['tickformat'] = _yaxis_tickfmt
+    end
   end
 
   -- Converting input
