@@ -188,10 +188,10 @@ specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, 
 specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
 
 plot(math.sin, '--r') -- plot a function
-plot(x, y1)           -- plot a function defined by x and y1
+shownotlegend()
+plot(x, y1, text(pi/3, math.sin(pi/3) - 0.05, 'A'), point(pi/3, math.sin(pi/3), {symbol='circle', size=10, color='red'})) -- plot a function defined by x and y1
 plot(x, y1, x, y2, specs1, math.sin, '--r')
-plot({1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'}) -- plot a point (1.55, -0.6)
-plot(x, y1, '--xr', x, y2, {1.55}, {-0.6}, {symbol='circle-open', size=10, color='blue'})
+plot(x, y1, '--xr', x, y2)
 plot(x, y1, '--xr', x, y2, ':g')
 plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
 plot(x, y1, specs1, x, y2, x, y3, 'o')
