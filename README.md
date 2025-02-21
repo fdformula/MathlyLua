@@ -189,11 +189,12 @@ specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', siz
 
 plot(math.sin, '--r') -- plot a function
 shownotlegend()
-plot(x, y1, text(pi/3, math.sin(pi/3) - 0.05, 'A'), point(pi/3, math.sin(pi/3), {symbol='circle', size=10, color='red'})) -- plot a function defined by x and y1
-plot(x, y1, x, y2, specs1, math.sin, '--r')
+plot(x, y1) -- plot a function defined by x and y1
 plot(x, y1, '--xr', x, y2)
-plot(x, y1, '--xr', x, y2, ':g')
+plot(x, y1, '--xr', x, y2, ':g', text(0.79, 0.71 - 0.08, 'A'), point(0.79, 0.71, {symbol='circle', size=10, color='blue'}))
 plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
+showlegend()
+plot(x, y1, x, y2, specs1, math.sin, '--r')
 plot(x, y1, specs1, x, y2, x, y3, 'o')
 plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
 
