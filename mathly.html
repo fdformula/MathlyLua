@@ -1749,14 +1749,15 @@ plot({layout={width=1900, height=1300, grid={rows=2, columns=3}, title='Example'
 <h4>&bull; &nbsp; <a name=parametriccurve3d href=#mathly><code>parametriccurve3d({x(t), y(t), z(t)}, trange, title)</code></a></h4>
 <p>Plot a space curve defined by <code>{x(t), y(t), z(t)}</code>.</p>
 <pre><code>require 'mathly'
-parametriccurve3d({
-  function(t) return t end,
-  function(t) return t^2 end,
-  function(t) return t^3 end}, {-5,5}, "Twisted Curve")
 parametriccurve3d(
   {function(t) return math.cos(t) end,
    function(t) return math.sin(t) end,
    function(t) return t end}, {0,6*pi}, "Helix")
+
+parametriccurve3d(
+  {function(t) return t*math.cos(t) end,
+   function(t) return t*math.sin(t) end,
+   function(t) return t end}, {0, 8*pi})
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=parametricsurface3d href=#mathly>parametricsurface3d({x(u, v), y(u, v), z(u,v)}, urange, vrange, title)</a></h4>

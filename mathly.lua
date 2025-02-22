@@ -28,8 +28,8 @@ API and Usage
     text, tic, toc, transpose, tt, unique, var, vertcat, who, zeros
 
     arc, circle, line, parametriccurve2d, parametriccurve3d,
-    parametricsurface3d, parametriccurve3d, plot, plot3d, point,
-    polarcurve2d, polygon, scatter, sphericalplot3d, text, wedge
+    parametricsurface3d, plot, plot3d, point, polarcurve2d, polygon,
+    scatter, sphericalplot3d, text, wedge
 
     boxplot, freqpolygon, hist, hist1, histfreqpolygon, pareto, pie
 
@@ -1895,7 +1895,7 @@ function parametriccurve3d(xyz, trange, title)
   trange[1], trange[2] = _correct_range(trange[1], trange[2])
 
   local x, y, z
-  local n = max(math.ceil((trange[2] - trange[1]) * 10), 200)
+  local n = math.max(math.ceil((trange[2] - trange[1]) * 20), 1000)
   local t = linspace(trange[1], trange[2], n)
   x = map(xyz[1], t)
   y = map(xyz[2], t)
@@ -2393,7 +2393,7 @@ function parametriccurve2d(xy, x, style)
   x = x or {-5, 5}
   x[1], x[2] = _correct_range(x[1], x[2])
   local data = {'graph'}
-  x = linspace(x[1], x[2], 200)
+  x = linspace(x[1], x[2], math.max(math.ceil((x[2] - x[1]) * 20), 1000))
   data[2] = map(xy[1], x)
   data[3] = map(xy[2], x)
   if style == nil then
