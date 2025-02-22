@@ -1261,29 +1261,20 @@ end
 local function _create_table( row, col, val, metaq )
   if metaq == nil then metaq = false end
   local x = {}
+  local function f()
+    if val == nil or val == 'random' then
+      return math.random() -- math.randomseed(os.time()) -- keep generating same seq? Lua 5.4.6
+    elseif val == 'gaussian' then
+      return _gaussian_rand()
+    else
+      return val
+    end
+  end
   if col == nil then col = row end
-  if val == nil or val == 'random' then
-    -- math.randomseed(os.time()) -- keep generating same seq? Lua 5.4.6
-    for i = 1,row do
-      x[i] = {}
-      for j = 1,col do
-        x[i][j] = math.random()
-      end
-    end
-  elseif val == 'gaussian' then
-    -- math.randomseed(os.time()) -- keep generating same seq? Lua 5.4.6
-    for i = 1,row do
-      x[i] = {}
-      for j = 1,col do
-        x[i][j] = _gaussian_rand()
-      end
-    end
-  else
-    for i = 1,row do
-      x[i] = {}
-      for j = 1,col do
-        x[i][j] = val
-      end
+  for i = 1,row do
+    x[i] = {}
+    for j = 1,col do
+      x[i][j] = f()
     end
   end
   if row == 1 and not metaq then
