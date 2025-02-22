@@ -203,6 +203,10 @@ plot(rand(125, 4),{layout={width=900, height=400, grid={rows=2, columns=2}, titl
 plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}})
 plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
 plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
+
+plot(polarcurve2d(function(t) return t*math.cos(math.sqrt(t)) end, {0,100}))
+plot(parametriccurve2d({function(t) return 2*math.cos(t) end,
+                        function(t) return 3*math.sin(t) end, {0, 2*pi}}))
 ```
 
 ### A more meaningful example - Quadratic splines using Lagrange interpolating polynomials
