@@ -208,8 +208,8 @@ plot(polarcurve2d(function(t) return t*math.cos(math.sqrt(t)) end, {0,100}))
 
 axissquare()
 function x(t) t = 3 * t; return math.cos(t)/(1 + math.sin(t)^2) end
-function y(t) t = 5 * t; return math.sin(t)/(1 + math.sin(t)^2) end
-plot(parametriccurve2d({x, y}, {-6, 6}))
+function y(t) t = 5 * t; return math.sin(t)*math.cos(t)/(1 + math.sin(t)^2) end
+plot(parametriccurve2d({x, y}, {-4, 4}))
 ```
 
 ### A more meaningful example - Quadratic splines using Lagrange interpolating polynomials
