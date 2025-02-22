@@ -286,15 +286,15 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
 <tr><td><code>norm(x)</code></td><td> </td><td>Return the Euclidean norm of a row/column vector <code>x</code>.</td></tr>
 <tr><td><a href=#ones><code>ones(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 1. If <code>m = 1</code>, return a table.</td></tr>
-<tr><td><a href=#parametriccurve2d><code>parametriccurve2d({x(t), y(t)}, range, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a parametric curve.</td></tr>
-<tr><td><a href=#parametriccurve3d><code>parametriccurve3d({x(t), y(t), z(t)}, trange, title)</code></a></td><td> </td><td>Plot a space curve defined by <code>{x(t), y(t), z(t)}</code>.</td></tr>
-<tr><td><a href=#parametricsurface3d><code>parametricsurface3d({x(u, v), y(u, v), z(u, v)}, urange, vrange, title)</code></a></td><td> </td><td>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u, v)</code>.</td></tr>
+<tr><td><a href=#parametriccurve2d><code>parametriccurve2d({x(t), y(t)}, range, style, resolution)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a parametric curve.</td></tr>
+<tr><td><a href=#parametriccurve3d><code>parametriccurve3d({x(t), y(t), z(t)}, trange, titl, resolution)</code></a></td><td> </td><td>Plot a space curve defined by <code>{x(t), y(t), z(t)}</code>.</td></tr>
+<tr><td><a href=#parametricsurface3d><code>parametricsurface3d({x(u, v), y(u, v), z(u, v)}, urange, vrange, title, resolution)</code></a></td><td> </td><td>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u, v)</code>.</td></tr>
 <tr><td><a href=#pareto><code>pareto(data, style, style1)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a pareto chart.</td></tr>
 <tr><td><a href=#pie><code>pie(x, radius, nbins, style, offcenter, names)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a pie chart.</td></tr>
 <tr><td><a href=#plot><code>plot(x, y, ...)</code></a></td><td> </td><td>Plot the graph(s) of functions defined by data points <code>x</code> and <code>y</code> and ...</td></tr>
-<tr><td><a href=#plot3d><code>plot3d(f, xrange, yrange, title)</code></a></td><td> </td><td>Plot the 3D graph of <code>z = f(x, y)</code>.</td></tr>
+<tr><td><a href=#plot3d><code>plot3d(f, xrange, yrange, title, resolution)</code></a></td><td> </td><td>Plot the 3D graph of <code>z = f(x, y)</code>.</td></tr>
 <tr><td><a href=#point><code>point(x, y, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a point.</td></tr>
-<tr><td><a href=#polarcurve2d><code>polarcurve2d(r(t), range, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polar curve.</td></tr>
+<tr><td><a href=#polarcurve2d><code>polarcurve2d(r(t), range, style, resolution)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polar curve.</td></tr>
 <tr><td><a href=#polygon><code>polygon(vertices, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a polygon.</td></tr>
 <tr><td><a href=#polynomial><code>polynomial(...)</code></a></td><td> </td><td>Return the polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
 <tr><td><a href=#polyval><code>polyval(coefs, x)</code></a></td><td> </td><td>Evaluate at <code>x</code> the value of a polynomial of which the coefficients are specified in a table <code>coefs</code>.</td></tr>
@@ -317,7 +317,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#seq><code>seq(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</td></tr>
 <tr><td><code>size(A)</code></td><td> </td><td>Return the dimensions of a mathly matrix <code>A</code>.</td></tr>
 <tr><td><a href=#sort><code>sort(tbl, compf)</code></a></td><td> </td><td>Sort a table <code>tbl</code> and return the resulted table.</td></tr>
-<tr><td><a href=#sphericalplot3d><code>sphericalplot3d(rho, thetarange, phirange, title)</code></a></td><td> </td><td>Plot a spherical function.</td></tr>
+<tr><td><a href=#sphericalplot3d><code>sphericalplot3d(rho, thetarange, phirange, title, resolution)</code></a></td><td> </td><td>Plot a spherical function.</td></tr>
 <tr><td><a href=#printf><code>sprintf(...)</code></a></td><td> </td><td>Return a formatted string, while <code>printf</code> prints one.</td></tr>
 <tr><td><a href=#std><code>std(x, opt)</code></a></td><td> </td><td>Return the standard deviation of numbers in <code>x</code>.</td></tr>
 <tr><td><a href=#strcat><code>strcat(...)</code></a></td><td> </td><td>Concatenate strings and return the resulted string.</td></tr>
@@ -1426,9 +1426,10 @@ disp(sort({2, 0, 2, 4}))
 -- {0, 2, 2, 4}
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=sphericalplot3d href=#mathly><code>sphericalplot3d(rho, thetarange, phirange, title)</code></a></h4>
+<h4>&bull; &nbsp; <a name=sphericalplot3d href=#mathly><code>sphericalplot3d(rho, thetarange, phirange, title, resolution)</code></a></h4>
 <p>Plot spherical function <code>rho(theta, phi)</code>, where theta is in the range <code>thetarange = {θ1, θ2}</code>
 and <code>phi</code> in the range <code>phirange = {φ1, φ2}</code>. If <code>rho</code> is a number, plot a sphere with radius <code>rho</code>.</p>
+<p><code>resolution</code>? See <a href=#resol><code>parametric2</code> and <code>polarcurve2d</code></a>.</p>
 <pre><code>require('mathly')
 sphericalplot3d(1, {0, 2*pi}, {0, pi}, 'Unit Sphere')
 sphericalplot3d(function(theta, phi) return theta + 2 * phi end, {0, 4*pi}, {0, pi})
@@ -1648,7 +1649,7 @@ plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, titl
 plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=plot3d href=#mathly><code>plot3d(f, xrange, yrange, title)</code></a></h4>
+<h4>&bull; &nbsp; <a name=plot3d href=#mathly><code>plot3d(f, xrange, yrange, title, resolution)</code></a></h4>
 <p>Plot a surface defined by <code>z = f(x, y)</code>. It is not designed as complicated as <code>plot(...)</code> for 2D graphs. It can only plot one surface at a time.</p>
 <p>If <code>f</code> is a function, <code>xrange = {xstart, xstop}</code> and <code>y = {ystart, ystop}</code> define the ranges
 for <code>x</code> and <code>y</code>; otherwise, the first 3 arguments are tables of <code>x, y</code>, and <code>z</code> values,
@@ -1660,7 +1661,7 @@ Y = {{y1, y2, ..., yn}, {y1, y2, ..., yn}, ..., {y1, y2, ..., yn}}
 Z = {{z11,  ...,  z1n}, {z21,  ...,  z2n}, ..., {zn1,  ...,  zn2}}
 </pre></code>
 <p>where <code>zij = f(xi, yj)</code>, if a surface is defined by <code>z = f(x, y)</code>.</p>
-
+<p><code>resolution</code>? See <a href=#resol><code>parametric2</code> and <code>polarcurve2d</code></a>.</p>
 <pre><code>require 'mathly'
 plot3d(function(x, y) return x^2 + y^2 end, {-3, 3}, {-3, 3}, 'Demo')
 
@@ -1690,9 +1691,9 @@ plot(x, cos(x), point(-pi/3, math.cos(-pi/3)), text(-pi/3, math.cos(-pi/3) - 0.2
 <tr><td><code>arc(radius, center, angles, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot an arc of a circle, where <code>angles: {angle1, angle2}</code> (default: <code>{0, 2&pi;}</code>).</td></tr>
 <tr><td><code>circle(radius, center, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a circle, where <code>center: {x, y} (default: {0, 0})</code>.</td></tr>
 <tr><td><code>line(point1, point2, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a straight line, where <code>point1 = {x1, y1}</code> and <code>point2 = {x2, y2}</code>.</td></tr>
-<tr><td><code>parametriccurve2d({x(t), y(t)}, range, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a parametric curve, where <code>x(t)</code> and <code>y(t)</code> are parametric functions, and <code>range = {t1, t2}</code> indicating <code>t</code> changes from <code>t1</code> to <code>t2</code>.</td></tr>
+<tr><td><code>parametriccurve2d({x(t), y(t)}, range, style, resolution)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a parametric curve, where <code>x(t)</code> and <code>y(t)</code> are parametric functions, and <code>range = {t1, t2}</code> indicating <code>t</code> changes from <code>t1</code> to <code>t2</code>.</td></tr>
 <tr><td><code>point(x, y, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a point, where <code>(x, y)</code> are the coordinates of the point. Note: <code>point({{x1, y1}, {x2, y2}}, style)</code> is for plotting multiple points.</td></tr>
-<tr><td><code>polarcurve2d(r(&theta;), range, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polar curve, where <code>r(&theta;)</code> is a polar function, and <code>range = {&theta;1, &theta;2}</code> indicating <code>&theta;</code> changes from &theta;1 to &theta;2. If <code>r</code> is a number, plot a circle with radius <code>r</code>.</td></tr>
+<tr><td><code>polarcurve2d(r(&theta;), range, style, resolution)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polar curve, where <code>r(&theta;)</code> is a polar function, and <code>range = {&theta;1, &theta;2}</code> indicating <code>&theta;</code> changes from &theta;1 to &theta;2. If <code>r</code> is a number, plot a circle with radius <code>r</code>.</td></tr>
 <tr><td><code>polygon(vertices, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polygon, where <code>vertices = {{x1, y1}, {x2, y2}, ..., {xn, yn}}</code> specifies the coordinates of each vertex in order so that there is an edge connecting any two consecutive vertices. There is an edge connecting <code>{x1, y1}</code> and <code>{xn, yn}</code>.</td></tr>
 <tr><td><code>scatter(x, y, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a scatter plot, where <code>x = {x1, x2 ,...}</code> and <code>y = {y1, y2, ...}</code> specify the coordinates of all points <code>{x1, y1}, {x2, y2}, ...</code></td></tr>
 <tr><td><code>wedge(radius, center, angles, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a wedge of a disk, where <code>angles = {&theta;1, &theta;2}</code> indicating &theta; changes from &theta;1 to &theta;2.</td></tr>
@@ -1706,8 +1707,10 @@ plot(x, cos(x), point(-pi/3, math.cos(-pi/3)), text(-pi/3, math.cos(-pi/3) - 0.2
 <tr><td><code>'fs'</code></td><td> - </td><td>Fill to Self</td></tr>
 </tbody></table>
 <p>Other specification shortcuts, see <a href=#plotspecs><code>plot</code></a>.</p>
-<pre><code>
-require 'mathly'
+<p>&#x2713; &nbsp; <a name=resol></a>Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#parametriccurve3d>parametriccurve3d</a>, <a href=#parametricsurface3d>parametricsurface3d</a>, <a href=#plot3d>plot3d</a>, <a href=#polarcurve2d>polarcurve2d</a></code>, and <a href=#sphericalplot3d><code>sphericalplot3d</code></a>,
+each take a last argument, <code>resolution</code> (default: 100 for a surface, or 500 for a curve), for users to control the smoothness of a plotted curve or surface. A larger value means
+better smoothness and requires more computing time.</p>
+<pre><code>require 'mathly'
 
 plot(math.sin, point({{-3, 2}, {2, -1}, {3.2, 2}}), point(-1, 1, {symbol='circle-open', size=18, color='red'}))
 
@@ -1729,25 +1732,29 @@ plot(X, cos(X), X, sin(X), '-rff') -- shade regions between two curves
 plot(x, cos(x), x, sin(x), '-rff', X, cos(X), X, sin(X)) -- shade part of  ...
 
 axissquare()
-function f(x) return math.sin(x) end
 plot(
-  polarcurve2d(1),
-  parametriccurve2d({function(t) return math.cos(t) end, f}, {0, 2*pi}, '-k'),
-  polarcurve2d(function(t) return t * math.sin(t) end, {0, 3*pi}, '-r'),
-  polarcurve2d(function(x) return math.cos(4*x) end, {0, 2*pi}, '-gfs'),
-  parametriccurve2d({math.cos, math.sin}, {0, pi/2}, '-fs')
+  polarcurve2d(1.5),
+  polarcurve2d(function(t) return math.sqrt(t) * math.sin(t) end, {0, 4*pi}, '-b'),
+  polarcurve2d(function(x) return math.cos(4*x) end, {0, 2*pi}, '-fs'),
+  parametriccurve2d({math.cos, math.sin}, {0, pi/2}, '-gfs')
 )
+
+axisnotsquare()
+r = function(t) return math.sin(1.6 * t^2) + math.cos(4 * t)^5 end
+plot(polarcurve2d(r, {0, 8*pi}, '-sfn'))
+plot(polarcurve2d(r, {0, 8*pi}, '-sfn', 10000)) -- add resolution
 
 gobjs = {}
 for i = 1, 6 do
-  gobjs[i] = polarcurve2d(function(t) return math.sin(1.6 * t^2) + math.cos(i * t)^5 end, {0, 6*pi}, '-sfn')
+  gobjs[i] = polarcurve2d(function(t) return math.sin(1.6 * t^2) + math.cos(i * t)^5 end, {0, 8*pi}, '-sfn', 10000)
 end
 plot({layout={width=1900, height=1300, grid={rows=2, columns=3}, title='Example'},
       names={'i=1', 'i=2', 'i=3', 'i=4', 'i=5', 'i=6'}}, table.unpack(gobjs))
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=parametriccurve3d href=#mathly><code>parametriccurve3d({x(t), y(t), z(t)}, trange, title)</code></a></h4>
+<h4>&bull; &nbsp; <a name=parametriccurve3d href=#mathly><code>parametriccurve3d({x(t), y(t), z(t)}, trange, title, resolution)</code></a></h4>
 <p>Plot a space curve defined by <code>{x(t), y(t), z(t)}</code>.</p>
+<p><code>resolution</code>? See <a href=#resol><code>parametric2</code> and <code>polarcurve2d</code></a>.</p>
 <pre><code>require 'mathly'
 parametriccurve3d(
   {function(t) return math.cos(t) end,
@@ -1760,25 +1767,31 @@ parametriccurve3d(
    function(t) return t end}, {0, 8*pi})
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=parametricsurface3d href=#mathly>parametricsurface3d({x(u, v), y(u, v), z(u,v)}, urange, vrange, title)</a></h4>
+<h4>&bull; &nbsp; <a name=parametricsurface3d href=#mathly><code>parametricsurface3d({x(u, v), y(u, v), z(u,v)}, urange, vrange, title, resolution)</a></code></h4>
 <p>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u,v)</code>.</p>
+<p><code>resolution</code>? See <a href=#resol><code>parametric2</code> and <code>polarcurve2d</code></a>.</p>
 <pre><code>require 'mathly'
 parametricsurface3d(
   {function(u,v) return u end,
    function(u,v) return math.sin(u) + v end,
    function(u,v) return v^2 end}, {-3, 3}, {-3, 3})
+
 parametricsurface3d(
   {function(u,v) return u end,
    function(u,v) return v end,
    function(u,v) return math.sqrt(u^2 + v^2) end}, {-3, 3}, {-3, 3}, 'Demo')
+
 parametricsurface3d(
   {function(u,v) return 2*math.sin(u)*math.cos(v) end,
    function(u,v) return 2*math.sin(u)*math.sin(v) end,
    function(u,v) return 2*math.cos(v) end}, {0, pi}, {0, 2*pi})
-parametricsurface3d(
-  {function(u,v) return 2*math.sin(u)*math.cos(v) end,
-   function(u,v) return 2*math.sin(u)*math.sin(v) end,
-   function(u,v) return 2*math.cos(u) end}, {0, pi}, {0, 2*pi})
+
+do
+  local x = function(u,v) return 2*math.sin(u)*math.cos(v) end
+  local y = function(u,v) return 2*math.sin(u)*math.sin(v) end
+  local z = function(u,v) return 2*math.cos(u) end
+  parametricsurface3d({x, y, z}, {0, pi}, {0, 2*pi})
+end
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=showlegend></a><a name=shownotlegend></a><a name=shownotyaxis></a><a name=showyaxis></a><a name=shownotxaxis></a><a name=showxaxis></a><a name=axissquare></a><a name=axisnotsquare></a><a name=showaxes></a><a name=shownotaxes></a><a name=showgridlines></a><a name=shownotgridlines></a><a href=#mathly>axissquare, axisnotsquare; showaxes, shownotaxes ...</a></h4>
@@ -1835,8 +1848,7 @@ plot(pie{x = {bins = {0.0930, 0.1163, 0.0233, 0.2791, 0.1395, 0.3488}}, style='-
 </code></pre>
 
 <p>More examples,</p>
-<pre><code>
-require 'mathly'
+<pre><code>require 'mathly'
 
 data1 = {1, 2, 3, 4, 2, 12, 3, 4, 2, 12, 9, 9, 9, 8, 5, 3, 3, 2, 1, 5, 3, 2}
 data2 = {2, 1, 2, 4, 5, 7, 11}

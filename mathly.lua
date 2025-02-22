@@ -1784,6 +1784,12 @@ local function _correct_range(start, stop)
   if start > stop then return stop, start else return start, stop end
 end
 
+local function _set_resolution(r, n)
+  n = n or 500
+  if r == nil or type(r) ~= 'number' or r < 500 then r = 500 end
+  return r
+end
+
 local _3d_plotq = false
 
 --// data for a 3D plot:
@@ -1798,12 +1804,13 @@ local _3d_plotq = false
 
 -- if f is a function, xrange = {xstart, xstop}, y = {ystart, ystop}
 -- otherwise, X = f, Y = xrange, Z = yrange, which allows users to set up data and use it to display a graph
-function plot3d(f, xrange, yrange, title)
+function plot3d(f, xrange, yrange, title, resolution)
   local X, Y, Z = {}, {}, {}
   if type(f) == 'function' then
     xrange[1], xrange[2] = _correct_range(xrange[1], xrange[2])
     yrange[1], yrange[2] = _correct_range(yrange[1], yrange[2])
-    local n = max(math.ceil(max(xrange[2] - xrange[1], yrange[2] - yrange[1])) * 10, 100)
+    resolution = _set_resolution(resolution, 100)
+    local n = max(math.ceil(max(xrange[2] - xrange[1], yrange[2] - yrange[1])) * 10, resolution)
     local x = linspace(xrange[1], xrange[2], n)
     local y = linspace(yrange[1], yrange[2], n)
     for i = 1, #x do
@@ -1835,17 +1842,18 @@ end -- plot3d
 --// function sphericalplot3d(rho, thetarange, phirange, title)
 -- plot rho, a spherical function of theta and phi, where theta is in the range thetarange = {θ1, θ2}
 -- and phi is in the range phirange = {φ1, φ2}
-function sphericalplot3d(rho, thetarange, phirange, title)
+function sphericalplot3d(rho, thetarange, phirange, title, resolution)
   if type(rho) == 'number' then
     local tmp = rho
     rho = function(t, p) return tmp end
   end
   thetarange[1], thetarange[2] = _correct_range(thetarange[1], thetarange[2])
   phirange[1], phirange[2] = _correct_range(phirange[1], phirange[2])
+  resolution = _set_resolution(resolution, 100)
 
   local X, Y, Z = {}, {}, {}
-  local m = max(math.ceil(max((thetarange[2] - thetarange[1]) * 10)), 200)
-  local n = max(math.ceil(max((phirange[2] - phirange[1]) * 10)), 200)
+  local m = max(math.ceil(max((thetarange[2] - thetarange[1]) * 10)), resolution)
+  local n = max(math.ceil(max((phirange[2] - phirange[1]) * 10)), resolution)
   local thetas = linspace(thetarange[1], thetarange[2], m)
   local phis = linspace(phirange[1], phirange[2], n)
 
@@ -1865,13 +1873,14 @@ end -- sphericalplot3d
 
 --// function parametricsurface3d(x, y, z, urange, vrange, title)
 -- Plot a surface defined by xyz = {x(u, v), y(u, v), z(u,v)}.
-function parametricsurface3d(xyz, urange, vrange, title)
+function parametricsurface3d(xyz, urange, vrange, title, resolution)
   urange[1], urange[2] = _correct_range(urange[1], urange[2])
   vrange[1], vrange[2] = _correct_range(vrange[1], vrange[2])
+  resolution = _set_resolution(resolution, 100)
 
   local x, y, z = {}, {}, {}
-  local m = max(math.ceil(max((urange[2] - urange[1]) * 10)), 200)
-  local n = max(math.ceil(max((vrange[2] - vrange[1]) * 10)), 200)
+  local m = max(math.ceil(max((urange[2] - urange[1]) * 20)), resolution)
+  local n = max(math.ceil(max((vrange[2] - vrange[1]) * 20)), resolution)
   local u = linspace(urange[1], urange[2], m)
   local v = linspace(vrange[1], vrange[2], n)
   for i = 1, m do
@@ -1891,11 +1900,12 @@ end -- parametricsurface3d
 --// function parametriccurve3d(xyz, trange, title)
 -- xyz = { ... }, the parametric equations, x(t), y(t), z(t), in order, of a space curve,
 -- trange is the range of t
-function parametriccurve3d(xyz, trange, title)
+function parametriccurve3d(xyz, trange, title, resolution)
   trange[1], trange[2] = _correct_range(trange[1], trange[2])
+  resolution = _set_resolution(resolution)
 
   local x, y, z
-  local n = math.max(math.ceil((trange[2] - trange[1]) * 20), 1000)
+  local n = math.max(math.ceil((trange[2] - trange[1]) * 50), resolution)
   local t = linspace(trange[1], trange[2], n)
   x = map(xyz[1], t)
   y = map(xyz[2], t)
@@ -2389,11 +2399,12 @@ function text(x, y, txt)
   return {'text', trace}
 end -- text
 
-function parametriccurve2d(xy, x, style)
+function parametriccurve2d(xy, x, style, resolution)
   x = x or {-5, 5}
   x[1], x[2] = _correct_range(x[1], x[2])
+  resolution = _set_resolution(resolution)
   local data = {'graph'}
-  x = linspace(x[1], x[2], math.max(math.ceil((x[2] - x[1]) * 20), 1000))
+  x = linspace(x[1], x[2], math.max(math.ceil((x[2] - x[1]) * 50), resolution))
   data[2] = map(xy[1], x)
   data[3] = map(xy[2], x)
   if style == nil then
@@ -2404,14 +2415,15 @@ function parametriccurve2d(xy, x, style)
   return data
 end -- parametriccurve2d
 
-function polarcurve2d(r, trange, style)
+function polarcurve2d(r, trange, style, resolution)
   if type(r) == 'number' then
     local f = r
     r = function(t) return f end
   end
   trange = trange or {0, 2*pi}
   trange[1], trange[2] = _correct_range(trange[1], trange[2])
-  trange = linspace(trange[1], trange[2], math.max(200, math.ceil((trange[2] - trange[1])*100)))
+  resolution = _set_resolution(resolution)
+  trange = linspace(trange[1], trange[2], math.max(math.ceil((trange[2] - trange[1]) * 50), resolution))
   local data = {'graph'}
   data[2] = map(function(t) return r(t) * math.cos(t) end, trange)
   data[3] = map(function(t) return r(t) * math.sin(t) end, trange)
