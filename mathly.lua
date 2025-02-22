@@ -1262,7 +1262,7 @@ local function _create_table( row, col, val, metaq )
   if metaq == nil then metaq = false end
   local x = {}
   if col == nil then col = row end
-  if val == 'random' then
+  if val == nil or val == 'random' then
     -- math.randomseed(os.time()) -- keep generating same seq? Lua 5.4.6
     for i = 1,row do
       x[i] = {}
