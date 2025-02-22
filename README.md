@@ -204,7 +204,7 @@ plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, tit
 plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
 plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
 
-plot(polarcurve2d(function(t) return t*math.cos(math.sqrt(t)) end, {0, 30*pi}))
+plot(polarcurve2d(function(t) return t*math.cos(math.sqrt(t)) end, {0, 35*pi}))
 
 axissquare()
 do
