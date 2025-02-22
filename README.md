@@ -207,9 +207,11 @@ plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(
 plot(polarcurve2d(function(t) return t*math.cos(math.sqrt(t)) end, {0,100}))
 
 axissquare()
-function x(t) t = 3 * t; return math.cos(t)/(1 + math.sin(t)^2) end
-function y(t) t = 5 * t; return math.sin(t)*math.cos(t)/(1 + math.sin(t)^2) end
-plot(parametriccurve2d({x, y}, {-4, 4}))
+do
+  local function x(t) t = 3 * t; return math.cos(t)/(1 + math.sin(t)^2) end
+  local function y(t) t = 5 * t; return math.sin(t)*math.cos(t)/(1 + math.sin(t)^2) end
+  plot(parametriccurve2d({x, y}, {0, 2*pi}))
+end
 ```
 
 ### A more meaningful example - Quadratic splines using Lagrange interpolating polynomials
