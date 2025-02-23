@@ -1799,6 +1799,8 @@ local _3d_plotq = false
 -- if f is a function, xrange = {xstart, xstop}, y = {ystart, ystop}
 -- otherwise, X = f, Y = xrange, Z = yrange, which allows users to set up data and use it to display a graph
 function plot3d(f, xrange, yrange, title, resolution)
+  if xrange == nil then xrange = {-5, 5} end
+  if yrange == nil then yrange = {-5, 5} end
   local X, Y, Z = {}, {}, {}
   if type(f) == 'function' then
     xrange[1], xrange[2] = _correct_range(xrange[1], xrange[2])
