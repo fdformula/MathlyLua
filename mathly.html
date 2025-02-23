@@ -1431,7 +1431,7 @@ disp(sort({2, 0, 2, 4}))
 <h4>&bull; &nbsp; <a name=plotsphericalsurface3d href=#mathly><code>plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)</code></a></h4>
 <p>Plot spherical function <code>rho(theta, phi)</code>, where theta is in the range <code>thetarange = {θ1, θ2}</code>
 and <code>phi</code> in the range <code>phirange = {φ1, φ2}</code>. If <code>rho</code> is a number, plot a sphere with radius <code>rho</code>.</p>
-<p><code>resolution</code>? See <a href=#resol><code>parametric2</code> and <code>polarcurve2d</code></a>.</p>
+<p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
 <pre><code>require('mathly')
 plotsphericalsurface3d(1, {0, 2*pi}, {0, pi}, 'Unit Sphere')
 plotsphericalsurface3d(function(theta, phi) return theta + 2 * phi end, {0, 4*pi}, {0, pi})
@@ -1666,7 +1666,7 @@ Y = {{y1, y2, ..., yn}, {y1, y2, ..., yn}, ..., {y1, y2, ..., yn}}
 Z = {{z11,  ...,  z1n}, {z21,  ...,  z2n}, ..., {zn1,  ...,  zn2}}
 </pre></code>
 <p>where <code>zij = f(xi, yj)</code>, if a surface is defined by <code>z = f(x, y)</code>.</p>
-<p><code>resolution</code>? See <a href=#resol><code>parametric2</code> and <code>polarcurve2d</code></a>.</p>
+<p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
 <pre><code>require 'mathly'
 plot3d(function(x, y) return x^2 + y^2 end, {-3, 3}, {-3, 3}, 'Demo')
 
@@ -1714,9 +1714,9 @@ plot(x, cos(x), text(0, -0.2, 'Demo', {family = 'Sans Serif', size = 28, color =
 <tr><td><code>'fs'</code></td><td> - </td><td>Fill to Self</td></tr>
 </tbody></table>
 <p>Other specification shortcuts, see <a href=#plotspecs><code>plot</code></a>.</p>
-<p>&#x2713; &nbsp; <a name=resol></a>Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, <a href=#plotparametricsurface3d>plotparametricsurface3d</a>, <a href=#plot3d>plot3d</a>, <a href=#polarcurve2d>polarcurve2d</a></code>, and <a href=#plotsphericalsurface3d><code>plotsphericalsurface3d</code></a>,
-each take a last argument, the minimum <code>resolution</code> (default: 100 for a surface, or 500 for a curve), for users to control the smoothness of a plotted curve or surface. A larger value means
-better smoothness and requires more computing time.</p>
+<p>&#x2713; &nbsp; <a name=resol></a>Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#plot3d>plot3d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, <a href=#plotparametricsurface3d>plotparametricsurface3d</a>, <a href=#plotsphericalsurface3d><code>plotsphericalsurface3d</code></a>, and <a href=#polarcurve2d>polarcurve2d</a></code>,
+each take a last argument, the minimum <code>resolution</code> (default: 100 for a surface, or 500 for a curve), for users to control the smoothness of a plotted curve or surface if needed.
+A larger value means better smoothness and requires more computing time.</p>
 <pre><code>require 'mathly'
 
 plot(math.sin, point({{-3, 2}, {2, -1}, {3.2, 2}}), point(-1, 1, {symbol='circle-open', size=18, color='red'}))
@@ -1761,7 +1761,7 @@ plot({layout={width=1900, height=1300, grid={rows=2, columns=3}, title='Example'
 
 <h4>&bull; &nbsp; <a name=plotparametriccurve3d href=#mathly><code>plotparametriccurve3d({x(t), y(t), z(t)}, trange, title, resolution)</code></a></h4>
 <p>Plot a space curve defined by <code>{x(t), y(t), z(t)}</code>.</p>
-<p><code>resolution</code>? See <a href=#resol><code>parametric2</code> and <code>polarcurve2d</code></a>.</p>
+<p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
 <pre><code>require 'mathly'
 plotparametriccurve3d(
   {function(t) return math.cos(t) end,
@@ -1776,7 +1776,7 @@ plotparametriccurve3d(
 
 <h4>&bull; &nbsp; <a name=plotparametricsurface3d href=#mathly><code>plotparametricsurface3d({x(u, v), y(u, v), z(u,v)}, urange, vrange, title, resolution)</a></code></h4>
 <p>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u,v)</code>.</p>
-<p><code>resolution</code>? See <a href=#resol><code>parametric2</code> and <code>polarcurve2d</code></a>.</p>
+<p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
 <pre><code>require 'mathly'
 plotparametricsurface3d(
   {function(u,v) return u end,
