@@ -21,15 +21,15 @@ API and Usage
 
     all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display,
     dot, expand, eye, flatten, fliplr, flipud, format, hasindex, horzcat,
-    inv, isinteger, ismember, lagrangepoly, length, linsolve, linspace, lu,
-    map, max, mean, min, norm, ones, polynomial, polyval, printf, prod, qr,
-    rand, randi, range, remake, repmat, reshape, rr, rref, save, select, seq,
-    size, sort, sprintf, std, strcat, submatrix, subtable, sum, tblcat,
-    text, tic, toc, transpose, tt, unique, var, vertcat, who, zeros
+    inv, iseven, isinteger, ismember, isodd, lagrangepoly, length, linsolve,
+    linspace, lu, map, max, mean, min, norm, ones, polynomial, polyval, printf,
+    prod, qr, rand, randi, range, remake, repmat, reshape, rr, rref, save,
+    select, seq, size, sort, sprintf, std, strcat, submatrix, subtable, sum,
+    tblcat, text, tic, toc, transpose, tt, unique, var, vertcat, who, zeros
 
-    arc, circle, line, parametriccurve2d, parametriccurve3d,
-    parametricsurface3d, plot, plot3d, point, polarcurve2d, polygon,
-    scatter, sphericalplot3d, text, wedge
+    arc, circle, line, parametriccurve2d, plot, plot3d, plotparametriccurve3d,
+    plotparametricsurface3d, plotsphericalsurface3d, point, polarcurve2d, polygon,
+    scatter, text, wedge
 
     boxplot, freqpolygon, hist, hist1, histfreqpolygon, pareto, pie
 
@@ -114,6 +114,9 @@ function input(prompt, s)
     return eval(ans)
   end
 end
+
+function iseven(x) return x % 2 == 0 end
+function isodd(x)  return x % 2 == 1 end
 
 --// _adjust_index(siz, start, stop, normalq)
 -- adjust values of indices, start and stop. they must be in the range from 1 to siz. the can be -1, -2, ...
@@ -1777,7 +1780,7 @@ end
 
 local function _set_resolution(r, n)
   n = n or 500
-  if r == nil or type(r) ~= 'number' or r < 500 then r = 500 end
+  if r == nil or type(r) ~= 'number' or r < n then r = n end
   return r
 end
 
@@ -1830,10 +1833,10 @@ function plot3d(f, xrange, yrange, title, resolution)
   _3d_plotq = false
 end -- plot3d
 
---// function sphericalplot3d(rho, thetarange, phirange, title)
+--// function plotsphericalsurface3d(rho, thetarange, phirange, title)
 -- plot rho, a spherical function of theta and phi, where theta is in the range thetarange = {θ1, θ2}
 -- and phi is in the range phirange = {φ1, φ2}
-function sphericalplot3d(rho, thetarange, phirange, title, resolution)
+function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
   if type(rho) == 'number' then
     local tmp = rho
     rho = function(t, p) return tmp end
@@ -1860,11 +1863,11 @@ function sphericalplot3d(rho, thetarange, phirange, title, resolution)
     Z[i] = z
   end
   plot3d(X, Y, Z, title)
-end -- sphericalplot3d
+end -- plotsphericalsurface3d
 
---// function parametricsurface3d(x, y, z, urange, vrange, title)
+--// function plotparametricsurface3d(x, y, z, urange, vrange, title)
 -- Plot a surface defined by xyz = {x(u, v), y(u, v), z(u,v)}.
-function parametricsurface3d(xyz, urange, vrange, title, resolution)
+function plotparametricsurface3d(xyz, urange, vrange, title, resolution)
   urange[1], urange[2] = _correct_range(urange[1], urange[2])
   vrange[1], vrange[2] = _correct_range(vrange[1], vrange[2])
   resolution = _set_resolution(resolution, 100)
@@ -1886,12 +1889,12 @@ function parametricsurface3d(xyz, urange, vrange, title, resolution)
     z[i] = ztmp
   end
   plot3d(x, y, z, title)
-end -- parametricsurface3d
+end -- plotparametricsurface3d
 
---// function parametriccurve3d(xyz, trange, title)
+--// function plotparametriccurve3d(xyz, trange, title)
 -- xyz = { ... }, the parametric equations, x(t), y(t), z(t), in order, of a space curve,
 -- trange is the range of t
-function parametriccurve3d(xyz, trange, title, resolution)
+function plotparametriccurve3d(xyz, trange, title, resolution)
   trange[1], trange[2] = _correct_range(trange[1], trange[2])
   resolution = _set_resolution(resolution)
 
@@ -1913,7 +1916,7 @@ function parametriccurve3d(xyz, trange, title, resolution)
   plotly.gridq = false
   plotly.layout = {}
   _3d_plotq = false
-end -- parametriccurve3d
+end -- plotparametriccurve3d
 
 local function _freq_distro(x, nbins, xmin, xmax, width)
   local freqs
@@ -2380,9 +2383,15 @@ function point(x, y, style)  -- plot a point at (x, y)
   return data
 end -- point
 
-function text(x, y, txt)
+--// function text(x, y, txt, style)
+-- write text txt at (x, y) on a graph)
+--
+-- style: {family = 'sans serif', size = 18, color = '#ff0000'}
+function text(x, y, txt, style)
+  style = style or {color = 'black'}
   local trace = {{x}, {y}}
   trace['text'] = txt
+  trace['textfont'] = style
   trace['mode'] = 'text'
   trace['type'] = 'scatter'
   trace['textposition'] = 'bottom'
@@ -2390,14 +2399,16 @@ function text(x, y, txt)
   return {'text', trace}
 end -- text
 
-function parametriccurve2d(xy, x, style, resolution)
-  x = x or {-5, 5}
-  x[1], x[2] = _correct_range(x[1], x[2])
+--// function parametriccurve2d(xy, trange, style, resolution)
+-- xy = {x(t), y(t)}
+function parametriccurve2d(xy, trange, style, resolution)
+  trange = trange or {-5, 5}
+  trange[1], trange[2] = _correct_range(trange[1], trange[2])
   resolution = _set_resolution(resolution)
   local data = {'graph'}
-  x = linspace(x[1], x[2], math.max(math.ceil((x[2] - x[1]) * 50), resolution))
-  data[2] = map(xy[1], x)
-  data[3] = map(xy[2], x)
+  trange = linspace(trange[1], trange[2], math.max(math.ceil((trange[2] - trange[1]) * 50), resolution))
+  data[2] = map(xy[1], trange)
+  data[3] = map(xy[2], trange)
   if style == nil then
     data[4] = '-'
   else
@@ -2406,6 +2417,8 @@ function parametriccurve2d(xy, x, style, resolution)
   return data
 end -- parametriccurve2d
 
+--//function polarcurve2d(r, trange, style, resolution)
+-- r(θ), a polar function
 function polarcurve2d(r, trange, style, resolution)
   if type(r) == 'number' then
     local f = r
@@ -2426,6 +2439,8 @@ function polarcurve2d(r, trange, style, resolution)
   return data
 end -- polarcurve2d
 
+--// function scatter(x, y, style)
+-- x and y are tables of the same size
 function scatter(x, y, style)
   x = flatten(x)
   y = flatten(y)
