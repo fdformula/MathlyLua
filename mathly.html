@@ -1436,6 +1436,7 @@ and <code>φ</code> in the range <code>φrange = {φ1, φ2}</code> (default: <co
 
 plotsphericalsurface3d(1)
 plotsphericalsurface3d(function(theta, phi) return theta + 2 * phi end, {0, 4*pi}, nil, 'Demo')
+plotsphericalsurface3d(function(t, p) return 2 + sin(5*p + 7*t) end)  -- https://www.mathworks.com/help/symbolic/transform-spherical-coordinates-and-plot.html
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=var></a><a name=std href=#mathly><code>std(x, opt)</code>, <code>var(x, opt)</code></a></h4>
@@ -1742,10 +1743,17 @@ plot(x, cos(x), x, sin(x), '-rff', X, cos(X), X, sin(X)) -- shade part of  ...
 axissquare()
 plot(
   polarcurve2d(1.5),
-  polarcurve2d(function(t) return math.sqrt(t) * math.sin(t) end, {0, 4*pi}, '-b'),
+  polarcurve2d(function(t) return math.sqrt(t) * math.cos(t) end, {0, 4*pi}, '-b'),
   polarcurve2d(function(x) return math.cos(4*x) end, {0, 2*pi}, '-fs'),
   parametriccurve2d({math.cos, math.sin}, {0, pi/2}, '-gfs')
 )
+
+do -- https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)
+  local function f(t) return (exp(cos(t)) - 2*cos(4*t) - sin(t/12)^5) end
+  local function x(t) return sin(t) * f(t) end
+  local function y(t) return cos(t) * f(t) end
+  plot(parametriccurve2d({x, y}, {0, 12*pi}), {layout={title = "Butterfly Curve"}})
+end
 
 axisnotsquare()
 r = function(t) return math.sin(1.6 * t^2) + math.cos(4 * t)^5 end

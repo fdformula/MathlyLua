@@ -1702,11 +1702,12 @@ function plot(...)
             elseif type(args[i]) == 'table' then -- is it options?
               local optq = false
               for k, v in pairs(args[i]) do
-                if type(k) == 'string' then k = string.lower(k) end
-                optq = k == 'color' or k == 'size' or k == 'width' or k == 'mode'
-                optq = optq or k == 'xlabel' or k == 'ylabel' or k == 'title'
-                optq = optq or k == 'symbol' or k == 'name' or k == 'layout'
-                if optq then break end
+                if type(k) == 'string' then
+                  k = string.lower(k)
+                  optq = ismember(k, {'layout', 'color', 'size', 'width', 'mode',
+                                      'xlabel', 'ylabel', 'title', 'symbol', 'name'})
+                  if optq then break end
+                end
               end
               if optq then -- this arg is options
                 for k, v in pairs(args[i]) do
@@ -1745,6 +1746,14 @@ function plot(...)
     local names = {}
     for k, v in pairs(layout_arg[i]) do -- layout settings are merged into the 1st trace
       if k ~= 'names' then traces[1][k] = v end
+      if k == 'layout' then
+        for k_, v_ in pairs(v) do
+          if type(k_) == 'string' then
+            k_ = string.lower(k_)
+            if ismember(k_, {'xlabel', 'ylabel', 'title', 'name'}) then traces[1][k_] = v_ end
+          end
+        end
+      end
     end
     if layout_arg[i]['names'] ~= nil then names = layout_arg[i]['names'] end
     if #names > 0 then
@@ -1752,6 +1761,7 @@ function plot(...)
         traces[j]['name'] = names[j]
       end
     end
+    i = i + 1
   end
 
   if adjustxrangeq then
