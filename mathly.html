@@ -1428,13 +1428,14 @@ disp(sort({2, 0, 2, 4}))
 -- {0, 2, 2, 4}
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=plotsphericalsurface3d href=#mathly><code>plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)</code></a></h4>
-<p>Plot spherical function <code>rho(theta, phi)</code>, where theta is in the range <code>thetarange = {θ1, θ2}</code>
-and <code>phi</code> in the range <code>phirange = {φ1, φ2}</code>. If <code>rho</code> is a number, plot a sphere with radius <code>rho</code>.</p>
+<h4>&bull; &nbsp; <a name=plotsphericalsurface3d href=#mathly><code>plotsphericalsurface3d(ρ(θ,φ), θrange, φrange, title, resolution)</code></a></h4>
+<p>Plot spherical function <code>ρ(θ, φ)</code>, where <code>θ</code> is in the range <code>θrange = {θ1, θ2}</code> (default: <code>{0, 2*pi}</code>)
+and <code>φ</code> in the range <code>φrange = {φ1, φ2}</code> (default: <code>{0, pi}</code>). If <code>ρ(θ, φ)</code> is a number, the radius of a sphere centered at the origin, plot the sphere.</p>
 <p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
 <pre><code>require('mathly')
-plotsphericalsurface3d(1, {0, 2*pi}, {0, pi}, 'Unit Sphere')
-plotsphericalsurface3d(function(theta, phi) return theta + 2 * phi end, {0, 4*pi}, {0, pi})
+
+plotsphericalsurface3d(1)
+plotsphericalsurface3d(function(theta, phi) return theta + 2 * phi end, {0, 4*pi}, nil, 'Demo')
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=var></a><a name=std href=#mathly><code>std(x, opt)</code>, <code>var(x, opt)</code></a></h4>
@@ -1657,7 +1658,7 @@ plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(
 <h4>&bull; &nbsp; <a name=plot3d href=#mathly><code>plot3d(f, xrange, yrange, title, resolution)</code></a></h4>
 <p>Plot a surface defined by <code>z = f(x, y)</code>. It is not designed as complicated as <code>plot(...)</code> for 2D graphs. It can only plot one surface at a time.</p>
 <p>If <code>f</code> is a function, <code>xrange = {xstart, xstop}</code> and <code>y = {ystart, ystop}</code> define the ranges
-for <code>x</code> and <code>y</code>; otherwise, the first 3 arguments are tables of <code>x, y</code>, and <code>z</code> values,
+for <code>x</code> and <code>y</code> (each default: <code>{-5, 5}</code>), respectively; otherwise, the first 3 arguments are tables of <code>x, y</code>, and <code>z</code> values,
 which allows users to set up data and use this function to display a graph. Given that <code>x = {x1, x2, ..., xn}</code> and
 <code>y = {y1, y2, ..., yn}</code>, the data passed to <code>plot3(X, Y, Z, title)</code> are as follows:</p>
 <code><pre>
@@ -1668,7 +1669,7 @@ Z = {{z11,  ...,  z1n}, {z21,  ...,  z2n}, ..., {zn1,  ...,  zn2}}
 <p>where <code>zij = f(xi, yj)</code>, if a surface is defined by <code>z = f(x, y)</code>.</p>
 <p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
 <pre><code>require 'mathly'
-plot3d(function(x, y) return x^2 + y^2 end, {-3, 3}, {-3, 3}, 'Demo')
+plot3d(function(x, y) return x^2 + y^2 end)
 
 n = 100
 x = linspace(0, 2*pi, n)
@@ -1698,9 +1699,9 @@ plot(x, cos(x), text(0, -0.2, 'Demo', {family = 'Sans Serif', size = 28, color =
 <tr><td><code>arc(radius, center, angles, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot an arc of a circle, where <code>angles: {angle1, angle2}</code> (default: <code>{0, 2&pi;}</code>).</td></tr>
 <tr><td><code>circle(radius, center, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a circle, where <code>center: {x, y} (default: {0, 0})</code>.</td></tr>
 <tr><td><code>line(point1, point2, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a straight line, where <code>point1 = {x1, y1}</code> and <code>point2 = {x2, y2}</code>.</td></tr>
-<tr><td><code>parametriccurve2d({x(t), y(t)}, range, style, resolution)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a parametric curve, where <code>x(t)</code> and <code>y(t)</code> are parametric functions, and <code>range = {t1, t2}</code> indicating <code>t</code> changes from <code>t1</code> to <code>t2</code>.</td></tr>
+<tr><td><code>parametriccurve2d({x(t), y(t)}, range, style, resolution)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a parametric curve, where <code>x(t)</code> and <code>y(t)</code> are parametric functions, and <code>range = {t1, t2}</code> (default: <code>{-5, 5}</code>) indicating <code>t</code> changes from <code>t1</code> to <code>t2</code>.</td></tr>
 <tr><td><code>point(x, y, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a point, where <code>(x, y)</code> are the coordinates of the point. Note: <code>point({{x1, y1}, {x2, y2}}, style)</code> is for plotting multiple points.</td></tr>
-<tr><td><code>polarcurve2d(r(&theta;), range, style, resolution)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polar curve, where <code>r(&theta;)</code> is a polar function, and <code>range = {&theta;1, &theta;2}</code> indicating <code>&theta;</code> changes from &theta;1 to &theta;2. If <code>r</code> is a number, plot a circle with radius <code>r</code>.</td></tr>
+<tr><td><code>polarcurve2d(r(&theta;), range, style, resolution)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polar curve, where <code>r(&theta;)</code> is a polar function, and <code>range = {&theta;1, &theta;2}</code> (default: <code>{0, 2*pi}</code>) indicating <code>&theta;</code> changes from &theta;1 to &theta;2. If <code>r</code> is a number, plot a circle with radius <code>r</code>.</td></tr>
 <tr><td><code>polygon(vertices, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a polygon, where <code>vertices = {{x1, y1}, {x2, y2}, ..., {xn, yn}}</code> specifies the coordinates of each vertex in order so that there is an edge connecting any two consecutive vertices. There is an edge connecting <code>{x1, y1}</code> and <code>{xn, yn}</code>.</td></tr>
 <tr><td><code>scatter(x, y, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a scatter plot, where <code>x = {x1, x2 ,...}</code> and <code>y = {y1, y2, ...}</code> specify the coordinates of all points <code>{x1, y1}, {x2, y2}, ...</code></td></tr>
 <tr><td><code>wedge(radius, center, angles, style)</code></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a wedge of a disk, where <code>angles = {&theta;1, &theta;2}</code> indicating &theta; changes from &theta;1 to &theta;2.</td></tr>
@@ -1780,11 +1781,6 @@ plotparametriccurve3d(
 <pre><code>require 'mathly'
 plotparametricsurface3d(
   {function(u,v) return u end,
-   function(u,v) return math.sin(u) + v end,
-   function(u,v) return v^2 end}, {-3, 3}, {-3, 3})
-
-plotparametricsurface3d(
-  {function(u,v) return u end,
    function(u,v) return v end,
    function(u,v) return math.sqrt(u^2 + v^2) end}, {-3, 3}, {-3, 3}, 'Demo')
 
@@ -1793,25 +1789,27 @@ plotparametricsurface3d(
    function(u,v) return 2*math.sin(u)*math.sin(v) end,
    function(u,v) return 2*math.cos(v) end}, {0, pi}, {0, 2*pi})
 
-do
-  local x = function(u,v) return 2*math.sin(u)*math.cos(v) end
-  local y = function(u,v) return 2*math.sin(u)*math.sin(v) end
-  local z = function(u,v) return 2*math.cos(u) end
-  plotparametricsurface3d({x, y, z}, {0, pi}, {0, 2*pi})
+do -- https://plotly.com/python/3d-surface-plots/
+  local a, b, d = 1.32, 1, 0.8
+  local c = a^2 - b^2
+  local u, v = linspace(0, 2*pi, 100), linspace(0, 2*pi, 100)
+  local function x(u, v) return (d * (c - a * cos(u) * cos(v)) + b^2 * cos(u)) / (a - c * cos(u) * cos(v)) end
+  local function y(u, v) return b * sin(u) * (a - d*cos(v)) / (a - c * cos(u) * cos(v)) end
+  local function z(u, v) return b * sin(v) * (c*cos(u) - d) / (a - c * cos(u) * cos(v)) end
+  plotparametricsurface3d({x, y, z}, {0, 2*pi}, {0, 2*pi})
 end
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=showlegend></a><a name=shownotlegend></a><a name=shownotyaxis></a><a name=showyaxis></a><a name=shownotxaxis></a><a name=showxaxis></a><a name=axissquare></a><a name=axisnotsquare></a><a name=showaxes></a><a name=shownotaxes></a><a name=showgridlines></a><a name=shownotgridlines></a><a href=#mathly>axissquare, axisnotsquare; showaxes, shownotaxes ...</a></h4>
+<h4>&bull; &nbsp; <a name=showlegend></a><a name=shownotlegend></a><a name=shownotyaxis></a><a name=showyaxis></a><a name=shownotxaxis></a><a name=showxaxis></a><a name=axissquare></a><a name=axisnotsquare></a><a name=showaxes></a><a name=shownotaxes></a><a name=showgridlines></a><a name=shownotgridlines></a><a href=#mathly><code>axissquare, axisnotsquare; showaxes, shownotaxes ...</code></a></h4>
 <table><tbody>
 <tr><td><code>axissquare(),    axisnotsquare()</code></td><td> &nbsp; </td><td>Force or stop a square axis aspect ratio (default: not square)</td></tr>
 <tr><td><code>showaxes(),      shownotaxes()</code></td><td> &nbsp; </td><td>Show/hide axes (all default: show)</td></tr>
-<tr><td><code>showxaxis(),     shownotxaxis()</code></td><td> &nbsp; </td><td>Show/hide the x-axis</td></tr>
-<tr><td><code>showyaxis(),     shownotyaxis()</code></td><td> &nbsp; </td><td>Show/hide the y-axis</td></tr>
+<tr><td><code>showxaxis(),     shownotxaxis()</code></td><td> &nbsp; </td><td>Show/hide the <code>x</code>-axis</td></tr>
+<tr><td><code>showyaxis(),     shownotyaxis()</code></td><td> &nbsp; </td><td>Show/hide the <code>y</code>-axis</td></tr>
 <tr><td><code>showgridlines(), shownotgridlines()</code></td><td> &nbsp; </td><td>Show/hide gridlines</td></tr>
 <tr><td><code>showlegend(),    shownotlegend()</code></td><td> &nbsp; </td><td>Show/hide the legend</td></tr>
 </tbody></table>
 <p>Note: These functions are not valid for 3D graphs.</p>
-<p>Example: See <a href=#arc>pie</a>.</p>
 
 <h4>&bull; &nbsp; <a name=pareto></a><a name=freqpolygon></a><a name=histfreqpolygon></a><a name=hist></a><a name=hist1></a>
 <a name=pie href=#mathly><code>freqpolygon, hist, hist1, histfreqpolygon, pareto, pie</code></a></h4>

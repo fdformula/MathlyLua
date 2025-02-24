@@ -1843,6 +1843,8 @@ function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
     local tmp = rho
     rho = function(t, p) return tmp end
   end
+  thetarange = thetarange or {0, 2*pi}
+  phirange = phirange or {0, pi}
   thetarange[1], thetarange[2] = _correct_range(thetarange[1], thetarange[2])
   phirange[1], phirange[2] = _correct_range(phirange[1], phirange[2])
   resolution = _set_resolution(resolution, 100)
@@ -1850,15 +1852,15 @@ function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
   local X, Y, Z = {}, {}, {}
   local m = max(math.ceil(max((thetarange[2] - thetarange[1]) * 10)), resolution)
   local n = max(math.ceil(max((phirange[2] - phirange[1]) * 10)), resolution)
-  local thetas = linspace(thetarange[1], thetarange[2], m)
-  local phis = linspace(phirange[1], phirange[2], n)
+  local theta = linspace(thetarange[1], thetarange[2], m)
+  local phi = linspace(phirange[1], phirange[2], n)
 
   for i = 1, m do
     local x, y, z = {}, {}, {}
     for j = 1, n do
-      x[j] = rho(thetas[i], phis[j]) * math.sin(phis[j]) * math.cos(thetas[i])
-      y[j] = rho(thetas[i], phis[j]) * math.sin(phis[j]) * math.sin(thetas[i])
-      z[j] = rho(thetas[i], phis[j]) * math.cos(phis[j])
+      x[j] = rho(theta[i], phi[j]) * math.sin(phi[j]) * math.cos(theta[i])
+      y[j] = rho(theta[i], phi[j]) * math.sin(phi[j]) * math.sin(theta[i])
+      z[j] = rho(theta[i], phi[j]) * math.cos(phi[j])
     end
     X[i] = x
     Y[i] = y
