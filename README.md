@@ -2,7 +2,7 @@
 
 Mathly for [Lua](https://www.lua.org) is a Lua module which turns Lua into a tiny but powerful MATLAB. It provides a group of commonly
 used MATLAB functions and features, for example,  `linspace`, `zeros`, `rand`, `save`, convenient matrix operations,
-and even `plot`. They make coding and testing a thought/algorithm much easier and faster than working in most other
+and even `plot` and `plot3d`. They make coding and testing a thought/algorithm much easier and faster than working in most other
 programming languages. If there is anything many love the most about MATLAB, these tools are.
 
 Mathly uses Plotly JavaScript graphing tools (see https://plotly.com/javascript/) to plot graphs. Therefore, graphs are
