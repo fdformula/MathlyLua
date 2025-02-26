@@ -32,8 +32,8 @@ else
     local dir = ':/cygwin/home' -- in case https://cygwin.com/ is installed
     if string.find(home, dir, 2, true) ~= nil then
       home = 'c' .. dir
-    else
-      home = 'c:' .. home -- /Users/account
+    elseif string.match(home, '^/Users/') then  -- /Users/account
+      home = 'c:' .. home
     end
   end
   tmp_plot_html_file = home .. '/_tmp-mathly_plot-6_4.html'
