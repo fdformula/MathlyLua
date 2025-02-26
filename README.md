@@ -5,8 +5,8 @@ used MATLAB functions and features, for example,  `linspace`, `zeros`, `rand`, `
 and even `plot`. They make coding and testing a thought/algorithm much easier and faster than working in most other
 programming languages. If there is anything many love the most about MATLAB, these tools are.
 
-Mathly uses Plotly JavaScript graphing tools (see https://plotly.com/javascript/) to plot graphs of single-variable
-functions. Therefore, graphs are shown in an internet browser.
+Mathly uses Plotly JavaScript graphing tools (see https://plotly.com/javascript/) to plot graphs of functions. Therefore, graphs are
+shown in an internet browser.
 
 The entire mathly tool together with Lua is less than 5 MB, while providing enough features for instructors and
 college students to introduce and/or implement many numerical algorithms. Because it is super lightweight and fast as well,
