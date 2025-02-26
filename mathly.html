@@ -83,7 +83,7 @@ plotly-2.9.0.min.js
 (Linux) <code>/usr/local/share/lua/5.4/</code>
 </li></ol>
 <p><em>You may need to edit the file <code>browser-setting.lua</code>.</em> See comments in the very file.</p>
-<p>Note: The <code>*.lua</code> files can be compiled with <code>luac</code>. To use compiled modules, we set
+<p>&#x2713; &nbsp; The <code>*.lua</code> files can be compiled with <code>luac</code>. To use compiled modules, we set
 <code>package.path</code> first as follows:</p>
 <p><code>package.path = "./?.luac;;"</code></p>
 
@@ -196,7 +196,7 @@ disp(abs(x))
 disp(log(abs(x)))
 </code></pre>
 
-<p>Note: With each of these functions, should we use, say, <code>sin(x)</code> or <code>math.sin(x)</code>?
+<p>&#x2713; &nbsp; With each of these functions, should we use, say, <code>sin(x)</code> or <code>math.sin(x)</code>?
 <B>You can always use <code>sin(x)</code>. However, if you know <code>x</code> is a number, you may call
 <code>math.sin(x)</code> to get a little improvement in performance.</p></B>
 
@@ -359,7 +359,7 @@ if all of the elements of the corresponding column of the matrix make <code>f(x)
 <p>If <code>x</code> is a mathly matrix, it returns a row vector of 1's and 0's with each element indicating
 if there is any element of the corresponding column of the matrix which makes <code>f(x)</code> true.</p>
 <p>If <code>x</code> is a simple table, a row or column vector, return 1 if there is any element of the table which makes <code>f(x)</code> true.</p>
-<p>Note: <code>f(x)</code> returns true or false (default: <code>x ~= 0</code>). It makes the two functions more useful than those in MATLAB.</p></li>
+<p>&#x2713; &nbsp; <code>f(x)</code> returns true or false (default: <code>x ~= 0</code>). It makes the two functions more useful than those in MATLAB.</p></li>
 </ol>
 <pre><code>mathly = require 'mathly'
 A = mathly{{1, 2, 3}, {2, 3, 4}}
@@ -390,7 +390,7 @@ If you want full control, you can use functions <code>cc</code> or <code>rr</cod
 <tr><td></td><td><code>rr(x...)</code></td><td> </td><td> </td><td>Convert a table <code>x</code> into a row vector or return specified rows of a mathly matrix...</td></tr>
 <tr><td></td><td><code>tt(x...)</code></td><td> </td><td> </td><td>Convert a mathly matrix/vector or a table (of tables) <code>x</code> to an ordinary table and return a slice of it.</td></tr>
 </tbody></table>
-<p>Note: Why not <code>c</code>, <code>r</code>, and <code>t</code>? It is because they can easily be used
+<p>&#x2713; &nbsp; Why not <code>c</code>, <code>r</code>, and <code>t</code>? It is because they can easily be used
 as names of variables or so.</p>
 <p>&#x2713; &nbsp; <code>rr</code> and <code>cc</code> have same usage, except that one is about row(s) and the other is about column(s). Take <code>rr</code> as the example:</p>
 <table><tbody>
@@ -675,7 +675,7 @@ diag({2,3,4,5}, 1) + diag({1,2,3,4,5}) + diag({3,4,5,6}, -1) -- See also: <a nam
 
 <h4>&bull; &nbsp; <a name=disp href=#mathly><code>disp(A)</code></a> - Print a mathly matrix. If <code>A</code> is not a mathly matrix, <code>display</code> is called to print it.</h4>
 <h4>&bull; &nbsp; <a name=display href=#mathly><code>display(x)</code></a> - Print a table, including any mathly matrix, with structure.</h4>
-<p>Note: You can always use <code>disp</code> in all cases (except that you want to know the structure of a mathly matrix).</p>
+<p>&#x2713; &nbsp; You can always use <code>disp</code> in all cases (except that you want to know the structure of a mathly matrix).</p>
 <pre><code>require 'mathly'
 a = eye(3)
 disp(a)
@@ -1183,7 +1183,7 @@ disp(prod(a))
 <h4>&bull; &nbsp; <a name=qr href=#mathly><code>qr(A)</code></a></h4>
 <p>Return <code>Q</code> and <code>R</code> of QR factorization <code>A = QR</code>, where <code>A</code> is a <code>mxn</code> matrix, <code>Q</code> is a <code>mxn</code> matrix with orthonormal
 column vectors, and <code>R</code> is an invertible upper triangular <code>nxn</code> matrix.</p>
-<p>Note: mathly applies the Gram-Schmidt process and requires that <code>m &ge; n</code>.
+<p>&#x2713; &nbsp; mathly applies the Gram-Schmidt process and requires that <code>m &ge; n</code>.
 <pre><code>mathly = require('mathly')
 A = mathly{{1, 2, 3}, {2, 3, 4}, {-1, 0, 2}}
 Q, R = qr(A)
@@ -1309,7 +1309,7 @@ disp(c)
 
 <h4>&bull; &nbsp; <a name=reverse href=#mathly><code>reverse(tbl)</code></a></h4>
 <p>Return a table with order of elements in <code>tbl</code> reversed.</p>
-<p>Note: If <code>tbl</code> is a matrix, it is flattened columnwisely first to a table and then reversed.</p>
+<p>&#x2713; &nbsp; If <code>tbl</code> is a matrix, it is flattened columnwisely first to a table and then reversed.</p>
 <pre><code>require('mathly')
 a = seq(10)
 disp(a)
@@ -1361,7 +1361,7 @@ display((B^T)[3])
 
 <h4>&bull; &nbsp; <a name=save href=#mathly><code>save(datafile, ...)</code></a></h4>
 <p>Save specified or all user-defined variables and their values to file <code>datafile</code>.</p>
-<p>Note: If the name of <code>datafile</code> ends in <code>.m</code>, the data is saved in the format of MATLAB
+<p>&#x2713; &nbsp; If the name of <code>datafile</code> ends in <code>.m</code>, the data is saved in the format of MATLAB
 scripts. <em>Only matrices are saved as matrices.</em> All other types of tables will be flattened and
 saved as row vectors.</p>
 <pre><code>mathly = require 'mathly'
@@ -1414,7 +1414,7 @@ display(x)
 <p>Sort a table <code>tbl</code> and return the resulted table.</p>
 <p>Provided for convenience, it is almost exactly the same as <a href="manual.html#pdf-table.sort"><code>table.sort(tbl, compf)</code></a>.</p>
 <p>For <code>table.sort(tbl)</code>, <code>tbl</code> must be a variable rather than a specific table. Otherwise, say, <code>table.sort({2, 0, 2, 4})</code> actually does nothing.</p>
-<p>Note: <code>tbl</code> is changed if it is a variable.</p>
+<p>&#x2713; &nbsp; <code>tbl</code> is changed if it is a variable.</p>
 <pre><code>require('mathly')
 a = seq(10)
 disp(a)
@@ -1670,7 +1670,7 @@ Z = {{z11,  ...,  z1n}, {z21,  ...,  z2n}, ..., {zn1,  ...,  zn2}}
 <p>where <code>zij = f(xi, yj)</code>, if a surface is defined by <code>z = f(x, y)</code>.</p>
 <p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
 <pre><code>require 'mathly'
-plot3d(function(x, y) return x^2 + y^2 end)
+plot3d(function(x, y) return x^2 - y^2 end) -- saddle
 
 n = 100
 x = linspace(0, 2*pi, n)
@@ -1817,7 +1817,7 @@ end
 <tr><td><code>showgridlines(), shownotgridlines()</code></td><td> &nbsp; </td><td>Show/hide gridlines</td></tr>
 <tr><td><code>showlegend(),    shownotlegend()</code></td><td> &nbsp; </td><td>Show/hide the legend</td></tr>
 </tbody></table>
-<p>Note: These functions are not valid for 3D graphs.</p>
+<p>&#x2713; &nbsp; These functions are not valid for 3D graphs.</p>
 
 <h4>&bull; &nbsp; <a name=pareto></a><a name=freqpolygon></a><a name=histfreqpolygon></a><a name=hist></a><a name=hist1></a>
 <a name=pie href=#mathly><code>freqpolygon, hist, hist1, histfreqpolygon, pareto, pie</code></a></h4>

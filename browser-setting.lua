@@ -28,9 +28,13 @@ if home == nil then
   os.exit()
 else
   home = string.gsub(home, '\\', '/')
-  local dir = ':/cygwin/home' -- in case https://cygwin.com/ is installed
-  if string.find(home, dir, 2, true) ~= nil then
-    home = 'c' .. dir
+  if package.config:sub(1,1) == '\\' then -- windows
+    local dir = ':/cygwin/home' -- in case https://cygwin.com/ is installed
+    if string.find(home, dir, 2, true) ~= nil then
+      home = 'c' .. dir
+    else
+      home = 'c:' .. home -- /Users/account
+    end
   end
   tmp_plot_html_file = home .. '/_tmp-mathly_plot-6_4.html'
   tmp_eval_file = home .. '/_tmp-mathly_eval-6_4.lua'
