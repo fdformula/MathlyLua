@@ -620,6 +620,95 @@ local function _tostring1(x)
   end
 end
 
+--// function who()
+-- list all user defined variables (some may be defined by some loaded modules)
+-- if a list of variables are needed by other code, pass false to it: who(false)
+function who(usercalledq) -- ~R
+  if usercalledq == nil then usercalledq = true end
+  local list = {}
+  for k,v in pairs(_G) do
+    if type(v) ~= 'function' then
+      if not ismember(k,
+        {'e', 'eps', 'pi', 'phi', 'T', 'mathly', 'm', '_G', 'coroutine', 'utf8',
+         '_VERSION', 'io', 'package', 'os', 'arg', 'debug', 'string', 'table', 'math',
+         'linux_browser', 'mac_browser', 'win_browser', 'plotly_engine',
+         'tmp_eval_file', 'tmp_plot_html_file'}) then
+        list[#list + 1] = k
+      end
+    end
+  end
+  if usercalledq then -- print the list
+    if #list >= 1 then io.write(list[1]) end
+    for i = 2, #list do
+      io.write(', ', list[i])
+    end
+    io.write('\n')
+  else
+    return list
+  end
+end -- who
+
+--// function _vartostring_lua( x, firstq, titleq, printnowq )
+-- generate the string version of a variable y starting with 'y = '
+-- firstq    -- print ',' or not before printing an entry
+-- titleq    -- for save(...)
+-- printnowq -- for display(x) with large matrices
+local function _vartostring_lua( x, firstq, titleq, printnowq ) -- print x, for general purpose, 2/28/25
+  if titleq == nil then titleq = true end
+  if firstq == nil then firstq = true end
+
+  local function print1(x)
+    local typ = type(x)
+    local s = ''
+    if typ == 'string' then
+      s = "'" .. x .. "'"
+    elseif typ == 'boolean' then
+      if x then s = 'true' else s = 'false' end
+    elseif typ == 'number' then
+      s = tostring(x)
+    end
+    return s
+  end
+
+  local str = ''
+  if titleq then
+    str = str .. x .. ' = '
+    x = load('return ' .. x)()
+  end
+  local s = print1(x)
+  if #s > 0 then
+    if not firstq then str = str .. ', ' end
+    str = str .. s
+    if printnowq then printf(str); str = '' end
+  else
+    str = str .. '{'; firstq = true
+    local i = 1
+    for k, v in pairs(x) do
+      if not firstq then str = str .. ', ' end
+      if type(k) == 'string' then
+        str = str .. k .. ' = '
+      else -- type(k) is an index
+        while k > i do -- x = {1, 2, 3}; x[2] = nil -- Lua 5.4.6, x[3] == 3, #x == 3
+          str = str .. 'nil, '; i = i + 1
+        end
+      end
+      local s = print1(v)
+      if #s > 0 then
+        str = str .. s
+      else
+        if printnowq then printf(str); str = '' end
+        str = str .. _vartostring_lua(v, firstq, false)
+      end
+      if printnowq then printf(str); str = '' end
+      firstq = false
+      i = i + 1
+    end
+    str = str .. '}'
+  end
+  if titleq then str = str .. '\n\n' end
+  return str
+end -- _vartostring_lua
+
 --// disp( A )
 -- print a mathly matrix while display(x) prints a table with its structure
 -- disp({{1, 2, 3, 4}, {2, -3, 4, 5}, {3, 4, -5, 6}})
@@ -641,122 +730,11 @@ end -- disp
 
 --// display( x )
 -- print a table with its structure while disp(x) prints a matrix
--- display({1, 2, 3, {3, 4, 5, 6, 7, 8, {1, 2, {-5, {-6, 9}}, 8}}})
--- display({1, 2, opt = {height = 3, width = 5}})
-function display( x, userq ) -- print x, for general purpose
-  if userq == nil then userq = true end
-  local firstq = true
-  local typ = type(x)
-  local function print1(x)
-    local printedq = true
-    if typ == 'string' then
-      printf("'%s'", x)
-    elseif typ == 'boolean' then
-      if x then printf('true') else printf('false') end
-    elseif typ == 'number' then
-      printf(tostring(x))
-    else
-      printedq = false
-    end
-    return printedq
-  end
-  if print1(x) then
-  elseif typ == 'table' then
-    printf('{')
-    local i = 1
-    for k, v in pairs(x) do
-      if not firstq then printf(', ') else firstq = false end
-      if type(k) == 'string' then
-        printf('%s = ', k)
-      else -- type(k) is an index
-        while k > i do
-          printf('nil, '); i = i + 1
-        end
-      end
-      typ = type(v)
-      if print1(v) then
-      elseif typ == 'table' then
-        display(v, false)
-      else
-        io.write(v)
-      end
-      i = i + 1
-    end
-    printf('}')
-    if userq then printf('\n') end
-  end
-end -- display
-
---// function who()
--- list all user defined variables (some may be defined by some loaded modules)
--- if a list of variables are needed by other code, pass false to it: who(false)
-function who(usercalledq) -- ~R
-  if usercalledq == nil then usercalledq = true end
-  local list = {}
-  for k,v in pairs(_G) do
-    if type(v) ~= 'function' then
-      if not ismember(k, {'e', 'eps', 'pi', 'phi', 'T', 'mathly', 'm', '_G', 'coroutine',
-                          'utf8', '_VERSION', 'io', 'package', 'os', 'arg', 'debug',
-                          'string', 'table', 'math', 'linux_browser', 'mac_browser',
-                          'win_browser', 'plotly_engine', 'tmp_eval_file', 'tmp_plot_html_file'}) then
-        list[#list + 1] = k
-      end
-    end
-  end
-  if usercalledq then -- print the list
-    if #list >= 1 then io.write(list[1]) end
-    for i = 2, #list do
-      io.write(', ', list[i])
-    end
-    io.write('\n')
-  else
-    return list
-  end
-end -- who
-
--- vartostring_lua('y') gives the string version of variable y starting with 'y ='
-local function vartostring_lua( x, first_itemq, titleq )
-  if titleq == nil then titleq = true end
-  if first_itemq == nil then first_itemq = true end
-
-  local str = ''
-  if not first_itemq then str = ', ' end
-  if titleq then
-    str = str .. string.format("%s = ", x)
-    x = load('return ' .. x)()
-  end
-  if type(x) == 'string' then
-    str = str .. "'" .. x .. "'"
-  elseif type(x) == 'number' then
-    if isinteger(x) then
-      str = str .. string.format("%d", x)
-    else
-      str = str .. string.format("%.15f", x)
-    end
-  elseif type(x) == 'table' then
-    str = str .. '{'; first_itemq = true
-    for i = 1,#x do
-      if type(x[i]) ~= 'table' then
-        if not first_itemq then str = str .. ', ' end
-        if type(x[i]) == 'string' then
-          str = str .. "'" .. x[i] .. "'"
-        elseif type(x[i]) == 'number' then
-          if isinteger(x[i]) then
-            str = str .. string.format("%d", x[i])
-          else
-            str = str .. string.format("%.15f", x[i])
-          end
-        end
-      else
-        str = str .. vartostring_lua(x[i], first_itemq, false)
-      end
-      first_itemq = false
-    end
-    str = str .. '}'
-  end
-  if titleq then str = str .. '\n\n' end
-  return str
-end -- vartostring_lua
+-- display({1, 2, {3, 4, opt = {height = 3, width = 5}, 6, 'string', false}, 7, 8})
+function display( x ) -- print x, for general purpose
+  if x == nil then print('nil'); return end
+  print(_vartostring_lua(x, nil, false, true))
+end
 
 local function _ismatrixq(x)
   if type(x) ~= 'table' or type(x[1]) ~= 'table' then return false end
@@ -770,9 +748,9 @@ local function _ismatrixq(x)
   return true
 end -- _ismatrixq
 
--- vartostring_matlab('y') gives the string version of variable y starting with 'y ='
-local function vartostring_matlab( x )
-  local s = vartostring_lua(x)
+-- generate the string version of MATLAB variable y starting with 'y ='
+local function _vartostring_matlab( x )
+  local s = _vartostring_lua(x, nil, true)
   x = load('return ' .. x)()
   if getmetatable(x) == mathly_meta or _ismatrixq(x) then -- save matrices
     s = string.gsub(s, "}, {", ";\n")
@@ -788,23 +766,10 @@ local function vartostring_matlab( x )
     s = string.gsub(s, "}", "]")
   end
   return s
-end -- vartostring_lua
+end -- _vartostring_matlab
 
 --// function save(fname, ...)
--- save variables and their values to a textfile
--- e.g., save('dw20241219.lua', 'x', 'y', 'y1') -- save variables, x, y, y1
---       save('dw20241219.lua') -- save all user defined variables
---[[
-require 'mathly'
-x = {1, 2, {3, 5, 6, 7, {9, {10, {10, 11, 12, {13}}}}}}
-y = rand(4, 5)
-save('dw20241219.lua', 'x', 'y')
-
--- recover the saved data:
-require 'mathly'
-dofile('dw20241219.lua')
-disp(x); disp(y)
---]]
+-- save variables and their values to a Lua or MATLAB script file
 function save(fname, ...)
   local vars = {}
   for _, v in pairs{...} do
@@ -831,9 +796,9 @@ function save(fname, ...)
         print(vars[i] .. ' is undefined.')
       else
         if matlabq then
-          file:write(vartostring_matlab(vars[i]))
+          file:write(_vartostring_matlab(vars[i]))
         else
-          file:write(vartostring_lua(vars[i]))
+          file:write(_vartostring_lua(vars[i], nil, true))
           if getmetatable(x) == mathly_meta then
             file:write(vars[i] .. ' = mathly(' .. vars[i] .. ')\n\n')
           end
@@ -1478,14 +1443,14 @@ function flatten(x)
   local j = 1
   local function flat(x)
     if type(x) == 'table' then
-      for i = 1, #x do
-        if type(x[i]) == 'table' then
-          flat(x[i])
-        else
-          y[j] = x[i]; j = j + 1
+      for k, v in pairs(x) do
+        if type(v) == 'table' then
+          flat(v)
+        elseif v ~= nil then
+          y[j] = v; j = j + 1
         end
       end
-    else
+    elseif x ~= nil then
       y[j] = x; j = j + 1
     end
   end
@@ -3233,8 +3198,8 @@ function vertcat( ... )
 end -- vertcat
 
 --// tblcat( ... )
--- merge elements and tables into a single table
--- e.g., tblcat(1, 2, {3, 4}, 5), tblcat(1, {2, {3, 4}}, {5, 6})
+-- merge elements and FLATTENED tables into a single table
+-- e.g., tblcat(1, {2, {3, 4}}, {{5, 6}, 7})
 function tblcat( ... )
   local args = {}
   for _, v in pairs{...} do
@@ -3244,11 +3209,7 @@ function tblcat( ... )
   local tbl = {}
   for i = 1, #args do
     if type(args[i]) == 'table' then
-      local x = args[i]
-      if type(args[i][1]) == 'table' and #args[i][1] == 1 then
-        -- convert a column vector to a table/row vector
-        x = flatten(args[i])
-      end
+      local x = flatten(args[i])
       for j = 1, #x do
         tbl[#tbl + 1] = x[j]
       end
@@ -3256,7 +3217,6 @@ function tblcat( ... )
       tbl[#tbl + 1] = args[i]
     end
   end
-
   return tbl
 end -- tblcat
 

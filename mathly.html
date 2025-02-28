@@ -315,7 +315,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#round><code>round(x, n)</code></a></td><td> </td><td>Round <code>x</code> to <code>n</code> decimal places.</td></tr>
 <tr><td><a href=#rr><code>rr(x..)</code></a></td><td> </td><td>Convert a table <code>x</code> into a row vector or return specified rows(s) of a mathly matrix...</td></tr>
 <tr><td><a href=#rref><code>rref(A, ..)</code></a></td><td> </td><td>Return the reduced row-echelon form of a mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
-<tr><td><a href=#save><code>save(datafile, ...)</code></a></td><td> </td><td>Save specified or all user-defined variables and their values to file <code>datafile</code>.</td></tr>
+<tr><td><a href=#save><code>save(datafile, ...)</code></a></td><td> </td><td>Save specified or all user-defined variables and their values to a Lua or MATLAB script file.</td></tr>
 <tr><td><a href=#scatter><code>scatter(x, y, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a scatter plot.</td></tr>
 <tr><td><a href=#select><code>select(tbl, f)</code></a></td><td> </td><td>Return elements of <code>tbl</code> that satisfy specified conditions.</td></tr>
 <tr><td><a href=#seq><code>seq(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</td></tr>
@@ -327,7 +327,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#submatrix><code>submatrix(A, i, j, m, n, sr, sc)</code></a></td><td> </td><td>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column wtih row step <code>sr</code> and column step <code>sc</code>.</td></tr>
 <tr><td><a href=#subtable><code>subtable(tbl, i, j, s)</code></a></td><td> </td><td>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code>.</td></tr>
 <tr><td><a href=#sum><code>sum(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the sum of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
-<tr><td><a href=#tblcat><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers or strings.</td></tr>
+<tr><td><a href=#tblcat><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Flatten and concatenate tables into a single table. Tables here may just be numbers, boolean values, or strings.</td></tr>
 <tr><td><a href=#text><code>text(x, y, txt, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to write a text string on a graph.</td></tr>
 <tr><td><a href=#tic><code>tic()</code></a></td><td> </td><td>Start a wall-clock timer.</td></tr>
 <tr><td><a href=#toc><code>toc</code></a></td><td> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
@@ -1389,9 +1389,9 @@ display((B^T)[3])
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=save href=#mathly><code>save(datafile, ...)</code></a></h4>
-<p>Save specified or all user-defined variables and their values to file <code>datafile</code>.</p>
+<p>Save specified or all user-defined variables and their values to Lua or MATLAB script file, <code>datafile</code>.</p>
 <p>&#x2713; &nbsp; If the name of <code>datafile</code> ends in <code>.m</code>, the data is saved in the format of MATLAB
-scripts. Matrices are saved as matrices. All other types of tables are flattened first and saved as ordinary tables.</p>
+scripts. Note: Data like <code>x = {1, true, 'abc', c = {2, {3}, d = 'bcd'}}</code> are undefined in MATLAB.</p>
 <p>&#x2713; &nbsp; <b>If no path is specified, the data file will be saved in the present working directory.</b></p>
 <pre><code>mathly = require 'mathly'
 a = randi(100, 3, 2)
@@ -1554,7 +1554,7 @@ disp(C)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=tblcat href=#mathly><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></code></a></h4>
-<p>Concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers or strings.</p>
+<p>Flatten and concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers, boolean values, or strings.</p>
 <p>See also: <a href=#strcat><code>strcat</code></a></p>
 <pre><code>m = require('mathly')
 x = {1, 2}
@@ -1565,6 +1565,9 @@ disp(tblcat(0, x, y, 10))
 z = m{{6}, {7}, {8}, {9}}
 disp(tblcat(x, z, 11)) -- a column vector is automatically converted into a row vector
 -- {1, 2, 6, 7, 8, 9, 11}
+
+disp(tblcat(1, {c = 2, a = {3, 4}}, true, {ab = {5, 6, 'OK'}, aa = 7}))
+-- {1, 2, 3, 4, true, 7, 5, 6, 'OK'}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=toc></a><a name=tic href=#mathly><code>tic()</code>, <code>toc(...)</code></a></h4>
