@@ -23,7 +23,7 @@ API and Usage
     dot, expand, eye, flatten, fliplr, flipud, format, hasindex, horzcat,
     inv, iseven, isinteger, ismember, isodd, lagrangepoly, length, linsolve,
     linspace, lu, map, max, mean, min, norm, ones, polynomial, polyval, printf,
-    prod, qr, rand, randi, range, remake, repmat, reshape, rr, rref, save,
+    prod, qr, rand, randi, range, remake, repmat, reshape, round, rr, rref, save,
     select, seq, size, sort, sprintf, std, strcat, submatrix, subtable, sum,
     tblcat, text, tic, toc, transpose, tt, unique, var, vertcat, who, zeros
 
@@ -117,6 +117,31 @@ end
 
 function iseven(x) return x % 2 == 0 end
 function isodd(x)  return x % 2 == 1 end
+
+function round(x, dplaces)
+  dplaces = dplaces or 0
+  local function round1(x)
+    local negativeq = false
+    if x < 0 then negativeq = true; x = -x end
+    if dplaces == 0 then
+      x = math.tointeger(math.floor(x + 0.5))
+    else
+      local tmp = 10 ^ dplaces
+      x = math.floor(x * tmp + 0.5) / tmp
+    end
+    if negativeq then x = -x end
+    return x
+  end
+  if type(x) ~= 'table' then
+    return round1(x)
+  else
+    local tmp = map(round1, x)
+    if getmetatable(x) == mathly_meta then
+      setmetatable(tmp, mathly_meta)
+    end
+    return tmp
+  end
+end -- round
 
 --// _adjust_index(siz, start, stop, normalq)
 -- adjust values of indices, start and stop. they must be in the range from 1 to siz. the can be -1, -2, ...
@@ -331,16 +356,16 @@ function apply( func, args ) return func(table.unpack(args)) end
 
 --// copy ( x )
 -- make a copy of x
-function copy( x )
+function copy( x ) -- for general purpose
   local y = {}
   if type(x) ~= 'table' then
     return x
   else
-    for i = 1,#x do
-      if type(x[i]) ~= 'table' then
-        y[#y + 1] = x[i]
+    for k, v in pairs(x) do
+      if type(v) ~= 'table' then
+        y[k] = v
       else
-        y[#y + 1] = copy(x[i])
+        y[k] = copy(v)
       end
     end
     if getmetatable( x ) == mathly_meta then
@@ -617,35 +642,49 @@ end -- disp
 --// display( x )
 -- print a table with its structure while disp(x) prints a matrix
 -- display({1, 2, 3, {3, 4, 5, 6, 7, 8, {1, 2, {-5, {-6, 9}}, 8}}})
-function display( x, first_itemq )
-  local calledbyuserq = first_itemq == nil
-  if calledbyuserq then
-    first_itemq = true
-    _set_disp_format(x)
-  end
-  if not first_itemq then io.write(', ') end
-  if type(x) ~= 'table' then
-    if type(x) == 'number' then
-      io.write(_tostring1(x))
+-- display({1, 2, opt = {height = 3, width = 5}})
+function display( x, userq ) -- print x, for general purpose
+  if userq == nil then userq = true end
+  local firstq = true
+  local typ = type(x)
+  local function print1(x)
+    local printedq = true
+    if typ == 'string' then
+      printf("'%s'", x)
+    elseif typ == 'boolean' then
+      if x then printf('true') else printf('false') end
+    elseif typ == 'number' then
+      printf(tostring(x))
     else
-      io.write(x)
+      printedq = false
     end
-  else
-    if calledbyuserq then _set_disp_format(x) end
-    io.write('{'); first_itemq = true
-    for i = 1,#x do
-      if type(x[i]) ~= 'table' then
-        if not first_itemq then io.write(', ') end
-        io.write(_tostring1(x[i]))
-      else
-        display(x[i], first_itemq)
-      end
-      first_itemq = false
-    end
-    io.write('}')
+    return printedq
   end
-  first_itemq = false
-  if calledbyuserq then io.write('\n') end
+  if print1(x) then
+  elseif typ == 'table' then
+    printf('{')
+    local i = 1
+    for k, v in pairs(x) do
+      if not firstq then printf(', ') else firstq = false end
+      if type(k) == 'string' then
+        printf('%s = ', k)
+      else -- type(k) is an index
+        while k > i do
+          printf('nil, '); i = i + 1
+        end
+      end
+      typ = type(v)
+      if print1(v) then
+      elseif typ == 'table' then
+        display(v, false)
+      else
+        io.write(v)
+      end
+      i = i + 1
+    end
+    printf('}')
+    if userq then printf('\n') end
+  end
 end -- display
 
 --// function who()
@@ -736,7 +775,7 @@ local function vartostring_matlab( x )
   local s = vartostring_lua(x)
   x = load('return ' .. x)()
   if getmetatable(x) == mathly_meta or _ismatrixq(x) then -- save matrices
-    s = string.gsub(s, "}, {", ";\r")
+    s = string.gsub(s, "}, {", ";\n")
     s = string.gsub(s, "{{", "[")
     s = string.gsub(s, "}}", "]")
   elseif type(x) == 'table' then -- flatten a table. matlab: [1,2,[5,6,[7,[8]]]] --> [1, 2, 5, 6, 7, 8]
@@ -769,16 +808,20 @@ disp(x); disp(y)
 function save(fname, ...)
   local vars = {}
   for _, v in pairs{...} do
-    vars[#vars + 1] = v
+    if type(v) == 'table' then
+      for i = 1, #v do vars[#vars + 1] = v[i] end
+    else
+      vars[#vars + 1] = v
+    end
   end
   if #vars == 0 then vars = who(false) end
 
   local matlabq = string.lower(string.sub(fname, #fname - 1)) == '.m'
   local file = io.open(fname, "w")
   if file ~= nil then
-    local stamp = ' mathly saved on ' .. os.date() .. '\r\r'
+    local stamp = ' mathly saved on ' .. os.date() .. '\n\n'
     if not matlabq then
-      file:write('--' .. stamp .. "mathly = require('mathly')\r\r")
+      file:write('--' .. stamp .. "mathly = require('mathly')\n\n")
     else
       file:write('%' .. stamp)
     end
@@ -792,7 +835,7 @@ function save(fname, ...)
         else
           file:write(vartostring_lua(vars[i]))
           if getmetatable(x) == mathly_meta then
-            file:write(vars[i] .. ' = mathly(' .. vars[i] .. ')\r\r')
+            file:write(vars[i] .. ' = mathly(' .. vars[i] .. ')\n\n')
           end
         end
       end

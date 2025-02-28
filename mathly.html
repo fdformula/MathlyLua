@@ -157,7 +157,7 @@ cc(x) * cc(x)             --
 
 Y = mathly(y)
 display(y)
-display(Y)                -- print a table, including a mathly matrix, with structure
+display(Y)                -- print a table of any type, including a mathly matrix, with structure
 disp(Y)                   -- print a mathly matrix
 
 A = randi({-10,10}, 4); B = copy(A); C = copy(A)
@@ -255,7 +255,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><code>det(A)</code></td><td> </td><td>Calculate the determinant of a square matrix <code>A</code>. <u>Note</u>: A is modified.</td></tr>
 <tr><td><a href=#diag><code>diag(A, ...)</code></a></td><td> </td><td>Return a column vector consisting of specified diagonal entries of mathly matrix <code>A</code> or create a mathly matrix with vector <code>A</code> as its diagonal entries.</td></tr>
 <tr><td><a href=#disp><code>disp(x)</code></a></td><td> </td><td>Print a mathly matrix.</td></tr>
-<tr><td><a href=#display><code>display(x)</code></a></td><td> </td><td>Print a table with structure.</td></tr>
+<tr><td><a href=#display><code>display(x)</code></a></td><td> </td><td>Print a table of any type, including mathly matrices, with structure.</td></tr>
 <tr><td><a href=#dot><code>dot(a, b)</code></a></td><td> </td><td>Calculate the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ..., a<sub>n</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ..., b<sub>n</sub>}</code>.</td></tr>
 <tr><td><a href=#eval><code>eval(str)</code></a></td><td> </td><td>Evaluate the expression in <code>str</code> and return the result.</td></tr>
 <tr><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrunk <code>mxn</code> mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
@@ -312,6 +312,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td><a href=#repmat><code>repmat(A, m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> block matrix with each entry a copy of matrix <code>A</code>.</td></tr>
 <tr><td><a href=#reshape><code>reshape(A, m, n)</code></a></td><td> </td><td>Rearrange existing elements in a table or mathly matrix <code>A</code> and return a new <code>mxn</code> mathly matrix.</td></tr>
 <tr><td><a href=#reverse><code>reverse(tbl)</code></a></td><td> </td><td>Return a table with order of elements in <code>tbl</code> reversed.</td></tr>
+<tr><td><a href=#round><code>round(x, n)</code></a></td><td> </td><td>Round <code>x</code> to <code>n</code> decimal places.</td></tr>
 <tr><td><a href=#rr><code>rr(x..)</code></a></td><td> </td><td>Convert a table <code>x</code> into a row vector or return specified rows(s) of a mathly matrix...</td></tr>
 <tr><td><a href=#rref><code>rref(A, ..)</code></a></td><td> </td><td>Return the reduced row-echelon form of a mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
 <tr><td><a href=#save><code>save(datafile, ...)</code></a></td><td> </td><td>Save specified or all user-defined variables and their values to file <code>datafile</code>.</td></tr>
@@ -380,6 +381,22 @@ any(x, function(x) return x % 2 == 0 end)
 function f(x, y, z) return x + y + z end
 apply(f, {1, 2, 3})
 -- 6
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=round href=#mathly><code>round(x, n)</code></a></h4>
+<p>Round <code>x</code> to <code>n</code> decimal places (default: 0).</p>
+<pre><code>require('mathly')
+a = mathly({{117.37826, 696.56562}, {594.53232, 636.11108}})
+round(a)
+-- 117  697
+-- 595  636
+
+round(a, 2)
+-- 117.3800  696.5700
+-- 594.5300  636.1100
+
+round(pi, 4)
+-- 3.1416
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=cc></a><a name=rr></a><a name=tt href=#mathly><code>cc(x...)</code>, <code>rr(x...)</code>, <code>tt(x)</code></a></h4>
@@ -598,6 +615,16 @@ disp(A)
 disp(B)
 -- 1 2
 -- 3 4
+
+x = {1, 2, hi = {2, 3, abc = {1, 2, bcd = 6, 2, 7, 'hello', true, false, cde = 1}}}
+display(x)
+-- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1, bcd = 6}}}
+y = copy(x)
+x.hi.abc.bcd = nil
+display(x)
+-- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1}}}
+display(y)
+-- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1, bcd = 6}}}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=cross href=#mathly><code>cross(a, b)</code></a></h4>
@@ -686,8 +713,10 @@ display(a)
 -- {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
 
 x = {1, 2, {3, 4, {5, 6, {7, 8, {9}}}}}
-display(x)
--- {1, 2, {3, 4, {5, 6, {7, 8, {9}}}}}
+disp(x) -- or display(x)
+
+x = {1, 2, hi = {2, 3, my = {1, 2, 3, you = 6, 5, 4, 2, 7, 'hello', true, false, 5, yes = 1}}}
+disp(x) -- or display(x)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=dot href=#mathly><code>dot(a, b)</code></a></h4>
@@ -1362,8 +1391,8 @@ display((B^T)[3])
 <h4>&bull; &nbsp; <a name=save href=#mathly><code>save(datafile, ...)</code></a></h4>
 <p>Save specified or all user-defined variables and their values to file <code>datafile</code>.</p>
 <p>&#x2713; &nbsp; If the name of <code>datafile</code> ends in <code>.m</code>, the data is saved in the format of MATLAB
-scripts. <em>Only matrices are saved as matrices.</em> All other types of tables will be flattened and
-saved as row vectors.</p>
+scripts. Matrices are saved as matrices. All other types of tables are flattened first and saved as ordinary tables.</p>
+<p>&#x2713; &nbsp; <b>If no path is specified, the data file will be saved in the present working directory.</b></p>
 <pre><code>mathly = require 'mathly'
 a = randi(100, 3, 2)
 disp(a)
@@ -1378,8 +1407,8 @@ save('data_1.lua')            -- save all user-defined variables and their value
 save('data_2.lua', 'a', 'b')  -- save variables a, b, and their values to a file, data_2.lua,
                               -- in present working directory
 
-save('data.m', 'a', 'b')      -- save variables a, b, and their values to a file, data.m, in the format
-                              -- of MATLAB scripts.
+save('data.m', {'a', 'b'})    -- save variables a, b, and their values to a file, data.m, in the format
+                              -- of MATLAB scripts
 
 clear()
 print(a, b, c)
