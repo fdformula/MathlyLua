@@ -73,7 +73,7 @@ package.path = "./?.luac;;"
 `..` (or `horzcat`), `all`, `any`, `apply`, `cc`, `clc`, `clear`, `copy`, `cross`, `det`, `diag`, `disp`, `display`, `div`, `dot`, `eval`, `expand`, `eye`,
 `flatten`,  `fliplr`, `flipud`, `format`, `hasindex`, `input`, `inv`, `isinteger`, `iseven`, `isodd`, `ismember`, `lagrangepoly`, `length`, `linsolve`,
 `linspace`, `lu`, `map`, `max`, `mean`, `min`, `mod`, `norm`, `ones`, `polynomial`, `polyval`, `printf`, `prod`, `qr`, `rand`, `randi`, `randn`, `range`,
-`remake`, `repmat`, `reshape`, `reverse`, `rr`, `rref`, `save`, `select`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`,
+`remake`, `repmat`, `reshape`, `reverse`, `round`, `rr`, `rref`, `save`, `select`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`,
 `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`
 
 `arc`, `circle`, `line`, `parametriccurve2d`, `plot`, `plot3d`, `plotparametriccurve3d`, `plotparametricsurface3d`, `plotsphericalsurface3d`, `point`,
