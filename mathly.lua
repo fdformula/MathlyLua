@@ -3406,9 +3406,13 @@ end -- mathly.mulnum
 
 -- Set division "/" behaviour
 mathly_meta.__div = function( m1,m2 )
-	assert(getmetatable( m1 ) == mathly_meta and type(m2) == 'number',
-	       'm1 / m2: m1 must be a mathly matrix while m2 must be a number.')
-	return mathly.mul( m1,1/m2 )
+  if type(m2) == 'number' then
+    return map(function(x) return x/m2 end, m1)
+  elseif type(m1) == 'number' then
+    return map(function(x) return m1/x end, m2)
+  else
+    error('m1 / m2: the type of m1 or m2 is not allowed.')
+  end
 end
 
 -- Set unary minus "-" behavior
