@@ -285,7 +285,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#linsolve><code>linsolve(A, b, opt)</code></a></td><td> </td><td>Solve a linear system <code>Ax = b</code> and return the solution. <u>Note</u>: Both <code>A</code> and <code>b</code> can be modified.</td></tr>
 <tr><td> </td><td><a href=#linspace><code>linspace(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</td></tr>
 <tr><td> </td><td><a href=#lu><code>lu(A)</code></a></td><td> </td><td>Return <code>L</code> and <code>U</code> of LU factorization <code>A = LU</code>.</td></tr>
-<tr><td> </td><td><a href=#map><code>map(f, tbl)</code></a></td><td> </td><td>Apply function <code>f</code> to each atomic element in table <code>tbl</code> and return the result with the same structure of the table.</td></tr>
+<tr><td> </td><td><a href=#map><code>map(f, tbl1, tbl2, ...)</code></a></td><td> </td><td>Apply function <code>f</code> to each corresponding atomic element in tables, <code>tbl1, tbl2, ...</code>, and return the result.</td></tr>
 <tr><td> </td><td><a href=#max><code>max(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the largest of all elements of the table; if it is a matrix, ...</td></tr>
 <tr><td> </td><td><a href=#mean><code>mean(x)</code></a></td><td> </td><td>Return mean value of numbers in <code>x</code>.</td></tr>
 <tr><td> </td><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
@@ -998,8 +998,9 @@ disp(L * U - A)
 -- 0.0000  0.0000  0.0000
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=map href=#mathly><code>map(f, tbl)</code></a></h4>
-<p>Apply function <code>f</code> to each atomic element in table <code>tbl</code> and return the result with the same structure of the table.</p>
+<h4>&bull; &nbsp; <a name=map href=#mathly><code>map(f, tbl1, tbl2, ...)</code></a></h4>
+<p>Apply function <code>f</code> to each corresponding atomic element in tables, <code>tbl1, tbl2, ...</code>, and return the result.</p>
+<p>&#x2713; &nbsp; <code>tbl1, tbl2, ...</code> must be tables of the same structure.
 <pre><code>m = require('mathly')
 a = range(1, 10) -- seq(1, 10) or seq(10)
 -- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
@@ -1008,8 +1009,7 @@ b = map(f, a)
 display(b)
 -- {1, 4, 9, 16, 25, 36, 49, 64, 81, 100}
 
-function g(x, y) return x + y end
-display(map(g, a, b))
+display(map(function(x, y) return x + y end, a, b)) -- x and y are taken from a and b, respectively
 -- {2, 6, 12, 20, 30, 42, 56, 72, 90, 110}
 
 x = {1, 2, {3, 4, {5, 6, {7}}}}
@@ -1027,6 +1027,8 @@ B = {{3, 4, 5}, {5, 6, 7}}
 C = map(function(x, y) return x * y end, A, B) -- MATHLAB: A .* B
 disp(C)
 -- {{3, 8, 15}, {10, 18, 28}}
+disp(map(function(x, y, z) return x + y - z end, A, B, C)) -- x, y, and z are taken from A, B, and C, respectively
+-- {{1, -2, -7}, {-3, -9, -17}}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=max></a><a name=min href=#mathly><code>max(x)</code>, <code>min(x))</code></a></h4>
