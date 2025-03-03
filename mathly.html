@@ -99,7 +99,7 @@ so on. For example, <code>{}</code>, <code>{'ab'}</code>, <code>{1, 2, 3}</code>
 are all tables.</p>
 
 <p><b>A mathly matrix is obtained/generated</b> by mathly 'constructor', functions like <code>zeros</code>, <code>ones</code>,
-<code>rand</code>, <code>randi</code>, <code>reshape</code>, <code>submatrix</code>, <code>c</code>, <code>r</code>, or
+<code>rand</code>, <code>randi</code>, <code>reshape</code>, <code>submatrix</code>, <code>cc</code>, <code>rr</code>, or
 matrix operations like <code>A^T</code>, <code>inv(A)</code>, <code>rref(B)</code>, and
 <code>2 * A  - 3 * B + 4</code>, given that <code>A</code> and <code>B</code> are <code>nxn</code> mathly matrices. An element in the
 <code>i</code>th row and <code>j</code>th column is addressed as <code>A[i][j]</code>.</p>
@@ -108,7 +108,7 @@ matrix operations like <code>A^T</code>, <code>inv(A)</code>, <code>rref(B)</cod
 
 <p><B>2. We can only apply matrix operations on mathly matrices; if an operation involves two objects, at least one must be a mathly matrix.</b>
 To apply matrix operations on ordinary Lua tables, conversion is needed and done first through mathly 'constructor',
-<code>c</code>, <code>r</code>, or <code>reshape</code>. For example,</p>
+<code>cc</code>, <code>rr</code>, or <code>reshape</code>. For example,</p>
 <pre><code>mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d, A, B, C, D, and E are all mathly matrices
 b = {{1}, {2}, {3}}; b = mathly(b) -- or b = cc{1, 2, 3}
@@ -198,7 +198,7 @@ used this way, say, <code>ones(1, 100)</code>. This allows us to generate a tabl
 address it conveniently like <code>x[i]</code> instead of <code>x[1][i]</code>. This is also why functions like
 <code>linspace</code>, <code>seq</code>, and <code>range</code> all generate a table rather than a mathly row/column vector.
 
-<p>If you want full control, you can use <code>c</code> or <code>r</code> to convert an ordinary table to a column
+<p>If you want full control, you can use <code>cc</code> or <code>rr</code> to convert an ordinary table to a column
 or row vector. (See <a href=#cc><code>cc(x...)</code>, <code>rr(x...)</code>, <code>tt(x...)</code></a>)</p>
 
 <h2><a name=math></a>Basic mathematical functions and elementwise operations</h2>
@@ -428,7 +428,7 @@ If you want full control, you can use functions <code>cc</code> or <code>rr</cod
 <tr><td></td><td><code>rr(x...)</code></td><td> </td><td> </td><td>Convert a table <code>x</code> into a row vector or return specified rows of a mathly matrix...</td></tr>
 <tr><td></td><td><code>tt(x...)</code></td><td> </td><td> </td><td>Convert a mathly matrix/vector or a table (of tables) <code>x</code> to an ordinary table and return a slice of it.</td></tr>
 </tbody></table>
-<p>&#x2713; &nbsp; Why not <code>c</code>, <code>r</code>, and <code>t</code>? It is because they can easily be used
+<p>&#x2713; &nbsp; Why not <code>cc</code>, <code>rr</code>, and <code>tt</code>? It is because they can easily be used
 as names of variables or so.</p>
 <p>&#x2713; &nbsp; <code>rr</code> and <code>cc</code> have same usage, except that one is about row(s) and the other is about column(s). Take <code>rr</code> as the example:</p>
 <table><tbody>
