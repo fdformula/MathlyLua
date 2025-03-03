@@ -119,6 +119,16 @@ D = A .. B .. C           -- concatenate matrices A, B, and C horizontally, same
 disp(D)
 E = A .. cc{1, 2, 3}
 disp(E)
+
+-- matrix/table "division" is elementwise, provided for convenience only
+x = {1, 2, 3, 4, 5}
+rr(x) / 10
+1 / (2 * rr(x) + 1)
+x / cc(cos(x))
+
+A = mathly{{1, 2}, {3, 4}}
+1 / A
+{{2, 3}, {4, 5}} / A
 ```
 #### b. `ones`, `zeros`, `rand`, `randi`, and `randn` generate each an ordinary table rather than a mathly matrix if used this way, say, `ones(1, 100)`.
 This allows us to generate a table of specified length and address it conveniently like `x[i]` instead of `x[1][i]`.
