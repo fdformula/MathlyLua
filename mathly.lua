@@ -3406,14 +3406,39 @@ end -- mathly.mulnum
 
 -- Set division "/" behaviour
 mathly_meta.__div = function( m1,m2 )
+  local err = 'm1 / m2: the dimensions of m1 and m2 do not match.'
   if type(m2) == 'number' then
     return map(function(x) return x/m2 end, m1)
   elseif type(m1) == 'number' then
     return map(function(x) return m1/x end, m2)
+  elseif type(m1) == 'table' and type(m2) == 'table' then
+    if type(m1[1]) ~= 'table' then
+      local m, n = size(m2)
+      if m == 1 then
+        m1 = rr(m1)
+      elseif n == 1 then
+        m1 = cc(m1)
+      else
+        error(err)
+      end
+    elseif type(m2[1]) ~= 'table' then
+      local m, n = size(m1)
+      if m == 1 then
+        m2 = rr(m2)
+      elseif n == 1 then
+        m2 = cc(m2)
+      else
+        error(err)
+      end
+    end
+    local m, n = size(m1)
+    local M, N = size(m2)
+    if m ~= M or n ~= N then error(err) end
+    return map(function(x, y) return x/y end, m1, m2)
   else
     error('m1 / m2: the type of m1 or m2 is not allowed.')
   end
-end
+end -- mathly_meta.__div
 
 -- Set unary minus "-" behavior
 mathly_meta.__unm = function( mtx )
