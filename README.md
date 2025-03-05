@@ -186,6 +186,7 @@ showlegend()
 plot(x, y1, x, y2, specs1, math.sin, '--r')
 plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
 
+axisnotsquare()
 plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
 plot(rand(125, 4),{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
 
