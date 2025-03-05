@@ -236,7 +236,7 @@ disp(C)
 disp(map(function(x) return x ^ 2 end, A))     -- A .^ 2
 
 D = map(function(x, y, z)
-          if x % 2 == 0 then
+          if iseven(x) then
             return x - y + 3 * z
           else
             return x + y * y
@@ -1035,7 +1035,7 @@ disp(L * U - A)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=map href=#m><code>map(f, tbl1, tbl2, ...)</code></a></h4>
-<p>Apply function <code>f</code> to each corresponding atomic element in tables, <code>tbl1, tbl2, ...</code>, and return the result.</p>
+<p>Apply function <code>f</code> to each group of corresponding atomic elements in tables, <code>tbl1, tbl2, ...</code>, and return the result.</p>
 <p>&#x2713; &nbsp; <code>tbl1, tbl2, ...</code> must be tables of the same structure.
 <pre><code>m = require('mathly')
 a = range(1, 10) -- seq(1, 10) or seq(10)
@@ -1050,7 +1050,7 @@ display(map(function(x, y) return x + y end, a, b)) -- x and y are taken from a 
 
 x = {1, 2, {3, 4, {5, 6, {7}}}}
 display(map(f, x))
-{1, 4, {9, 16, {25, 36, {49}}}}
+-- {1, 4, {9, 16, {25, 36, {49}}}}
 
 A = m{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
 map(f, A) -- A is a mathly matrix, the result of map(f, A) is a mathly matrix, too.
@@ -1065,6 +1065,14 @@ disp(C)
 -- {{3, 8, 15}, {10, 18, 28}}
 disp(map(function(x, y, z) return x + y - z end, A, B, C)) -- x, y, and z are taken from A, B, and C, respectively
 -- {{1, -2, -7}, {-3, -9, -17}}
+
+x1 = {1, 2, 3, 4, A = 5, 6, {0, 1, 2, B = 3}}
+disp(x1)
+-- {1, 2, 3, 4, 6, {0, 1, 2, B = 3}, A = 5}
+x2 = map(function(x) return x*x end, x1)
+-- {1, 4, 9, 16, 36, {0, 1, 4, B = 9}, A = 25}
+disp(map(function(x, y) return x + y end, x1, x2))
+-- {2, 6, 12, 20, 42, {0, 2, 6, B = 12}, A = 30}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=mathly href=#m><code>mathly(...)</code></a></h4>
@@ -2018,10 +2026,6 @@ plot(hist{A, xrange = {0, 99}}) -- run multiple times, the two can produce diffe
 <hr>
 <h2 style="margin-left: 20px;">Note</h2>
 <ol>
-<li>Most functions provided in this mathly module, e.g., <code>copy</code>, <code>disp</code>, and
-<code>display</code>, can't be applied to tables like <code>x = {1, 2, age=20, 10, year=2024}</code> with
-fields, i.e., <code>age</code> and <code>year</code> in the example. It is designed simply for numerical computing.</li>
-<p></p>
 <li>Part of modules <a href=http://dkolf.de/dkjson-lua>dkjson.lua</a> and <a href=https://github.com/kenloen/plotly.lua>plotly.lua</a>
 is merged into this project to reduce dependencies and make it easier for users to download and use mathly. Though
 some changes have been made, full credit belongs to the original authors for whom the author of mathly

@@ -318,16 +318,16 @@ local function _map( func, ... ) -- ~Mathematica
     return func(table.unpack(args))
   else
     local y = {}
-    for i = 1,#args[1] do
+    for k, v in pairs(args[1]) do
       local arg = {}
       for j = 1,#args do
-        arg[#arg + 1] = args[j][i]
+        arg[#arg + 1] = args[j][k]
       end
 
-      if type(args[1][i]) ~= 'table' then
-        y[#y + 1] = func(table.unpack(arg))
+      if type(v) ~= 'table' then
+        y[k] = func(table.unpack(arg))
       else
-        y[#y + 1] = _map(func, table.unpack(arg))
+        y[k] = _map(func, table.unpack(arg))
       end
     end
     return y
