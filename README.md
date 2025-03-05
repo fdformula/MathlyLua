@@ -163,27 +163,8 @@ disp(b)
 ```
 By the way, `tt` converts a mathly matrix to a table columnwisely or flattens any other table first and returns a specified slice of the resulted table.
 
-## `plot` and specifications
+## 2D and 3D graphs
 
-### Some specifications/options
-#### 1) of a line, i.e., the graph of a function:
-```Lua
-mode='lines+markers', 'lines', or 'markers'
-width=5
-style='-' [solid, ':' (dot), or '--' (dash)]
-```
-#### 2) of a marker:
-```Lua
-size=10
-symbol='circle'
-```
-Some possible symbols are `circle`, `circle-open`, `circle-open-dot`, `cross`, `diamond`, `square`, `x`,
-`triangle-left`, `triangle-right`, `triangle-up`, `triangle-down`, `hexagram`, `star`, `hourglass`, `bowtie`.
-
-#### 3) of a plot:
-```Lua
-layout={width=500, height=400, grid={rows=2, columns=2}, title='Demo'}.
-```
 ### Some examples
 ```Lua
 require 'mathly'
@@ -199,19 +180,14 @@ specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', siz
 plot(math.sin, '--r') -- plot a function
 shownotlegend()
 plot(x, y1) -- plot a function defined by x and y1
-plot(x, y1, '--xr', x, y2)
 plot(x, y1, '--xr', x, y2, ':g', text(0.79, 0.71 - 0.08, 'A'), point(0.79, 0.71, {symbol='circle', size=10, color='blue'}))
 plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
 showlegend()
 plot(x, y1, x, y2, specs1, math.sin, '--r')
-plot(x, y1, specs1, x, y2, x, y3, 'o')
 plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
 
 plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
 plot(rand(125, 4),{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
-plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}})
-plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
-plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
 
 plot(polarcurve2d(function(t) return t*math.cos(math.sqrt(t)) end, {0, 35*pi}))
 
@@ -220,6 +196,16 @@ do
   local function x(t) t = 3 * t; return math.cos(t)/(1 + math.sin(t)^2) end
   local function y(t) t = 5 * t; return math.sin(t)*math.cos(t)/(1 + math.sin(t)^2) end
   plot(parametriccurve2d({x, y}, {0, 2*pi}))
+end
+
+do -- https://plotly.com/python/3d-surface-plots/
+  local a, b, d = 1.32, 1, 0.8
+  local c = a^2 - b^2
+  local u, v = linspace(0, 2*pi, 100), linspace(0, 2*pi, 100)
+  local function x(u, v) return (d * (c - a * cos(u) * cos(v)) + b^2 * cos(u)) / (a - c * cos(u) * cos(v)) end
+  local function y(u, v) return b * sin(u) * (a - d*cos(v)) / (a - c * cos(u) * cos(v)) end
+  local function z(u, v) return b * sin(v) * (c*cos(u) - d) / (a - c * cos(u) * cos(v)) end
+  plotparametricsurface3d({x, y, z}, {0, 2*pi}, {0, 2*pi})
 end
 ```
 
