@@ -86,6 +86,8 @@ function mod(a, d) return a % d  end
 function  printf(...) io.write(string.format(table.unpack{...})) end
 function sprintf(...) return string.format(table.unpack{...}) end
 
+function demathly(x) return setmetatable(x, nil) end -- force x not to be a mathly matrix
+
 -- 'global' variable tmp_eval_file, defined in browser-setting.lua
 function eval(str)
   local file = io.open(tmp_eval_file, "w")
