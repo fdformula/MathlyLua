@@ -620,7 +620,7 @@ disp(A)
 
 <h4>&bull; &nbsp; <a name=copy href=#m><code>copy(x)</code></a></h4>
 <P>Make a deep copy of <code>x</code>.</P>
-<pre><code>m = require('mathly')
+<pre><code>mathly= require('mathly')
 a = {1, 2, {3, 4, {5, 6}}}
 b = copy(a)
 b[3] = 0
@@ -629,7 +629,7 @@ display(a)
 display(b)
 -- {1, 2, 0}
 
-A = m{{1, 2}, {3, 4}}
+A = mathly{{1, 2}, {3, 4}}
 B = copy(A)
 inv(A) -- A is modified
 disp(A)
@@ -694,8 +694,8 @@ diagonal; if <code>k = -1</code>, the diagonal right below the main diagonal.</p
 <p>Return a <code>mxn</code> matrix with vector v (or first elements in it) as its main diagonal.</p></li>
 </ol>
 <p>See also: <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <code><a href=#select>select</a></code>; <code><a href=#select>select</a></code>.</p>
-<pre><code>m = require('mathly')
-a = m{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
+<pre><code>mathly = require('mathly')
+a = mathly{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
 disp(a)
 -- 1  2  3
 -- 2  3  4
@@ -818,13 +818,13 @@ disp(expand(a, 2))
 <h4>&bull; &nbsp; <a name=flatten href=#m><code>flatten(x)</code></a></h4>
 <p>Remove the structure of table <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</p>
 <p>If <code>x</code> is a mathly matrix, it does rowwisely. For columnwise flattening, see <a href=#tt><code>tt(...)</code></a>.</p>
-<pre><code>m = require('mathly')
+<pre><code>mathly = require('mathly')
 x = {1, 2, {3, 4, {5, 6, {7, 8, {9}}}}}
 y = flatten(x)
 display(y)
 -- {1, 2, 3, 4, 5, 6, 7, 8, 9}
 
-A = m{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
+A = mathly{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
 -- 1 2 3
 -- 4 5 6
 -- 7 8 9
@@ -879,16 +879,16 @@ print(hasindex(opt, 'color'))
 <P>Concatenate matrices A, B, ... in order horizontally. Matrices must have the same number of rows.</P>
 <p><em>Operator <code>..</code> can be used to repalce <code>horzcat</code>.</em></p>
 <p>See also: <a href=#vertcat><code>vertcat</code></a>; <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>; <code><a href=#select>select</a></code>.</p>
-<pre><code>m = require('mathly')
-A = m{{1, 2}, {3, 4}}
+<pre><code>mathly = require('mathly')
+A = mathly{{1, 2}, {3, 4}}
 disp(A)
 -- 1  2
 -- 3  4
-B = m{{5}, {6}}
+B = mathly{{5}, {6}}
 disp(B)
 -- 5
 -- 6
-C = m{{7, 8, 9}, {10, 11, 12}}
+C = mathly{{7, 8, 9}, {10, 11, 12}}
 disp(C)
 --  7  8  9
 -- 10 11 12
@@ -908,7 +908,7 @@ disp(A .. cc(b)) -- augmented coefficient matrix for Ax = b
 <h4>&bull; &nbsp; <a href=#m name=input><code>input(prompt, s)</code></a></h4>
 <p>Take user's input from keyboard, and return a string if <code>s = 's'</code>; otherwise, evaluate the input expression and return the result.</p>
 <p><code>prompt</code> is the text displayed to user. <code>s</code> defaults to <code>nil</code>.</p>
-<pre><code>m = require('mathly')
+<pre><code>require('mathly')
 x = input('Please enter a number: ')
 print(x * 10)
 
@@ -926,9 +926,9 @@ print(x)
 
 <h4>&bull; &nbsp; <a name=inv href=#m><code>inv(A)</code></a></h4>
 <p>Return the inverse of a square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</p>
-<pre><code>m = require('mathly')
+<pre><code>mathly = require('mathly')
 I = eye(3)
-A = m{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
+A = mathly{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
 B = copy(A)
 C = inv(A) * B
 disp(C)
@@ -1037,7 +1037,7 @@ disp(L * U - A)
 <h4>&bull; &nbsp; <a name=map href=#m><code>map(f, tbl1, tbl2, ...)</code></a></h4>
 <p>Apply function <code>f</code> to each group of corresponding atomic elements in tables, <code>tbl1, tbl2, ...</code>, and return the result.</p>
 <p>&#x2713; &nbsp; <code>tbl1, tbl2, ...</code> must be tables of the same structure.
-<pre><code>m = require('mathly')
+<pre><code>mathly = require('mathly')
 a = range(1, 10) -- seq(1, 10) or seq(10)
 -- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 function f(x) return x * x end
@@ -1052,7 +1052,7 @@ x = {1, 2, {3, 4, {5, 6, {7}}}}
 display(map(f, x))
 -- {1, 4, {9, 16, {25, 36, {49}}}}
 
-A = m{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
+A = mathly{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
 map(f, A) -- A is a mathly matrix, the result of map(f, A) is a mathly matrix, too.
 -- 1   4   9
 -- 9  16  25
@@ -1077,7 +1077,7 @@ disp(map(function(x, y) return x + y end, x1, x2))
 
 <h4>&bull; &nbsp; <a name=mathly href=#m><code>mathly(...)</code></a></h4>
 <p>It is the constructor of mathly matrices.</p>
-<p>&#x2713; &nbsp; User must execute the command, <code>mathly = require('mathly')</code>, first.</p>
+<p>&#x2713; &nbsp; The command, <code>mathly = require('mathly')</code>, must be executed first.</p>
 <table><tbody>
 <tr><td width=18%><code>mathly(m, n, val)</code></td><td>Create a <code>mxn</code> mathly matrix of which each element assumes the value <code>val</code> (default: random numbers from 0 to 1).</td></tr>
 <tr><td><code>mathly(A, m, n)</code></td><td>Create a <code>mxn</code> mathly matrix using elements of table/matrix <code>A</code> columnwisely; if <code>A</code> can't provide enough numbers, 0 is used; if <code>n</code> is not provided, it is so determined that least number of 0's are used.</td></tr>
@@ -1279,7 +1279,7 @@ disp(polyval({1, 2, 1}, {0, 5, 9, 100})) -- evaluate at x = 0, 5, 9, 100
 <li>If <code>A</code> is a <code>mxn</code> matrix, return a row vector of which the <code>i</code>-th element is the product/sum of
 the <code>i</code>-th column of <code>A</code>.</p></li>
 </ol>
-<pre><code>m = require('mathly')
+<pre><code>mathly = require('mathly')
 a = {1, 2, 3}
 print(sum(a))
 -- 6
@@ -1288,7 +1288,7 @@ a = {{1}, {2}, {3}}
 print(sum(a))
 -- 6
 
-a = m{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}}
+a = mathly{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}}
 disp(a)
 --  1  2  3
 --  2  3  4
@@ -1400,7 +1400,7 @@ disp(repmat(5, 2, 3)) -- same as mathly(2, 3, 5)
 <h4>&bull; &nbsp; <a name=reshape href=#m><code>reshape(A, m, n)</code></a></h4>
 <p>Rearrange columnwisely existing elements in a table or mathly matrix <code>A</code> and return a new <code>mxn</code> mathly matrix.</p>
 <p>See also: <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <code><a href=#select>select</a></code>.</p>
-<pre><code>m = require('mathly')
+<pre><code>mathly = require('mathly')
 reshape({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 3) -- return a 3x4 mathly matrix, where 4 is automatically determined
 -- 1  4  7  10
 -- 2  5  8  0
@@ -1411,7 +1411,7 @@ reshape({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 3, 5) -- no sufficient numbers in a tab
 -- 2  5  8  0   0
 -- 3  6  9  0   0
 
-a = m{{1, 2, 3}, {-1, -2, -3}, {6, 7, 8}}
+a = mathly{{1, 2, 3}, {-1, -2, -3}, {6, 7, 8}}
 disp(a)
 --  1  2  3
 -- -1 -2 -3
@@ -1442,8 +1442,8 @@ disp(reverse(a)) -- same as tt(a, #a, 1, -1) or tt(a, #a, 1)
 <p><code>A</code> and <code>B</code> must be mathly matrices with the same row number.</p>
 <p>Return the reduced row-echelon form of a mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> and <code>B</code> are modified.</p>
 <p>To solve <code>Ax = b</code>, call <code>rref(A, b)</code> first, and <code>b</code> gives the solution.</p>
-<pre><code>m = require('mathly')
-a = m{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
+<pre><code>mathly = require('mathly')
+a = mathly{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
 disp(a)
 --  1  2  3
 --  2  3  4
@@ -1457,13 +1457,12 @@ disp(a)
 -- 0  0.0000  0.0000
 
 -- To solve Ax = b<sub>1</sub>, Ax = b<sub>2</sub>, and Ax = b<sub>3</sub>:
-m = require('mathly')
-A = m{{1, 2, 3}, {2, 3, 4}, {0, -1, 2}}
-b1 = m{{1},{2},{3}}
-b2 = m{{1},{0},{5}}
-b3 = m{{-2},{1},{2}}
+A = mathly{{1, 2, 3}, {2, 3, 4}, {0, -1, 2}}
+b1 = mathly{{1},{2},{3}}
+b2 = mathly{{1},{0},{5}}
+b3 = mathly{{-2},{1},{2}}
 
-B = m(horzcat(b1, b2, b3))
+B = mathly(horzcat(b1, b2, b3))
 rref(A, B)
 disp(B)
 --  1.7500  -1.2500   7.2500
@@ -1471,11 +1470,11 @@ disp(B)
 --  0.7500   1.7500  -0.7500
 -- the solutions are
 display((B^T)[1])
--- {1.7500, -1.5000, 0.7500}
+-- {1.75, -1.5, 0.75}
 display((B^T)[2])
--- {-1.2500, -1.5000, 1.7500}
+-- {-1.25, -1.50, 1.75}
 display((B^T)[3])
--- {7.2500, -3.5000, -0.7500}
+-- {7.25, -3.5, -0.75}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=save href=#m><code>save(datafile, ...)</code></a></h4>
@@ -1594,12 +1593,12 @@ print(strcat('Good', ' ', 'morning', '!'))
 <h4>&bull; &nbsp; <a name=subtable href=#m><code>subtable(tbl, i, j, s)</code></a></h4>
 <p>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code> (default: 1).</p>
 <p>See also: <a href=#cc><code>cc, rr, tt</code></a></p>
-<pre><code>m = require('mathly')
+<pre><code>mathly = require('mathly')
 x = {1, 2, {3}, 4, {{5, 6, {7}}}}
 display(subtable(x, 2, 4))
 -- {2, {3}, 4}
 
-a = m{1, 2, 3, 4, 5, 6, 7} -- {{1, 2, 3, 4, 5, 6, 7}}
+a = mathly{1, 2, 3, 4, 5, 6, 7} -- {{1, 2, 3, 4, 5, 6, 7}}
 display(subtable(a[1], 3, 5))
 -- {3, 4, 5}
 
@@ -1620,10 +1619,10 @@ display(subtable(x, -1, 1, -2))
 and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column
 with row step <code>sr</code> and column step <code>sc</code>.</p>
 <p>See also: <a href=#cc><code>cc, rr, tt</code></a>; <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <code><a href=#select>select</a></code>.</p>
-<pre><code>m = require('mathly')
+<pre><code>mathly = require('mathly')
 
-a = m{{22, 15, 94, 77, 48}, {43, 58, 96, 64,  5},
-      {20, 85, 90, 37, 92}, {16, 67,  9, 56, 33}}
+a = mathly{{22, 15, 94, 77, 48}, {43, 58, 96, 64,  5},
+           {20, 85, 90, 37, 92}, {16, 67,  9, 56, 33}}
 disp(a)
 -- 22  15  94  77  48
 -- 43  58  96  64   5
@@ -1646,13 +1645,13 @@ disp(C)
 <h4>&bull; &nbsp; <a name=tblcat href=#m><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></code></a></h4>
 <p>Flatten and concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers, boolean values, or strings.</p>
 <p>See also: <a href=#strcat><code>strcat</code></a></p>
-<pre><code>m = require('mathly')
+<pre><code>mathly = require('mathly')
 x = {1, 2}
 y = {3, 4, {5}}
 disp(tblcat(0, x, y, 10))
 -- {0, 1, 2, 3, 4, {5}, 10}
 
-z = m{{6}, {7}, {8}, {9}}
+z = mathly{{6}, {7}, {8}, {9}}
 disp(tblcat(x, z, 11)) -- a column vector is automatically converted into a row vector
 -- {1, 2, 6, 7, 8, 9, 11}
 
