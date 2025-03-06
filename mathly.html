@@ -363,7 +363,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><code>who()</code></td><td> </td><td>List all user-defined variables in the memory.</td></tr>
 <tr><td> </td><td><a href=#zeros><code>zeros</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 0. If <code>m = 1</code>, return a table.<hr></td></tr>
 
-<tr><td> </td><td><a href=#axissquare><code>axissquare(), axisnotsquare()</code></a></td><td> </td><td>Force/stop a square axis aspect ratio</td></tr>
+<tr><td> </td><td><a href=#axissquare><code>axissquare(), axisnotsquare()</code></a></td><td> </td><td>Force/stop a square axis aspect ratio. <b>Note</b>: This last group of functions are not valid for 3D graphs.</td></tr>
 <tr><td> </td><td><a href=#showaxes><code>showaxes(), shownotaxes()</code></a></td><td> </td><td>Show/hide axes</td></tr>
 <tr><td> </td><td><a href=#showxaxis><code>showxaxis(), shownotxaxis()</code></a></td><td> </td><td>Show/hide the <code>x</code>-axis</td></tr>
 <tr><td> </td><td><a href=#showyaxis><code>showyaxis(), shownotyaxis</code></a></td><td> </td><td>Show/hide the <code>y</code>-axis</td></tr>
@@ -371,7 +371,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#showgridlines><code>showgridlines(), shownotgridlines()</code></a></td><td> </td><td>Show/hide gridlines</td></tr>
 </tbody>
 </table>
-<p> &nbsp; &nbsp; &nbsp; &nbsp; <b>Note</b>: This last group of functions are not valid for 3D graphs.</p>
+
 <h4>&bull; &nbsp; <a name=any></a><a name=all href=#m><code>all(x, f)</code>, <code>any(x, f)</code></a></h4>
 <ol>
 <li><code>all(x, f)</code>: Test if <code>f(x)</code> is true for every number in <code>x</code>.
@@ -1077,6 +1077,7 @@ disp(map(function(x, y) return x + y end, x1, x2))
 
 <h4>&bull; &nbsp; <a name=mathly href=#m><code>mathly(...)</code></a></h4>
 <p>It is the constructor of mathly matrices.</p>
+<p>&#x2713; &nbsp; User must execute the command, <code>mathly = require('mathly')</code>, first.</p>
 <table><tbody>
 <tr><td width=18%><code>mathly(m, n, val)</code></td><td>Create a <code>mxn</code> mathly matrix of which each element assumes the value <code>val</code> (default: random numbers from 0 to 1).</td></tr>
 <tr><td><code>mathly(A, m, n)</code></td><td>Create a <code>mxn</code> mathly matrix using elements of table/matrix <code>A</code> columnwisely; if <code>A</code> can't provide enough numbers, 0 is used; if <code>n</code> is not provided, it is so determined that least number of 0's are used.</td></tr>
