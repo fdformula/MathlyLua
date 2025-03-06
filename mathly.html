@@ -34,7 +34,7 @@ to plot graphs of single-variable functions. Therefore, graphs are shown in an i
 
 <p>The entire mathly tool together with Lua is less than 5 MB, while providing enough features for instructors and
 college students to introduce and/or implement many numerical algorithms. Because it is super lightweight and fast as well,
-it can be employed to slow devices like old Microsoft Surface Pro 4. Imagine that the smallest size of GNU Octave
+it can be employed to slow devices like an old Microsoft Surface Pro 4. Imagine that the smallest size of GNU Octave
 is about 300 MB, MATLAB needs a few GB storage space, and Julia with graphing modules is huge, too. You can hardly
 install them on a quite old computer and run smoothly.</p>
 
@@ -190,7 +190,7 @@ A = mathly{{1, 2}, {3, 4}}
 
 <p>A mathly row vector is a <code>1xn</code> mathly matrix, and a mathly column vector is a <code>nx1</code> mathly matrix.
 They are all matrices and, thus, an element must be addressed like <code>A[1][i]</code> (for a row vector) or <code>A[i][1]</code>
-(for a column vector), which is really inconvenient and ugly because we human beings never write this way!</p>
+(for a column vector), which is inconvenient and ugly because we human beings never write this way!</p>
 
 <p><i>Mathly tries its best to allow us to write math expressions as we do on paper.</i> Therefore, <code>ones</code>,
 <code>zeros</code>, <code>rand</code> and <code>randi</code> generate each a table rather than a mathly matrix if
@@ -249,7 +249,7 @@ disp(D)
 They make Lua code more understandable to people who are new to Lua. They follow the definition: if <code>d &gt; 0</code>, <code>r = mod(a, d)</code> is the remainder of <code>a</code>
 divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d)</code> gives the quotient.</p>
 
-<p>By the way, mathly provides four commonly used constants. They are:</p>
+<p>In addition, mathly provides four commonly used constants:</p>
 <table><tbody>
 <tr><td><code>pi = 3.1415926535898</code></td><td width=40></td><td>It is simply <code>math.pi</code>.</td></tr>
 <tr><td><code>e = 2.718281828459</code></td><td width=40></td><td>It is <code>math.exp(1)</code>.</td></tr>
@@ -268,14 +268,14 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#apply><code>apply(f, ...)</code></a></td><td> </td><td>As with some other programming languages like <i>Mathematica</i>, call function <code>f</code> with the arguments.</td></tr>
 <tr><td> </td><td><a href=#arc><code>arc(r, center, angles, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot an arc of a circle.</td></tr>
 <tr><td> </td><td><a href=#boxplot><code>boxplot(x, names)</code></a></td><td> </td><td>Return a special graph object for <code><a href=#plot>plot</a></code> to plot a box plot (or box-and-whisker plot), where <code>x</code> is a table or a matrix of numbers. <code>names = {'name1', 'name2', ...}</code> is optional.</td></tr>
-<tr><td> </td><td><a href=#cc><code>cc(x...)</code></a></td><td> </td><td>Convert a table <code>x</code> into a column vector or return specified column(s) of a mathly matrix...</td></tr>
+<tr><td> </td><td><a href=#cc><code>cc(x...)</code></a></td><td> </td><td>Convert table <code>x</code> into a column vector or return specified column(s) of a mathly matrix...</td></tr>
 <tr><td> </td><td><a href=#circle><code>circle(r, center, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a circle.</td></tr>
 <tr><td> </td><td><code>clc()</code></td><td> </td><td>Clear Lua console.</td></tr>
 <tr><td> </td><td><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
 <tr><td> </td><td><a href=#copy><code>copy(x)</code></a></td><td> </td><td>Make a deep copy of <code>x</code>.</td></tr>
 <tr><td> </td><td><a href=#cross><code>cross(a, b)</code></a></td><td> </td><td>Calculate the cross/vector product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub>}</code>.</td></tr>
 <tr><td> </td><td><a href=#demathly><code>demathly(x)</code></a></td><td> </td><td>Force <code>x</code> not to be a mathly matrix.</td></tr>
-<tr><td> </td><td><code>det(A)</code></td><td> </td><td>Calculate the determinant of a square matrix <code>A</code>. <u>Note</u>: A is modified.</td></tr>
+<tr><td> </td><td><code>det(A)</code></td><td> </td><td>Calculate the determinant of square matrix <code>A</code>. <u>Note</u>: A is modified.</td></tr>
 <tr><td> </td><td><a href=#diag><code>diag(A, ...)</code></a></td><td> </td><td>Return a column vector consisting of specified diagonal entries of mathly matrix <code>A</code> or create a mathly matrix with vector <code>A</code> as its diagonal entries.</td></tr>
 <tr><td> </td><td><a href=#disp><code>disp(x)</code></a></td><td> </td><td>Print a mathly matrix.</td></tr>
 <tr><td> </td><td><a href=#display><code>display(x)</code></a></td><td> </td><td>Print a table of any type, including mathly matrices, with structure.</td></tr>
@@ -288,13 +288,13 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#flipud><code>flipud(A)</code></a></td><td> </td><td>Return a matrix with rows of matrix <code>A</code> reversed.</td></tr>
 <tr><td> </td><td><a href=#format><code>format(fmt)</code></a></td><td> </td><td>Reset or specify the format of the output of <code>disp(...)</code>.</td></tr>
 <tr><td> </td><td><a href=#freqpolygon><code>freqpolygon(x, nbins, style, xrange)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot frequency polygon, where <code>x</code> is a table of numbers.</td></tr>
-<tr><td> </td><td><a href=#hasindex><code>hasindex(table, index)</code></a></td><td> </td><td>Check if <code>table</code> contains <code>index</code>.</td></tr>
+<tr><td> </td><td><a href=#hasindex><code>hasindex(tbl, index)</code></a></td><td> </td><td>Check if table <code>tbl</code> contains <code>index</code>.</td></tr>
 <tr><td> </td><td><a href=#hist><code>hist(x, nbins, style, xrange)</code></a></td><td> </td><td>Return a special graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table or a matrix of numbers and <code>nbins</code> is the number of bins (default: 10).</td></tr>
 <tr><td> </td><td><a href=#hist1><code>hist1(x, nbins, style, xrange)</code></a></td><td> </td><td>Return an ordinary graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers.</td></tr>
 <tr><td> </td><td><a href=#histfreqpolygon><code>histfreqpolygon(x, nbins, style, xrange, style1)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a histogram plus a frequency polygon, where <code>x</code> is a table of numbers.</td></tr>
 <tr><td> </td><td><a href=#horzcat><code>horzcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
 <tr><td> </td><td><a href=#input><code>input(prompt, s)</code></a></td><td> </td><td>Input from keyboard, return a string (if <code>s = 's'</code>); otherwise, evaluate the input expression, and return the result.</td></tr>
-<tr><td> </td><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of a square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
+<tr><td> </td><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
 <tr><td> </td><td><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
 <tr><td> </td><td><code>iseven(x)</code></a></td><td> </td><td>Check if <code>x</code> is even.</td></tr>
 <tr><td> </td><td><code>isodd(x)</code></a></td><td> </td><td>Check if <code>x</code> is odd.</td></tr>
@@ -335,28 +335,28 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><code><a href=#remake>remake(A, opt)</a></code></td><td> </td><td>Generate a lower, upper, diagonal, symmetrical, or ...  matrix from matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a href=#repmat><code>repmat(A, m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> block matrix with each entry a copy of matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a href=#reshape><code>reshape(A, m, n)</code></a></td><td> </td><td>Rearrange existing elements in a table or mathly matrix <code>A</code> and return a new <code>mxn</code> mathly matrix.</td></tr>
-<tr><td> </td><td><a href=#reverse><code>reverse(tbl)</code></a></td><td> </td><td>Return a table with order of elements in <code>tbl</code> reversed.</td></tr>
+<tr><td> </td><td><a href=#reverse><code>reverse(tbl)</code></a></td><td> </td><td>Return a table with order of elements in table <code>tbl</code> reversed.</td></tr>
 <tr><td> </td><td><a href=#round><code>round(x, n)</code></a></td><td> </td><td>Round <code>x</code> to <code>n</code> decimal places.</td></tr>
-<tr><td> </td><td><a href=#rr><code>rr(x...)</code></a></td><td> </td><td>Convert a table <code>x</code> into a row vector or return specified rows(s) of a mathly matrix...</td></tr>
+<tr><td> </td><td><a href=#rr><code>rr(x...)</code></a></td><td> </td><td>Convert table <code>x</code> into a row vector or return specified rows(s) of a mathly matrix...</td></tr>
 <tr><td> </td><td><a href=#rref><code>rref(A, ...)</code></a></td><td> </td><td>Return the reduced row-echelon form of a mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</td></tr>
 <tr><td> </td><td><a href=#save><code>save(datafile, ...)</code></a></td><td> </td><td>Save specified or all user-defined variables and their values to a Lua or MATLAB script file.</td></tr>
 <tr><td> </td><td><a href=#scatter><code>scatter(x, y, style)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot a scatter plot.</td></tr>
-<tr><td> </td><td><a href=#select><code>select(tbl, f)</code></a></td><td> </td><td>Return elements of <code>tbl</code> that satisfy specified conditions.</td></tr>
+<tr><td> </td><td><a href=#select><code>select(tbl, f)</code></a></td><td> </td><td>Return elements of table <code>tbl</code> that satisfy specified conditions.</td></tr>
 <tr><td> </td><td><a href=#seq><code>seq(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</td></tr>
 <tr><td> </td><td><code>size(A)</code></td><td> </td><td>Return the dimensions of a mathly matrix <code>A</code>.</td></tr>
-<tr><td> </td><td><a href=#sort><code>sort(tbl, compf)</code></a></td><td> </td><td>Sort a table <code>tbl</code> and return the resulted table.</td></tr>
+<tr><td> </td><td><a href=#sort><code>sort(tbl, compf)</code></a></td><td> </td><td>Sort table <code>tbl</code> and return the resulted table.</td></tr>
 <tr><td> </td><td><a href=#printf><code>sprintf(...)</code></a></td><td> </td><td>Return a formatted string, while <code>printf</code> prints one.</td></tr>
 <tr><td> </td><td><a href=#std><code>std(x, opt)</code></a></td><td> </td><td>Return the standard deviation of numbers in <code>x</code>.</td></tr>
 <tr><td> </td><td><a href=#strcat><code>strcat(...)</code></a></td><td> </td><td>Concatenate strings and return the resulted string.</td></tr>
-<tr><td> </td><td><a href=#submatrix><code>submatrix(A, i, j, m, n, sr, sc)</code></a></td><td> </td><td>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column wtih row step <code>sr</code> and column step <code>sc</code>.</td></tr>
-<tr><td> </td><td><a href=#subtable><code>subtable(tbl, i, j, s)</code></a></td><td> </td><td>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code>.</td></tr>
+<tr><td> </td><td><a href=#submatrix><code>submatrix(A, i, j, m, n, sr, sc)</code></a></td><td> </td><td>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column with row step <code>sr</code> and column step <code>sc</code>.</td></tr>
+<tr><td> </td><td><a href=#subtable><code>subtable(tbl, i, j, s)</code></a></td><td> </td><td>Return a slice of table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code>.</td></tr>
 <tr><td> </td><td><a href=#sum><code>sum(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the sum of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
 <tr><td> </td><td><a href=#tblcat><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Flatten and concatenate tables into a single table. Tables here may just be numbers, boolean values, or strings.</td></tr>
 <tr><td> </td><td><a href=#text><code>text(x, y, txt, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to write a text string on a graph.</td></tr>
 <tr><td> </td><td><a href=#tic><code>tic()</code></a></td><td> </td><td>Start a wall-clock timer.</td></tr>
 <tr><td> </td><td><a href=#toc><code>toc</code></a></td><td> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
 <tr><td> </td><td><code><a href=#cc>tt(x, i1, i2, s)</a></code></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and return a specified slice of the resulted table.</td></tr>
-<tr><td> </td><td><a href=#unique><code>unique(tbl)</code></a></td><td> </td><td>Return the same data as in tbl but with no repetitions.</td></tr>
+<tr><td> </td><td><a href=#unique><code>unique(tbl)</code></a></td><td> </td><td>Return the same data as in table <code>tbl</code> but with no repetitions.</td></tr>
 <tr><td> </td><td><a href=#var><code>var(x, opt)</code></a></td><td> </td><td>Return the variance of numbers in <code>x</code>.</td></tr>
 <tr><td> </td><td><a href=#vertcat><code>vertcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order vertically. Matrices must have the same number of columns.</td></tr>
 <tr><td> </td><td><a href=#wedge><code>wedge(r, center, angles, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a wedge of a disk.</td></tr>
@@ -424,26 +424,26 @@ round(pi, 4)
 
 <h4>&bull; &nbsp; <a name=cc></a><a name=rr></a><a name=tt href=#m><code>cc(x...)</code>, <code>rr(x...)</code>, <code>tt(x)</code></a></h4>
 <p>A matrix operation may be applied to an ordinary table. It takes the table as a row or column vector according to the very context.
-If you want full control, you can use functions <code>cc</code> or <code>rr</code> to tell mathly whether the table is a column or row vector.</p>
+If you want full control, you can use <code>cc</code> or <code>rr</code> to tell mathly whether the table is a column or row vector.</p>
 <table><tbody>
-<tr><td width=20></td><td><code>cc(x...)</code></td><td> </td><td width=10> </td><td>Convert a table <code>x</code> into a column vector or return specified columns of a mathly matrix...</td></tr>
-<tr><td></td><td><code>rr(x...)</code></td><td> </td><td> </td><td>Convert a table <code>x</code> into a row vector or return specified rows of a mathly matrix...</td></tr>
-<tr><td></td><td><code>tt(x...)</code></td><td> </td><td> </td><td>Convert a mathly matrix/vector or a table (of tables) <code>x</code> to an ordinary table and return a slice of it.</td></tr>
+<tr><td width=20></td><td><code>cc(x...)</code></td><td> </td><td width=10> </td><td>Convert table <code>x</code> into a column vector or return specified columns of a mathly matrix...</td></tr>
+<tr><td></td><td><code>rr(x...)</code></td><td> </td><td> </td><td>Convert table <code>x</code> into a row vector or return specified rows of a mathly matrix...</td></tr>
+<tr><td></td><td><code>tt(x...)</code></td><td> </td><td> </td><td>Convert <code>x</code> to an ordinary table and return a slice of it.</td></tr>
 </tbody></table>
 <p>&#x2713; &nbsp; Why not <code>cc</code>, <code>rr</code>, and <code>tt</code>? It is because they can easily be used
 as names of variables or so.</p>
-<p>&#x2713; &nbsp; <code>rr</code> and <code>cc</code> have same usage, except that one is about row(s) and the other is about column(s). Take <code>rr</code> as the example:</p>
+<p>&#x2713; &nbsp; <code>rr</code> and <code>cc</code> have same usage, except that one is about row(s) and the other is about column(s). Take <code>rr</code> as an example:</p>
 <table><tbody>
 <tr><td width=20></td><td><code>rr(x)</code></td><td width=10></td><td>Convert <code>x</code> to a row vector.</td></tr>
 <tr><td width=20></td><td><code>rr(A, i)</code></td><td></td><td>Return a row vector which is the <code>i</code>-th row of matrix <code>A</code>.</td></tr>
-<tr><td width=20></td><td><code>rr(A, i, start, stop)</code></td><td></td><td>Return a row vector which is a slice of the <code>i</code>-th row of matrix <code>A</code> staring from column
+<tr><td width=20></td><td><code>rr(A, i, start, stop)</code></td><td></td><td>Return a row vector which is a slice of the <code>i</code>-th row of matrix <code>A</code> starting from column
 <code>start</code> to <code>stop</code> (default: last column of <code>A</code>).</td></tr>
-<tr><td width=20></td><td><code>rr(A, i, start, stop, step)</code></td><td></td><td>Return a row vector which is a slice of the <code>i</code>-th row of matrix <code>A</code> staring from column
+<tr><td width=20></td><td><code>rr(A, i, start, stop, step)</code></td><td></td><td>Return a row vector which is a slice of the <code>i</code>-th row of matrix <code>A</code> starting from column
 <code>start</code> to <code>stop</code> increasing by <code>step</code>.</td></tr>
 <tr><td width=20></td><td><code>rr(A, {i<sub>1</sub>, i<sub>2</sub>, ...}, start, stop)</code></td><td></td><td>Return a matrix consisting of rows <code>i<sub>1</sub></code>, <code>i<sub>2</sub></code>,
-..., of <code>A</code>. Each row is a slice of the very row of <code>A</code> staring from column <code>start</code> to <code>stop</code> (default: last column of <code>A</code>).</td></tr>
+..., of <code>A</code>. Each row is a slice of the very row of <code>A</code> starting from column <code>start</code> to <code>stop</code> (default: last column of <code>A</code>).</td></tr>
 <tr><td width=20></td><td><code>rr(A, {i<sub>1</sub>, i<sub>2</sub>, ...}, start, stop, step)</code></td><td></td><td>Return a matrix consisting of rows <code>i<sub>1</sub></code>, <code>i<sub>2</sub></code>,
-..., of <code>A</code>. Each row is a slice of the very row of <code>A</code> staring from column <code>start</code> to <code>stop</code> increasing by <code>step</code></td></tr>
+..., of <code>A</code>. Each row is a slice of the very row of <code>A</code> starting from column <code>start</code> to <code>stop</code> increasing by <code>step</code></td></tr>
 <p></p>
 </tbody></table>
 <b><p>Notes:</p></b>
@@ -564,7 +564,7 @@ display(tt(x, 2))
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=select href=#m><code>select(tbl, f)</code></a></h4>
-<p>Return elements of <code>tbl</code> that satisfy specified conditions. (<code>f</code> defaults to <code>tbl</code>.)</p>
+<p>Return elements of table <code>tbl</code> that satisfy specified conditions. (<code>f</code> defaults to <code>tbl</code>.)</p>
 <p>If <code>f</code> is a boolean function, return 1) a table of elements of <code>tbl</code> (row wise) that satisfy <code>f(x)</code>
 and 2) a table of elements of <code>tbl</code> with those elements replaced by 0 when they fail to satisfy <code>f(x)</code>.</p>
 <p>If <code>f</code> is a table/matrix, return 1) a table of elements of <code>tbl</code> (row wise) that correspond to nonzero
@@ -667,7 +667,7 @@ matrix is damaged (on purpose), you had better call it.</p>
 A = mathly{{1, 2}, {3, 4}}
 A[1][2] = {5, 6, 7}
 A[3] = 10
-demathly(A) -- A is no more an ordinary matrix
+demathly(A) -- A is no longer an ordinary matrix
 det(A) -- now allowed
 disp(A)
 disp(map(function(x) return 2*x + 1 end, A)) -- map is still a great tool
@@ -863,8 +863,8 @@ disp(fliplr(a))
 <tr><td width=20></td><td><code>'long'</code></td><td> </td><td width=10> </td><td>15 decimal places</td></tr>
 </tbody></table>
 
-<h4>&bull; &nbsp; <a name=hasindex href=#m><code>hasindex(table, index)</code></a></h4>
-<p>Check if <code>table</code> contains <code>index</code>.</p>
+<h4>&bull; &nbsp; <a name=hasindex href=#m><code>hasindex(tbl, idx)</code></a></h4>
+<p>Check if table <code>tbl</code> contains index <code>idx</code>.</p>
 <pre><code>require 'mathly'
 opt = {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}}
 print(hasindex(opt, 'grid'))
@@ -877,7 +877,7 @@ print(hasindex(opt, 'color'))
 
 <h4>&bull; &nbsp; <a name=horzcat href=#m><code>horzcat(A, B, ...)</code></a></h4>
 <P>Concatenate matrices A, B, ... in order horizontally. Matrices must have the same number of rows.</P>
-<p><em>Operator <code>..</code> can be used to repalce <code>horzcat</code>.</em></p>
+<p><em>Operator <code>..</code> can be used to replace <code>horzcat</code>.</em></p>
 <p>See also: <a href=#vertcat><code>vertcat</code></a>; <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>; <code><a href=#select>select</a></code>.</p>
 <pre><code>mathly = require('mathly')
 A = mathly{{1, 2}, {3, 4}}
@@ -906,7 +906,7 @@ disp(A .. cc(b)) -- augmented coefficient matrix for Ax = b
 </code></pre>
 
 <h4>&bull; &nbsp; <a href=#m name=input><code>input(prompt, s)</code></a></h4>
-<p>Take user's input from keyboard, and return a string if <code>s = 's'</code>; otherwise, evaluate the input expression and return the result.</p>
+<p>Take user's input from keyboard and return a string if <code>s = 's'</code>; otherwise, evaluate the input expression and return the result.</p>
 <p><code>prompt</code> is the text displayed to user. <code>s</code> defaults to <code>nil</code>.</p>
 <pre><code>require('mathly')
 x = input('Please enter a number: ')
@@ -925,7 +925,7 @@ print(x)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=inv href=#m><code>inv(A)</code></a></h4>
-<p>Return the inverse of a square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</p>
+<p>Return the inverse of square mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> is modified.</p>
 <pre><code>mathly = require('mathly')
 I = eye(3)
 A = mathly{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
@@ -979,7 +979,7 @@ disp(lagrangepoly({{1, 3}, {2, 0}, {0, 4}}, {10, 1, -5}))
 <li><code>'LT'</code>: <code>A</code> is lower triangular</li>
 <li><code>'UT'</code>: <code>A</code> is upper triangular</li>
 </ol>
-<p>If <code>A</code> is neither upper nor lower triangular, call <code>rref(A, b)</code> first, and <code>b</code> gives the solution, and both <code>A</code> and <code>b</code> are modified.</p>
+<p>If <code>A</code> is neither upper nor lower triangular, <a href=#rref><code>rref(A, b)</code></a> is called, and <code>b</code> finally holds the solution.</p>
 <pre><code>require 'mathly'
 a = randi(100, 3)
 aa = copy(a)
@@ -1082,7 +1082,7 @@ disp(map(function(x, y) return x + y end, x1, x2))
 <tr><td width=18%><code>mathly(m, n, val)</code></td><td>Create a <code>mxn</code> mathly matrix of which each element assumes the value <code>val</code> (default: random numbers from 0 to 1).</td></tr>
 <tr><td><code>mathly(A, m, n)</code></td><td>Create a <code>mxn</code> mathly matrix using elements of table/matrix <code>A</code> columnwisely; if <code>A</code> can't provide enough numbers, 0 is used; if <code>n</code> is not provided, it is so determined that least number of 0's are used.</td></tr>
 </tbody></table>
-<p>See also: <a href=#demathly><code>demathly</code></a>; <a href=#ones><code>ones, rand, randi, randn, zeros</code></a>.</p>
+<p>See also: <a href=#demathly><code>demathly</code></a>; <a href=#ones><code>ones, rand, randi, randn, zeros</code></a>; <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>; <a href=#repmat><code>repmat</code></a>.</p>
 <pre><code>mathly = require('mathly')
 
 A = mathly(3, 4)
@@ -1137,7 +1137,7 @@ disp(max(a))
 <h4>&bull; &nbsp; <a name=mean href=#m><code>mean(x)</code></a></h4>
 <ol>
 <li>If <code>x</code> is a table or mathly row/column vector, return the mean of its elements;</li>
-<li>If <code>x</code> is a <code>mxn</code> matrix, return a row vector of which the <code>i</code>-th element is the mean of
+<li>If <code>x</code> is a <code>mxn</code> matrix, return a row vector of which the <code>i</code>-th element is the mean value of
 the <code>i</code>-th column of <code>x</code>.</p></li>
 </ol>
 <pre><code>mathly = require('mathly')
@@ -1210,8 +1210,8 @@ disp(randn(3, 5, 70, 12.55))
 </code></pre>
 <table><tbody>
 <p>&#x2713; &nbsp; The usage of <code>randi(...)</code> is different.</p>
-<tr><td><code>randi(imax)</code></td><td> </td><td width=10> </td><td>Return an random integer in <code>[1, imax]</code>.</tr>
-<tr><td><code>randi({imin, imax})</code></td><td> </td><td width=10> </td><td>Return an random integer in <code>[imin, imax]</code>.</tr>
+<tr><td><code>randi(imax)</code></td><td> </td><td width=10> </td><td>Return a random integer in <code>[1, imax]</code>.</tr>
+<tr><td><code>randi({imin, imax})</code></td><td> </td><td width=10> </td><td>Return a random integer in <code>[imin, imax]</code>.</tr>
 <tr><td><code>randi(imax, m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is in <code>[1, imax]</code>. (<code>n</code> is optional. The default is <code>m</code>.)</tr>
 <tr><td><code>randi({imin, imax}, m, n)</code></td><td> </td><td width=10> </td><td>Return a mxn mathly matrix of which each element is in <code>[imin, imax]</code>. (<code>n</code> is optional. The default is <code>m</code>.)</tr>
 </tbody></table>
@@ -1427,7 +1427,7 @@ disp(c)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=reverse href=#m><code>reverse(tbl)</code></a></h4>
-<p>Return a table with order of elements in <code>tbl</code> reversed.</p>
+<p>Return a table with order of elements in table <code>tbl</code> reversed.</p>
 <p>&#x2713; &nbsp; If <code>tbl</code> is a matrix, it is flattened columnwisely first to a table and then reversed.</p>
 <pre><code>require('mathly')
 a = seq(10)
@@ -1441,7 +1441,7 @@ disp(reverse(a)) -- same as tt(a, #a, 1, -1) or tt(a, #a, 1)
 <p>If there is one more argument, i.e., <code>rref(A, B)</code>, <code>A</code> and <code>B</code> will be merged horizontally into A.
 <p><code>A</code> and <code>B</code> must be mathly matrices with the same row number.</p>
 <p>Return the reduced row-echelon form of a mathly matrix <code>A</code>. <u>Note</u>: <code>A</code> and <code>B</code> are modified.</p>
-<p>To solve <code>Ax = b</code>, call <code>rref(A, b)</code> first, and <code>b</code> gives the solution.</p>
+<p>To solve <code>Ax = b</code>, call <code>rref(A, b)</code>, and <code>b</code> holds finally the solution.</p>
 <pre><code>mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
 disp(a)
@@ -1529,7 +1529,7 @@ display(x)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=sort href=#m><code>sort(tbl, compf)</code></a></h4>
-<p>Sort a table <code>tbl</code> and return the resulted table.</p>
+<p>Sort table <code>tbl</code> and return the resulted table.</p>
 <p>Provided for convenience, it is almost exactly the same as <a href="manual.html#pdf-table.sort"><code>table.sort(tbl, compf)</code></a>.</p>
 <p>For <code>table.sort(tbl)</code>, <code>tbl</code> must be a variable rather than a specific table. Otherwise, say, <code>table.sort({2, 0, 2, 4})</code> actually does nothing.</p>
 <p>&#x2713; &nbsp; <code>tbl</code> is changed if it is a variable.</p>
@@ -1591,7 +1591,7 @@ print(strcat('Good', ' ', 'morning', '!'))
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=subtable href=#m><code>subtable(tbl, i, j, s)</code></a></h4>
-<p>Return a slice of the table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code> (default: 1).</p>
+<p>Return a slice of table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code> (default: 1).</p>
 <p>See also: <a href=#cc><code>cc, rr, tt</code></a></p>
 <pre><code>mathly = require('mathly')
 x = {1, 2, {3}, 4, {{5, 6, {7}}}}
@@ -1673,12 +1673,12 @@ for i = 1, 10000000 do
 end
 toc()
 
-x = toc(1) -- pass any none-nil value to toc to get the elapsed time; otherwise, print the elapsed time
+x = toc(1) -- pass any non-nil value to toc to get the elapsed time; otherwise, print the elapsed time
 printf("The loop took %.2f seconds.", x)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=unique href=#m><code>unique(tbl)</code></a></h4>
-<p>Return the same data as in tbl but with no repetitions. Data is sorted.</p>
+<p>Return the same data as in table <code>tbl</code> but with no repetitions. Data is sorted.</p>
 <pre><code>require('mathly')
 display(unique({4,5,2,1,-2,2,4,2,7,6,19}))
 -- {-2, 1, 2, 4, 5, 6, 7, 19}
@@ -1712,7 +1712,7 @@ disp(E)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=plot href=#m><code>plot(...)</code></a></h4>
-<p>Plot the graph(s) of functions defined by data points , using specifications/options.</p>
+<p>Plot the graph(s) of functions defined by data points, using specifications/options.</p>
 <p><b>Some specifications:</b></p>
 <ol>
 <li>of a line, i.e., the graph of a function:<p><code>width</code> = 5</p><p><code>style</code> = <code>'-'</code> [solid, <code>':'</code> (dot), or <code>'--'</code> (dash)]</p>
@@ -1960,7 +1960,7 @@ end
 </tbody></table>
 <p>See also: <a href=#arc><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a></p>
 <p><a name=namedargs><b>Named arguments for this group of functions:</b></p>
-<p>To make it easier to use this group of functions, if necessary or if convenient, each function may be called in two more ways, <code>pie({...})</code> or <code>pie{...}</code>. There are rules to follow: 1) We may not use names at all; 2) We use names for all arguments; 3) Arugments without names must be the first ones and in defined order. Take <code>pie</code> as an example,</p>
+<p>To make it easier to use this group of functions, if necessary or if convenient, each function may be called in two more ways, <code>pie({...})</code> or <code>pie{...}</code>. There are rules to follow: 1) We may not use names at all; 2) We use names for all arguments; 3) Arguments without names must be the first ones and in defined order. Take <code>pie</code> as an example,</p>
 <pre><code>require 'mathly'
 
 data = {1, 11, 4, 7, 6, 5, 10, 4, 3, 15, 13, 1, 4, 10, 9}
@@ -1974,9 +1974,9 @@ plot(pie{data, 5, nil, nil, 0.1}) -- pie{...} or pie({...}) is allowed but not r
 -- in the above examples, there are no named arguments. pie({...}), pie{...}, and pie(...) are the same, but the first two ways are not recommended.
 
 -- when there are named variables, we must call a function in a special way: pie({...}) or pie{...}.
-plot(pie{nbins = 7, x = data}) -- the order of named arugments doesn't matter
+plot(pie{nbins = 7, x = data}) -- the order of named arguments doesn't matter
 
--- named and unnamed vairables: unnamed ones are placed before named ones and in specified order
+-- named and unnamed variables: unnamed ones are placed before named ones and in specified order
 plot(pie{data, 7, offcenter = {{2, 0.1}, {5, 0.2}}, style = '-fs'}) -- offcenter = {{2, 0.1}, {5, 0.2}}, the 2nd & 5th bins are away from the center by ...
 plot(pie{x = {bins = {0.0930, 0.1163, 0.0233, 0.2791, 0.1395, 0.3488}}, style='-', offcenter = {{3, 0.6}, {5, 0.1}, {1, 0.15}}})
 </code></pre>
