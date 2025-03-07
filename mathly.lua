@@ -922,6 +922,8 @@ function strcat(...)
       s = s .. v
     elseif type(v) == 'number' then
       s = s .. string.char(v)
+    elseif type(v) == 'table' then -- 3/6/25
+      s = s .. strcat(table.unpack(v))
     end
   end
   return s
