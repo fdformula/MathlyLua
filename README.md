@@ -24,7 +24,8 @@ simple and so natural a language that even students without programming skills c
 Mathly is developed in Lua 5.4.6. It works with the present newest version 5.4.7. It might work with previous versions.
 
 You may download Lua source code in https://lua.org/ and compile it yourself or simply download prebuilt binary commands
-for Microsoft Windows in, say, https://www.nuget.org/packages/lua/. Another way to get prebuilt Lua is to download
+for Microsoft Windows in, say, [https://joedf.github.io/LuaBuilds/]https://joedf.github.io/LuaBuilds/ and
+[https://www.nuget.org/packages/lua/]https://www.nuget.org/packages/lua/. Another way to get prebuilt Lua is to download
 ZeroBrane Studio (https://studio.zerobrane.com/), a lightweight Lua IDE for various platforms. It comes with multiple versions of Lua.
 
 Microsoft Windows users may download on this very page the file, `cudatext-for-mathly-win-*.7z`, including Lua 5.4.6.
