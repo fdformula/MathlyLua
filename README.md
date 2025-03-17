@@ -14,9 +14,9 @@ it can run fast on slow devices like old Microsoft Surface Pro 4. Imagine that t
 is about 340 MB, MATLAB needs a few GB storage space, and Julia with graphing modules is huge, too. You can hardly
 install them on pretty old computers and run smoothly.
 
-Mathly is especially good for instructors of linear algebra and numerical computing for teaching. It takes no time to
-start Lua and load mathly. While developing code and doing computation in a lecture, they can simply focus on delivery
-of course contents and never need to worry if their computers work too slowly or even collapse. Moreover, Lua is so
+Mathly is especially a good choice for instructors of linear algebra and numerical computing for teaching. It takes no time to
+start Lua with mathly loaded. While developing code and doing computation in a lecture, they can simply focus on delivery
+of course contents and never need to worry if their computers work too slowly. Moreover, Lua is so
 simple and so natural a language that even students without programming skills can understand most of its scripts.
 
 ## Which version of Lua is needed?
