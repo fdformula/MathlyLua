@@ -33,7 +33,7 @@ Quite a few CudaText plugins are included. Some are customized and even have new
 ```
   F1               to open help document on current Lua/mathly function
 
-  F2               to start Lua with mathly loaded
+  F2               to start Lua interpreter with mathly loaded
   Ctrl-,           to run Lua command on current line in the editor
   Ctrl-.           to run all Lua script in the editor (HTML file? open it in a browser)
 
