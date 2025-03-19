@@ -32,11 +32,11 @@ programming languages. If there is anything many love the most about MATLAB, the
 <p>Mathly uses Plotly JavaScript graphing tools (see <a href="https://plotly.com/javascript/">https://plotly.com/javascript/</a>)
 to plot graphs of single-variable functions. Therefore, graphs are shown in an internet browser.</p>
 
-<p>The entire mathly tool together with Lua interpreter is less than 5 MB, while providing enough features for instructors and
-college students to implement many numerical algorithms. Because it is super lightweight and fast as well,
-it can run fast even on old and slow devices like Microsoft Surface Pro 4. Imagine that MATLAB needs a few GB storage space,
-and Julia with graphing modules is huge, too. We can hardly install them on pretty old computers and run smoothly. In fact,
-running these products on new laptops, we often hate that they are not as powerful as advanced desktop computers.</p>
+<p>The entire mathly tool together with Lua interpreter is less than 5 MB, while providing enough features for instructors and college students to implement
+numerical algorithms. Because it is super lightweight and fast as well, it can run fast even on old and slow devices like Microsoft Surface Pro 4 (Intel Core
+i5-6300U, 8 GB RAM). In sharp contrast to it, MATLAB needs a few GB of storage space, and Julia with basic graphing modules is huge, too. Besides, it takes about 22
+seconds to start MATLAB R2024b on a brand new high-end Intel Core i9-14900HX laptop with 56 GB RAM installed! Thus, they can hardly be installed on slow or
+pretty old computers and run smoothly.</p>
 
 <p>Mathly is especially a good choice for instructors of linear algebra and numerical computing for teaching. It takes
 no time to start Lua with mathly loaded. While developing code and doing computation in a lecture, they can simply focus
@@ -569,6 +569,8 @@ and 2) a table of elements of <code>tbl</code> with those elements replaced by 0
 <p>If <code>f</code> is a table/matrix, return 1) a table of elements of <code>tbl</code> (row wise) that correspond to nonzero
 elements of <code>f</code> and 2) <code>tbl</code> with entries replaced with corresponding zero elements of <code>f</code>.</p>
 <pre><code>mathly = require('mathly')
+#select(seq(1000), function(x) return x % 5 == 0 or x % 6 == 0 end)
+-- 333 -- the number of positive integers not exceeding 1000 and divisible by either 5 or 6
 A = mathly{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
 disp(A)
 -- 1  2  3
