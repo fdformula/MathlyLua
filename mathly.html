@@ -34,8 +34,8 @@ to plot graphs of single-variable functions. Therefore, graphs are shown in an i
 
 <p>The entire mathly tool together with Lua interpreter is less than 5 MB, while providing enough features for instructors and college students to implement
 numerical algorithms. Because it is super lightweight and fast as well, it can run fast even on old and slow devices like Microsoft Surface Pro 4 (Intel Core
-i5-6300U, 8 GB RAM). In sharp contrast to it, MATLAB needs a few GB of storage space, and Julia with basic graphing modules is huge, too. Besides, it takes about 22
-seconds to start MATLAB R2024b on a brand new high-end Intel Core i9-14900HX laptop with 56 GB RAM installed! Thus, they can hardly be installed on slow or
+i5-6300U, 8 GB RAM). In sharp contrast to it, MATLAB needs a few GB of storage space. In addition, it takes about 22
+seconds to start MATLAB R2024b on a brand new high-end Intel Core i9-14900HX laptop with 56 GB RAM installed. Thus, it can hardly be installed on slow or
 pretty old computers and run smoothly.</p>
 
 <p>Mathly is especially a good choice for instructors of linear algebra and numerical computing for teaching. It takes
@@ -1979,7 +1979,7 @@ of integers or strings of intgers.</p>
 <p>&#x2713; &nbsp; Not as with all other cases, even if <code>x</code> for function <code>dec2...</code> is a mathly matrix, the result is a Lua table
 rather than a mathly matrix. Mathly matrices can only have numerical entries.</p>
 <p>&#x2713; &nbsp; Function <code>...2dec(x)</code> treats input string <code>x</code> as an unsigned integer.</p>
-<pre><code>require 'mathly'
+<pre><code>mathly = require('mathly')
 
 disp(dec2bin(123)) -- '1111011'
 disp(dec2hex(123)) -- '7b'
@@ -1991,10 +1991,7 @@ disp(dec2bin({123, 124, 125, {126, {127, 128}}}))
 disp(hex2dec(dec2hex({123, 124, 125, {126, {127, 128}}})))
 -- {123, 124, 125, {126, {127, 128}}}
 
-a = randi(100, 2, 2)
-disp(a)
--- 75  28
--- 90   6
+a = mathly{{75, 28}, {90, 6}}
 disp(dec2bin(a))
 -- {{'1001011', '11100'}, {'1011010', '110'}}
 disp(oct2hex(dec2oct(a)))
