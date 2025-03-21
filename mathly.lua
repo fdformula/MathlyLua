@@ -28,13 +28,12 @@ API and Usage
     tblcat, text, tic, toc, transpose, tt, unique, var, vertcat, who, zeros
 
     dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
-    oct2hex, hex2bin, hex2dec, hex2oct, 
+    oct2hex, hex2bin, hex2dec, hex2oct
 
-    arc, circle, line, parametriccurve2d, plot, plot3d, plotparametriccurve3d,
-    plotparametricsurface3d, plotsphericalsurface3d, point, polarcurve2d, polygon,
-    scatter, text, wedge
+    arc, circle, line, parametriccurve2d, point, polarcurve2d, polygon, scatter,
+    text, wedge; boxplot, freqpolygon, hist, hist1, histfreqpolygon, pareto, pie
 
-    boxplot, freqpolygon, hist, hist1, histfreqpolygon, pareto, pie
+    plot, plot3d, plotparametriccurve3d, plotparametricsurface3d, plotsphericalsurface3d
 
     axissquare, axisnotsquare; showaxes, shownotaxes; showxaxis, shownotxaxis;
     showyaxis, shownotyaxis; showgridlines, shownotgridlines;
