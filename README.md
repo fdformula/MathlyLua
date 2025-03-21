@@ -76,10 +76,9 @@ package.path = "./?.luac;;"
 `randi`, `randn`, `range`, `remake`, `repmat`, `reshape`, `reverse`, `round`, `rr`, `rref`, `save`, `select`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`,
 `submatrix`, `subtable`, `sum`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`; `bin2dec`, `oct2hex`, ...
 
- `arc`, `circle`, `line`, `parametriccurve2d`; `plot`, `plot3d`, `plotparametriccurve3d`, `plotparametricsurface3d`, `plotsphericalsurface3d`; `point`,
-`polarcurve2d`, `polygon`, `scatter`, `text`, `wedge`
+ `arc`, `circle`, `line`, `parametriccurve2d`, `point`, `polarcurve2d`, `polygon`, `scatter`, `text`, `wedge`; `boxplot`, `freqpolygon`, `hist`, `hist1`, `histfreqpolygon`, `pareto`, `pie`
 
-`boxplot`, `freqpolygon`, `hist`, `hist1`, `histfreqpolygon`, `pareto`, `pie`
+ `plot`, `plot3d`, `plotparametriccurve3d`, `plotparametricsurface3d`, `plotsphericalsurface3d`
 
 See mathly.html.
 
