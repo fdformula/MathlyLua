@@ -74,11 +74,9 @@ package.path = "./?.luac;;"
 `eye`, `flatten`,  `fliplr`, `flipud`, `format`, `gcd`, `hasindex`, `input`, `inv`, `isinteger`, `iseven`, `isodd`, `ismember`, `lagrangepoly`, `length`,
 `linsolve`, `linspace`, `lu`, `map`, `mathly`, `max`, `mean`, `min`, `mod`, `norm`, `ones`, `polynomial`, `polyval`, `powermod`, `printf`, `prod`, `qr`, `rand`,
 `randi`, `randn`, `range`, `remake`, `repmat`, `reshape`, `reverse`, `round`, `rr`, `rref`, `save`, `select`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`,
-`submatrix`, `subtable`, `sum`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`
+`submatrix`, `subtable`, `sum`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`; `bin2dec`, oct2hex`, ...
 
- `bin2dec`, `bin2hex`, `bin2oct`, `dec2bin`, `dec2hex`, `dec2oct`, `hex2bin`, `hex2dec`, `hex2oct`, `oct2bin`, `oct2dec`, `oct2hex`
-
-`arc`, `circle`, `line`, `parametriccurve2d`, `plot`, `plot3d`, `plotparametriccurve3d`, `plotparametricsurface3d`, `plotsphericalsurface3d`, `point`,
+ `arc`, `circle`, `line`, `parametriccurve2d`, `plot`, `plot3d`, `plotparametriccurve3d`, `plotparametricsurface3d`, `plotsphericalsurface3d`, `point`,
 `polarcurve2d`, `polygon`, `scatter`, `text`, `wedge`
 
 `boxplot`, `freqpolygon`, `hist`, `hist1`, `histfreqpolygon`, `pareto`, `pie`
