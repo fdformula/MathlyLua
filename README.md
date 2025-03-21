@@ -74,7 +74,7 @@ package.path = "./?.luac;;"
 `eye`, `flatten`,  `fliplr`, `flipud`, `format`, `gcd`, `hasindex`, `input`, `inv`, `isinteger`, `iseven`, `isodd`, `ismember`, `lagrangepoly`, `length`,
 `linsolve`, `linspace`, `lu`, `map`, `mathly`, `max`, `mean`, `min`, `mod`, `norm`, `ones`, `polynomial`, `polyval`, `powermod`, `printf`, `prod`, `qr`, `rand`,
 `randi`, `randn`, `range`, `remake`, `repmat`, `reshape`, `reverse`, `round`, `rr`, `rref`, `save`, `select`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`,
-`submatrix`, `subtable`, `sum`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`; `bin2dec`, oct2hex`, ...
+`submatrix`, `subtable`, `sum`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`; `bin2dec`, `oct2hex`, ...
 
  `arc`, `circle`, `line`, `parametriccurve2d`, `plot`, `plot3d`, `plotparametriccurve3d`, `plotparametricsurface3d`, `plotsphericalsurface3d`, `point`,
 `polarcurve2d`, `polygon`, `scatter`, `text`, `wedge`
