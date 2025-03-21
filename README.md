@@ -17,7 +17,7 @@ be installed on slow or pretty old computers and run smoothly.
 Mathly is especially a good choice for instructors of linear algebra and numerical computing for teaching. It takes no time to
 start Lua with mathly loaded. While developing code and doing computation in a lecture, they can simply focus on delivery
 of course contents and never need to worry if their computers work too slowly. Moreover, Lua is so
-simple and so natural a language that even students without programming skills can understand most of Lua scripts.
+simple and so natural a language that students without programming skills can understand most of Lua scripts.
 
 ## Which version of Lua is needed?
 
