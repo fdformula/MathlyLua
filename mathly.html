@@ -266,6 +266,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#any><code>any(x, f)</code></a></td><td> </td><td>Test if there is any number in <code>x</code> such that <code>f(x)</code> is true.</td></tr>
 <tr><td> </td><td><a href=#apply><code>apply(f, ...)</code></a></td><td> </td><td>As with some other programming languages like <i>Mathematica</i>, call function <code>f</code> with the arguments.</td></tr>
 <tr><td> </td><td><a href=#arc><code>arc(r, center, angles, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot an arc of a circle.</td></tr>
+<tr><td> </td><td><a href=#bin2dec><code>bin2dec, hex2oct, oct2hex...</code></a></td><td> </td><td>Convert numbers from, say, binary to hexadecimal.</td></tr>
 <tr><td> </td><td><a href=#boxplot><code>boxplot(x, names)</code></a></td><td> </td><td>Return a special graph object for <code><a href=#plot>plot</a></code> to plot a box plot (or box-and-whisker plot), where <code>x</code> is a table or a matrix of numbers. <code>names = {'name1', 'name2', ...}</code> is optional.</td></tr>
 <tr><td> </td><td><a href=#cc><code>cc(x...)</code></a></td><td> </td><td>Convert table <code>x</code> into a column vector or return specified column(s) of a mathly matrix...</td></tr>
 <tr><td> </td><td><a href=#circle><code>circle(r, center, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a circle.</td></tr>
@@ -287,6 +288,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#flipud><code>flipud(A)</code></a></td><td> </td><td>Return a matrix with rows of matrix <code>A</code> reversed.</td></tr>
 <tr><td> </td><td><a href=#format><code>format(fmt)</code></a></td><td> </td><td>Reset or specify the format of the output of <code>disp(...)</code>.</td></tr>
 <tr><td> </td><td><a href=#freqpolygon><code>freqpolygon(x, nbins, style, xrange)</code></a></td><td> </td><td>Return a graph object for <code><a href=#plot>plot</a></code> to plot frequency polygon, where <code>x</code> is a table of numbers.</td></tr>
+<tr><td> </td><td><a href=#gcd><code>gcd(x, y)</code></a></td><td> </td><td>Return the greatest common divisor of <code>x</code> and <code>y</code>.</td></tr>
 <tr><td> </td><td><a href=#hasindex><code>hasindex(tbl, index)</code></a></td><td> </td><td>Check if table <code>tbl</code> contains <code>index</code>.</td></tr>
 <tr><td> </td><td><a href=#hist><code>hist(x, nbins, style, xrange)</code></a></td><td> </td><td>Return a special graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table or a matrix of numbers and <code>nbins</code> is the number of bins (default: 10).</td></tr>
 <tr><td> </td><td><a href=#hist1><code>hist1(x, nbins, style, xrange)</code></a></td><td> </td><td>Return an ordinary graph object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers.</td></tr>
@@ -324,6 +326,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#polygon><code>polygon(vertices, style)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a polygon.</td></tr>
 <tr><td> </td><td><a href=#polynomial><code>polynomial(...)</code></a></td><td> </td><td>Return the polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
 <tr><td> </td><td><a href=#polyval><code>polyval(coefs, x)</code></a></td><td> </td><td>Evaluate at <code>x</code> the value of a polynomial of which the coefficients are specified in a table <code>coefs</code>.</td></tr>
+<tr><td> </td><td><a href=#powermod><code>powermod(b, n, m)</code></a></td><td> </td><td>Return <code>b<sup>n</sup> mod m</code>, i.e., the remainder of <code>b<sup>n</sup></code> divided by <code>m</code>.</td></tr>
 <tr><td> </td><td><a href=#printf><code>printf(...)</code></a></td><td> </td><td>Print formatted text like <code>printf</code> in C/C++.</td></tr>
 <tr><td> </td><td><a href=#prod><code>prod(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the product of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
 <tr><td> </td><td><a href=#qr><code>qr(A)</code></a></td><td> </td><td>Return <code>Q</code> and <code>R</code> of QR factorization <code>A = QR</code>.</td></tr>
@@ -864,6 +867,14 @@ disp(fliplr(a))
 <tr><td width=20></td><td><code>'long'</code></td><td> </td><td width=10> </td><td>15 decimal places</td></tr>
 </tbody></table>
 
+<h4>&bull; &nbsp; <a name=gcd href=#m><code>gcd(x, y)</code></a></h4>
+<p>Return the greatest common divisor of <code>x</code> and <code>y</code> which can be nonnegative integers of tables of nonnegative integers with the same structure.</p>
+<pre><code>require 'mathly'
+gcd(126, 12)
+disp(gcd({126, 35}, {12, 5}))
+disp(gcd({126, {35, 12}}, {12, {5, 36}}))
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=hasindex href=#m><code>hasindex(tbl, idx)</code></a></h4>
 <p>Check if table <code>tbl</code> contains index <code>idx</code>.</p>
 <pre><code>require 'mathly'
@@ -1216,6 +1227,14 @@ disp(randn(3, 5, 70, 12.55))
 <tr><td><code>randi(imax, m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> mathly matrix of which each element is in <code>[1, imax]</code>. (<code>n</code> is optional. The default is <code>m</code>.)</tr>
 <tr><td><code>randi({imin, imax}, m, n)</code></td><td> </td><td width=10> </td><td>Return a mxn mathly matrix of which each element is in <code>[imin, imax]</code>. (<code>n</code> is optional. The default is <code>m</code>.)</tr>
 </tbody></table>
+
+<h4>&bull; &nbsp; <a name=powermod href=#m><code>powermod(b, n, m)</code></a></h4>
+<p>Return <code>b<sup>n</sup> mod m</code>, i.e., the remainder of <code>b<sup>n</sup></code> divided by <code>m</code>.</p>
+<p>Note: <code>b, n</code>, and <code>m</code> are nonnegative integers with <code>m &gt; 0</code>.</p>
+<pre><code>require 'mathly'
+
+powermod(211, 410, 19) -- 6
+</pre></code>
 
 <h4>&bull; &nbsp; <a name=polynomial href=#m><code>polynomial({x1, x2, ...}, {y1, y2, ...}, xx), polynomial({{x1, y1}, {x2, y2}, ...}, xx)</code></a></h4>
 <p>Construct a polynomial, defined by data <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>.</p>
@@ -1944,6 +1963,44 @@ end
 <tr><td><code>showlegend(),    shownotlegend()</code></td><td> &nbsp; </td><td>Show/hide the legend</td></tr>
 </tbody></table>
 <p>&#x2713; &nbsp; These functions are not valid for 3D graphs.</p>
+
+<h4>&bull; &nbsp; <a name=bin2dec></a><a name=bin2hex></a><a name=bin2oct></a><a name=dec2bin></a>
+<a name=dec2hex></a><a name=dec2oct></a><a name=hex2bin></a><a name=hex2dec></a>
+<a name=hex2oct></a><a name=oct2bin></a><a name=oct2dec></a>
+<a name=oct2hex href=#m><code>bin2dec, bin2hex, bin2oct; dec2bin, dec2hex, dec2oct; hex2bin, hex2dec, hex2oct; oct2bin, oct2dec, oct2hex</code></a></h4>
+<table><tbody>
+<tr><td><code>dec2bin(x), hex2bin(x), oct2bin(x)</code></td><td> - </td><td>Convert decimal/hexadecimal/octal integer <code>x</code> to binary</td></tr>
+<tr><td><code>bin2dec(x), hex2dec(x), oct2dec(x)</code></td><td> - </td><td>Convert binary/hexadecimal/octal integer <code>x</code> to decimal</td></tr>
+<tr><td><code>bin2oct(x), dec2oct(x), hex2oct(x)</code></td><td> - </td><td>Convert binary/decimal/hexadecimal integer <code>x</code> to octal</td></tr>
+<tr><td><code>bin2hex(x), dec2hex(x), oct2hex(x)</code></td><td> - </td><td>Convert binary/decimal/octal integer <code>x</code> to hexadecimal</td></tr>
+</tbody></table>
+<p>Note: <code>x</code> can be a decimal integer (for all <code>dec2...</code> functions), a string of a valid binary/octal/hexadecimal integer, or a table
+of integers or strings of intgers.</p>
+<p>&#x2713; &nbsp; Not as with all other cases, even if <code>x</code> for function <code>dec2...</code> is a mathly matrix, the result is a Lua table
+rather than a mathly matrix. Mathly matrices can only have numerical entries.</p>
+<p>&#x2713; &nbsp; Function <code>...2dec(x)</code> treats input string <code>x</code> as an unsigned integer.</p>
+<pre><code>require 'mathly'
+
+disp(dec2bin(123)) -- '1111011'
+disp(dec2hex(123)) -- '7b'
+disp(dec2oct(123)) -- '173'
+disp(oct2dec('173')) -- 123
+
+disp(dec2bin({123, 124, 125, {126, {127, 128}}}))
+-- {'1111011', '1111100', '1111101', {'1111110', {'1111111', '10000000'}}}
+disp(hex2dec(dec2hex({123, 124, 125, {126, {127, 128}}})))
+-- {123, 124, 125, {126, {127, 128}}}
+
+a = randi(100, 2, 2)
+disp(a)
+-- 75  28
+-- 90   6
+disp(dec2bin(a))
+-- {{'1001011', '11100'}, {'1011010', '110'}}
+disp(oct2hex(dec2oct(a)))
+disp(dec2hex(a))
+-- {{'4b', '1c'}, {'5a', '6'}}
+</code></pre>
 
 <h4>&bull; &nbsp; <a name=boxplot></a><a name=pareto></a><a name=freqpolygon></a><a name=histfreqpolygon></a><a name=hist></a><a name=hist1></a>
 <a name=pie href=#m><code>freqpolygon, hist, hist1, histfreqpolygon, pareto, pie</code></a></h4>

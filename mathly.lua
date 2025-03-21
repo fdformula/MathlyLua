@@ -530,6 +530,130 @@ function select( A, f )
   return X, B
 end -- select
 
+------ ↓↓↓ added on 3/20/25
+local function _dec2bho(x, title, f)
+  if isinteger(x) then
+    return f(x)
+  elseif type(x) == 'table' then
+    local metaq = getmetatable(x) == mathly_meta
+    if metaq then demathly(x) end
+    local y = map(f, x)
+    if metaq then setmetatable(x, mathly_meta) end
+    return y
+  else
+    error(title .. '(x): x must be an integer or a table of integers.')
+  end
+end -- _dec2bho
+
+--// calculate the (64-bit) binary expansion of signed decimal integer x
+function dec2bin(x)
+  local function _dec2bin(x)
+    local str = ''
+    while x ~= 0 do
+      str = (x & 1) .. str
+      x = x >> 1
+    end
+    if str == '' then str = '0' end
+    return str
+  end
+  return _dec2bho(x, 'dec2bin', _dec2bin)
+end -- dec2bin
+
+--// calculate the hexadecimal expansion of signed decimal integer x
+function dec2hex(x) return _dec2bho(x, 'dec2hex', function(x) return sprintf('%x', x) end) end
+
+--// calculate the octal expansion of signed decimal integer x
+function dec2oct(x) return _dec2bho(x, 'dec2oct', function(x) return sprintf('%o', x) end) end
+
+--// convert unsigned binary/octal/hexadecimal integer x to decimal integer
+local function _bho2dec(x, title, base)
+  local function __bho2dec(x)
+    local val = 0
+    x = string.lower(x) -- unnecessary in Lua 5.4.6
+    for i = 1, #x do
+      local v = string.sub(x, i, i)
+      if v >= '0' and v <= '9' then
+        v = string.byte(v) - string.byte('0')
+        if base == 2 and v > 1 then
+          error(x .. ': invalid binary number.')
+        elseif base == 8 and v > 7 then
+          error(x .. ': invalid octal number.')
+        end
+      elseif base == 16 then
+        if v >= 'a' and v <= 'f' then
+          v = string.byte(v) - string.byte('a') + 10
+        else
+          error(x .. ': invalid hexadecimal number.')
+        end
+      else
+        error(x .. ': invalid number.')
+      end
+      val = val * base + v -- Lua 5.4.6, 1 + '67' = 68
+    end
+    return val
+  end
+
+  if type(x) == 'string' then
+    return __bho2dec(x)
+  elseif type(x) == 'table' then
+    return map(__bho2dec, x)
+  else
+    error(title .. '(x): x must be a string or a table of strings.')
+  end
+end -- _bho2dec
+
+function bin2dec(x) return _bho2dec(x, 'bin2dec', 2) end
+function oct2dec(x) return _bho2dec(x, 'oct2dec', 8) end
+function hex2dec(x) return _bho2dec(x, 'hex2dec', 16) end
+
+function bin2oct(x) return dec2oct(bin2dec(x)) end
+function bin2hex(x) return dec2hex(bin2dec(x)) end
+function oct2bin(x) return dec2bin(oct2dec(x)) end
+function oct2hex(x) return dec2hex(oct2dec(x)) end
+function hex2bin(x) return dec2bin(hex2dec(x)) end
+function hex2oct(x) return dec2oct(hex2dec(x)) end
+
+--// calculate the greatest common divisor
+function gcd(x, y)
+  local function __gcd(x, y) -- euclidean algorithm
+    while y ~= 0 do
+      x, y = y, x % y
+    end
+    return x
+  end
+  local function _gcd(x, y)
+    assert(isinteger(x) and x >= 0 and isinteger(y) and y >= 0,
+           'gcd(x, y): x and y must be nonnegative integers.')
+    if x < y then x, y = y, x end
+    return __gcd(x, y)
+  end
+  if type(x) == 'number' then
+    return _gcd(x, y)
+  elseif type(x) == 'table' then
+    return map(_gcd, x, y)
+  else
+    error('gcd(x, y): x and y must be nonnegative integers or tables of nonnegative integers with the same structure.')
+  end
+end -- gcd
+
+--// calculate b^n mod m
+function powermod(b, n, m)
+  assert(isinteger(b) and b >= 0 and
+         isinteger(n) and n >= 0 and
+         isinteger(m) and m > 0,
+         'powermod(b, n, m): b, n, and m must be nonnegative integers with m > 0.')
+  if b == 0 or m == 1 then return 0 end
+  local x = 1
+  local power = b % m
+  local a = dec2bin(n) --  binary modular exponentiation
+  for i = #a, 1, -1 do
+    if string.sub(a, i, i) == '1' then x = (x * power) % m end
+    power = (power * power) % m
+  end
+  return x
+end -- powermod
+------ ↑↑↑ added on 3/20/25
+
 --// function _largest_width_dplaces(tbl)
 -- find the largest width of integers/strings and number of decimal places
 -- -3.14 --> 1, 2; 123 --> 3, 0
@@ -556,7 +680,7 @@ local function _largest_width_dplaces(tbl) -- works with strings, numbers, and t
     end
   end
   return width, dplaces
-end
+end -- _largest_width_dplaces
 
 --[[ Lua 5.4.6
 The largest number print or io.write prints each digit is ±9223372036854775807,
