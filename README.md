@@ -76,7 +76,7 @@ package.path = "./?.luac;;"
 `randi`, `randn`, `range`, `remake`, `repmat`, `reshape`, `reverse`, `round`, `rr`, `rref`, `save`, `select`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`,
 `submatrix`, `subtable`, `sum`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`
 
-`dec2bin`, `dec2hex`, `dec2oct`, `bin2dec`, `bin2hex`, `bin2oct`, `oct2bin`, `oct2dec`, `oct2hex`, `hex2bin`, `hex2dec`, `hex2oct`, 
+ `bin2dec`, `bin2hex`, `bin2oct`, `dec2bin`, `dec2hex`, `dec2oct`, `hex2bin`, `hex2dec`, `hex2oct`, `oct2bin`, `oct2dec`, `oct2hex`
 
 `arc`, `circle`, `line`, `parametriccurve2d`, `plot`, `plot3d`, `plotparametriccurve3d`, `plotparametricsurface3d`, `plotsphericalsurface3d`, `point`,
 `polarcurve2d`, `polygon`, `scatter`, `text`, `wedge`
