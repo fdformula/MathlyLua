@@ -70,12 +70,13 @@ package.path = "./?.luac;;"
 
 ## Functions provided in mathly
 
-`..` (or `horzcat`), `all`, `any`, `apply`, `bin2dec`, `bin2hex`, `bin2oct`, `cc`, `clc`, `clear`, `copy`, `cross`, `dec2bin`, `dec2hex`, `dec2oct`, `demathly`,
-`det`, `diag`, `disp`, `display`, `div`, `dot`, `eval`, `expand`, `eye`, `flatten`,  `fliplr`, `flipud`, `format`, `gcd`, `hasindex`, `hex2bin`, `hex2dec`,
-`hex2oct`, `input`, `inv`, `isinteger`, `iseven`, `isodd`, `ismember`, `lagrangepoly`, `length`, `linsolve`, `linspace`, `lu`, `map`, `mathly`, `max`, `mean`,
-`min`, `mod`, `norm`, `oct2bin`, `oct2dec`, `oct2hex`, `ones`, `polynomial`, `polyval`, `powermod`, `printf`, `prod`, `qr`, `rand`, `randi`, `randn`, `range`,
-`remake`, `repmat`, `reshape`, `reverse`, `round`, `rr`, `rref`, `save`, `select`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`,
-`sum`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`
+`..` (or `horzcat`), `all`, `any`, `apply`, `cc`, `clc`, `clear`, `copy`, `cross`, `demathly`, `det`, `diag`, `disp`, `display`, `div`, `dot`, `eval`, `expand`,
+`eye`, `flatten`,  `fliplr`, `flipud`, `format`, `gcd`, `hasindex`, `input`, `inv`, `isinteger`, `iseven`, `isodd`, `ismember`, `lagrangepoly`, `length`,
+`linsolve`, `linspace`, `lu`, `map`, `mathly`, `max`, `mean`, `min`, `mod`, `norm`, `ones`, `polynomial`, `polyval`, `powermod`, `printf`, `prod`, `qr`, `rand`,
+`randi`, `randn`, `range`, `remake`, `repmat`, `reshape`, `reverse`, `round`, `rr`, `rref`, `save`, `select`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`,
+`submatrix`, `subtable`, `sum`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`
+
+`dec2bin`, `dec2hex`, `dec2oct`, `bin2dec`, `bin2hex`, `bin2oct`, `oct2bin`, `oct2dec`, `oct2hex`, `hex2bin`, `hex2dec`, `hex2oct`, 
 
 `arc`, `circle`, `line`, `parametriccurve2d`, `plot`, `plot3d`, `plotparametriccurve3d`, `plotparametricsurface3d`, `plotsphericalsurface3d`, `point`,
 `polarcurve2d`, `polygon`, `scatter`, `text`, `wedge`
