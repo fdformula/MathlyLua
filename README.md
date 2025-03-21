@@ -79,7 +79,7 @@ package.path = "./?.luac;;"
  `arc`, `circle`, `line`, `parametriccurve2d`, `point`, `polarcurve2d`, `polygon`, `scatter`, `text`, `wedge`; `boxplot`, `freqpolygon`, `hist`, `hist1`,
  `histfreqpolygon`, `pareto`, `pie` (All are graphics objects passed to `plot`.)
 
- `plot`, `plot3d`, `plotparametriccurve3d`, `plotparametricsurface3d`, `plotsphericalsurface3d`
+ `plot`; `plot3d`, `plotparametriccurve3d`, `plotparametricsurface3d`, `plotsphericalsurface3d`
 
 See mathly.html.
 
