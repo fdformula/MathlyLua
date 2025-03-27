@@ -1186,6 +1186,10 @@ xs = linspace(x[1], x[length(x)], 100)
 ys = newtonpoly(x, y, xs)
 plot(x, y, "*", xs, ys, "-")
 
+data = {{-1.0, -2.0}, {0, -3}, {3, 10}, {7, 6}, {10, -2}}
+ys = newtonpoly(data, xs)
+plot(xs, ys, "-")
+
 x = {1.0, 2, 4, 5, 7, 10, 20, 22, 30}
 y = {52.0, 5, -50, -40, 10, 9, 22, 23, 65}
 str = newtonpoly(x, y)

@@ -1212,7 +1212,7 @@ function range( start, stop, step ) -- ~Python but inclusive
   return v
 end -- range
 
---// for lagrangepoly(...) and polynomial(...)
+--// for lagrangepoly(...), newtonpoly(...), and polynomial(...)
 local function _converse_poly_input(data) -- {{x1, y1}, {x2, y2}, ...}
   local x, y = {}, {}
   if type(data) == 'table' and type(data[1]) == 'table' then
@@ -1286,6 +1286,10 @@ end -- lagrangepoly
 -- if xx is provided, return the value(s) of the Newton interpolating polynomial for data (x, y)'s;
 -- otherwise, return the polynomial, e.g, 'function f(x) return -3*(x - 1) + 4*(x - 1)*(x-2) end'
 function newtonpoly(x, y, xx)
+  local X, Y = _converse_poly_input(x)
+  if #X ~= 0 then xx = y; x, y = X, Y end
+  assert(type(x) == 'table' and type(y) == 'table' and #x == #y, 'newtonpoly(x, y ...): x and y must be tables of the same size.')
+
   local n = length(x)
   local a = zeros(1, n)
 
