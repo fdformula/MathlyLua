@@ -72,7 +72,7 @@ package.path = "./?.luac;;"
 
 `..` (or `horzcat`), `all`, `any`, `apply`, `cc`, `clc`, `clear`, `copy`, `cross`, `demathly`, `det`, `diag`, `disp`, `display`, `div`, `dot`, `eval`, `expand`,
 `eye`, `flatten`,  `fliplr`, `flipud`, `format`, `gcd`, `hasindex`, `input`, `inv`, `isinteger`, `iseven`, `isodd`, `ismember`, `lagrangepoly`, `length`,
-`linsolve`, `linspace`, `lu`, `map`, `mathly`, `max`, `mean`, `min`, `mod`, `norm`, `ones`, `polynomial`, `polyval`, `powermod`, `printf`, `prod`, `qr`, `rand`,
+`linsolve`, `linspace`, `lu`, `map`, `mathly`, `max`, `mean`, `min`, `mod`, `newtonpoly`, `norm`, `ones`, `polynomial`, `polyval`, `powermod`, `printf`, `prod`, `qr`, `rand`,
 `randi`, `randn`, `range`, `remake`, `repmat`, `reshape`, `reverse`, `round`, `rr`, `rref`, `save`, `select`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`,
 `submatrix`, `subtable`, `sum`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`; `bin2dec`, `oct2hex`, ...
 
