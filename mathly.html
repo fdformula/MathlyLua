@@ -311,6 +311,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#max><code>max(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the largest of all elements of the table; if it is a matrix, ...</td></tr>
 <tr><td> </td><td><a href=#mean><code>mean(x)</code></a></td><td> </td><td>Return mean value of numbers in <code>x</code>.</td></tr>
 <tr><td> </td><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
+<tr><td> </td><td><a href=#newtonpoly><code>newtonpoly(...)</code></a></td><td> </td><td>Return the Newton interpolating polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
 <tr><td> </td><td><code>norm(x)</code></td><td> </td><td>Return the Euclidean norm of a row/column vector <code>x</code>.</td></tr>
 <tr><td> </td><td><a href=#ones><code>ones(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 1. If <code>m = 1</code>, return a table.</td></tr>
 <tr><td> </td><td><a href=#parametriccurve2d><code>parametriccurve2d({x(t), y(t)}, range, style, resolution)</code></a></td><td> </td><td>Return a graph object for <code>plot</code> to plot a parametric curve.</td></tr>
@@ -960,28 +961,28 @@ print(ismember(4, x))
 <p>Return the Lagrange interpolating polynomial, defined by data <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>, or the value(s) of the polynomial at <code>xx</code>.</p>
 <p>If <code>xx</code> is provided, return the value(s) of the polynomial at <code>xx</code>;
 otherwise, return the string of the polynomial.</p>
-<p>See also: <a href=#polynomial><code>polynomial</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
+<p>See also: <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polynomial><code>polynomial</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
 <pre><code>require 'mathly'
 disp(lagrangepoly({1, 2}, {3, 4}))
--- function f(x) return -3.0*(x - 2) + 4.0*(x - 1) end
+-- '-3.0*(x - 2) + 4.0*(x - 1)'
 disp(lagrangepoly({1, 2}, {3, 4}, 5))
--- 7.0000
+-- 7.0
 disp(lagrangepoly({1, 2}, {3, 4}, {5, -6, 100}))
--- {7.0000, -4.0000, 102.0000}
+-- {7.0, -4.0, 102.0}
 
 s = lagrangepoly({1, 2, 3}, {3, 4, 5})
 disp(s)
--- function f(x) return 1.5*(x - 2)*(x - 3) - 4.0*(x - 1)*(x - 3) + 2.5*(x - 1)*(x - 2) end
-load(s)() -- activate the function
+-- '1.5*(x - 2)*(x - 3) - 4.0*(x - 1)*(x - 3) + 2.5*(x - 1)*(x - 2)'
+load('function f(x) return ' .. s .. ' end')() -- activate the function
 f(10)
 -- 12.0
 disp(lagrangepoly({1, 2, 3}, {3, 4, 5}, {10, 1, -5}))
--- {12.0000, 3.0000, -3.0000}
+-- {12.0, 3.0, -3.0}
 
 disp(lagrangepoly({{1, 3}, {2, 0}, {0, 4}}))
--- function f(x) return -3.0*(x - 2)*x + 2.0*(x - 1)*(x - 2) end
+-- '-3.0*(x - 2)*x + 2.0*(x - 1)*(x - 2)'
 disp(lagrangepoly({{1, 3}, {2, 0}, {0, 4}}, {10, 1, -5}))
--- {-96.0000, 3.0000, -21.0000}
+-- {-96.0, 3.0, -21.0}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=linsolve href=#m><code>linsolve(A, b, opt)</code></a></h4>
@@ -1168,6 +1169,32 @@ print(mean({'abc', 'de'})) --> strcat first: 'abcde' --> mean('abcde')
 -- 99.0
 </code></pre>
 
+<h4>&bull; &nbsp; <a name=newtonpoly href=#m><code>newtonpoly({x1, x2, ...}, {y1, y2, ...}, xx), newtonpoly({{x1, y1}, {x2, y2}, ...}, xx)</code></a></h4>
+<p>Return the Newton interpolating polynomial, defined by data <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>, or the value(s) of the polynomial at <code>xx</code>.</p>
+<p>If <code>xx</code> is provided, return the value(s) of the polynomial at <code>xx</code>;
+otherwise, return the string of the polynomial.</p>
+<p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#polynomial><code>polynomial</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
+<pre><code>require 'mathly'
+
+x = {-1.0, 0, 3, 7, 10}
+y = {-2.0, -3, 10, 6, -2}
+
+disp(newtonpoly(x, y))
+-- '-2 - (x + 1) + 1.33333*(x + 1)*x - 0.261905*(x + 1)*x*(x - 3) + 0.0285714*(x + 1)*x*(x - 3)*(x - 7)'
+
+xs = linspace(x[1], x[length(x)], 100)
+ys = newtonpoly(x, y, xs)
+plot(x, y, "*", xs, ys, "-")
+
+x = {1.0, 2, 4, 5, 7, 10, 20, 22, 30}
+y = {52.0, 5, -50, -40, 10, 9, 22, 23, 65}
+str = newtonpoly(x, y)
+load('function f(x) return ' .. str .. ' end')()
+xs = linspace(x[1], x[length(x)], 100)
+ys = map(f, xs)
+plot(x, y, "*", xs, ys, "-")
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=zeros></a><a name=rand></a><a name=randi></a><a name=randn></a><a name=ones href=#m><code>ones</code>, <code>zeros</code>, <code>rand</code>, <code>randi</code>, <code>randn</code></a></h4>
 <p>The usage of these functions is the same except randi that can take more arguments.</p>
 <table><tbody>
@@ -1243,16 +1270,16 @@ otherwise, return the string and the coefficients of the polynomial.</p>
 <p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
 <pre><code>require 'mathly'
 disp(polynomial({1, 2}, {3, 4}))
--- function p(x) return 1.0*x + 2.0 end
+-- '1.0*x + 2.0'
 disp(polynomial({1, 2}, {3, 4}, 5))
--- 7.0000
+-- 7.0
 disp(polynomial({1, 2}, {3, 4}, {5, -6, 100}))
 -- {7.0000, -4.0000, 102.0000}
 
 s, coefs = polynomial({1, 2, 3}, {3, 1, 4})
 disp(s)
--- function p(x) return 2.5*x^2 - 9.5*x + 10.0 end
-load(s)() -- activate the function
+-- '2.5*x^2 - 9.5*x + 10.0'
+load('function p(x) return ' .. s .. ' end')() -- activate the function
 p(10)
 -- 165.0
 polyval(coefs, 10)
@@ -1265,7 +1292,6 @@ s, coefs = polynomial({{1, 3}, {2, 1}, {3, 4}})
 disp(s)
 disp(polyval(coefs, {10, 1, -5}))
 -- {165.0000, 3.0000, 120.0000}
--- function p(x) return 2.5*x^2 - 9.5*x + 10.0 end
 disp(polynomial({{1, 3}, {2, 1}, {3, 4}}, {10, 1, -5}))
 -- {165.0000, 3.0000, 120.0000}
 </code></pre>

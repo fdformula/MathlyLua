@@ -1275,13 +1275,74 @@ function lagrangepoly(x, y, xx)
       end
     end
   end
-  if xx == nil then return 'function f(x) return ' .. str .. ' end' end
-
+  if xx == nil then return str end
   load('function _lagRaNgEtMp(x) return ' .. str .. ' end')()
   local tmp = map(_lagRaNgEtMp, xx) -- evaluate the polynomial at points xx
   _lagRaNgEtMp = nil -- delete it
   return tmp
 end -- lagrangepoly
+
+--// function newtonpoly(x, y, xx)
+-- if xx is provided, return the value(s) of the Newton interpolating polynomial for data (x, y)'s;
+-- otherwise, return the polynomial, e.g, 'function f(x) return -3*(x - 1) + 4*(x - 1)*(x-2) end'
+function newtonpoly(x, y, xx)
+  local n = length(x)
+  local a = zeros(1, n)
+
+  -- calculate coefs a(i) as in a1 + a2(x -x1) + a3(x-x1)(x-x2) + ... + an(x-x1)...
+  a[1] = y[1]
+  local f = copy(y)
+  for column = 2, n do
+    -- calculate a(i) and update fval
+    local row = 1
+    for i = column, n do
+      f[row] = (f[row + 1] - f[row]) / (x[row + column - 1] - x[row])
+      row = row + 1
+    end
+    a[column] = f[1]
+  end
+
+  -- prepare the string of the polynomial: a1 + a2(x -x1) + a3(x-x1)(x-x2) + ... + an(x-x1)...
+  local str = ''
+  for i = 1, n do -- coef a[i]
+    local skipq = false -- Lua doesn't provide 'continue'
+    local times = ''
+    if i == 1 then
+      str = str .. sprintf("%g", a[i])
+    else
+      if abs(a[i]) < eps then -- a[i] = 0
+        skipq = true
+      elseif a[i] > 0 then
+        str = str .. sprintf(" + ")
+        if abs(a[i] - 1) > eps then -- don't output 1
+          str = str .. sprintf("%g", a[i]); times = '*'
+        end
+      else
+        str = str .. sprintf(" - ")
+        if abs(a[i] + 1) > eps then -- don't output 1
+          str = str .. sprintf("%g", -a[i]); times = '*'
+        end
+      end
+    end
+
+    if not skipq then -- (x - x1)(x - x2)...; skip terms with coef 0
+      for j = 1, i - 1 do
+        if abs(x[j]) < eps then -- x = 0
+          str = str .. times .. "x"
+        elseif x[j] > 0 then
+          str = str .. times .. sprintf("(x - %g)", x[j])
+        else
+          str = str .. times .. sprintf("(x + %g)", -x[j])
+        end
+      end
+    end
+  end
+  if xx == nil then return str end
+  load('function _newTonTmP(x) return ' .. str .. ' end')()
+  local tmp = map(_newTonTmP, xx) -- evaluate the polynomial at points xx
+  _newTonTmP = nil -- delete it
+  return tmp
+end -- newtonpoly
 
 --// polynomial(x, y, xx)
 -- if xx is provided, return the value(s) of a polynomial, defined by data (x, y)'s, at xx;
@@ -1321,8 +1382,7 @@ function polynomial(x, y, xx)
       not1stq = true
     end
   end
-  if xx == nil then return 'function p(x) return ' .. str .. ' end', B end
-
+  if xx == nil then return str, B end
   load('function _polynOmiAlTmP(x) return ' .. str .. ' end')()
   local tmp = map(_polynOmiAlTmP, xx)
   _polynOmiAlTmP = nil -- delete it
@@ -1331,7 +1391,7 @@ end -- polynomial
 
 --// polyval( p, x )
 -- evaluate a polynomial p at x
--- example: polyval({6,-3,4}, 5) -- evalue 6 x^2 - 3 x + 4 at x = 5
+-- example: polyval({6, -3, 4}, 5) -- evalue 6 x^2 - 3 x + 4 at x = 5
 function polyval( P, x )
   local p = P
   local msg = 'polyval(p, x): invalid p. It must be a table of the coefficients of a polynomial.'
@@ -4257,4 +4317,3 @@ to name arguments of some functions.
 David Wang, dwang at liberty dot edu, on 12/25/2024
 
 --]]
-
