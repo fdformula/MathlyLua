@@ -1317,35 +1317,37 @@ function newtonpoly(x, y, xx)
   -- prepare the string of the polynomial: a1 + a2(x -x1) + a3(x-x1)(x-x2) + ... + an(x-x1)...
   local str = ''
   for i = 1, n do -- coef a[i]
-    local skipq = false -- Lua doesn't provide 'continue'
-    local times = ''
+    local skipq = false -- Lua 5.4.6 doesn't provide 'continue'
     if i == 1 then
       str = str .. tostring(a[i]) -- sprintf("%g", a[i])
     else
-      if math.abs(a[i]) < eps then -- a[i] = 0
+      if math.abs(a[i]) < 10*eps then -- a[i] = 0
         skipq = true
       elseif a[i] > 0 then
-        str = str .. sprintf(" + ")
-        if math.abs(a[i] - 1) > eps then -- don't output 1
-          str = str .. tostring(a[i]); times = '*' -- sprintf("%g", a[i])
+        str = str .. ' + '
+        if math.abs(a[i] - 1) > 10*eps then -- don't output 1
+          str = str .. tostring(a[i]) .. '*'
         end
       else
-        str = str .. sprintf(" - ")
-        if math.abs(a[i] + 1) > eps then -- don't output 1
-          str = str .. tostring(-a[i]); times = '*' -- sprintf("%g", -a[i])
+        str = str .. ' - '
+        if math.abs(a[i] + 1) > 10*eps then -- don't output 1
+          str = str .. tostring(-a[i]) .. '*'
         end
       end
     end
 
-    if not skipq then -- (x - x1)(x - x2)...; skip terms with coef 0
+    if not skipq then -- skip terms with coef 0
+      local non1stq = false
       for j = 1, i - 1 do
-        if math.abs(x[j]) < eps then -- x = 0
-          str = str .. times .. "x"
+        if non1stq then str = str .. '*' end
+        if math.abs(x[j]) < 10*eps then -- x = 0
+          str = str .. "x"
         elseif x[j] > 0 then
-          str = str .. times .. sprintf("(x - %g)", x[j])
+          str = str .. '(x - ' .. tostring(x[j]) .. ')' -- sprintf("(x - %g)", x[j])
         else
-          str = str .. times .. sprintf("(x + %g)", -x[j])
+          str = str .. '(x + ' .. tostring(-x[j]) .. ')'
         end
+        non1stq = true
       end
     end
   end
