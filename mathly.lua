@@ -1365,7 +1365,7 @@ function polynomial(x, y, xx)
   local X, Y = _converse_poly_input(x)
   if #X ~= 0 then xx = y; x, y = X, Y end
   assert(type(x) == 'table' and type(y) == 'table' and #x == #y and #x > 1,
-         'polynomial(x, y...): x and y must be tables of same size and the size must be greater than 1.')
+         'polynomial(x, y...): x and y must be tables of the same size (≥ 2).')
   local A = {}
   for i = 1, #x do
     A[i] = {}
