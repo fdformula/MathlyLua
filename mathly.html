@@ -963,26 +963,20 @@ print(ismember(4, x))
 otherwise, return the string of the polynomial.</p>
 <p>See also: <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polynomial><code>polynomial</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
 <pre><code>require 'mathly'
-disp(lagrangepoly({1, 2}, {3, 4}))
--- '-3.0*(x - 2) + 4.0*(x - 1)'
-disp(lagrangepoly({1, 2}, {3, 4}, 5))
--- 7.0
-disp(lagrangepoly({1, 2}, {3, 4}, {5, -6, 100}))
--- {7.0, -4.0, 102.0}
+x, y = {0, 1, 2}, {3, 1, 4}
+disp(lagrangepoly(x, y)) -- or: lagrangepoly({{0, 3}, {1, 1}, {2, 4}})
+-- '1.5*(x - 1)*(x - 2) - x*(x - 2) + 2.0*x*(x - 1)'
+disp(lagrangepoly(x, y, 5)) -- or: lagrangepoly({{0, 3}, {1, 1}, {2, 4}}, 5)
+-- 43.0
+disp(lagrangepoly(x, y, {5, -6, 100}))
+-- {43.0, 120.0, 24553.0}
 
-s = lagrangepoly({1, 2, 3}, {3, 4, 5})
+s = lagrangepoly({1, 0, 2}, {-4, -2, -3})
 disp(s)
--- '1.5*(x - 2)*(x - 3) - 4.0*(x - 1)*(x - 3) + 2.5*(x - 1)*(x - 2)'
+-- '4.0*x*(x - 2) - (x - 1)*(x - 2) - 1.5*(x - 1)*x'
 load('function f(x) return ' .. s .. ' end')() -- activate the function
 f(10)
--- 12.0
-disp(lagrangepoly({1, 2, 3}, {3, 4, 5}, {10, 1, -5}))
--- {12.0, 3.0, -3.0}
-
-disp(lagrangepoly({{1, 3}, {2, 0}, {0, 4}}))
--- '-3.0*(x - 2)*x + 2.0*(x - 1)*(x - 2)'
-disp(lagrangepoly({{1, 3}, {2, 0}, {0, 4}}, {10, 1, -5}))
--- {-96.0, 3.0, -21.0}
+-- 113.0
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=linsolve href=#m><code>linsolve(A, b, opt)</code></a></h4>
@@ -1176,11 +1170,10 @@ otherwise, return the string of the polynomial.</p>
 <p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#polynomial><code>polynomial</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
 <pre><code>require 'mathly'
 
-x = {-1.0, 0, 3, 7, 10}
-y = {-2.0, -3, 10, 6, -2}
-
+x = {-1.0, 0, 7, 10}
+y = {1, -1, 6, -2}
 disp(newtonpoly(x, y))
--- '-2 - (x + 1) + 1.33333*(x + 1)*x - 0.261905*(x + 1)*x*(x - 3) + 0.0285714*(x + 1)*x*(x - 3)*(x - 7)'
+-- '1 - 2.0*(x + 1.0) + 0.375*(x + 1.0)*x - 0.067424242424242*(x + 1.0)*x*(x - 7)'
 
 xs = linspace(x[1], x[length(x)], 100)
 ys = newtonpoly(x, y, xs)
@@ -1275,11 +1268,11 @@ otherwise, return the string and the coefficients of the polynomial.</p>
 <p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
 <pre><code>require 'mathly'
 disp(polynomial({1, 2}, {3, 4}))
--- '1.0*x + 2.0'
+-- 'x + 2.0'
 disp(polynomial({1, 2}, {3, 4}, 5))
 -- 7.0
 disp(polynomial({1, 2}, {3, 4}, {5, -6, 100}))
--- {7.0000, -4.0000, 102.0000}
+-- {7.0, -4.0, 102.0}
 
 s, coefs = polynomial({1, 2, 3}, {3, 1, 4})
 disp(s)
@@ -1291,14 +1284,14 @@ polyval(coefs, 10)
 -- 165.0
 
 disp(polynomial({1, 2, 3}, {3, 1, 4}, {10, 1, -5}))
--- {165.0000, 3.0000, 120.0000}
+-- {165.0, 3.0, 120.0}
 
 s, coefs = polynomial({{1, 3}, {2, 1}, {3, 4}})
 disp(s)
 disp(polyval(coefs, {10, 1, -5}))
--- {165.0000, 3.0000, 120.0000}
+-- {165.0, 3.0, 120.0}
 disp(polynomial({{1, 3}, {2, 1}, {3, 4}}, {10, 1, -5}))
--- {165.0000, 3.0000, 120.0000}
+-- {165.0, 3.0, 120.0}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=polyval href=#m><code>polyval(coefs, x)</code></a></h4>
