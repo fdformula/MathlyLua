@@ -1255,21 +1255,29 @@ function lagrangepoly(x, y, xx)
     if coefs[i] ~= 0 then
       local op = ' + '
       local coef = coefs[i]
-      if non1stq and coef < 0 then op = ' - '; coef = -coef end
-      coef = tostring(coef)
-      if non1stq then str = str .. op end
-      str = str .. coef
-      non1stq = true
-      for j = 1, #x do
-        if j ~= i then
-          if math.abs(x[j]) > 10*eps then
-            if x[j] > 0 then
-              str = str .. '*(x - ' .. tostring(x[j]) .. ')'
+      if math.abs(coef) > 10*eps then
+         if coef < 0 then
+          if non1stq then str = str .. ' - ' else str = str .. ' -' end
+          coef = -coef
+        else
+          if non1stq then str = str .. ' + ' end
+        end
+        if math.abs(coef - 1) > 10*eps then str = str .. tostring(coef) .. '*' end
+        non1stq = true
+        local firstq = true
+        for j = 1, #x do
+          if j ~= i then
+            if not firstq then str = str .. '*' end
+            if math.abs(x[j]) > 10*eps then
+              if x[j] > 0 then
+                str = str .. '(x - ' .. tostring(x[j]) .. ')'
+              else
+                str = str .. '(x + ' .. tostring(-x[j]) .. ')'
+              end
             else
-              str = str .. '*(x + ' .. tostring(-x[j]) .. ')'
+              str = str .. 'x'
             end
-          else
-            str = str .. '*x'
+            firstq = false
           end
         end
       end
@@ -1312,26 +1320,26 @@ function newtonpoly(x, y, xx)
     local skipq = false -- Lua doesn't provide 'continue'
     local times = ''
     if i == 1 then
-      str = str .. sprintf("%g", a[i])
+      str = str .. tostring(a[i]) -- sprintf("%g", a[i])
     else
-      if abs(a[i]) < eps then -- a[i] = 0
+      if math.abs(a[i]) < eps then -- a[i] = 0
         skipq = true
       elseif a[i] > 0 then
         str = str .. sprintf(" + ")
-        if abs(a[i] - 1) > eps then -- don't output 1
-          str = str .. sprintf("%g", a[i]); times = '*'
+        if math.abs(a[i] - 1) > eps then -- don't output 1
+          str = str .. tostring(a[i]); times = '*' -- sprintf("%g", a[i])
         end
       else
         str = str .. sprintf(" - ")
-        if abs(a[i] + 1) > eps then -- don't output 1
-          str = str .. sprintf("%g", -a[i]); times = '*'
+        if math.abs(a[i] + 1) > eps then -- don't output 1
+          str = str .. tostring(-a[i]); times = '*' -- sprintf("%g", -a[i])
         end
       end
     end
 
     if not skipq then -- (x - x1)(x - x2)...; skip terms with coef 0
       for j = 1, i - 1 do
-        if abs(x[j]) < eps then -- x = 0
+        if math.abs(x[j]) < eps then -- x = 0
           str = str .. times .. "x"
         elseif x[j] > 0 then
           str = str .. times .. sprintf("(x - %g)", x[j])
@@ -1371,17 +1379,25 @@ function polynomial(x, y, xx)
   local not1stq = false
   for i = 1, #B do
     if math.abs(B[i]) > 10*eps then -- B[i] ~= 0
-      local op = ' + '
       local coef = B[i]
-      if not1stq and B[i] < 0 then op = ' - '; coef = -coef end
-      coef = tostring(coef)
-      if not1stq then str = str .. op end
+      if coef < 0 then
+        if not1stq then str =  str .. ' - ' else str = str .. ' -' end
+        coef = -coef
+      else
+        if not1stq then str = str .. ' + ' end
+      end
+      if math.abs(coef - 1) < eps then -- coef == 1
+        if i == #B then coef = '1' else coef = '' end -- no 1*x^n
+      else
+        coef = tostring(coef)
+        if i ~= #B then coef = coef .. '*' end
+      end
       if i == #B then
         str = str .. coef
       elseif i == #B - 1 then
-        str = str .. coef .. '*x'
+        str = str .. coef .. 'x'
       else
-        str = str .. coef .. '*x^' .. tostring(#B - i)
+        str = str .. coef .. 'x^' .. tostring(#B - i)
       end
       not1stq = true
     end
