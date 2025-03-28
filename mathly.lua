@@ -22,7 +22,7 @@ API and Usage
     all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display,
     dot, expand, eye, flatten, fliplr, flipud, format, hasindex, horzcat,
     inv, iseven, isinteger, ismember, isodd, lagrangepoly, length, linsolve,
-    linspace, lu, map, max, mean, min, norm, ones, polynomial, polyval, printf,
+    linspace, lu, map, max, mean, min, newtonpoly, norm, ones, polynomial, polyval, printf,
     prod, qr, rand, randi, range, remake, repmat, reshape, round, rr, rref, save,
     select, seq, size, sort, sprintf, std, strcat, submatrix, subtable, sum,
     tblcat, text, tic, toc, transpose, tt, unique, var, vertcat, who, zeros
@@ -1212,7 +1212,7 @@ function range( start, stop, step ) -- ~Python but inclusive
   return v
 end -- range
 
---// for lagrangepoly(...), newtonpoly(...), and polynomial(...)
+--// for lagrangepoly(...), newtonpoly(...), polynomial(...), and scatter(...)
 local function _converse_poly_input(data) -- {{x1, y1}, {x2, y2}, ...}
   local x, y = {}, {}
   if type(data) == 'table' and type(data[1]) == 'table' then
@@ -1689,28 +1689,8 @@ function ismember( x, v )
   return false
 end
 
---[[
-  ---------------------- plot, options, and some examples ----------------------
-
-  'plot' has similar usage of the same function in MATLAB with more features.
-
-  1) of a line, i.e., the graph of a function:
-      width=5
-      style='-' (solid), ':' (dot), or '--' (dash)
-      mode='lines+markers', 'lines', or 'markers'
-
-  2) of a marker:
-      size=10
-      symbol='circle'
-
-      Some possible symbols are: circle, circle-open, circle-open-dot, cross, diamond, square, x,
-      triangle-left, triangle-right, triangle-up, triangle-down, hexagram, star, hourglass, bowtie
-
-  3) of a plot: layout={width=500, height=400}
---]]
-
---// plot(...)
--- plots the graphs of functions in a way like in MATLAB
+--// function plot(...)
+-- plot the graphs of functions in a way like in MATLAB with more features
 local plotly = {}
 function plot(...)
   _3d_plotq = false
@@ -2582,15 +2562,18 @@ end
 
 -- style: e.g., {symbol='circle-open', size=10, color='blue'}
 function point(x, y, style)  -- plot a point at (x, y)
-  if type(x) == 'table' then
-    style = y
+  if type(x) == 'number' then
+    x, y = {x}, {y}
   else
-    x = {{x, y}}
+    local X, Y = _converse_poly_input(x)
+    if #X ~= 0 then style = y; x, y = X, Y end
   end
+  assert(type(x) == 'table' and type(y) == 'table' and #x == #y, 'point(x, y ...): x and y must be two numbers or two tables of the same size.')
+
   local data = {'graph'}
   for i = 1, #x do
-    data[#data + 1] = {x[i][1]}
-    data[#data + 1] = {x[i][2]}
+    data[#data + 1] = {x[i]}
+    data[#data + 1] = {y[i]}
     if style == nil then
       data[#data + 1] = {symbol='circle', size=8}
     else
@@ -2659,6 +2642,8 @@ end -- polarcurve2d
 --// function scatter(x, y, style)
 -- x and y are tables of the same size
 function scatter(x, y, style)
+  local X, Y = _converse_poly_input(x)
+  if #X ~= 0 then style = y; x, y = X, Y end
   x = flatten(x)
   y = flatten(y)
   assert(#x == #y, 'scatter(x, y): x and y must be tables of the same size.')
