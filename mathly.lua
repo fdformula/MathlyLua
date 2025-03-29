@@ -225,7 +225,8 @@ function cc(x, I, start, stop, step)
     assert(getmetatable(x) == mathly_meta, 'cc(x, i...): x must be a mathly matrix.')
     start, stop, step = _adjust_index_step(#x, start, stop, step)
     if type(I) ~= 'table' then I = { I } end
-    local cols = mathly(math.ceil((math.abs(stop - start) + 1) / math.abs(step)), #I, 0)
+    local abs = math.abs
+    local cols = mathly(math.ceil((abs(stop - start) + 1) / abs(step)), #I, 0)
     for jj = 1, #I do
       local j = I[jj]
       local siz = #x[1]
@@ -388,9 +389,10 @@ function unique(tbl)
   local x = copy(tbl)
   table.sort(x)
   local y
+  local abs = math.abs
   if #x > 0 then y = {x[1]} else return {} end
   for i = 2, #x do
-    if math.abs(x[i] - x[i - 1]) > eps then -- not equal
+    if abs(x[i] - x[i - 1]) > eps then -- not equal
       y[#y + 1] = x[i]
     end
   end
@@ -517,19 +519,20 @@ end -- any
 function select( A, f )
   if type(A) ~= 'table' then error('select(A, ...): A must be a table.') end
   local B
+  local abs = math.abs
   if f == nil then
     B = A
   elseif type(f) == 'function' then
     B = map(function(x) if f(x) then return x else return 0 end end, A)
   elseif type(f) == 'table' then
-    B = map(function(x, y) if math.abs(x) > 10*eps then return y else return 0 end end, f, A)
+    B = map(function(x, y) if abs(x) > 10*eps then return y else return 0 end end, f, A)
   else
     error('select(A, f): f must be a boolean function or a table.')
   end
 
   local X = {}
   local k = 1
-  map(function(x, y) if math.abs(x) > 10*eps then X[k] = y; k = k + 1 end end, B, A)
+  map(function(x, y) if abs(x) > 10*eps then X[k] = y; k = k + 1 end end, B, A)
   return X, B
 end -- select
 
@@ -1235,9 +1238,10 @@ function lagrangepoly(x, y, xx)
   assert(type(x) == 'table' and type(y) == 'table' and #x == #y, 'lagrangepoly(x, y ...): x and y must be tables of the same size.')
   local coefs = {}
   local k = 1
+  local abs = math.abs -- it's faster to access to local variables
   for i = 1, #x do
     local tmp = y[i]
-    if math.abs(tmp) > 10*eps then -- tmp ~= 0
+    if abs(tmp) > 10*eps then -- tmp ~= 0
       for j = 1, #x do
         if j ~= i then
           tmp = tmp / (x[i] - x[j])
@@ -1255,20 +1259,20 @@ function lagrangepoly(x, y, xx)
     if coefs[i] ~= 0 then
       local op = ' + '
       local coef = coefs[i]
-      if math.abs(coef) > 10*eps then
+      if abs(coef) > 10*eps then
          if coef < 0 then
           if non1stq then str = str .. ' - ' else str = str .. ' -' end
           coef = -coef
         else
           if non1stq then str = str .. ' + ' end
         end
-        if math.abs(coef - 1) > 10*eps then str = str .. tostring(coef) .. '*' end
+        if abs(coef - 1) > 10*eps then str = str .. tostring(coef) .. '*' end
         non1stq = true
         local firstq = true
         for j = 1, #x do
           if j ~= i then
             if not firstq then str = str .. '*' end
-            if math.abs(x[j]) > 10*eps then
+            if abs(x[j]) > 10*eps then
               if x[j] > 0 then
                 str = str .. '(x - ' .. tostring(x[j]) .. ')'
               else
@@ -1316,21 +1320,22 @@ function newtonpoly(x, y, xx)
 
   -- prepare the string of the polynomial: a1 + a2(x -x1) + a3(x-x1)(x-x2) + ... + an(x-x1)...
   local str = ''
+  local abs = math.abs
   for i = 1, n do -- coef a[i]
     local skipq = false -- Lua 5.4.6 doesn't provide 'continue'
     if i == 1 then
       str = str .. tostring(a[i]) -- sprintf("%g", a[i])
     else
-      if math.abs(a[i]) < 10*eps then -- a[i] = 0
+      if abs(a[i]) < 10*eps then -- a[i] = 0
         skipq = true
       elseif a[i] > 0 then
         str = str .. ' + '
-        if math.abs(a[i] - 1) > 10*eps then -- don't output 1
+        if abs(a[i] - 1) > 10*eps then -- don't output 1
           str = str .. tostring(a[i]) .. '*'
         end
       else
         str = str .. ' - '
-        if math.abs(a[i] + 1) > 10*eps then -- don't output 1
+        if abs(a[i] + 1) > 10*eps then -- don't output 1
           str = str .. tostring(-a[i]) .. '*'
         end
       end
@@ -1340,7 +1345,7 @@ function newtonpoly(x, y, xx)
       local non1stq = false
       for j = 1, i - 1 do
         if non1stq then str = str .. '*' end
-        if math.abs(x[j]) < 10*eps then -- x = 0
+        if abs(x[j]) < 10*eps then -- x = 0
           str = str .. "x"
         elseif x[j] > 0 then
           str = str .. '(x - ' .. tostring(x[j]) .. ')' -- sprintf("(x - %g)", x[j])
@@ -1379,8 +1384,9 @@ function polynomial(x, y, xx)
 
   local str = ''
   local not1stq = false
+  local abs = math.abs
   for i = 1, #B do
-    if math.abs(B[i]) > 10*eps then -- B[i] ~= 0
+    if abs(B[i]) > 10*eps then -- B[i] ~= 0
       local coef = B[i]
       if coef < 0 then
         if not1stq then str =  str .. ' - ' else str = str .. ' -' end
@@ -1388,7 +1394,7 @@ function polynomial(x, y, xx)
       else
         if not1stq then str = str .. ' + ' end
       end
-      if math.abs(coef - 1) < eps then -- coef == 1
+      if abs(coef - 1) < eps then -- coef == 1
         if i == #B then coef = '1' else coef = '' end -- no 1*x^n
       else
         coef = tostring(coef)
@@ -2729,12 +2735,12 @@ function rref( A, B ) -- gauss-jordan elimination
     assert(#B == rows, 'rref(A, B): A and be must have the same number of rows.')
     bcolumns = #B[1]
   end
-
+  local abs = math.abs
   for i = 1, ROWS do
-    local largest = math.abs(A[i][i]) -- choose the pivotal entry
+    local largest = abs(A[i][i]) -- choose the pivotal entry
     local idx = i
     for j = i + 1, rows do
-      local tmp = math.abs(A[j][i])
+      local tmp = abs(A[j][i])
       if tmp > largest then
         idx, largest = j, tmp
       end
@@ -2781,7 +2787,7 @@ function rref( A, B ) -- gauss-jordan elimination
     local m = i
     if A[i][i] ~= 1 then -- A[i][i] must be 0, find the 1st none-zero entry
       j = i + 1
-      while j <= columns and math.abs(A[i][j]) < 1e-15 do
+      while j <= columns and abs(A[i][j]) < 1e-15 do
         j = j + 1
       end
       if j <= columns then -- found it
@@ -3128,10 +3134,11 @@ function eigs(A) -- apply qr factorization
   local Q, R
 
   local i = 1
+  local abs = math.abs
   while true do
     q, r = qr(A)
     A = r * q
-    if math.abs(A[i + 1][i]) < 1e-4 then
+    if abs(A[i + 1][i]) < 1e-4 then
       i = i + 1
       if i == row then break end
     end
@@ -3216,6 +3223,7 @@ function lu(A) -- by Crout's method
   assert(getmetatable(A) == mathly_meta, 'lu(A): A must be a mathly square matrix.')
   local m, n = size(A)
   assert(n == m and n > 1, "lu(A): A is not square.\n")
+  local abs = math.abs
 
   local L = zeros(n, n)
   local U = zeros(n, n)
@@ -3238,7 +3246,7 @@ function lu(A) -- by Crout's method
       for k = 1, i - 1 do
         s = s + L[i][k] * U[k][j]
       end
-      if math.abs(L[i][i]) < eps then
+      if abs(L[i][i]) < eps then
         error(sprintf('L[%d][%d] = 0. No LU factorization is found.', i, i))
       end
       U[i][j] = (A[i][j] - s) / L[i][i]
@@ -3294,11 +3302,12 @@ function det( A )
   end
 
   local val = 1 -- by gauss elimination
+  local abs = math.abs
   for i = 1, n - 1 do
     local maxi = i -- pivoting
-    local maxx = math.abs(A[i][i])
+    local maxx = abs(A[i][i])
     for k = i + 1, n do
-      local absx = math.abs(A[k][i])
+      local absx = abs(A[k][i])
       if absx > maxx then maxi = k; maxx = absx end
     end
     if maxx < 10*eps then return 0 end -- matrix is not invertible
@@ -3316,7 +3325,7 @@ function det( A )
     A[i][i] = 1
 
     for j = i + 1, n do -- elimination
-      if math.abs(A[j][i]) > 10*eps then
+      if abs(A[j][i]) > 10*eps then
         for k = i + 1, n do
           A[j][k] = A[j][k] - A[j][i] * A[i][k]
         end -- A[j][i] = 0 -- not necessary
