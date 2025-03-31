@@ -2016,8 +2016,8 @@ local _3d_plotq = false
 -- if f is a function, xrange = {xstart, xstop}, y = {ystart, ystop}
 -- otherwise, X = f, Y = xrange, Z = yrange, which allows users to set up data and use it to display a graph
 function plot3d(f, xrange, yrange, title, resolution)
-  if xrange == nil then xrange = {-5, 5} end
-  if yrange == nil then yrange = {-5, 5} end
+  xrange = xrange or {-5, 5}
+  yrange = yrange or {-5, 5}
   local X, Y, Z = {}, {}, {}
   if type(f) == 'function' then
     xrange[1], xrange[2] = _correct_range(xrange[1], xrange[2])
@@ -2089,6 +2089,8 @@ end -- plotsphericalsurface3d
 --// function plotparametricsurface3d(x, y, z, urange, vrange, title)
 -- Plot a surface defined by xyz = {x(u, v), y(u, v), z(u,v)}.
 function plotparametricsurface3d(xyz, urange, vrange, title, resolution)
+  urange = urange or {-5, 5}
+  vrange = vrange or {-5, 5}
   urange[1], urange[2] = _correct_range(urange[1], urange[2])
   vrange[1], vrange[2] = _correct_range(vrange[1], vrange[2])
   resolution = _set_resolution(resolution, 100)
@@ -2116,6 +2118,7 @@ end -- plotparametricsurface3d
 -- xyz = { ... }, the parametric equations, x(t), y(t), z(t), in order, of a space curve,
 -- trange is the range of t
 function plotparametriccurve3d(xyz, trange, title, resolution)
+  trange = trange or {0, 2 * pi}
   trange[1], trange[2] = _correct_range(trange[1], trange[2])
   resolution = _set_resolution(resolution)
 
