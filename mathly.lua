@@ -2146,7 +2146,7 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
   plotly.layout.margin = { l = 20, r = 20, b = 20, t = 40}
 
   local traces = {{x = x, y = y, z = z, type = 'scatter3d', mode = 'lines', showlegend = false}}
-  if orientationq ~= nil then
+  if orientationq then
     local n = 10
     local siz = 12
     local h = (trange[2] - trange[1]) / (2 * n)
@@ -2666,7 +2666,7 @@ function parametriccurve2d(xy, trange, style, resolution, orientationq)
   else
     data[4] = style
   end
-  if orientationq ~= nil then
+  if orientationq then
     local points = {}
     local n = 10
     local h = (trange[2] - trange[1]) / (2 * n)
