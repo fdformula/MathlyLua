@@ -1760,6 +1760,7 @@ function plot(...)
         if count < #v then args[#args + 1] = {names = v[#v]} end
       elseif v[1] == 'graph' then -- graph objects: {'graph', x, y, style}
         for i = 2, #v, 3 do
+          if #v == 5 and i == 5 then break end -- 4/4/25
           if type(v[i]) == 'table' and _hasanyindex(v[i], {'layout', 'names'}) then  -- last item as seen in hist1(...)!
             args[#args + 1] = v[i]
             break
@@ -1773,6 +1774,15 @@ function plot(...)
           args[#args + 1] = v[i]     -- x
           args[#args + 1] = v[i + 1] -- y
           args[#args + 1] = v[i + 2] -- style
+        end
+
+        if #v == 5 then -- 4/4/25, show orientation of parametric curves
+          local points = v[5]
+          for i = 1, #points do
+            args[#args + 1] = points[i][1] -- x
+            args[#args + 1] = points[i][2] -- y
+            args[#args + 1] = points[i][3] -- style
+          end
         end
       else
         args[#args + 1] = v
@@ -2117,7 +2127,7 @@ end -- plotparametricsurface3d
 --// function plotparametriccurve3d(xyz, trange, title)
 -- xyz = { ... }, the parametric equations, x(t), y(t), z(t), in order, of a space curve,
 -- trange is the range of t
-function plotparametriccurve3d(xyz, trange, title, resolution)
+function plotparametriccurve3d(xyz, trange, title, resolution, directionq)
   trange = trange or {0, 2 * pi}
   trange[1], trange[2] = _correct_range(trange[1], trange[2])
   resolution = _set_resolution(resolution)
@@ -2135,8 +2145,22 @@ function plotparametriccurve3d(xyz, trange, title, resolution)
   if title ~= nil then plotly.layout.title = title end
   plotly.layout.margin = { l = 20, r = 20, b = 20, t = 40}
 
-  local trace = {x = x, y = y, z = z, type = 'scatter3d', mode = 'lines'}
-  plotly.plots({trace}):show()
+  local traces = {{x = x, y = y, z = z, type = 'scatter3d', mode = 'lines', showlegend = false}}
+  if directionq ~= nil then
+    local n = 10
+    local siz = 12
+    local h = (trange[2] - trange[1]) / (2 * n)
+    local t = trange[1] + 2 * h
+    for i = 1, n do
+      t = t + h
+      traces[#traces + 1] = {
+        x = {xyz[1](t)}, y = {xyz[2](t)}, z = {xyz[3](t)},
+        type = 'scatter3d', mode = 'markers', showlegend = false,
+        marker = {size = siz, color = 'blue', opacity = 0.8}}
+      siz = siz - 1
+    end
+  end
+  plotly.plots(traces):show()
   plotly.gridq = false
   plotly.layout = {}
   _3d_plotq = false
@@ -2602,7 +2626,7 @@ function point(x, y, style)  -- plot a point at (x, y)
     data[#data + 1] = {x[i]}
     data[#data + 1] = {y[i]}
     if style == nil then
-      data[#data + 1] = {symbol='circle', size=8}
+      data[#data + 1] = {symbol='circle', size=8, showlegend = false}
     else
       data[#data + 1] = style
     end
@@ -2628,42 +2652,47 @@ end -- text
 
 --// function parametriccurve2d(xy, trange, style, resolution)
 -- xy = {x(t), y(t)}
-function parametriccurve2d(xy, trange, style, resolution)
+function parametriccurve2d(xy, trange, style, resolution, directionq)
   trange = trange or {-5, 5}
   trange[1], trange[2] = _correct_range(trange[1], trange[2])
   resolution = _set_resolution(resolution)
   local data = {'graph'}
-  trange = linspace(trange[1], trange[2], math.max(math.ceil((trange[2] - trange[1]) * 50), resolution))
-  data[2] = map(xy[1], trange)
-  data[3] = map(xy[2], trange)
+  local tdata = linspace(trange[1], trange[2], math.max(math.ceil((trange[2] - trange[1]) * 50), resolution))
+  data[2] = map(xy[1], tdata)
+  data[3] = map(xy[2], tdata)
+  tdata = nil
   if style == nil then
     data[4] = '-'
   else
     data[4] = style
+  end
+  if directionq ~= nil then
+    local points = {}
+    local n = 10
+    local h = (trange[2] - trange[1]) / (2 * n)
+    local t = trange[1] + 2*h
+    local siz = 12
+    for i = 1, n do
+      t = t + h
+      points[i] = {{xy[1](t)}, {xy[2](t)}, {symbol='circle', size=siz, color='blue', showlegend = false}}
+      siz = siz - 1
+    end
+    data[5] = points
   end
   return data
 end -- parametriccurve2d
 
 --//function polarcurve2d(r, trange, style, resolution)
 -- r(θ), a polar function
-function polarcurve2d(r, trange, style, resolution)
+function polarcurve2d(r, trange, style, resolution, directionq)
   if type(r) == 'number' then
     local f = r
     r = function(t) return f end
   end
-  trange = trange or {0, 2*pi}
-  trange[1], trange[2] = _correct_range(trange[1], trange[2])
-  resolution = _set_resolution(resolution)
-  trange = linspace(trange[1], trange[2], math.max(math.ceil((trange[2] - trange[1]) * 50), resolution))
-  local data = {'graph'}
-  data[2] = map(function(t) return r(t) * math.cos(t) end, trange)
-  data[3] = map(function(t) return r(t) * math.sin(t) end, trange)
-  if style == nil then
-    data[4] = '-'
-  else
-    data[4] = style
-  end
-  return data
+  return parametriccurve2d({
+      function(t) return r(t) * math.cos(t) end,
+      function(t) return r(t) * math.sin(t) end
+    }, trange or {0, 2*pi}, style, resolution, directionq)
 end -- polarcurve2d
 
 --// function scatter(x, y, style)
@@ -2676,7 +2705,7 @@ function scatter(x, y, style)
   assert(#x == #y, 'scatter(x, y): x and y must be tables of the same size.')
   local data = {'graph', x, y}
   if style == nil then
-    data[4] = {symbol='circle-open', size=8}
+    data[4] = {symbol='circle-open', size=8, showlegend = false}
   else
     data[4] = style
   end
