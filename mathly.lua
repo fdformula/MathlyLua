@@ -2127,7 +2127,7 @@ end -- plotparametricsurface3d
 --// function plotparametriccurve3d(xyz, trange, title)
 -- xyz = { ... }, the parametric equations, x(t), y(t), z(t), in order, of a space curve,
 -- trange is the range of t
-function plotparametriccurve3d(xyz, trange, title, resolution, directionq)
+function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
   trange = trange or {0, 2 * pi}
   trange[1], trange[2] = _correct_range(trange[1], trange[2])
   resolution = _set_resolution(resolution)
@@ -2146,7 +2146,7 @@ function plotparametriccurve3d(xyz, trange, title, resolution, directionq)
   plotly.layout.margin = { l = 20, r = 20, b = 20, t = 40}
 
   local traces = {{x = x, y = y, z = z, type = 'scatter3d', mode = 'lines', showlegend = false}}
-  if directionq ~= nil then
+  if orientationq ~= nil then
     local n = 10
     local siz = 12
     local h = (trange[2] - trange[1]) / (2 * n)
@@ -2652,7 +2652,7 @@ end -- text
 
 --// function parametriccurve2d(xy, trange, style, resolution)
 -- xy = {x(t), y(t)}
-function parametriccurve2d(xy, trange, style, resolution, directionq)
+function parametriccurve2d(xy, trange, style, resolution, orientationq)
   trange = trange or {-5, 5}
   trange[1], trange[2] = _correct_range(trange[1], trange[2])
   resolution = _set_resolution(resolution)
@@ -2666,7 +2666,7 @@ function parametriccurve2d(xy, trange, style, resolution, directionq)
   else
     data[4] = style
   end
-  if directionq ~= nil then
+  if orientationq ~= nil then
     local points = {}
     local n = 10
     local h = (trange[2] - trange[1]) / (2 * n)
@@ -2684,7 +2684,7 @@ end -- parametriccurve2d
 
 --//function polarcurve2d(r, trange, style, resolution)
 -- r(θ), a polar function
-function polarcurve2d(r, trange, style, resolution, directionq)
+function polarcurve2d(r, trange, style, resolution, orientationq)
   if type(r) == 'number' then
     local f = r
     r = function(t) return f end
@@ -2692,7 +2692,7 @@ function polarcurve2d(r, trange, style, resolution, directionq)
   return parametriccurve2d({
       function(t) return r(t) * math.cos(t) end,
       function(t) return r(t) * math.sin(t) end
-    }, trange or {0, 2*pi}, style, resolution, directionq)
+    }, trange or {0, 2*pi}, style, resolution, orientationq)
 end -- polarcurve2d
 
 --// function scatter(x, y, style)
