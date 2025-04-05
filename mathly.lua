@@ -1760,7 +1760,7 @@ function plot(...)
         if count < #v then args[#args + 1] = {names = v[#v]} end
       elseif v[1] == 'graph' then -- graph objects: {'graph', x, y, style}
         for i = 2, #v, 3 do
-          if #v == 5 and i == 5 then break end -- 4/4/25
+          if #v == 5 and i == 5 then break end -- 4/4/25, orientation
           if type(v[i]) == 'table' and _hasanyindex(v[i], {'layout', 'names'}) then  -- last item as seen in hist1(...)!
             args[#args + 1] = v[i]
             break
@@ -2147,20 +2147,17 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
 
   local traces = {{x = x, y = y, z = z, type = 'scatter3d', mode = 'lines', showlegend = false}}
   if orientationq then
-    local n = 10
-    local siz = 12
+    local n, siz, t = 7, 12, trange[1]
     local h = (trange[2] - trange[1]) / (2 * n)
-    local t = trange[1] + 2 * h
     for i = 1, n do
-      t = t + h
       traces[#traces + 1] = {
         x = {xyz[1](t)}, y = {xyz[2](t)}, z = {xyz[3](t)},
         type = 'scatter3d', mode = 'markers', showlegend = false,
         marker = {size = siz, color = 'blue', opacity = 0.8}}
-      siz = siz - 1
+      siz, t = siz - 1.25, t + h
     end
   end
-  plotly.plots(traces):show()
+  plotly.plots(traces):show(); traces = nil
   plotly.gridq = false
   plotly.layout = {}
   _3d_plotq = false
@@ -2657,10 +2654,10 @@ function parametriccurve2d(xy, trange, style, resolution, orientationq)
   trange[1], trange[2] = _correct_range(trange[1], trange[2])
   resolution = _set_resolution(resolution)
   local data = {'graph'}
-  local tdata = linspace(trange[1], trange[2], math.max(math.ceil((trange[2] - trange[1]) * 50), resolution))
-  data[2] = map(xy[1], tdata)
-  data[3] = map(xy[2], tdata)
-  tdata = nil
+  local ts = linspace(trange[1], trange[2], math.max(math.ceil((trange[2] - trange[1]) * 50), resolution))
+  data[2] = map(xy[1], ts)
+  data[3] = map(xy[2], ts)
+  ts = nil
   if style == nil then
     data[4] = '-'
   else
@@ -2668,14 +2665,11 @@ function parametriccurve2d(xy, trange, style, resolution, orientationq)
   end
   if orientationq then
     local points = {}
-    local n = 10
+    local n, siz, t = 7, 12, trange[1]
     local h = (trange[2] - trange[1]) / (2 * n)
-    local t = trange[1] + 2*h
-    local siz = 12
     for i = 1, n do
-      t = t + h
-      points[i] = {{xy[1](t)}, {xy[2](t)}, {symbol='circle', size=siz, color='blue', showlegend = false}}
-      siz = siz - 1
+      points[i] = {{xy[1](t)}, {xy[2](t)}, {symbol='circle', size=siz, color='blue', opacity = 0.8, showlegend = false}}
+      siz, t = siz - 1.25, t + h
     end
     data[5] = points
   end

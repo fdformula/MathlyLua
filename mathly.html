@@ -1923,7 +1923,7 @@ each take an argument, the minimum <code>resolution</code> (default: 100 for a s
 A larger value means better smoothness and requires more computing time.</p>
 
 <p>&#x2713; &nbsp; <code><b>orientationq</b></code> - Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, and <a href=#polarcurve2d>polarcurve2d</a></code>,
-each take also a last argument, <code>orientationq</code> (default: false). If it is true, a few dots of reducing sizes are plotted together with a curve to show the orientation of the parametric curve. The orientation is from larger to smaller dots.</p>
+each take also a last argument, <code>orientationq</code> (default: false). If it is true, a few dots of reducing sizes are plotted together with a curve to show the orientation of the parametric curve. The orientation is from large to small dots (&#10148;).</p>
 
 <pre><code>require 'mathly'
 
@@ -1981,9 +1981,8 @@ plot({layout={width=1900, height=1300, grid={rows=2, columns=3}, title='Example'
 
 axissquare() -- orientation of a parametric curve
 plot(
-  parametriccurve2d({function(t) return 3*cos(t) end, function(t) return 3*sin(t) end}, nil, nil, nil, true), -- counter clockwise
-  parametriccurve2d({function(t) return 2*sin(t) end, function(t) return cos(t) end}, -- clockwise
-  nil, nil, nil, true))
+  parametriccurve2d({function(t) return 3*cos(t) end, function(t) return 3*sin(t) end}, {0, 2*pi}, nil, nil, true), -- counter clockwise
+  parametriccurve2d({function(t) return 2*sin(t) end, function(t) return cos(t) end}, {0, 2*pi}, nil, nil, true)) -- clockwise
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=plotparametriccurve3d href=#m><code>plotparametriccurve3d({x(t), y(t), z(t)}, trange, title, resolution, orientationq)</code></a></h4>
