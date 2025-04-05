@@ -35,7 +35,7 @@ Quite a few CudaText plugins are included. Some are customized and even have new
 
   F2               to start Lua interpreter with mathly loaded
   Ctrl-,           to run selected code or the command on current line in the editor
-  Ctrl-.           to run all Lua script in the editor (HTML file? open it in a browser)
+  Ctrl-.           to run all code in the editor (HTML file? open it in a browser)
 
   Ctrl-Alt-Space   to trigger auto (Lua/mathly) lexical completion
   Shift-Alt-Space  to trigger auto text completion (Ctrl-p d, load an English dictionary as part of the text)
