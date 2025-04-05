@@ -196,7 +196,7 @@ axissquare()
 do
   local function x(t) t = 3 * t; return math.cos(t)/(1 + math.sin(t)^2) end
   local function y(t) t = 5 * t; return math.sin(t)*math.cos(t)/(1 + math.sin(t)^2) end
-  plot(parametriccurve2d({x, y}, {0, 2*pi}))
+  plot(parametriccurve2d({x, y}, {0, 2*pi}, '-g', 150, true)) -- true: show orientation of a parametric curve
 end
 
 do -- https://plotly.com/python/3d-surface-plots/
