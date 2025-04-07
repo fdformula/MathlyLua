@@ -415,124 +415,6 @@ apply(f, {1, 2, 3})
 -- 6
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=bin2dec></a><a name=bin2hex></a><a name=bin2oct></a><a name=dec2bin></a>
-<a name=dec2hex></a><a name=dec2oct></a><a name=hex2bin></a><a name=hex2dec></a>
-<a name=hex2oct></a><a name=oct2bin></a><a name=oct2dec></a>
-<a name=oct2hex href=#m><code>bin2dec, bin2hex, bin2oct; dec2bin, dec2hex, dec2oct; hex2bin, hex2dec, hex2oct; oct2bin, oct2dec, oct2hex</code></a></h4>
-<table><tbody>
-<tr><td><code>dec2bin(x), hex2bin(x), oct2bin(x)</code></td><td> - </td><td>Convert decimal/hexadecimal/octal integer <code>x</code> to binary</td></tr>
-<tr><td><code>bin2dec(x), hex2dec(x), oct2dec(x)</code></td><td> - </td><td>Convert binary/hexadecimal/octal integer <code>x</code> to decimal</td></tr>
-<tr><td><code>bin2oct(x), dec2oct(x), hex2oct(x)</code></td><td> - </td><td>Convert binary/decimal/hexadecimal integer <code>x</code> to octal</td></tr>
-<tr><td><code>bin2hex(x), dec2hex(x), oct2hex(x)</code></td><td> - </td><td>Convert binary/decimal/octal integer <code>x</code> to hexadecimal</td></tr>
-</tbody></table>
-<p>Note: <code>x</code> can be a decimal integer (for all <code>dec2...</code> functions), a string of a valid binary/octal/hexadecimal integer, or a table
-of integers or strings of intgers.</p>
-<p>&#x2713; &nbsp; Not as with all other cases, even if <code>x</code> for function <code>dec2...</code> is a mathly matrix, the result is a Lua table
-rather than a mathly matrix. Mathly matrices can only have numerical entries.</p>
-<p>&#x2713; &nbsp; Function <code>...2dec(x)</code> treats input string <code>x</code> as an unsigned integer.</p>
-<pre><code>mathly = require('mathly')
-
-disp(dec2bin(123)) -- '1111011'
-disp(dec2hex(123)) -- '7b'
-disp(dec2oct(123)) -- '173'
-disp(oct2dec('173')) -- 123
-
-disp(dec2bin({123, 124, 125, {126, {127, 128}}}))
--- {'1111011', '1111100', '1111101', {'1111110', {'1111111', '10000000'}}}
-disp(hex2dec(dec2hex({123, 124, 125, {126, {127, 128}}})))
--- {123, 124, 125, {126, {127, 128}}}
-
-a = mathly{{75, 28}, {90, 6}}
-disp(dec2bin(a))
--- {{'1001011', '11100'}, {'1011010', '110'}}
-disp(oct2hex(dec2oct(a)))
-disp(dec2hex(a))
--- {{'4b', '1c'}, {'5a', '6'}}
-</code></pre>
-
-<h4>&bull; &nbsp; <a name=boxplot></a><a name=pareto></a><a name=freqpolygon></a><a name=histfreqpolygon></a><a name=hist></a><a name=hist1></a>
-<a name=pie href=#m><code>freqpolygon, hist, hist1, histfreqpolygon, pareto, pie</code></a></h4>
-<table><tbody>
-<tr><td><code>boxplot(x, names)</code></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a box (or box-and-whisker) plot, where <code>x</code> is a table or a matrix of numbers. <code>names = {'name1', 'name2', ...}</code> is optional. If <code>x</code> is a matrix or a table of tables/rows, each row is a data set and thus has a box plot.</td></tr>
-<tr><td><code>freqpolygon(x, nbins, style, xrange)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a frequency polygon.</td></tr>
-<tr><td><code>hist(x, nbins, style, xrange)</code></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a histogram. If <code>x</code> is a matrix or a table of tables/rows, each row is a data set and each bin of the histogram contains one bar per row of the matrix.</td></tr>
-<tr><td><code>hist1(x, nbins, style, xrange)</code></td><td> </td><td>Return an ordinary graphics object for <code><a href=#plot>plot</a></code> to plot a histogram.</td></tr>
-<tr><td><code>histfreqpolygon(x, nbins, style, xrange, style1)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a histogram plus a frequency polygon, where <code>style</code> defines the style of the histogram while <code>style1</code> specifies the style of the frequency polygon.</td></tr>
-<tr><td><code>pareto(data, style, style1)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pareto chart.</td></tr>
-<tr><td><code>pie(x, nbins, radius, style, offcenter, names)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pie chart, where <code>radius</code> is the radius of the pie disk (default: 1), and <code>offcenter</code> specifies which wedges are away from the center by given distances (default: 0). Note: <code>pie({bins = {freq1, freq2, ...}}...)</code> is for plotting a pie chart for bins with frequences <code>freq1, freq2, ..., in order</code>, and <code>names = {'name1', 'name2', ...}</code> can be given in this situation.</td></tr>
-</tbody></table>
-<p>With this group of functions,</p>
-<table><tbody>
-<tr><td><code>x</code></td><td> &nbsp; </td><td>The data, a table of numbers</td></tr>
-<tr><td><code>nbins</code></td><td> &nbsp; </td><td>The number of bins (default: 10)</td></tr>
-<tr><td><code>style</code></td><td> &nbsp; </td><td>E.g., <code>'-r', '-rfs'. </code>See also: <a href=#gobjspecs><code>'fa', 'ff', 'fn', 'fs'</code></a></td></tr>
-<tr><td><code>xrange</code></td><td> &nbsp; </td><td>In the format <code>{xmin, xmax}</code>, specifying the range of data values in <code>x</code>. If not provided, it is determined by the lowest and largest values in <code>x</code>.</td></tr>
-</tbody></table>
-<p>See also: <a href=#arc><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a></p>
-<p><a name=namedargs><b>Named arguments for this group of functions:</b></p>
-<p>To make it easier to use this group of functions, if necessary or if convenient, each function may be called in two more ways, <code>pie({...})</code> or <code>pie{...}</code>. There are rules to follow: 1) We may not use names at all; 2) We use names for all arguments; 3) Arguments without names must be the first ones and in defined order. Take <code>pie</code> as an example,</p>
-<pre><code>require 'mathly'
-
-data = {1, 11, 4, 7, 6, 5, 10, 4, 3, 15, 13, 1, 4, 10, 9}
-axissquare()
--- don't want to use named variables? call a function in an ordinary way: pie(x, nbins, radius, style, offcenter, names)
-plot(pie(data))
-plot(pie(data, 5, nil, '-g')) -- nil? the default value (of radius = 1) is used
-plot(pie(data, 5, nil, '-gfs'))
-plot(pie(data, 5, nil, nil, 0.1)) -- the same as the following one; offcenter = 0.1, each bin is away from the center by 0.1
-plot(pie{data, 5, nil, nil, 0.1}) -- pie{...} or pie({...}) is allowed but not recommended
--- in the above examples, there are no named arguments. pie({...}), pie{...}, and pie(...) are the same, but the first two ways are not recommended.
-
--- when there are named variables, we must call a function in a special way: pie({...}) or pie{...}.
-plot(pie{nbins = 7, x = data}) -- the order of named arguments doesn't matter
-
--- named and unnamed variables: unnamed ones are placed before named ones and in specified order
-plot(pie{data, 7, offcenter = {{2, 0.1}, {5, 0.2}}, style = '-fs'}) -- offcenter = {{2, 0.1}, {5, 0.2}}, the 2nd & 5th bins are away from the center by ...
-plot(pie{x = {bins = {0.0930, 0.1163, 0.0233, 0.2791, 0.1395, 0.3488}}, style='-', offcenter = {{3, 0.6}, {5, 0.1}, {1, 0.15}}})
-</code></pre>
-
-<p>More examples,</p>
-<pre><code>require 'mathly'
-
-data1 = {1, 2, 3, 4, 2, 12, 3, 4, 2, 12, 9, 9, 9, 8, 5, 3, 3, 2, 1, 5, 3, 2}
-data2 = {2, 1, 2, 4, 5, 7, 11}
-data3 = {3, 2, 3, 4, 2, 2, 9, 11}
-plot(boxplot(data1))
-plot(boxplot({data1, data2}, {"name 1", "name 2"}))
-plot(boxplot({data1, data2, data3, {2, 3, 5, 7, 11, 20, 1, 2, 3}}))
-
-mu, sigma = 72.11, 13.36
-x = flatten(randn(1, 5000, mu, sigma))
-
-function n(x, mu, sigma)
-  local z = (x - mu) / sigma
-  return math.exp(-0.5 * z^2) / (math.sqrt(2 * pi) * sigma)
-end
-
-X = linspace(mu - 4 * sigma, mu + 4 * sigma, 5000)
-Y = map(function(x) return n(x, mu, sigma) * 7.8 end, X)
-
-gobj = hist1(x, 12)
-axisnotsquare(); shownotlegend()
-plot(gobj, X, Y, '--r')
-plot(freqpolygon(x))
-plot(freqpolygon{x, style='--r*'})
-plot(histfreqpolygon(x))
-plot(histfreqpolygon{x, style='-bfs', style1='--r*'})
-
-x = {{'Apple', 382}, {'Orange', 22}, {'Pearl', 91}, {'Peach', 53}, {'Banana', 19}, {'Strawberry', 35}}
-plot(pareto(x))
-plot(pareto(x, '-bfs'))
-plot(pareto(x, nil, '--gx'))  -- "yaxis2":{"tickformat":".0%", "overlaying": 'y', "side": 'right' }
-
-showaxes()
-plot(hist(randn(1, 100)))
-
-A = randi({0, 99}, 3, 50)
-plot(hist(A)) -- nil? the default value will be used
-plot(hist{A, xrange = {0, 99}}) -- run multiple times, the two can produce different results
-</code></pre>
-
 <h4>&bull; &nbsp; <a name=circle></a><a name=line></a><a name=parametriccurve2d></a><a name=point></a><a name=polarcurve2d></a><a name=polygon></a><a name=scatter></a><a name=wedge></a>
 <a name=arc href=#m><code>arc, circle, line, parametriccurve2d, point, polygon, text, wedge</code></a></h4>
 <table><tbody>
@@ -620,6 +502,52 @@ axissquare() -- orientation of a parametric curve
 plot(
   parametriccurve2d({function(t) return 3*cos(t) end, function(t) return 3*sin(t) end}, {0, 2*pi}, nil, nil, true), -- counter clockwise
   parametriccurve2d({function(t) return 2*sin(t) end, function(t) return cos(t) end}, {0, 2*pi}, nil, nil, true)) -- clockwise
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=showlegend></a><a name=shownotlegend></a><a name=shownotyaxis></a><a name=showyaxis></a><a name=shownotxaxis></a><a name=showxaxis></a><a name=axissquare></a><a name=axisnotsquare></a><a name=showaxes></a><a name=shownotaxes></a><a name=showgridlines></a><a name=shownotgridlines></a><a href=#m><code>axissquare, axisnotsquare; showaxes, shownotaxes ...</code></a></h4>
+<table><tbody>
+<tr><td><code>axissquare(),    axisnotsquare()</code></td><td> &nbsp; </td><td>Force or stop a square axis aspect ratio (default: not square)</td></tr>
+<tr><td><code>showaxes(),      shownotaxes()</code></td><td> &nbsp; </td><td>Show/hide axes (all default: show)</td></tr>
+<tr><td><code>showxaxis(),     shownotxaxis()</code></td><td> &nbsp; </td><td>Show/hide the <code>x</code>-axis</td></tr>
+<tr><td><code>showyaxis(),     shownotyaxis()</code></td><td> &nbsp; </td><td>Show/hide the <code>y</code>-axis</td></tr>
+<tr><td><code>showgridlines(), shownotgridlines()</code></td><td> &nbsp; </td><td>Show/hide gridlines</td></tr>
+<tr><td><code>showlegend(),    shownotlegend()</code></td><td> &nbsp; </td><td>Show/hide the legend</td></tr>
+</tbody></table>
+<p>&#x2713; &nbsp; These functions are not valid for 3D graphs.</p>
+
+<h4>&bull; &nbsp; <a name=bin2dec></a><a name=bin2hex></a><a name=bin2oct></a><a name=dec2bin></a>
+<a name=dec2hex></a><a name=dec2oct></a><a name=hex2bin></a><a name=hex2dec></a>
+<a name=hex2oct></a><a name=oct2bin></a><a name=oct2dec></a>
+<a name=oct2hex href=#m><code>bin2dec, bin2hex, bin2oct; dec2bin, dec2hex, dec2oct; hex2bin, hex2dec, hex2oct; oct2bin, oct2dec, oct2hex</code></a></h4>
+<table><tbody>
+<tr><td><code>dec2bin(x), hex2bin(x), oct2bin(x)</code></td><td> - </td><td>Convert decimal/hexadecimal/octal integer <code>x</code> to binary</td></tr>
+<tr><td><code>bin2dec(x), hex2dec(x), oct2dec(x)</code></td><td> - </td><td>Convert binary/hexadecimal/octal integer <code>x</code> to decimal</td></tr>
+<tr><td><code>bin2oct(x), dec2oct(x), hex2oct(x)</code></td><td> - </td><td>Convert binary/decimal/hexadecimal integer <code>x</code> to octal</td></tr>
+<tr><td><code>bin2hex(x), dec2hex(x), oct2hex(x)</code></td><td> - </td><td>Convert binary/decimal/octal integer <code>x</code> to hexadecimal</td></tr>
+</tbody></table>
+<p>Note: <code>x</code> can be a decimal integer (for all <code>dec2...</code> functions), a string of a valid binary/octal/hexadecimal integer, or a table
+of integers or strings of intgers.</p>
+<p>&#x2713; &nbsp; Not as with all other cases, even if <code>x</code> for function <code>dec2...</code> is a mathly matrix, the result is a Lua table
+rather than a mathly matrix. Mathly matrices can only have numerical entries.</p>
+<p>&#x2713; &nbsp; Function <code>...2dec(x)</code> treats input string <code>x</code> as an unsigned integer.</p>
+<pre><code>mathly = require('mathly')
+
+disp(dec2bin(123)) -- '1111011'
+disp(dec2hex(123)) -- '7b'
+disp(dec2oct(123)) -- '173'
+disp(oct2dec('173')) -- 123
+
+disp(dec2bin({123, 124, 125, {126, {127, 128}}}))
+-- {'1111011', '1111100', '1111101', {'1111110', {'1111111', '10000000'}}}
+disp(hex2dec(dec2hex({123, 124, 125, {126, {127, 128}}})))
+-- {123, 124, 125, {126, {127, 128}}}
+
+a = mathly{{75, 28}, {90, 6}}
+disp(dec2bin(a))
+-- {{'1001011', '11100'}, {'1011010', '110'}}
+disp(oct2hex(dec2oct(a)))
+disp(dec2hex(a))
+-- {{'4b', '1c'}, {'5a', '6'}}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=cc></a><a name=rr></a><a name=tt href=#m><code>cc(x...)</code>, <code>rr(x...)</code>, <code>tt(x)</code></a></h4>
@@ -1018,6 +946,89 @@ disp(fliplr(a))
 <tr><td width=20></td><td><code>'short'</code></td><td> </td><td width=10> </td><td>4 decimal places (default).</td></tr>
 <tr><td width=20></td><td><code>'long'</code></td><td> </td><td width=10> </td><td>15 decimal places</td></tr>
 </tbody></table>
+
+<h4>&bull; &nbsp; <a name=boxplot></a><a name=pareto></a><a name=freqpolygon></a><a name=histfreqpolygon></a><a name=hist></a><a name=hist1></a>
+<a name=pie href=#m><code>freqpolygon, hist, hist1, histfreqpolygon, pareto, pie</code></a></h4>
+<table><tbody>
+<tr><td><code>boxplot(x, names)</code></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a box (or box-and-whisker) plot, where <code>x</code> is a table or a matrix of numbers. <code>names = {'name1', 'name2', ...}</code> is optional. If <code>x</code> is a matrix or a table of tables/rows, each row is a data set and thus has a box plot.</td></tr>
+<tr><td><code>freqpolygon(x, nbins, style, xrange)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a frequency polygon.</td></tr>
+<tr><td><code>hist(x, nbins, style, xrange)</code></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a histogram. If <code>x</code> is a matrix or a table of tables/rows, each row is a data set and each bin of the histogram contains one bar per row of the matrix.</td></tr>
+<tr><td><code>hist1(x, nbins, style, xrange)</code></td><td> </td><td>Return an ordinary graphics object for <code><a href=#plot>plot</a></code> to plot a histogram.</td></tr>
+<tr><td><code>histfreqpolygon(x, nbins, style, xrange, style1)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a histogram plus a frequency polygon, where <code>style</code> defines the style of the histogram while <code>style1</code> specifies the style of the frequency polygon.</td></tr>
+<tr><td><code>pareto(data, style, style1)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pareto chart.</td></tr>
+<tr><td><code>pie(x, nbins, radius, style, offcenter, names)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pie chart, where <code>radius</code> is the radius of the pie disk (default: 1), and <code>offcenter</code> specifies which wedges are away from the center by given distances (default: 0). Note: <code>pie({bins = {freq1, freq2, ...}}...)</code> is for plotting a pie chart for bins with frequences <code>freq1, freq2, ..., in order</code>, and <code>names = {'name1', 'name2', ...}</code> can be given in this situation.</td></tr>
+</tbody></table>
+<p>With this group of functions,</p>
+<table><tbody>
+<tr><td><code>x</code></td><td> &nbsp; </td><td>The data, a table of numbers</td></tr>
+<tr><td><code>nbins</code></td><td> &nbsp; </td><td>The number of bins (default: 10)</td></tr>
+<tr><td><code>style</code></td><td> &nbsp; </td><td>E.g., <code>'-r', '-rfs'. </code>See also: <a href=#gobjspecs><code>'fa', 'ff', 'fn', 'fs'</code></a></td></tr>
+<tr><td><code>xrange</code></td><td> &nbsp; </td><td>In the format <code>{xmin, xmax}</code>, specifying the range of data values in <code>x</code>. If not provided, it is determined by the lowest and largest values in <code>x</code>.</td></tr>
+</tbody></table>
+<p>See also: <a href=#arc><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a></p>
+<p><a name=namedargs><b>Named arguments for this group of functions:</b></p>
+<p>To make it easier to use this group of functions, if necessary or if convenient, each function may be called in two more ways, <code>pie({...})</code> or <code>pie{...}</code>. There are rules to follow: 1) We may not use names at all; 2) We use names for all arguments; 3) Arguments without names must be the first ones and in defined order. Take <code>pie</code> as an example,</p>
+<pre><code>require 'mathly'
+
+data = {1, 11, 4, 7, 6, 5, 10, 4, 3, 15, 13, 1, 4, 10, 9}
+axissquare()
+-- don't want to use named variables? call a function in an ordinary way: pie(x, nbins, radius, style, offcenter, names)
+plot(pie(data))
+plot(pie(data, 5, nil, '-g')) -- nil? the default value (of radius = 1) is used
+plot(pie(data, 5, nil, '-gfs'))
+plot(pie(data, 5, nil, nil, 0.1)) -- the same as the following one; offcenter = 0.1, each bin is away from the center by 0.1
+plot(pie{data, 5, nil, nil, 0.1}) -- pie{...} or pie({...}) is allowed but not recommended
+-- in the above examples, there are no named arguments. pie({...}), pie{...}, and pie(...) are the same, but the first two ways are not recommended.
+
+-- when there are named variables, we must call a function in a special way: pie({...}) or pie{...}.
+plot(pie{nbins = 7, x = data}) -- the order of named arguments doesn't matter
+
+-- named and unnamed variables: unnamed ones are placed before named ones and in specified order
+plot(pie{data, 7, offcenter = {{2, 0.1}, {5, 0.2}}, style = '-fs'}) -- offcenter = {{2, 0.1}, {5, 0.2}}, the 2nd & 5th bins are away from the center by ...
+plot(pie{x = {bins = {0.0930, 0.1163, 0.0233, 0.2791, 0.1395, 0.3488}}, style='-', offcenter = {{3, 0.6}, {5, 0.1}, {1, 0.15}}})
+</code></pre>
+
+<p>More examples,</p>
+<pre><code>require 'mathly'
+
+data1 = {1, 2, 3, 4, 2, 12, 3, 4, 2, 12, 9, 9, 9, 8, 5, 3, 3, 2, 1, 5, 3, 2}
+data2 = {2, 1, 2, 4, 5, 7, 11}
+data3 = {3, 2, 3, 4, 2, 2, 9, 11}
+plot(boxplot(data1))
+plot(boxplot({data1, data2}, {"name 1", "name 2"}))
+plot(boxplot({data1, data2, data3, {2, 3, 5, 7, 11, 20, 1, 2, 3}}))
+
+mu, sigma = 72.11, 13.36
+x = flatten(randn(1, 5000, mu, sigma))
+
+function n(x, mu, sigma)
+  local z = (x - mu) / sigma
+  return math.exp(-0.5 * z^2) / (math.sqrt(2 * pi) * sigma)
+end
+
+X = linspace(mu - 4 * sigma, mu + 4 * sigma, 5000)
+Y = map(function(x) return n(x, mu, sigma) * 7.8 end, X)
+
+gobj = hist1(x, 12)
+axisnotsquare(); shownotlegend()
+plot(gobj, X, Y, '--r')
+plot(freqpolygon(x))
+plot(freqpolygon{x, style='--r*'})
+plot(histfreqpolygon(x))
+plot(histfreqpolygon{x, style='-bfs', style1='--r*'})
+
+x = {{'Apple', 382}, {'Orange', 22}, {'Pearl', 91}, {'Peach', 53}, {'Banana', 19}, {'Strawberry', 35}}
+plot(pareto(x))
+plot(pareto(x, '-bfs'))
+plot(pareto(x, nil, '--gx'))  -- "yaxis2":{"tickformat":".0%", "overlaying": 'y', "side": 'right' }
+
+showaxes()
+plot(hist(randn(1, 100)))
+
+A = randi({0, 99}, 3, 50)
+plot(hist(A)) -- nil? the default value will be used
+plot(hist{A, xrange = {0, 99}}) -- run multiple times, the two can produce different results
+</code></pre>
 
 <h4>&bull; &nbsp; <a name=gcd href=#m><code>gcd(x, y)</code></a></h4>
 <p>Return the greatest common divisor of <code>x</code> and <code>y</code> which can be nonnegative integers of tables of nonnegative integers with the same structure.</p>
@@ -1567,13 +1578,6 @@ plotsphericalsurface3d(function(theta, phi) return theta + 2 * phi end, {0, 4*pi
 plotsphericalsurface3d(function(t, p) return 2 + sin(5*p + 7*t) end)  -- https://www.mathworks.com/help/symbolic/transform-spherical-coordinates-and-plot.html
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=powermod href=#m><code>powermod(b, n, m)</code></a></h4>
-<p>Return <code>b<sup>n</sup> mod m</code>, i.e., the remainder of <code>b<sup>n</sup></code> divided by <code>m</code>.</p>
-<p>Note: <code>b, n</code>, and <code>m</code> are nonnegative integers with <code>m &gt; 0</code>.</p>
-<pre><code>require 'mathly'
-powermod(211, 410, 19) -- 6
-</pre></code>
-
 <h4>&bull; &nbsp; <a name=polynomial href=#m><code>polynomial({x1, x2, ...}, {y1, y2, ...}, xx), polynomial({{x1, y1}, {x2, y2}, ...}, xx)</code></a></h4>
 <p>Construct a polynomial, defined by data <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>.</p>
 <p>If <code>xx</code> is provided, return the value(s) of the polynomial at (each of) <code>xx</code>;
@@ -1635,6 +1639,13 @@ disp(polyval({1, 2, 1}, 0)) -- evaluate x<sup>2</sup> + 2x + 1 at x = 0
 disp(polyval({1, 2, 1}, {0, 5, 9, 100})) -- evaluate at x = 0, 5, 9, 100
 -- {1.0000, 36.0000, 100.0000, 10201.0000}
 </code></pre>
+
+<h4>&bull; &nbsp; <a name=powermod href=#m><code>powermod(b, n, m)</code></a></h4>
+<p>Return <code>b<sup>n</sup> mod m</code>, i.e., the remainder of <code>b<sup>n</sup></code> divided by <code>m</code>.</p>
+<p>Note: <code>b, n</code>, and <code>m</code> are nonnegative integers with <code>m &gt; 0</code>.</p>
+<pre><code>require 'mathly'
+powermod(211, 410, 19) -- 6
+</pre></code>
 
 <h4>&bull; &nbsp; <a name=sprintf></a><a name=printf href=#m><code>printf(...)</code>, <code>sprintf(...)</code></a></h4>
 <p>This kind of functions is a commonly used tool for printing or preparing a formatted string in many programming languages like C/C++ and MATLAB. They print or prepare a formatted string.</p>
@@ -2041,31 +2052,6 @@ print(strcat(34,'Hello, ', {'the ', 'world', '!'}, 34)) -- 34? ascii code for "
 -- "Hello, the world!"
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=subtable href=#m><code>subtable(tbl, i, j, s)</code></a></h4>
-<p>Return a slice of table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code> (default: 1).</p>
-<p>See also: <a href=#cc><code>cc, rr, tt</code></a></p>
-<pre><code>mathly = require('mathly')
-
-x = {1, 2, {3}, 4, {{5, 6, {7}}}}
-display(subtable(x, 2, 4))
--- {2, {3}, 4}
-
-a = mathly{1, 2, 3, 4, 5, 6, 7} -- {{1, 2, 3, 4, 5, 6, 7}}
-display(subtable(a[1], 3, 5))
--- {3, 4, 5}
-
-x = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
-y = subtable(x, 1, 11, 3)
-display(y)
--- {1, 4, 7, 10}
-display(subtable(x, 1, -1, 2)) -- -1? see <a href=#cc>notes</a>
--- {1, 3, 5, 7, 9, 11}
-display(subtable(x, -1, 1, -1))
--- {12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
-display(subtable(x, -1, 1, -2))
--- {12, 10, 8, 6, 4, 2}
-</code></pre>
-
 <h4>&bull; &nbsp; <a name=submatrix href=#m><code>submatrix(A, i, j, m, n, sr, sc)</code></a></h4>
 <p>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row
 and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column
@@ -2094,6 +2080,31 @@ disp(C)
 -- 16  56
 </code></pre>
 
+<h4>&bull; &nbsp; <a name=subtable href=#m><code>subtable(tbl, i, j, s)</code></a></h4>
+<p>Return a slice of table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code> (default: 1).</p>
+<p>See also: <a href=#cc><code>cc, rr, tt</code></a></p>
+<pre><code>mathly = require('mathly')
+
+x = {1, 2, {3}, 4, {{5, 6, {7}}}}
+display(subtable(x, 2, 4))
+-- {2, {3}, 4}
+
+a = mathly{1, 2, 3, 4, 5, 6, 7} -- {{1, 2, 3, 4, 5, 6, 7}}
+display(subtable(a[1], 3, 5))
+-- {3, 4, 5}
+
+x = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+y = subtable(x, 1, 11, 3)
+display(y)
+-- {1, 4, 7, 10}
+display(subtable(x, 1, -1, 2)) -- -1? see <a href=#cc>notes</a>
+-- {1, 3, 5, 7, 9, 11}
+display(subtable(x, -1, 1, -1))
+-- {12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
+display(subtable(x, -1, 1, -2))
+-- {12, 10, 8, 6, 4, 2}
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=tblcat href=#m><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></code></a></h4>
 <p>Flatten and concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers, boolean values, or strings.</p>
 <p>See also: <a href=#strcat><code>strcat</code></a></p>
@@ -2110,6 +2121,16 @@ disp(tblcat(x, z, 11)) -- a column vector is automatically converted into a row 
 
 disp(tblcat(1, {c = 2, a = {3, 4}}, true, {ab = {5, 6, 'OK'}, aa = 7}))
 -- {1, 2, 3, 4, true, 5, 6, 'OK', 7}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=text href=#m><code>text(x, y, txt, style)</code></a></h4>
+<p>Return a text object for <code><a href=#plot>plot</a></code> to write a text string <code>txt</code> at the point <code>(x, y)</code> on a graph.</p>
+<p><code>style</code> (default: <code>{color='black'}</code>): e.g., <code>{family = 'Arial Black', size = 18, color = '#ff0000'}</code>.</p>
+<pre><code>require 'mathly'
+
+x = linspace(-pi, pi, 200)
+plot(x, cos(x), point(-pi/3, math.cos(-pi/3)), text(-pi/3, math.cos(-pi/3) - 0.2, 'Point A'), point(pi/3, math.cos(pi/3)), text(pi/3, math.cos(pi/3) - 0.2, 'Point B'))
+plot(x, cos(x), text(0, -0.2, 'Demo', {family = 'Sans Serif', size = 28, color = '#00aaff'}))
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=toc></a><a name=tic href=#m><code>tic()</code>, <code>toc(...)</code></a></h4>
@@ -2164,27 +2185,6 @@ disp(E)
 -- 7   8  9
 -- 10 11 12
 </code></pre>
-
-<h4>&bull; &nbsp; <a name=text href=#m><code>text(x, y, txt, style)</code></a></h4>
-<p>Return a text object for <code><a href=#plot>plot</a></code> to write a text string <code>txt</code> at the point <code>(x, y)</code> on a graph.</p>
-<p><code>style</code> (default: <code>{color='black'}</code>): e.g., <code>{family = 'Arial Black', size = 18, color = '#ff0000'}</code>.</p>
-<pre><code>require 'mathly'
-
-x = linspace(-pi, pi, 200)
-plot(x, cos(x), point(-pi/3, math.cos(-pi/3)), text(-pi/3, math.cos(-pi/3) - 0.2, 'Point A'), point(pi/3, math.cos(pi/3)), text(pi/3, math.cos(pi/3) - 0.2, 'Point B'))
-plot(x, cos(x), text(0, -0.2, 'Demo', {family = 'Sans Serif', size = 28, color = '#00aaff'}))
-</code></pre>
-
-<h4>&bull; &nbsp; <a name=showlegend></a><a name=shownotlegend></a><a name=shownotyaxis></a><a name=showyaxis></a><a name=shownotxaxis></a><a name=showxaxis></a><a name=axissquare></a><a name=axisnotsquare></a><a name=showaxes></a><a name=shownotaxes></a><a name=showgridlines></a><a name=shownotgridlines></a><a href=#m><code>axissquare, axisnotsquare; showaxes, shownotaxes ...</code></a></h4>
-<table><tbody>
-<tr><td><code>axissquare(),    axisnotsquare()</code></td><td> &nbsp; </td><td>Force or stop a square axis aspect ratio (default: not square)</td></tr>
-<tr><td><code>showaxes(),      shownotaxes()</code></td><td> &nbsp; </td><td>Show/hide axes (all default: show)</td></tr>
-<tr><td><code>showxaxis(),     shownotxaxis()</code></td><td> &nbsp; </td><td>Show/hide the <code>x</code>-axis</td></tr>
-<tr><td><code>showyaxis(),     shownotyaxis()</code></td><td> &nbsp; </td><td>Show/hide the <code>y</code>-axis</td></tr>
-<tr><td><code>showgridlines(), shownotgridlines()</code></td><td> &nbsp; </td><td>Show/hide gridlines</td></tr>
-<tr><td><code>showlegend(),    shownotlegend()</code></td><td> &nbsp; </td><td>Show/hide the legend</td></tr>
-</tbody></table>
-<p>&#x2713; &nbsp; These functions are not valid for 3D graphs.</p>
 <p></p>
 <hr>
 <h2 style="margin-left: 20px;">Note</h2>
