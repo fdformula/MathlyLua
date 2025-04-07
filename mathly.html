@@ -415,21 +415,211 @@ apply(f, {1, 2, 3})
 -- 6
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=round href=#m><code>round(x, n)</code></a></h4>
-<p>Round <code>x</code> to <code>n</code> decimal places (default: 0).</p>
-<pre><code>require('mathly')
+<h4>&bull; &nbsp; <a name=bin2dec></a><a name=bin2hex></a><a name=bin2oct></a><a name=dec2bin></a>
+<a name=dec2hex></a><a name=dec2oct></a><a name=hex2bin></a><a name=hex2dec></a>
+<a name=hex2oct></a><a name=oct2bin></a><a name=oct2dec></a>
+<a name=oct2hex href=#m><code>bin2dec, bin2hex, bin2oct; dec2bin, dec2hex, dec2oct; hex2bin, hex2dec, hex2oct; oct2bin, oct2dec, oct2hex</code></a></h4>
+<table><tbody>
+<tr><td><code>dec2bin(x), hex2bin(x), oct2bin(x)</code></td><td> - </td><td>Convert decimal/hexadecimal/octal integer <code>x</code> to binary</td></tr>
+<tr><td><code>bin2dec(x), hex2dec(x), oct2dec(x)</code></td><td> - </td><td>Convert binary/hexadecimal/octal integer <code>x</code> to decimal</td></tr>
+<tr><td><code>bin2oct(x), dec2oct(x), hex2oct(x)</code></td><td> - </td><td>Convert binary/decimal/hexadecimal integer <code>x</code> to octal</td></tr>
+<tr><td><code>bin2hex(x), dec2hex(x), oct2hex(x)</code></td><td> - </td><td>Convert binary/decimal/octal integer <code>x</code> to hexadecimal</td></tr>
+</tbody></table>
+<p>Note: <code>x</code> can be a decimal integer (for all <code>dec2...</code> functions), a string of a valid binary/octal/hexadecimal integer, or a table
+of integers or strings of intgers.</p>
+<p>&#x2713; &nbsp; Not as with all other cases, even if <code>x</code> for function <code>dec2...</code> is a mathly matrix, the result is a Lua table
+rather than a mathly matrix. Mathly matrices can only have numerical entries.</p>
+<p>&#x2713; &nbsp; Function <code>...2dec(x)</code> treats input string <code>x</code> as an unsigned integer.</p>
+<pre><code>mathly = require('mathly')
 
-a = mathly({{117.37826, 696.56562}, {594.53232, 636.11108}})
-round(a)
--- 117  697
--- 595  636
+disp(dec2bin(123)) -- '1111011'
+disp(dec2hex(123)) -- '7b'
+disp(dec2oct(123)) -- '173'
+disp(oct2dec('173')) -- 123
 
-round(a, 2)
--- 117.3800  696.5700
--- 594.5300  636.1100
+disp(dec2bin({123, 124, 125, {126, {127, 128}}}))
+-- {'1111011', '1111100', '1111101', {'1111110', {'1111111', '10000000'}}}
+disp(hex2dec(dec2hex({123, 124, 125, {126, {127, 128}}})))
+-- {123, 124, 125, {126, {127, 128}}}
 
-round(pi, 4)
--- 3.1416
+a = mathly{{75, 28}, {90, 6}}
+disp(dec2bin(a))
+-- {{'1001011', '11100'}, {'1011010', '110'}}
+disp(oct2hex(dec2oct(a)))
+disp(dec2hex(a))
+-- {{'4b', '1c'}, {'5a', '6'}}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=boxplot></a><a name=pareto></a><a name=freqpolygon></a><a name=histfreqpolygon></a><a name=hist></a><a name=hist1></a>
+<a name=pie href=#m><code>freqpolygon, hist, hist1, histfreqpolygon, pareto, pie</code></a></h4>
+<table><tbody>
+<tr><td><code>boxplot(x, names)</code></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a box (or box-and-whisker) plot, where <code>x</code> is a table or a matrix of numbers. <code>names = {'name1', 'name2', ...}</code> is optional. If <code>x</code> is a matrix or a table of tables/rows, each row is a data set and thus has a box plot.</td></tr>
+<tr><td><code>freqpolygon(x, nbins, style, xrange)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a frequency polygon.</td></tr>
+<tr><td><code>hist(x, nbins, style, xrange)</code></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a histogram. If <code>x</code> is a matrix or a table of tables/rows, each row is a data set and each bin of the histogram contains one bar per row of the matrix.</td></tr>
+<tr><td><code>hist1(x, nbins, style, xrange)</code></td><td> </td><td>Return an ordinary graphics object for <code><a href=#plot>plot</a></code> to plot a histogram.</td></tr>
+<tr><td><code>histfreqpolygon(x, nbins, style, xrange, style1)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a histogram plus a frequency polygon, where <code>style</code> defines the style of the histogram while <code>style1</code> specifies the style of the frequency polygon.</td></tr>
+<tr><td><code>pareto(data, style, style1)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pareto chart.</td></tr>
+<tr><td><code>pie(x, nbins, radius, style, offcenter, names)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pie chart, where <code>radius</code> is the radius of the pie disk (default: 1), and <code>offcenter</code> specifies which wedges are away from the center by given distances (default: 0). Note: <code>pie({bins = {freq1, freq2, ...}}...)</code> is for plotting a pie chart for bins with frequences <code>freq1, freq2, ..., in order</code>, and <code>names = {'name1', 'name2', ...}</code> can be given in this situation.</td></tr>
+</tbody></table>
+<p>With this group of functions,</p>
+<table><tbody>
+<tr><td><code>x</code></td><td> &nbsp; </td><td>The data, a table of numbers</td></tr>
+<tr><td><code>nbins</code></td><td> &nbsp; </td><td>The number of bins (default: 10)</td></tr>
+<tr><td><code>style</code></td><td> &nbsp; </td><td>E.g., <code>'-r', '-rfs'. </code>See also: <a href=#gobjspecs><code>'fa', 'ff', 'fn', 'fs'</code></a></td></tr>
+<tr><td><code>xrange</code></td><td> &nbsp; </td><td>In the format <code>{xmin, xmax}</code>, specifying the range of data values in <code>x</code>. If not provided, it is determined by the lowest and largest values in <code>x</code>.</td></tr>
+</tbody></table>
+<p>See also: <a href=#arc><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a></p>
+<p><a name=namedargs><b>Named arguments for this group of functions:</b></p>
+<p>To make it easier to use this group of functions, if necessary or if convenient, each function may be called in two more ways, <code>pie({...})</code> or <code>pie{...}</code>. There are rules to follow: 1) We may not use names at all; 2) We use names for all arguments; 3) Arguments without names must be the first ones and in defined order. Take <code>pie</code> as an example,</p>
+<pre><code>require 'mathly'
+
+data = {1, 11, 4, 7, 6, 5, 10, 4, 3, 15, 13, 1, 4, 10, 9}
+axissquare()
+-- don't want to use named variables? call a function in an ordinary way: pie(x, nbins, radius, style, offcenter, names)
+plot(pie(data))
+plot(pie(data, 5, nil, '-g')) -- nil? the default value (of radius = 1) is used
+plot(pie(data, 5, nil, '-gfs'))
+plot(pie(data, 5, nil, nil, 0.1)) -- the same as the following one; offcenter = 0.1, each bin is away from the center by 0.1
+plot(pie{data, 5, nil, nil, 0.1}) -- pie{...} or pie({...}) is allowed but not recommended
+-- in the above examples, there are no named arguments. pie({...}), pie{...}, and pie(...) are the same, but the first two ways are not recommended.
+
+-- when there are named variables, we must call a function in a special way: pie({...}) or pie{...}.
+plot(pie{nbins = 7, x = data}) -- the order of named arguments doesn't matter
+
+-- named and unnamed variables: unnamed ones are placed before named ones and in specified order
+plot(pie{data, 7, offcenter = {{2, 0.1}, {5, 0.2}}, style = '-fs'}) -- offcenter = {{2, 0.1}, {5, 0.2}}, the 2nd & 5th bins are away from the center by ...
+plot(pie{x = {bins = {0.0930, 0.1163, 0.0233, 0.2791, 0.1395, 0.3488}}, style='-', offcenter = {{3, 0.6}, {5, 0.1}, {1, 0.15}}})
+</code></pre>
+
+<p>More examples,</p>
+<pre><code>require 'mathly'
+
+data1 = {1, 2, 3, 4, 2, 12, 3, 4, 2, 12, 9, 9, 9, 8, 5, 3, 3, 2, 1, 5, 3, 2}
+data2 = {2, 1, 2, 4, 5, 7, 11}
+data3 = {3, 2, 3, 4, 2, 2, 9, 11}
+plot(boxplot(data1))
+plot(boxplot({data1, data2}, {"name 1", "name 2"}))
+plot(boxplot({data1, data2, data3, {2, 3, 5, 7, 11, 20, 1, 2, 3}}))
+
+mu, sigma = 72.11, 13.36
+x = flatten(randn(1, 5000, mu, sigma))
+
+function n(x, mu, sigma)
+  local z = (x - mu) / sigma
+  return math.exp(-0.5 * z^2) / (math.sqrt(2 * pi) * sigma)
+end
+
+X = linspace(mu - 4 * sigma, mu + 4 * sigma, 5000)
+Y = map(function(x) return n(x, mu, sigma) * 7.8 end, X)
+
+gobj = hist1(x, 12)
+axisnotsquare(); shownotlegend()
+plot(gobj, X, Y, '--r')
+plot(freqpolygon(x))
+plot(freqpolygon{x, style='--r*'})
+plot(histfreqpolygon(x))
+plot(histfreqpolygon{x, style='-bfs', style1='--r*'})
+
+x = {{'Apple', 382}, {'Orange', 22}, {'Pearl', 91}, {'Peach', 53}, {'Banana', 19}, {'Strawberry', 35}}
+plot(pareto(x))
+plot(pareto(x, '-bfs'))
+plot(pareto(x, nil, '--gx'))  -- "yaxis2":{"tickformat":".0%", "overlaying": 'y', "side": 'right' }
+
+showaxes()
+plot(hist(randn(1, 100)))
+
+A = randi({0, 99}, 3, 50)
+plot(hist(A)) -- nil? the default value will be used
+plot(hist{A, xrange = {0, 99}}) -- run multiple times, the two can produce different results
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=circle></a><a name=line></a><a name=parametriccurve2d></a><a name=point></a><a name=polarcurve2d></a><a name=polygon></a><a name=scatter></a><a name=wedge></a>
+<a name=arc href=#m><code>arc, circle, line, parametriccurve2d, point, polygon, text, wedge</code></a></h4>
+<table><tbody>
+<tr><td><code>arc(radius, center, angles, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot an arc of a circle, where <code>angles: {angle1, angle2}</code> (default: <code>{0, 2&pi;}</code>).</td></tr>
+<tr><td><code>circle(radius, center, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a circle, where <code>center: {x, y} (default: {0, 0})</code>.</td></tr>
+<tr><td><code>line(point1, point2, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a straight line, where <code>point1 = {x1, y1}</code> and <code>point2 = {x2, y2}</code>.</td></tr>
+<tr><td><code>parametriccurve2d({x(t), y(t)}, range, style, resolution, orientationq)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a parametric curve, where <code>x(t)</code> and <code>y(t)</code> are parametric functions, and <code>range = {t1, t2}</code> (default: <code>{-5, 5}</code>) indicating <code>t</code> changes from <code>t1</code> to <code>t2</code>.</td></tr>
+<tr><td><code>point(x, y, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a point, where <code>(x, y)</code> are the coordinates of the point. Note: <code>point({x1, x2, ...}, {y1, y2, ...}, style)</code> or <code> point({{x1, y1}, {x2, y2}, ...}, style)</code> is for plotting multiple points.</td></tr>
+<tr><td><code>polarcurve2d(r(&theta;), range, style, resolution, orientationq)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a polar curve, where <code>r(&theta;)</code> is a polar function, and <code>range = {&theta;1, &theta;2}</code> (default: <code>{0, 2*pi}</code>) indicating <code>&theta;</code> changes from &theta;1 to &theta;2. If <code>r</code> is a number, plot a circle with radius <code>r</code>.</td></tr>
+<tr><td><code>polygon(vertices, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a polygon, where <code>vertices = {{x1, y1}, {x2, y2}, ..., {xn, yn}}</code> specifies the coordinates of each vertex in order so that there is an edge connecting any two consecutive vertices. There is an edge connecting <code>{x1, y1}</code> and <code>{xn, yn}</code>.</td></tr>
+<tr><td><code>scatter(x, y, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a scatter plot. It has similar usage like <code>point</code>.</td></tr>
+<tr><td><code>wedge(radius, center, angles, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a wedge of a disk, where <code>angles = {&theta;1, &theta;2}</code> indicating &theta; changes from &theta;1 to &theta;2.</td></tr>
+</tbody></table>
+<a name=gobjspecs></a>
+<p>&#x2713; &nbsp; For most of these graphics objects, you may use the following specifications in <code>style</code>.</p>
+<table><tbody>
+<tr><td><code>'fa'</code></td><td> - </td><td>Fill to the x-Axis</td></tr>
+<tr><td><code>'ff'</code></td><td> - </td><td>Fill to to the previous Function</td></tr>
+<tr><td><code>'fn'</code></td><td> - </td><td>No filling</td></tr>
+<tr><td><code>'fs'</code></td><td> - </td><td>Fill to Self</td></tr>
+</tbody></table>
+<p>Other specification shortcuts, see <a href=#plotspecs><code>plot</code></a>.</p>
+<p>&#x2713; &nbsp; <code><b>resolution</b></code> - <a name=resol></a>Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#plot3d>plot3d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, <a href=#plotparametricsurface3d>plotparametricsurface3d</a>, <a href=#plotsphericalsurface3d><code>plotsphericalsurface3d</code></a>, and <a href=#polarcurve2d>polarcurve2d</a></code>,
+each take an argument, the minimum <code>resolution</code> (default: 100 for a surface, or 500 for a curve), for users to control the smoothness of a plotted curve or surface if needed.
+A larger value means better smoothness and requires more computing time.</p>
+
+<p>&#x2713; &nbsp; <code><b>orientationq</b></code> - Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, and <a href=#polarcurve2d>polarcurve2d</a></code>,
+each take also a last argument, <code>orientationq</code> (default: false). If it is true, a few dots of reducing sizes are plotted together with a curve to show the orientation of the parametric curve. The orientation is from large to small dots (&#10148;).</p>
+
+<pre><code>require 'mathly'
+
+plot(math.sin, point({{-3, 2}, {2, -1}, {3.2, 2}}), point(-1, 1, {symbol='circle-open', size=18, color='red'}))
+
+x = tt((0.5 - rr(rand(1, 100))) * 10)
+plot(scatter(x, cos(x)))
+plot(scatter(randi(99, 1, 200), randi(1000, 1, 200)))
+plot(scatter(randi(99, 200, 2)))
+
+data = {{-1.0, -2.0}, {0, -3}, {3, 10}, {7, 6}, {10, -2}}
+xs = linspace(data[1][1], data[#data][1], 100)
+ys = newtonpoly(data, xs)
+plot(scatter(data), xs, ys, "-")
+
+plot(polygon({{1, 2}, {2, 3}, {5, -1}}),
+     polygon({{-1, 2}, {1, 1}, {3, 1}, {0, -1}}, '-rfn'),
+     circle(1, {0, 0}, '-fs'),
+     point(3, 2, {symbol='circle', size=36, color='red'}),
+     circle(1, {1,1}, '-bfn'))
+
+plot(math.sin, '-rfa')
+
+x = linspace(-2.337, 0.779, 100)
+X = linspace(-5, 5, 200)
+plot(X, cos(X), X, sin(X), '-rff') -- shade regions between two curves
+plot(x, cos(x), x, sin(x), '-rff', X, cos(X), X, sin(X)) -- shade part of  ...
+
+axissquare()
+plot(
+  polarcurve2d(1.5),
+  polarcurve2d(function(t) return math.sqrt(t) * math.cos(t) end, {0, 4*pi}, '-b'),
+  polarcurve2d(function(x) return math.cos(4*x) end, {0, 2*pi}, '-fs'),
+  parametriccurve2d({math.cos, math.sin}, {0, pi/2}, '-gfs')
+)
+
+do -- https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)
+  local function f(t) return (exp(cos(t)) - 2*cos(4*t) - sin(t/12)^5) end
+  local function x(t) return sin(t) * f(t) end
+  local function y(t) return cos(t) * f(t) end
+  plot(parametriccurve2d({x, y}, {0, 12*pi}), {layout={title = "Butterfly Curve"}})
+end
+
+axisnotsquare()
+r = function(t) return math.sin(1.6 * t^2) + math.cos(4 * t)^5 end
+plot(polarcurve2d(r, {0, 8*pi}, '-sfn'))
+plot(polarcurve2d(r, {0, 8*pi}, '-sfn', 10000)) -- add resolution
+
+gobjs = {}
+for i = 1, 6 do
+  gobjs[i] = polarcurve2d(function(t) return math.sin(1.6 * t^2) + math.cos(i * t)^5 end, {0, 8*pi}, '-sfn', 10000)
+end
+plot({layout={width=1900, height=1300, grid={rows=2, columns=3}, title='Example'},
+      names={'i=1', 'i=2', 'i=3', 'i=4', 'i=5', 'i=6'}}, table.unpack(gobjs))
+
+axissquare() -- orientation of a parametric curve
+plot(
+  parametriccurve2d({function(t) return 3*cos(t) end, function(t) return 3*sin(t) end}, {0, 2*pi}, nil, nil, true), -- counter clockwise
+  parametriccurve2d({function(t) return 2*sin(t) end, function(t) return cos(t) end}, {0, 2*pi}, nil, nil, true)) -- clockwise
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=cc></a><a name=rr></a><a name=tt href=#m><code>cc(x...)</code>, <code>rr(x...)</code>, <code>tt(x)</code></a></h4>
@@ -573,64 +763,6 @@ display(tt(x, 2, 4))       -- flattened first
 -- {2, 3, 4}
 display(tt(x, 2))
 -- {2, 3, 4, 5, 6, 7}
-</code></pre>
-
-<h4>&bull; &nbsp; <a name=select href=#m><code>select(tbl, f)</code></a></h4>
-<p>Return elements of table <code>tbl</code> that satisfy specified conditions. (<code>f</code> defaults to <code>tbl</code>.)</p>
-<p>If <code>f</code> is a boolean function, return 1) a table of elements of <code>tbl</code> (row wise) that satisfy <code>f(x)</code>
-and 2) a table of elements of <code>tbl</code> with those elements replaced by 0 when they fail to satisfy <code>f(x)</code>.</p>
-<p>If <code>f</code> is a table/matrix, return 1) a table of elements of <code>tbl</code> (row wise) that correspond to nonzero
-elements of <code>f</code> and 2) <code>tbl</code> with entries replaced with corresponding zero elements of <code>f</code>.</p>
-<pre><code>mathly = require('mathly')
-
-#select(seq(1000), function(x) return x % 5 == 0 or x % 6 == 0 end)
--- 333 -- the number of positive integers not exceeding 1000 and divisible by either 5 or 6
-A = mathly{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
-disp(A)
--- 1  2  3
--- 4  5  6
--- 7  8  9
-x, C = select(A, function(x) return x > 4 and x % 2 == 0 end)
-disp(x)
--- {6, 8}
-disp(C)
--- 0  0  0
--- 0  0  6
--- 0  8  0
-B = select(A, C)
-disp(B)
--- {6, 8}
-A =  mathly{{2, 3, 4}, {5, 6, 7}, {8, 9, 10}}
-disp(A)
--- 2  3  4
--- 5  6  7
--- 8  9 10
-x, D = select(A, C)
-disp(x)
--- {7, 9}
-disp(D)
--- 0  0  0
--- 0  0  7
--- 0  9  0
-
-A = mathly{{1, 0, 3}, {0, 5, 0}, {7, 8, 0}}
-disp(A)
--- 1  0  3
--- 0  5  0
--- 7  8  0
-disp(select(A))
--- {1, 3, 5, 7, 8}
-
-x = {0, 1, 2, 0, 0, 3, 0, 4, 0, 0}
-disp(select(x))
--- {1, 2, 3, 4}
-
-x = {1, 2, {3, 4, 5, {6, 7, 8, {9, 10}}, 11, 12}, 13, 14}
-y, A = select(x, function(x) return x % 2 == 0 end)
-disp(y)
--- {2, 4, 6, 8, 10, 12, 14}
-disp(A)
--- {0, 2, {0, 4, 0, {6, 0, 8, {0, 10}}, 0, 12}, 0, 14}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=copy href=#m><code>copy(x)</code></a></h4>
@@ -1285,6 +1417,156 @@ disp(randn(3, 5, 70, 12.55))
 <tr><td><code>randi({imin, imax}, m, n)</code></td><td> </td><td width=10> </td><td>Return a mxn mathly matrix of which each element is in <code>[imin, imax]</code>. (<code>n</code> is optional. The default is <code>m</code>.)</tr>
 </tbody></table>
 
+<h4>&bull; &nbsp; <a name=plot href=#m><code>plot(...)</code></a></h4>
+<p>Plot the graph(s) of functions defined by data points, using specifications/options.</p>
+<p><b>Some specifications:</b></p>
+<ol>
+<li>of a line, i.e., the graph of a function:<p><code>width</code> = 5</p><p><code>style</code> = <code>'-'</code> [solid, <code>':'</code> (dot), or <code>'--'</code> (dash)]</p>
+<p><code>mode</code> = <code>'lines+markers'</code>, <code>'lines'</code>, or <code>'markers'</code></p></li><p></p>
+<li>of a marker:<p><code>size</code> = 10</p><p><code>symbol</code> = <code>'circle'</code></p>
+Some possible symbols are <code>circle</code>, <code>circle-open</code>, <code>circle-open-dot</code>, <code>cross</code>, <code>diamond</code>, <code>square</code>, <code>x</code>, <code>triangle-left</code>, <code>triangle-right</code>, <code>triangle-up</code>, <code>triangle-down</code>, <code>hexagram</code>, <code>star</code>, <code>hourglass</code>, <code>bowtie</code>.</li><p></p>
+<li>of a plot:<p><code>layout</code> = {<code>width</code> = 500, <code>height</code> = 400, <code>grid</code> = {<code>rows</code> = 2, <code>columns</code> = 2}, <code>title</code> = 'Demo'}</p></li>
+</ol>
+<p><a name=plotspecs></a>Shortcuts for specifications like <code>'--ro'</code>:</p>
+<table><tbody>
+<thead><tr><td>shortcut</td><td> &nbsp; <td>symbol</td></tr></thead>
+<tr><td><code>o</code></td><td> &nbsp; <td>circle</td></tr>
+<tr><td><code>*</code></td><td> &nbsp; <td>star</td></tr>
+<tr><td><code>x</code></td><td> &nbsp; <td>cross</td></tr>
+<tr><td><code>^</code></td><td> &nbsp; <td>triangle-up</td></tr>
+<tr><td><code>v</code></td><td> &nbsp; <td>triangle-down</td></tr>
+<tr><td><code>></code></td><td> &nbsp; <td>triagle-right</td></tr>
+<tr><td><code><</code></td><td> &nbsp; <td>triagle-left</td></tr>
+</tbody></table>
+<p></p>
+<table><tbody>
+<thead><tr><td>shortcut</td><td> &nbsp; <td>color</td></tr></thead>
+<tr><td><code>r</code></td><td> &nbsp; <td>red</td></tr>
+<tr><td><code>b</code></td><td> &nbsp; <td>blue</td></tr>
+<tr><td><code>g</code></td><td> &nbsp; <td>green</td></tr>
+<tr><td><code>c</code></td><td> &nbsp; <td>cyan</td></tr>
+<tr><td><code>m</code></td><td> &nbsp; <td>magenta</td></tr>
+<tr><td><code>y</code></td><td> &nbsp; <td>yellow</td></tr>
+<tr><td><code>k</code></td><td> &nbsp; <td>black</td></tr>
+<tr><td><code>w</code></td><td> &nbsp; <td>white</td></tr>
+</tbody></table>
+<p></p>
+<p>As per filling regions, see <a href=#gobjspecs><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a>.</p>
+<p></p>
+<p><b>Some examples</b></p>
+<pre><code>require 'mathly'
+
+x = linspace(0, pi, 100)
+y1 = sin(x)
+y2 = map(math.cos, x)
+y3 = map(function(x) return x^2*math.sin(x) end, x)
+
+specs1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example'}}
+specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
+specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
+
+plot(math.sin, '--r') -- plot a function
+shownotlegend()
+plot(x, y1) -- plot a function defined by x and y1
+plot(x, y1, '--xr', x, y2)
+plot(x, y1, '--xr', x, y2, ':g', text(0.79, 0.71 - 0.08, 'A'), point(0.79, 0.71, {symbol='circle', size=10, color='blue'}))
+plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
+showlegend()
+plot(x, y1, x, y2, specs1, math.sin, '--r')
+plot(x, y1, specs1, x, y2, x, y3, 'o')
+plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
+
+axisnotsquare()
+plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
+plot(rand(125, 4),{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
+plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}})
+plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
+plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=plot3d href=#m><code>plot3d(f, xrange, yrange, title, resolution)</code></a></h4>
+<p>Plot a surface defined by <code>z = f(x, y)</code>. It is not designed as complicated as <code>plot(...)</code> for 2D graphs. It can only plot one surface at a time.</p>
+<p>If <code>f</code> is a function, <code>xrange = {xstart, xstop}</code> and <code>y = {ystart, ystop}</code> define the ranges
+for <code>x</code> and <code>y</code> (each default: <code>{-5, 5}</code>), respectively; otherwise, the first 3 arguments are tables of <code>x, y</code>, and <code>z</code> values,
+which allows users to set up data and use this function to display a graph. Given that <code>x = {x1, x2, ..., xn}</code> and
+<code>y = {y1, y2, ..., yn}</code>, the data passed to <code>plot3(X, Y, Z, title)</code> are as follows:</p>
+<code><pre style="color:black">
+X = {{x1, x1, ..., x1}, {x2, x2, ..., x2}, ..., {xn, xn, ..., xn}}
+Y = {{y1, y2, ..., yn}, {y1, y2, ..., yn}, ..., {y1, y2, ..., yn}}
+Z = {{z11,  ...,  z1n}, {z21,  ...,  z2n}, ..., {zn1,  ...,  zn2}}
+</pre></code>
+<p>where <code>zij = f(xi, yj)</code>, if a surface is defined by <code>z = f(x, y)</code>.</p>
+<p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
+<pre><code>require 'mathly'
+
+plot3d(function(x, y) return x^2 - y^2 end) -- saddle
+
+n = 100
+x = linspace(0, 2*pi, n)
+y = linspace(-pi, pi, n)
+X, Y = {}, {}
+for i = 1, n do
+  X[i] = tt(mathly(1, n, x[i]))
+  Y[i] = y
+end
+function f(x, y) return math.sin(x) * math.cos(y) end
+Z = map(f, X, Y)
+plot3d(X, Y, Z, 'Demo 2')
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=plotparametriccurve3d href=#m><code>plotparametriccurve3d({x(t), y(t), z(t)}, trange, title, resolution, orientationq)</code></a></h4>
+<p>Plot a space curve defined by <code>{x(t), y(t), z(t)}</code>.</p>
+<p><code>resolution</code> and <code>orientationq</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
+<pre><code>require 'mathly'
+
+plotparametriccurve3d(
+  {function(t) return math.cos(t) end,
+   function(t) return math.sin(t) end,
+   function(t) return t end}, {0,6*pi}, "Helix")
+
+plotparametriccurve3d(
+  {function(t) return t*math.cos(t) end,
+   function(t) return t*math.sin(t) end,
+   function(t) return t end}, {0, 8*pi})
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=plotparametricsurface3d href=#m><code>plotparametricsurface3d({x(u, v), y(u, v), z(u,v)}, urange, vrange, title, resolution, orientationq)</a></code></h4>
+<p>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u,v)</code>.</p>
+<p><code>resolution</code> and <code>orientationq</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
+<pre><code>require 'mathly'
+
+plotparametricsurface3d(
+  {function(u,v) return u end,
+   function(u,v) return v end,
+   function(u,v) return math.sqrt(u^2 + v^2) end}, {-3, 3}, {-3, 3}, 'Demo')
+
+plotparametricsurface3d(
+  {function(u,v) return 2*math.sin(u)*math.cos(v) end,
+   function(u,v) return 2*math.sin(u)*math.sin(v) end,
+   function(u,v) return 2*math.cos(v) end}, {0, pi}, {0, 2*pi})
+
+do -- https://plotly.com/python/3d-surface-plots/
+  local a, b, d = 1.32, 1, 0.8
+  local c = a^2 - b^2
+  local u, v = linspace(0, 2*pi, 100), linspace(0, 2*pi, 100)
+  local function x(u, v) return (d * (c - a * cos(u) * cos(v)) + b^2 * cos(u)) / (a - c * cos(u) * cos(v)) end
+  local function y(u, v) return b * sin(u) * (a - d*cos(v)) / (a - c * cos(u) * cos(v)) end
+  local function z(u, v) return b * sin(v) * (c*cos(u) - d) / (a - c * cos(u) * cos(v)) end
+  plotparametricsurface3d({x, y, z}, {0, 2*pi}, {0, 2*pi})
+end
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=plotsphericalsurface3d href=#m><code>plotsphericalsurface3d(ρ(θ,φ), θrange, φrange, title, resolution, orientationq)</code></a></h4>
+<p>Plot spherical function <code>ρ(θ, φ)</code>, where <code>θ</code> is in the range <code>θrange = {θ1, θ2}</code> (default: <code>{0, 2*pi}</code>)
+and <code>φ</code> in the range <code>φrange = {φ1, φ2}</code> (default: <code>{0, pi}</code>). If <code>ρ(θ, φ)</code> is a number, the radius of a sphere centered at the origin, plot the sphere.</p>
+<p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
+<pre><code>require('mathly')
+
+plotsphericalsurface3d(1)
+plotsphericalsurface3d(function(theta, phi) return theta + 2 * phi end, {0, 4*pi}, nil, 'Demo')
+plotsphericalsurface3d(function(t, p) return 2 + sin(5*p + 7*t) end)  -- https://www.mathworks.com/help/symbolic/transform-spherical-coordinates-and-plot.html
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=powermod href=#m><code>powermod(b, n, m)</code></a></h4>
 <p>Return <code>b<sup>n</sup> mod m</code>, i.e., the remainder of <code>b<sup>n</sup></code> divided by <code>m</code>.</p>
 <p>Note: <code>b, n</code>, and <code>m</code> are nonnegative integers with <code>m &gt; 0</code>.</p>
@@ -1533,6 +1815,23 @@ disp(reverse(a)) -- same as tt(a, #a, 1, -1) or tt(a, #a, 1)
 -- {10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
 </code></pre>
 
+<h4>&bull; &nbsp; <a name=round href=#m><code>round(x, n)</code></a></h4>
+<p>Round <code>x</code> to <code>n</code> decimal places (default: 0).</p>
+<pre><code>require('mathly')
+
+a = mathly({{117.37826, 696.56562}, {594.53232, 636.11108}})
+round(a)
+-- 117  697
+-- 595  636
+
+round(a, 2)
+-- 117.3800  696.5700
+-- 594.5300  636.1100
+
+round(pi, 4)
+-- 3.1416
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=rref href=#m><code>rref(A, ...)</code></a></h4>
 <p>If there is one more argument, i.e., <code>rref(A, B)</code>, <code>A</code> and <code>B</code> will be merged horizontally into A.
 <p><code>A</code> and <code>B</code> must be mathly matrices with the same row number.</p>
@@ -1612,6 +1911,64 @@ print(c)
 -- nil
 </code></pre>
 
+<h4>&bull; &nbsp; <a name=select href=#m><code>select(tbl, f)</code></a></h4>
+<p>Return elements of table <code>tbl</code> that satisfy specified conditions. (<code>f</code> defaults to <code>tbl</code>.)</p>
+<p>If <code>f</code> is a boolean function, return 1) a table of elements of <code>tbl</code> (row wise) that satisfy <code>f(x)</code>
+and 2) a table of elements of <code>tbl</code> with those elements replaced by 0 when they fail to satisfy <code>f(x)</code>.</p>
+<p>If <code>f</code> is a table/matrix, return 1) a table of elements of <code>tbl</code> (row wise) that correspond to nonzero
+elements of <code>f</code> and 2) <code>tbl</code> with entries replaced with corresponding zero elements of <code>f</code>.</p>
+<pre><code>mathly = require('mathly')
+
+#select(seq(1000), function(x) return x % 5 == 0 or x % 6 == 0 end)
+-- 333 -- the number of positive integers not exceeding 1000 and divisible by either 5 or 6
+A = mathly{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
+disp(A)
+-- 1  2  3
+-- 4  5  6
+-- 7  8  9
+x, C = select(A, function(x) return x > 4 and x % 2 == 0 end)
+disp(x)
+-- {6, 8}
+disp(C)
+-- 0  0  0
+-- 0  0  6
+-- 0  8  0
+B = select(A, C)
+disp(B)
+-- {6, 8}
+A =  mathly{{2, 3, 4}, {5, 6, 7}, {8, 9, 10}}
+disp(A)
+-- 2  3  4
+-- 5  6  7
+-- 8  9 10
+x, D = select(A, C)
+disp(x)
+-- {7, 9}
+disp(D)
+-- 0  0  0
+-- 0  0  7
+-- 0  9  0
+
+A = mathly{{1, 0, 3}, {0, 5, 0}, {7, 8, 0}}
+disp(A)
+-- 1  0  3
+-- 0  5  0
+-- 7  8  0
+disp(select(A))
+-- {1, 3, 5, 7, 8}
+
+x = {0, 1, 2, 0, 0, 3, 0, 4, 0, 0}
+disp(select(x))
+-- {1, 2, 3, 4}
+
+x = {1, 2, {3, 4, 5, {6, 7, 8, {9, 10}}, 11, 12}, 13, 14}
+y, A = select(x, function(x) return x % 2 == 0 end)
+disp(y)
+-- {2, 4, 6, 8, 10, 12, 14}
+disp(A)
+-- {0, 2, {0, 4, 0, {6, 0, 8, {0, 10}}, 0, 12}, 0, 14}
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=seq href=#m><code>seq(x, y, n)</code></a></h4>
 <p>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</p>
 <p>See also: <a href=#linspace><code>linspace</code></a>, <a href=#range><code>range</code></a>.</p>
@@ -1643,17 +2000,6 @@ disp(sort(a, function(x, y) return x < y end)) -- same as sort(a)
 -- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 disp(sort({2, 0, 2, 4}))
 -- {0, 2, 2, 4}
-</code></pre>
-
-<h4>&bull; &nbsp; <a name=plotsphericalsurface3d href=#m><code>plotsphericalsurface3d(ρ(θ,φ), θrange, φrange, title, resolution, orientationq)</code></a></h4>
-<p>Plot spherical function <code>ρ(θ, φ)</code>, where <code>θ</code> is in the range <code>θrange = {θ1, θ2}</code> (default: <code>{0, 2*pi}</code>)
-and <code>φ</code> in the range <code>φrange = {φ1, φ2}</code> (default: <code>{0, pi}</code>). If <code>ρ(θ, φ)</code> is a number, the radius of a sphere centered at the origin, plot the sphere.</p>
-<p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
-<pre><code>require('mathly')
-
-plotsphericalsurface3d(1)
-plotsphericalsurface3d(function(theta, phi) return theta + 2 * phi end, {0, 4*pi}, nil, 'Demo')
-plotsphericalsurface3d(function(t, p) return 2 + sin(5*p + 7*t) end)  -- https://www.mathworks.com/help/symbolic/transform-spherical-coordinates-and-plot.html
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=var></a><a name=std href=#m><code>std(x, opt)</code>, <code>var(x, opt)</code></a></h4>
@@ -1819,103 +2165,6 @@ disp(E)
 -- 10 11 12
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=plot href=#m><code>plot(...)</code></a></h4>
-<p>Plot the graph(s) of functions defined by data points, using specifications/options.</p>
-<p><b>Some specifications:</b></p>
-<ol>
-<li>of a line, i.e., the graph of a function:<p><code>width</code> = 5</p><p><code>style</code> = <code>'-'</code> [solid, <code>':'</code> (dot), or <code>'--'</code> (dash)]</p>
-<p><code>mode</code> = <code>'lines+markers'</code>, <code>'lines'</code>, or <code>'markers'</code></p></li><p></p>
-<li>of a marker:<p><code>size</code> = 10</p><p><code>symbol</code> = <code>'circle'</code></p>
-Some possible symbols are <code>circle</code>, <code>circle-open</code>, <code>circle-open-dot</code>, <code>cross</code>, <code>diamond</code>, <code>square</code>, <code>x</code>, <code>triangle-left</code>, <code>triangle-right</code>, <code>triangle-up</code>, <code>triangle-down</code>, <code>hexagram</code>, <code>star</code>, <code>hourglass</code>, <code>bowtie</code>.</li><p></p>
-<li>of a plot:<p><code>layout</code> = {<code>width</code> = 500, <code>height</code> = 400, <code>grid</code> = {<code>rows</code> = 2, <code>columns</code> = 2}, <code>title</code> = 'Demo'}</p></li>
-</ol>
-<p><a name=plotspecs></a>Shortcuts for specifications like <code>'--ro'</code>:</p>
-<table><tbody>
-<thead><tr><td>shortcut</td><td> &nbsp; <td>symbol</td></tr></thead>
-<tr><td><code>o</code></td><td> &nbsp; <td>circle</td></tr>
-<tr><td><code>*</code></td><td> &nbsp; <td>star</td></tr>
-<tr><td><code>x</code></td><td> &nbsp; <td>cross</td></tr>
-<tr><td><code>^</code></td><td> &nbsp; <td>triangle-up</td></tr>
-<tr><td><code>v</code></td><td> &nbsp; <td>triangle-down</td></tr>
-<tr><td><code>></code></td><td> &nbsp; <td>triagle-right</td></tr>
-<tr><td><code><</code></td><td> &nbsp; <td>triagle-left</td></tr>
-</tbody></table>
-<p></p>
-<table><tbody>
-<thead><tr><td>shortcut</td><td> &nbsp; <td>color</td></tr></thead>
-<tr><td><code>r</code></td><td> &nbsp; <td>red</td></tr>
-<tr><td><code>b</code></td><td> &nbsp; <td>blue</td></tr>
-<tr><td><code>g</code></td><td> &nbsp; <td>green</td></tr>
-<tr><td><code>c</code></td><td> &nbsp; <td>cyan</td></tr>
-<tr><td><code>m</code></td><td> &nbsp; <td>magenta</td></tr>
-<tr><td><code>y</code></td><td> &nbsp; <td>yellow</td></tr>
-<tr><td><code>k</code></td><td> &nbsp; <td>black</td></tr>
-<tr><td><code>w</code></td><td> &nbsp; <td>white</td></tr>
-</tbody></table>
-<p></p>
-<p>As per filling regions, see <a href=#gobjspecs><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a>.</p>
-<p></p>
-<p><b>Some examples</b></p>
-<pre><code>require 'mathly'
-
-x = linspace(0, pi, 100)
-y1 = sin(x)
-y2 = map(math.cos, x)
-y3 = map(function(x) return x^2*math.sin(x) end, x)
-
-specs1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example'}}
-specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
-specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
-
-plot(math.sin, '--r') -- plot a function
-shownotlegend()
-plot(x, y1) -- plot a function defined by x and y1
-plot(x, y1, '--xr', x, y2)
-plot(x, y1, '--xr', x, y2, ':g', text(0.79, 0.71 - 0.08, 'A'), point(0.79, 0.71, {symbol='circle', size=10, color='blue'}))
-plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
-showlegend()
-plot(x, y1, x, y2, specs1, math.sin, '--r')
-plot(x, y1, specs1, x, y2, x, y3, 'o')
-plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
-
-axisnotsquare()
-plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
-plot(rand(125, 4),{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
-plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}})
-plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
-plot(rand(100, 2), linspace(1,100,1000), sin(linspace(1,100,1000)), '-og', rand(100, 3))
-</code></pre>
-
-<h4>&bull; &nbsp; <a name=plot3d href=#m><code>plot3d(f, xrange, yrange, title, resolution)</code></a></h4>
-<p>Plot a surface defined by <code>z = f(x, y)</code>. It is not designed as complicated as <code>plot(...)</code> for 2D graphs. It can only plot one surface at a time.</p>
-<p>If <code>f</code> is a function, <code>xrange = {xstart, xstop}</code> and <code>y = {ystart, ystop}</code> define the ranges
-for <code>x</code> and <code>y</code> (each default: <code>{-5, 5}</code>), respectively; otherwise, the first 3 arguments are tables of <code>x, y</code>, and <code>z</code> values,
-which allows users to set up data and use this function to display a graph. Given that <code>x = {x1, x2, ..., xn}</code> and
-<code>y = {y1, y2, ..., yn}</code>, the data passed to <code>plot3(X, Y, Z, title)</code> are as follows:</p>
-<code><pre style="color:black">
-X = {{x1, x1, ..., x1}, {x2, x2, ..., x2}, ..., {xn, xn, ..., xn}}
-Y = {{y1, y2, ..., yn}, {y1, y2, ..., yn}, ..., {y1, y2, ..., yn}}
-Z = {{z11,  ...,  z1n}, {z21,  ...,  z2n}, ..., {zn1,  ...,  zn2}}
-</pre></code>
-<p>where <code>zij = f(xi, yj)</code>, if a surface is defined by <code>z = f(x, y)</code>.</p>
-<p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
-<pre><code>require 'mathly'
-
-plot3d(function(x, y) return x^2 - y^2 end) -- saddle
-
-n = 100
-x = linspace(0, 2*pi, n)
-y = linspace(-pi, pi, n)
-X, Y = {}, {}
-for i = 1, n do
-  X[i] = tt(mathly(1, n, x[i]))
-  Y[i] = y
-end
-function f(x, y) return math.sin(x) * math.cos(y) end
-Z = map(f, X, Y)
-plot3d(X, Y, Z, 'Demo 2')
-</code></pre>
-
 <h4>&bull; &nbsp; <a name=text href=#m><code>text(x, y, txt, style)</code></a></h4>
 <p>Return a text object for <code><a href=#plot>plot</a></code> to write a text string <code>txt</code> at the point <code>(x, y)</code> on a graph.</p>
 <p><code>style</code> (default: <code>{color='black'}</code>): e.g., <code>{family = 'Arial Black', size = 18, color = '#ff0000'}</code>.</p>
@@ -1924,137 +2173,6 @@ plot3d(X, Y, Z, 'Demo 2')
 x = linspace(-pi, pi, 200)
 plot(x, cos(x), point(-pi/3, math.cos(-pi/3)), text(-pi/3, math.cos(-pi/3) - 0.2, 'Point A'), point(pi/3, math.cos(pi/3)), text(pi/3, math.cos(pi/3) - 0.2, 'Point B'))
 plot(x, cos(x), text(0, -0.2, 'Demo', {family = 'Sans Serif', size = 28, color = '#00aaff'}))
-</code></pre>
-
-<h4>&bull; &nbsp; <a name=circle></a><a name=line></a><a name=parametriccurve2d></a><a name=point></a><a name=polarcurve2d></a><a name=polygon></a><a name=scatter></a><a name=wedge></a>
-<a name=arc href=#m><code>arc, circle, line, parametriccurve2d, point, polygon, text, wedge</code></a></h4>
-<table><tbody>
-<tr><td><code>arc(radius, center, angles, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot an arc of a circle, where <code>angles: {angle1, angle2}</code> (default: <code>{0, 2&pi;}</code>).</td></tr>
-<tr><td><code>circle(radius, center, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a circle, where <code>center: {x, y} (default: {0, 0})</code>.</td></tr>
-<tr><td><code>line(point1, point2, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a straight line, where <code>point1 = {x1, y1}</code> and <code>point2 = {x2, y2}</code>.</td></tr>
-<tr><td><code>parametriccurve2d({x(t), y(t)}, range, style, resolution, orientationq)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a parametric curve, where <code>x(t)</code> and <code>y(t)</code> are parametric functions, and <code>range = {t1, t2}</code> (default: <code>{-5, 5}</code>) indicating <code>t</code> changes from <code>t1</code> to <code>t2</code>.</td></tr>
-<tr><td><code>point(x, y, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a point, where <code>(x, y)</code> are the coordinates of the point. Note: <code>point({x1, x2, ...}, {y1, y2, ...}, style)</code> or <code> point({{x1, y1}, {x2, y2}, ...}, style)</code> is for plotting multiple points.</td></tr>
-<tr><td><code>polarcurve2d(r(&theta;), range, style, resolution, orientationq)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a polar curve, where <code>r(&theta;)</code> is a polar function, and <code>range = {&theta;1, &theta;2}</code> (default: <code>{0, 2*pi}</code>) indicating <code>&theta;</code> changes from &theta;1 to &theta;2. If <code>r</code> is a number, plot a circle with radius <code>r</code>.</td></tr>
-<tr><td><code>polygon(vertices, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a polygon, where <code>vertices = {{x1, y1}, {x2, y2}, ..., {xn, yn}}</code> specifies the coordinates of each vertex in order so that there is an edge connecting any two consecutive vertices. There is an edge connecting <code>{x1, y1}</code> and <code>{xn, yn}</code>.</td></tr>
-<tr><td><code>scatter(x, y, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a scatter plot. It has similar usage like <code>point</code>.</td></tr>
-<tr><td><code>wedge(radius, center, angles, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a wedge of a disk, where <code>angles = {&theta;1, &theta;2}</code> indicating &theta; changes from &theta;1 to &theta;2.</td></tr>
-</tbody></table>
-<a name=gobjspecs></a>
-<p>&#x2713; &nbsp; For most of these graphics objects, you may use the following specifications in <code>style</code>.</p>
-<table><tbody>
-<tr><td><code>'fa'</code></td><td> - </td><td>Fill to the x-Axis</td></tr>
-<tr><td><code>'ff'</code></td><td> - </td><td>Fill to to the previous Function</td></tr>
-<tr><td><code>'fn'</code></td><td> - </td><td>No filling</td></tr>
-<tr><td><code>'fs'</code></td><td> - </td><td>Fill to Self</td></tr>
-</tbody></table>
-<p>Other specification shortcuts, see <a href=#plotspecs><code>plot</code></a>.</p>
-<p>&#x2713; &nbsp; <code><b>resolution</b></code> - <a name=resol></a>Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#plot3d>plot3d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, <a href=#plotparametricsurface3d>plotparametricsurface3d</a>, <a href=#plotsphericalsurface3d><code>plotsphericalsurface3d</code></a>, and <a href=#polarcurve2d>polarcurve2d</a></code>,
-each take an argument, the minimum <code>resolution</code> (default: 100 for a surface, or 500 for a curve), for users to control the smoothness of a plotted curve or surface if needed.
-A larger value means better smoothness and requires more computing time.</p>
-
-<p>&#x2713; &nbsp; <code><b>orientationq</b></code> - Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, and <a href=#polarcurve2d>polarcurve2d</a></code>,
-each take also a last argument, <code>orientationq</code> (default: false). If it is true, a few dots of reducing sizes are plotted together with a curve to show the orientation of the parametric curve. The orientation is from large to small dots (&#10148;).</p>
-
-<pre><code>require 'mathly'
-
-plot(math.sin, point({{-3, 2}, {2, -1}, {3.2, 2}}), point(-1, 1, {symbol='circle-open', size=18, color='red'}))
-
-x = tt((0.5 - rr(rand(1, 100))) * 10)
-plot(scatter(x, cos(x)))
-plot(scatter(randi(99, 1, 200), randi(1000, 1, 200)))
-plot(scatter(randi(99, 200, 2)))
-
-data = {{-1.0, -2.0}, {0, -3}, {3, 10}, {7, 6}, {10, -2}}
-xs = linspace(data[1][1], data[#data][1], 100)
-ys = newtonpoly(data, xs)
-plot(scatter(data), xs, ys, "-")
-
-plot(polygon({{1, 2}, {2, 3}, {5, -1}}),
-     polygon({{-1, 2}, {1, 1}, {3, 1}, {0, -1}}, '-rfn'),
-     circle(1, {0, 0}, '-fs'),
-     point(3, 2, {symbol='circle', size=36, color='red'}),
-     circle(1, {1,1}, '-bfn'))
-
-plot(math.sin, '-rfa')
-
-x = linspace(-2.337, 0.779, 100)
-X = linspace(-5, 5, 200)
-plot(X, cos(X), X, sin(X), '-rff') -- shade regions between two curves
-plot(x, cos(x), x, sin(x), '-rff', X, cos(X), X, sin(X)) -- shade part of  ...
-
-axissquare()
-plot(
-  polarcurve2d(1.5),
-  polarcurve2d(function(t) return math.sqrt(t) * math.cos(t) end, {0, 4*pi}, '-b'),
-  polarcurve2d(function(x) return math.cos(4*x) end, {0, 2*pi}, '-fs'),
-  parametriccurve2d({math.cos, math.sin}, {0, pi/2}, '-gfs')
-)
-
-do -- https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)
-  local function f(t) return (exp(cos(t)) - 2*cos(4*t) - sin(t/12)^5) end
-  local function x(t) return sin(t) * f(t) end
-  local function y(t) return cos(t) * f(t) end
-  plot(parametriccurve2d({x, y}, {0, 12*pi}), {layout={title = "Butterfly Curve"}})
-end
-
-axisnotsquare()
-r = function(t) return math.sin(1.6 * t^2) + math.cos(4 * t)^5 end
-plot(polarcurve2d(r, {0, 8*pi}, '-sfn'))
-plot(polarcurve2d(r, {0, 8*pi}, '-sfn', 10000)) -- add resolution
-
-gobjs = {}
-for i = 1, 6 do
-  gobjs[i] = polarcurve2d(function(t) return math.sin(1.6 * t^2) + math.cos(i * t)^5 end, {0, 8*pi}, '-sfn', 10000)
-end
-plot({layout={width=1900, height=1300, grid={rows=2, columns=3}, title='Example'},
-      names={'i=1', 'i=2', 'i=3', 'i=4', 'i=5', 'i=6'}}, table.unpack(gobjs))
-
-axissquare() -- orientation of a parametric curve
-plot(
-  parametriccurve2d({function(t) return 3*cos(t) end, function(t) return 3*sin(t) end}, {0, 2*pi}, nil, nil, true), -- counter clockwise
-  parametriccurve2d({function(t) return 2*sin(t) end, function(t) return cos(t) end}, {0, 2*pi}, nil, nil, true)) -- clockwise
-</code></pre>
-
-<h4>&bull; &nbsp; <a name=plotparametriccurve3d href=#m><code>plotparametriccurve3d({x(t), y(t), z(t)}, trange, title, resolution, orientationq)</code></a></h4>
-<p>Plot a space curve defined by <code>{x(t), y(t), z(t)}</code>.</p>
-<p><code>resolution</code> and <code>orientationq</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
-<pre><code>require 'mathly'
-
-plotparametriccurve3d(
-  {function(t) return math.cos(t) end,
-   function(t) return math.sin(t) end,
-   function(t) return t end}, {0,6*pi}, "Helix")
-
-plotparametriccurve3d(
-  {function(t) return t*math.cos(t) end,
-   function(t) return t*math.sin(t) end,
-   function(t) return t end}, {0, 8*pi})
-</code></pre>
-
-<h4>&bull; &nbsp; <a name=plotparametricsurface3d href=#m><code>plotparametricsurface3d({x(u, v), y(u, v), z(u,v)}, urange, vrange, title, resolution, orientationq)</a></code></h4>
-<p>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u,v)</code>.</p>
-<p><code>resolution</code> and <code>orientationq</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
-<pre><code>require 'mathly'
-
-plotparametricsurface3d(
-  {function(u,v) return u end,
-   function(u,v) return v end,
-   function(u,v) return math.sqrt(u^2 + v^2) end}, {-3, 3}, {-3, 3}, 'Demo')
-
-plotparametricsurface3d(
-  {function(u,v) return 2*math.sin(u)*math.cos(v) end,
-   function(u,v) return 2*math.sin(u)*math.sin(v) end,
-   function(u,v) return 2*math.cos(v) end}, {0, pi}, {0, 2*pi})
-
-do -- https://plotly.com/python/3d-surface-plots/
-  local a, b, d = 1.32, 1, 0.8
-  local c = a^2 - b^2
-  local u, v = linspace(0, 2*pi, 100), linspace(0, 2*pi, 100)
-  local function x(u, v) return (d * (c - a * cos(u) * cos(v)) + b^2 * cos(u)) / (a - c * cos(u) * cos(v)) end
-  local function y(u, v) return b * sin(u) * (a - d*cos(v)) / (a - c * cos(u) * cos(v)) end
-  local function z(u, v) return b * sin(v) * (c*cos(u) - d) / (a - c * cos(u) * cos(v)) end
-  plotparametricsurface3d({x, y, z}, {0, 2*pi}, {0, 2*pi})
-end
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=showlegend></a><a name=shownotlegend></a><a name=shownotyaxis></a><a name=showyaxis></a><a name=shownotxaxis></a><a name=showxaxis></a><a name=axissquare></a><a name=axisnotsquare></a><a name=showaxes></a><a name=shownotaxes></a><a name=showgridlines></a><a name=shownotgridlines></a><a href=#m><code>axissquare, axisnotsquare; showaxes, shownotaxes ...</code></a></h4>
@@ -2067,124 +2185,6 @@ end
 <tr><td><code>showlegend(),    shownotlegend()</code></td><td> &nbsp; </td><td>Show/hide the legend</td></tr>
 </tbody></table>
 <p>&#x2713; &nbsp; These functions are not valid for 3D graphs.</p>
-
-<h4>&bull; &nbsp; <a name=bin2dec></a><a name=bin2hex></a><a name=bin2oct></a><a name=dec2bin></a>
-<a name=dec2hex></a><a name=dec2oct></a><a name=hex2bin></a><a name=hex2dec></a>
-<a name=hex2oct></a><a name=oct2bin></a><a name=oct2dec></a>
-<a name=oct2hex href=#m><code>bin2dec, bin2hex, bin2oct; dec2bin, dec2hex, dec2oct; hex2bin, hex2dec, hex2oct; oct2bin, oct2dec, oct2hex</code></a></h4>
-<table><tbody>
-<tr><td><code>dec2bin(x), hex2bin(x), oct2bin(x)</code></td><td> - </td><td>Convert decimal/hexadecimal/octal integer <code>x</code> to binary</td></tr>
-<tr><td><code>bin2dec(x), hex2dec(x), oct2dec(x)</code></td><td> - </td><td>Convert binary/hexadecimal/octal integer <code>x</code> to decimal</td></tr>
-<tr><td><code>bin2oct(x), dec2oct(x), hex2oct(x)</code></td><td> - </td><td>Convert binary/decimal/hexadecimal integer <code>x</code> to octal</td></tr>
-<tr><td><code>bin2hex(x), dec2hex(x), oct2hex(x)</code></td><td> - </td><td>Convert binary/decimal/octal integer <code>x</code> to hexadecimal</td></tr>
-</tbody></table>
-<p>Note: <code>x</code> can be a decimal integer (for all <code>dec2...</code> functions), a string of a valid binary/octal/hexadecimal integer, or a table
-of integers or strings of intgers.</p>
-<p>&#x2713; &nbsp; Not as with all other cases, even if <code>x</code> for function <code>dec2...</code> is a mathly matrix, the result is a Lua table
-rather than a mathly matrix. Mathly matrices can only have numerical entries.</p>
-<p>&#x2713; &nbsp; Function <code>...2dec(x)</code> treats input string <code>x</code> as an unsigned integer.</p>
-<pre><code>mathly = require('mathly')
-
-disp(dec2bin(123)) -- '1111011'
-disp(dec2hex(123)) -- '7b'
-disp(dec2oct(123)) -- '173'
-disp(oct2dec('173')) -- 123
-
-disp(dec2bin({123, 124, 125, {126, {127, 128}}}))
--- {'1111011', '1111100', '1111101', {'1111110', {'1111111', '10000000'}}}
-disp(hex2dec(dec2hex({123, 124, 125, {126, {127, 128}}})))
--- {123, 124, 125, {126, {127, 128}}}
-
-a = mathly{{75, 28}, {90, 6}}
-disp(dec2bin(a))
--- {{'1001011', '11100'}, {'1011010', '110'}}
-disp(oct2hex(dec2oct(a)))
-disp(dec2hex(a))
--- {{'4b', '1c'}, {'5a', '6'}}
-</code></pre>
-
-<h4>&bull; &nbsp; <a name=boxplot></a><a name=pareto></a><a name=freqpolygon></a><a name=histfreqpolygon></a><a name=hist></a><a name=hist1></a>
-<a name=pie href=#m><code>freqpolygon, hist, hist1, histfreqpolygon, pareto, pie</code></a></h4>
-<table><tbody>
-<tr><td><code>boxplot(x, names)</code></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a box (or box-and-whisker) plot, where <code>x</code> is a table or a matrix of numbers. <code>names = {'name1', 'name2', ...}</code> is optional. If <code>x</code> is a matrix or a table of tables/rows, each row is a data set and thus has a box plot.</td></tr>
-<tr><td><code>freqpolygon(x, nbins, style, xrange)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a frequency polygon.</td></tr>
-<tr><td><code>hist(x, nbins, style, xrange)</code></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a histogram. If <code>x</code> is a matrix or a table of tables/rows, each row is a data set and each bin of the histogram contains one bar per row of the matrix.</td></tr>
-<tr><td><code>hist1(x, nbins, style, xrange)</code></td><td> </td><td>Return an ordinary graphics object for <code><a href=#plot>plot</a></code> to plot a histogram.</td></tr>
-<tr><td><code>histfreqpolygon(x, nbins, style, xrange, style1)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a histogram plus a frequency polygon, where <code>style</code> defines the style of the histogram while <code>style1</code> specifies the style of the frequency polygon.</td></tr>
-<tr><td><code>pareto(data, style, style1)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pareto chart.</td></tr>
-<tr><td><code>pie(x, nbins, radius, style, offcenter, names)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pie chart, where <code>radius</code> is the radius of the pie disk (default: 1), and <code>offcenter</code> specifies which wedges are away from the center by given distances (default: 0). Note: <code>pie({bins = {freq1, freq2, ...}}...)</code> is for plotting a pie chart for bins with frequences <code>freq1, freq2, ..., in order</code>, and <code>names = {'name1', 'name2', ...}</code> can be given in this situation.</td></tr>
-</tbody></table>
-<p>With this group of functions,</p>
-<table><tbody>
-<tr><td><code>x</code></td><td> &nbsp; </td><td>The data, a table of numbers</td></tr>
-<tr><td><code>nbins</code></td><td> &nbsp; </td><td>The number of bins (default: 10)</td></tr>
-<tr><td><code>style</code></td><td> &nbsp; </td><td>E.g., <code>'-r', '-rfs'. </code>See also: <a href=#gobjspecs><code>'fa', 'ff', 'fn', 'fs'</code></a></td></tr>
-<tr><td><code>xrange</code></td><td> &nbsp; </td><td>In the format <code>{xmin, xmax}</code>, specifying the range of data values in <code>x</code>. If not provided, it is determined by the lowest and largest values in <code>x</code>.</td></tr>
-</tbody></table>
-<p>See also: <a href=#arc><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a></p>
-<p><a name=namedargs><b>Named arguments for this group of functions:</b></p>
-<p>To make it easier to use this group of functions, if necessary or if convenient, each function may be called in two more ways, <code>pie({...})</code> or <code>pie{...}</code>. There are rules to follow: 1) We may not use names at all; 2) We use names for all arguments; 3) Arguments without names must be the first ones and in defined order. Take <code>pie</code> as an example,</p>
-<pre><code>require 'mathly'
-
-data = {1, 11, 4, 7, 6, 5, 10, 4, 3, 15, 13, 1, 4, 10, 9}
-axissquare()
--- don't want to use named variables? call a function in an ordinary way: pie(x, nbins, radius, style, offcenter, names)
-plot(pie(data))
-plot(pie(data, 5, nil, '-g')) -- nil? the default value (of radius = 1) is used
-plot(pie(data, 5, nil, '-gfs'))
-plot(pie(data, 5, nil, nil, 0.1)) -- the same as the following one; offcenter = 0.1, each bin is away from the center by 0.1
-plot(pie{data, 5, nil, nil, 0.1}) -- pie{...} or pie({...}) is allowed but not recommended
--- in the above examples, there are no named arguments. pie({...}), pie{...}, and pie(...) are the same, but the first two ways are not recommended.
-
--- when there are named variables, we must call a function in a special way: pie({...}) or pie{...}.
-plot(pie{nbins = 7, x = data}) -- the order of named arguments doesn't matter
-
--- named and unnamed variables: unnamed ones are placed before named ones and in specified order
-plot(pie{data, 7, offcenter = {{2, 0.1}, {5, 0.2}}, style = '-fs'}) -- offcenter = {{2, 0.1}, {5, 0.2}}, the 2nd & 5th bins are away from the center by ...
-plot(pie{x = {bins = {0.0930, 0.1163, 0.0233, 0.2791, 0.1395, 0.3488}}, style='-', offcenter = {{3, 0.6}, {5, 0.1}, {1, 0.15}}})
-</code></pre>
-
-<p>More examples,</p>
-<pre><code>require 'mathly'
-
-data1 = {1, 2, 3, 4, 2, 12, 3, 4, 2, 12, 9, 9, 9, 8, 5, 3, 3, 2, 1, 5, 3, 2}
-data2 = {2, 1, 2, 4, 5, 7, 11}
-data3 = {3, 2, 3, 4, 2, 2, 9, 11}
-plot(boxplot(data1))
-plot(boxplot({data1, data2}, {"name 1", "name 2"}))
-plot(boxplot({data1, data2, data3, {2, 3, 5, 7, 11, 20, 1, 2, 3}}))
-
-mu, sigma = 72.11, 13.36
-x = flatten(randn(1, 5000, mu, sigma))
-
-function n(x, mu, sigma)
-  local z = (x - mu) / sigma
-  return math.exp(-0.5 * z^2) / (math.sqrt(2 * pi) * sigma)
-end
-
-X = linspace(mu - 4 * sigma, mu + 4 * sigma, 5000)
-Y = map(function(x) return n(x, mu, sigma) * 7.8 end, X)
-
-gobj = hist1(x, 12)
-axisnotsquare(); shownotlegend()
-plot(gobj, X, Y, '--r')
-plot(freqpolygon(x))
-plot(freqpolygon{x, style='--r*'})
-plot(histfreqpolygon(x))
-plot(histfreqpolygon{x, style='-bfs', style1='--r*'})
-
-x = {{'Apple', 382}, {'Orange', 22}, {'Pearl', 91}, {'Peach', 53}, {'Banana', 19}, {'Strawberry', 35}}
-plot(pareto(x))
-plot(pareto(x, '-bfs'))
-plot(pareto(x, nil, '--gx'))  -- "yaxis2":{"tickformat":".0%", "overlaying": 'y', "side": 'right' }
-
-showaxes()
-plot(hist(randn(1, 100)))
-
-A = randi({0, 99}, 3, 50)
-plot(hist(A)) -- nil? the default value will be used
-plot(hist{A, xrange = {0, 99}}) -- run multiple times, the two can produce different results
-</code></pre>
 <p></p>
 <hr>
 <h2 style="margin-left: 20px;">Note</h2>
