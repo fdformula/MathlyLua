@@ -22,10 +22,10 @@ API and Usage
     all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display,
     dot, expand, eye, flatten, fliplr, flipud, format, hasindex, horzcat,
     inv, iseven, isinteger, ismember, isodd, lagrangepoly, length, linsolve,
-    linspace, lu, map, max, mean, min, newtonpoly, norm, ones, polynomial, polyval, printf,
-    prod, qr, rand, randi, range, remake, repmat, reshape, round, rr, rref, save,
-    select, seq, size, sort, sprintf, std, strcat, submatrix, subtable, sum,
-    tblcat, text, tic, toc, transpose, tt, unique, var, vertcat, who, zeros
+    linspace, lu, map, match, max, mean, min, newtonpoly, norm, ones, polynomial,
+    polyval, printf, prod, qr, rand, randi, range, remake, repmat, reshape, round,
+    rr, rref, save, seq, size, sort, sprintf, std, strcat, submatrix, subtable,
+    sum, tblcat, text, tic, toc, transpose, tt, unique, var, vertcat, who, zeros
 
     dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
     oct2hex, hex2bin, hex2dec, hex2oct
@@ -507,7 +507,7 @@ function any( x, f, mathlymatrixq )
   end
 end -- any
 
---// function select( A, f )
+--// function match( A, f )
 -- Return elements of A that satisfy specified conditions. (f defaults to A).
 --
 -- If f is a boolean function, return 1) a table of elements of A (rowwisely) that satisfy
@@ -516,8 +516,10 @@ end -- any
 --
 -- If f is a table/matrix, return 1) a table of elements of A (rowwisely) that correspond
 -- to nonzero elements of f and 2) A with entries replaced with corresponding zero elements of f.
-function select( A, f )
-  if type(A) ~= 'table' then error('select(A, ...): A must be a table.') end
+--
+-- note: 'select' seems to be a better name . however, Lua already uses it.
+function match( A, f )
+  if type(A) ~= 'table' then error('match(A, ...): A must be a table.') end
   local B
   local abs = math.abs
   if f == nil then
@@ -527,14 +529,14 @@ function select( A, f )
   elseif type(f) == 'table' then
     B = map(function(x, y) if abs(x) > 10*eps then return y else return 0 end end, f, A)
   else
-    error('select(A, f): f must be a boolean function or a table.')
+    error('match(A, f): f must be a boolean function or a table.')
   end
 
   local X = {}
   local k = 1
   map(function(x, y) if abs(x) > 10*eps then X[k] = y; k = k + 1 end end, B, A)
   return X, B
-end -- select
+end -- match
 
 ------ ↓↓↓ added on 3/20/25
 local function _dec2bho(x, title, f)
