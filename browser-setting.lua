@@ -37,5 +37,4 @@ else
     end
   end
   tmp_plot_html_file = home .. '/_tmp-mathly_plot-6_4.html'
-  tmp_eval_file = home .. '/_tmp-mathly_eval-6_4.lua'
 end

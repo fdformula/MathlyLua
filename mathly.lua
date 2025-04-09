@@ -91,19 +91,13 @@ function sprintf(...) return string.format(table.unpack{...}) end
 
 function demathly(x) return setmetatable(x, nil) end -- force x not to be a mathly matrix
 
--- 'global' variable tmp_eval_file, defined in browser-setting.lua
 function eval(str)
-  local file = io.open(tmp_eval_file, "w")
-  if file ~= nil then
-    str = string.match(str, "^%s*(.*)%s*$") -- trim off spaces nat two ends of str
-    str = 'return ' .. str
-    file:write(str)
-    file:close()
-    v = dofile(tmp_eval_file)
-    os.remove(tmp_eval_file)
-    return v
+  local stats, val = pcall(load, 'return ' .. str)
+  if stats then stats, val = pcall(val) end
+  if stats then
+    return val
   else
-    error(string.format("Failed to create %s. The device might not be writable.", tmp_eval_file))
+    print('error: [string "' .. string.sub(val, 17))
   end
 end
 
@@ -766,7 +760,7 @@ function who(usercalledq) -- ~R
         {'e', 'eps', 'pi', 'phi', 'T', 'mathly', 'm', '_G', 'coroutine', 'utf8',
          '_VERSION', 'io', 'package', 'os', 'arg', 'debug', 'string', 'table', 'math',
          'linux_browser', 'mac_browser', 'win_browser', 'plotly_engine',
-         'tmp_eval_file', 'tmp_plot_html_file'}) then
+         'tmp_plot_html_file'}) then
         list[#list + 1] = k
       end
     end
