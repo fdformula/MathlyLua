@@ -97,7 +97,7 @@ function eval(str)
   if stats then
     return val
   else
-    print('error: [string "' .. string.sub(val, 17))
+    error('[string "' .. string.sub(val, 17))
   end
 end
 
