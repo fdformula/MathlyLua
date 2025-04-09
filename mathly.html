@@ -854,17 +854,13 @@ display(dot({1, 2}, {3, 4}))
 <p>Evaluate the expression in <code>str</code> and return the result.</p>
 <pre><code>require('mathly')
 
-x = eval('    2 * 3 - 5   ')
+x = eval('    2 * 3 - 4   ')
 print(x)
--- 1
+-- 2
 
-x = eval('3.14   ')
+x = eval(' 3 * x^3 + pi -exp(x) + 5   ')
 print(x * 2)
--- 6.28
-
-x = eval('    2*pi   ')
-print(x)
--- 6.2831853071796
+-- 49.505073109318
 
 x = eval('cos{0, pi/6, pi/4, pi/3, pi/2, pi}')
 disp(x)
