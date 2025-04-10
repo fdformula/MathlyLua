@@ -304,6 +304,19 @@ end -- max_min_shared
 function max( x ) return max_min_shared(math.max, x) end
 function min( x ) return max_min_shared(math.min, x) end
 
+--// function str2func(str)
+-- convert a MATLAB-style anonymous function in string to a function handle
+-- e.g., str2func('@(x) x^2 - 2*x + 1') returns an anonymous function, function(x) return x^2 -2*x + 1 end.
+function str2func(str)
+  str = string.gsub(str, '%s+', ' ')
+  local head, body = string.match(str, '^%s*@%s*(%(%s*[%w,%s]+%))%s*(.+)%s*$')
+  if head ~= nil then
+    return eval('function' .. head .. ' return ' .. body .. ' end')
+  else
+    error('Poor function: ' ..  str .. ". Example: '@(x) 3*x^2 - 5 * sin(x) + 1'")
+  end
+end
+
 --// map( func, x )
 -- applys a function to each atomic entry in a table and keeps the structure of the table
 local function _map( func, ... ) -- ~Mathematica
@@ -333,6 +346,7 @@ local function _map( func, ... ) -- ~Mathematica
 end -- _map
 
 function map(func, ...)
+  if type(func) == 'string' then func = str2func(func) end
   local metaq = false
   for _, v in pairs{...} do
     if getmetatable(v) == mathly_meta then
@@ -352,7 +366,10 @@ end -- map
 
 --// apply( func, args )
 -- calls a function with arguments
-function apply( func, args ) return func(table.unpack(args)) end
+function apply( func, args )
+  if type(func) == 'string' then func = str2func(func) end
+  return func(table.unpack(args))
+end
 
 --// copy ( x )
 -- make a copy of x
@@ -424,7 +441,11 @@ end
 -- mathlymatrixq? usually, ignore it. if just need yes (1) or no (0), set it to false.
 function all( x, f, mathlymatrixq )
   if mathlymatrixq == nil then mathlymatrixq = true end
-  if f == nil then f = function(x) return math.abs(x) > eps end end -- x ~= 0
+  if f == nil then
+    f = function(x) return math.abs(x) > eps end  -- x ~= 0
+  elseif type(f) == 'string' then
+    f = str2func(f)
+  end
   local function traverse(x)
     for i = 1, #x do
       if type(x[i]) == 'table' then
@@ -469,7 +490,11 @@ end -- all
 -- mathlymatrixq? usually, ignore it. if just need yes (1) or no (0), set it to false.
 function any( x, f, mathlymatrixq )
   if mathlymatrixq == nil then mathlymatrixq = true end
-  if f == nil then f = function(x) return math.abs(x) > eps end end -- x ~= 0
+  if f == nil then
+    f = function(x) return math.abs(x) > eps end  -- x ~= 0
+  elseif type(f) == 'string' then
+    f = str2func(f)
+  end
   local function traverse(x)
     for i = 1, #x do
       if type(x[i]) == 'table' then
@@ -514,6 +539,7 @@ end -- any
 -- note: 'select' seems to be a better name . however, Lua already uses it.
 function match( A, f )
   if type(A) ~= 'table' then error('match(A, ...): A must be a table.') end
+  if type(f) == 'string' then f = str2func(f) end
   local B
   local abs = math.abs
   if f == nil then
@@ -1709,11 +1735,6 @@ function ismember( x, v )
   return false
 end
 
-local function _str2func(vars, str)
-  if string.sub(str, 1, 1) == '@' then str = string.sub(str, 2) end
-  return eval('function(' .. vars .. ') return ' .. str .. ' end')
-end
-
 --// function plot(...)
 -- plot the graphs of functions in a way like in MATLAB with more features
 local plotly = {}
@@ -1728,7 +1749,7 @@ function plot(...)
   local layout_arg = {}
   for _, v in pairs{...} do
     if type(v) == 'string' and string.sub(v, 1, 1) == '@' then -- @ is followed by expr in terms of x
-      args[#args + 1] = _str2func('x', v)
+      args[#args + 1] = str2func(v)
       goto endfor
     end
 
@@ -2044,10 +2065,7 @@ function plot3d(f, xrange, yrange, title, resolution)
   yrange = yrange or {-5, 5}
   local X, Y, Z = {}, {}, {}
 
-  if type(f) == 'string' then -- 4/9/25, expr in terms of x and y
-    f = _str2func('x, y', f)
-  end
-
+  if type(f) == 'string' then f = str2func(f) end
   if type(f) == 'function' then
     xrange[1], xrange[2] = _correct_range(xrange[1], xrange[2])
     yrange[1], yrange[2] = _correct_range(yrange[1], yrange[2])
@@ -2088,8 +2106,8 @@ function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
   if type(rho) == 'number' then
     local tmp = rho
     rho = function(t, p) return tmp end
-  elseif type(rho) == 'string' then -- 4/9/25, expr in terms of t (for θ) and p (for φ)
-    rho = _str2func('t, p', rho)
+  elseif type(rho) == 'string' then
+    rho = str2func(rho)
   end
   thetarange = thetarange or {0, 2*pi}
   phirange = phirange or {0, pi}
@@ -2133,8 +2151,8 @@ function plotparametricsurface3d(xyz, urange, vrange, title, resolution)
   local v = linspace(vrange[1], vrange[2], n)
 
   for i = 1, 3 do -- 4/9/25
-    if type(xyz[i]) == 'string' then -- expr in terms of u and v
-      xyz[i] = _str2func('u, v', xyz[i])
+    if type(xyz[i]) == 'string' then
+      xyz[i] = str2func(xyz[i])
     end
   end
 
@@ -2165,8 +2183,8 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
   local t = linspace(trange[1], trange[2], n)
 
   for i = 1, 3 do -- 4/9/25
-    if type(xyz[i]) == 'string' then -- expr in terms of t
-      xyz[i] = _str2func('t', xyz[i])
+    if type(xyz[i]) == 'string' then
+      xyz[i] = str2func(xyz[i])
     end
   end
 
@@ -2692,8 +2710,8 @@ function parametriccurve2d(xy, trange, style, resolution, orientationq)
   local ts = linspace(trange[1], trange[2], math.max(math.ceil((trange[2] - trange[1]) * 50), resolution))
 
   for i = 1, 2 do -- 4/9/25
-    if type(xy[i]) == 'string' then -- expr in terms of t
-      xy[i] = _str2func('t', xy[i])
+    if type(xy[i]) == 'string' then
+      xy[i] = str2func(xy[i])
     end
   end
 
@@ -2724,8 +2742,8 @@ function polarcurve2d(r, trange, style, resolution, orientationq)
   if type(r) == 'number' then
     local f = r
     r = function(t) return f end
-  elseif type(r) == 'string' then -- expr in terms of t (for θ), 4/9/25
-    r = _str2func('t', r)
+  elseif type(r) == 'string' then
+    r = str2func(r)
   end
   return parametriccurve2d({
       function(t) return r(t) * math.cos(t) end,
