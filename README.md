@@ -170,27 +170,27 @@ By the way, `tt` converts a mathly matrix to a table columnwisely or flattens an
 require 'mathly'
 x = linspace(0, pi, 100)
 y1 = sin(x)
-y2 = map(math.cos, x)
-y3 = map('@(x) x^2*math.sin(x)', x)
+y2 = map(cos, x)
+y3 = map('@(x) x^2*sin(x)', x)
 
 specs1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example'}}
 specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
 specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size=8}
 
 axisnotsquare()
-plot(math.sin, '--r') -- plot a function
+plot(sin, '--r') -- plot a function
 plot('@(x) x', '@(x) x^3', {range = {0, 1}})
 shownotlegend()
 plot(x, y1) -- plot a function defined by x and y1
 plot(x, y1, '--xr', x, y2, ':g', text(0.79, 0.71 - 0.08, 'A'), point(0.79, 0.71, {symbol='circle', size=10, color='blue'}))
 plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
 showlegend()
-plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
+plot(x, y1, specs3, x, y2, specs2, sin, x, y3, specs1)
 
 plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
 
 axissquare()
-plot(polarcurve2d('@(t) t*math.cos(math.sqrt(t))', {0, 35*pi}))
+plot(polarcurve2d('@(t) t*cos(sqrt(t))', {0, 35*pi}))
 plot(parametriccurve2d({'@(t) cos(3*t)/(1 + sin(3*t)^2)', '@(t) sin(5*t)*cos(5*t)/(1 + sin(5*t)^2)'}, {0, 2*pi}, '-g', 150, true))
 
 do -- https://plotly.com/python/3d-surface-plots/
