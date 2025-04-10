@@ -175,7 +175,7 @@ y3 = map(function(x) return x^2*math.sin(x) end, x)
 
 specs1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example'}}
 specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
-specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
+specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size=8}
 
 plot(math.sin, '--r') -- plot a function
 plot('@x', '@x^3', {range = {0, 1}})
