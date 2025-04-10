@@ -179,7 +179,7 @@ specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', siz
 
 axisnotsquare()
 plot(sin, '--r') -- plot a function
-plot('@(x) x', '@(x) x^3', {range = {0, 1}})
+plot('@(x) x', '--r', '@(x) x^3', '-g', {range = {0, 1}})
 
 shownotlegend()
 plot(x, y1) -- plot a function defined by x and y1
