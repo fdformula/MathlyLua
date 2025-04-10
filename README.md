@@ -178,29 +178,22 @@ specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, 
 specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size=8}
 
 plot(math.sin, '--r') -- plot a function
-plot('@x', '@x^3', {range = {0, 1}})
+plot('@(x) x', '@(x) x^3', {range = {0, 1}})
 shownotlegend()
 plot(x, y1) -- plot a function defined by x and y1
 plot(x, y1, '--xr', x, y2, ':g', text(0.79, 0.71 - 0.08, 'A'), point(0.79, 0.71, {symbol='circle', size=10, color='blue'}))
 plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
 showlegend()
-plot(x, y1, x, y2, specs1, math.sin, '--r')
 plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
 
 axisnotsquare()
-plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
-plot(rand(125, 4),{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
+plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
 
 plot(polarcurve2d(function(t) return t*math.cos(math.sqrt(t)) end, {0, 35*pi}))
-plot(polarcurve2d('t*math.cos(math.sqrt(t))', {0, 35*pi}))
+plot(polarcurve2d('@(t) t*math.cos(math.sqrt(t))', {0, 35*pi}))
 
 axissquare()
-do
-  local function x(t) t = 3 * t; return math.cos(t)/(1 + math.sin(t)^2) end
-  local function y(t) t = 5 * t; return math.sin(t)*math.cos(t)/(1 + math.sin(t)^2) end
-  plot(parametriccurve2d({x, y}, {0, 2*pi}, '-g', 150, true)) -- true: show orientation of a parametric curve
-end
-plot(parametriccurve2d({'cos(3*t)/(1 + sin(3*t)^2)', 'sin(5*t)*cos(5*t)/(1 + sin(5*t)^2)'}, {0, 2*pi}, '-g', 150, true))
+plot(parametriccurve2d({'@(t) cos(3*t)/(1 + sin(3*t)^2)', '@(t) sin(5*t)*cos(5*t)/(1 + sin(5*t)^2)'}, {0, 2*pi}, '-g', 150, true))
 
 do -- https://plotly.com/python/3d-surface-plots/
   local a, b, d = 1.32, 1, 0.8
