@@ -99,7 +99,7 @@ function eval(str)
   else
     error('[string "' .. string.sub(val, 17))
   end
-end
+end --eval
 
 --// input(prompt, s)
 -- s = 's' --> return input as a string; otherwise, evaluate the input expression and return the result
@@ -1709,6 +1709,11 @@ function ismember( x, v )
   return false
 end
 
+local function _str2func(vars, str)
+  if string.sub(str, 1, 1) == '@' then str = string.sub(str, 2) end
+  return eval('function(' .. vars .. ') return ' .. str .. ' end')
+end
+
 --// function plot(...)
 -- plot the graphs of functions in a way like in MATLAB with more features
 local plotly = {}
@@ -1722,6 +1727,11 @@ function plot(...)
   local traces = {}
   local layout_arg = {}
   for _, v in pairs{...} do
+    if type(v) == 'string' and string.sub(v, 1, 1) == '@' then -- @ is followed by expr in terms of x
+      args[#args + 1] = _str2func('x', v)
+      goto endfor
+    end
+
     if type(v) == 'table' then
       if v[1] == 'pareto' then
         for i = 1, #v[#v] do
@@ -1786,6 +1796,7 @@ function plot(...)
     else
       args[#args + 1] = v
     end
+::endfor::
   end
 
   plotly.gridq = false
@@ -2025,6 +2036,11 @@ function plot3d(f, xrange, yrange, title, resolution)
   xrange = xrange or {-5, 5}
   yrange = yrange or {-5, 5}
   local X, Y, Z = {}, {}, {}
+
+  if type(f) == 'string' then -- 4/9/25, expr in terms of x and y
+    f = _str2func('x, y', f)
+  end
+
   if type(f) == 'function' then
     xrange[1], xrange[2] = _correct_range(xrange[1], xrange[2])
     yrange[1], yrange[2] = _correct_range(yrange[1], yrange[2])
@@ -2065,6 +2081,8 @@ function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
   if type(rho) == 'number' then
     local tmp = rho
     rho = function(t, p) return tmp end
+  elseif type(rho) == 'string' then -- 4/9/25, expr in terms of t (for θ) and p (for φ)
+    rho = _str2func('t, p', rho)
   end
   thetarange = thetarange or {0, 2*pi}
   phirange = phirange or {0, pi}
@@ -2106,6 +2124,13 @@ function plotparametricsurface3d(xyz, urange, vrange, title, resolution)
   local n = max(math.ceil(max((vrange[2] - vrange[1]) * 20)), resolution)
   local u = linspace(urange[1], urange[2], m)
   local v = linspace(vrange[1], vrange[2], n)
+
+  for i = 1, 3 do -- 4/9/25
+    if type(xyz[i]) == 'string' then -- expr in terms of u and v
+      xyz[i] = _str2func('u, v', xyz[i])
+    end
+  end
+
   for i = 1, m do
     local xtmp, ytmp, ztmp = {}, {}, {}
     for j = 1, n do
@@ -2131,6 +2156,13 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
   local x, y, z
   local n = math.max(math.ceil((trange[2] - trange[1]) * 50), resolution)
   local t = linspace(trange[1], trange[2], n)
+
+  for i = 1, 3 do -- 4/9/25
+    if type(xyz[i]) == 'string' then -- expr in terms of t
+      xyz[i] = _str2func('t', xyz[i])
+    end
+  end
+
   x = map(xyz[1], t)
   y = map(xyz[2], t)
   z = map(xyz[3], t)
@@ -2651,6 +2683,13 @@ function parametriccurve2d(xy, trange, style, resolution, orientationq)
   resolution = _set_resolution(resolution)
   local data = {'graph'}
   local ts = linspace(trange[1], trange[2], math.max(math.ceil((trange[2] - trange[1]) * 50), resolution))
+
+  for i = 1, 2 do -- 4/9/25
+    if type(xy[i]) == 'string' then -- expr in terms of t
+      xy[i] = _str2func('t', xy[i])
+    end
+  end
+
   data[2] = map(xy[1], ts)
   data[3] = map(xy[2], ts)
   ts = nil
@@ -2678,6 +2717,8 @@ function polarcurve2d(r, trange, style, resolution, orientationq)
   if type(r) == 'number' then
     local f = r
     r = function(t) return f end
+  elseif type(r) == 'string' then -- expr in terms of t (for θ), 4/9/25
+    r = _str2func('t', r)
   end
   return parametriccurve2d({
       function(t) return r(t) * math.cos(t) end,

@@ -416,7 +416,7 @@ apply(f, {1, 2, 3})
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=circle></a><a name=line></a><a name=parametriccurve2d></a><a name=point></a><a name=polarcurve2d></a><a name=polygon></a><a name=scatter></a><a name=wedge></a>
-<a name=arc href=#m><code>arc, circle, line, parametriccurve2d, point, polygon, text, wedge</code></a></h4>
+<a name=arc href=#m><code>arc, circle, line, parametriccurve2d, point, polarcurve2d, polygon, scatter, wedge</code></a></h4>
 <table><tbody>
 <tr><td><code>arc(radius, center, angles, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot an arc of a circle, where <code>angles: {angle1, angle2}</code> (default: <code>{0, 2&pi;}</code>).</td></tr>
 <tr><td><code>circle(radius, center, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a circle, where <code>center: {x, y} (default: {0, 0})</code>.</td></tr>
@@ -443,6 +443,8 @@ A larger value means better smoothness and requires more computing time.</p>
 
 <p>&#x2713; &nbsp; <code><b>orientationq</b></code> - Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, and <a href=#polarcurve2d>polarcurve2d</a></code>,
 each take also a last argument, <code>orientationq</code> (default: false). If it is true, a few dots of reducing sizes are plotted together with a curve to show the orientation of the parametric curve. The orientation is from large to small dots (&#10148;).</p>
+
+<p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for <code>parametriccurve2d</code> and <code>polarcurve2d</code>.</a></p>
 
 <pre><code>require 'mathly'
 
@@ -474,8 +476,8 @@ plot(x, cos(x), x, sin(x), '-rff', X, cos(X), X, sin(X)) -- shade part of  ...
 axissquare()
 plot(
   polarcurve2d(1.5),
-  polarcurve2d(function(t) return math.sqrt(t) * math.cos(t) end, {0, 4*pi}, '-b'),
-  polarcurve2d(function(x) return math.cos(4*x) end, {0, 2*pi}, '-fs'),
+  polarcurve2d('math.sqrt(t) * math.cos(t)', {0, 4*pi}, '-b'),
+  polarcurve2d(function(t) return math.cos(4*t) end, {0, 2*pi}, '-fs'),
   parametriccurve2d({math.cos, math.sin}, {0, pi/2}, '-gfs')
 )
 
@@ -502,6 +504,9 @@ axissquare() -- orientation of a parametric curve
 plot(
   parametriccurve2d({function(t) return 3*cos(t) end, function(t) return 3*sin(t) end}, {0, 2*pi}, nil, nil, true), -- counter clockwise
   parametriccurve2d({function(t) return 2*sin(t) end, function(t) return cos(t) end}, {0, 2*pi}, nil, nil, true)) -- clockwise
+plot(
+  parametriccurve2d({'3*cos(t)', '3*sin(t)'}, {0, 2*pi}, nil, nil, true), -- '3*cos(t)' can be '@3*cos(t)' ...
+  parametriccurve2d({'2*sin(t)', 'cos(t)'}, {0, 2*pi}, nil, nil, true))
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=showlegend></a><a name=shownotlegend></a><a name=shownotyaxis></a><a name=showyaxis></a><a name=shownotxaxis></a><a name=showxaxis></a><a name=axissquare></a><a name=axisnotsquare></a><a name=showaxes></a><a name=shownotaxes></a><a name=showgridlines></a><a name=shownotgridlines></a><a href=#m><code>axissquare, axisnotsquare; showaxes, shownotaxes ...</code></a></h4>
@@ -1515,6 +1520,7 @@ Some possible symbols are <code>circle</code>, <code>circle-open</code>, <code>c
 </tbody></table>
 <p></p>
 <p>As per filling regions, see <a href=#gobjspecs><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a>.</p>
+<p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
 <p></p>
 <p><b>Some examples</b></p>
 <pre><code>require 'mathly'
@@ -1560,9 +1566,11 @@ Z = {{z11,  ...,  z1n}, {z21,  ...,  z2n}, ..., {zn1,  ...,  zn2}}
 </pre></code>
 <p>where <code>zij = f(xi, yj)</code>, if a surface is defined by <code>z = f(x, y)</code>.</p>
 <p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
+<p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
 <pre><code>require 'mathly'
 
 plot3d(function(x, y) return x^2 - y^2 end) -- saddle
+plot3d('x^2 - y^2') -- or plot3d('@x^2-y^2')
 
 n = 100
 x = linspace(0, 2*pi, n)
@@ -1580,6 +1588,7 @@ plot3d(X, Y, Z, 'Demo 2')
 <h4>&bull; &nbsp; <a name=plotparametriccurve3d href=#m><code>plotparametriccurve3d({x(t), y(t), z(t)}, trange, title, resolution, orientationq)</code></a></h4>
 <p>Plot a space curve defined by <code>{x(t), y(t), z(t)}</code>.</p>
 <p><code>resolution</code> and <code>orientationq</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
+<p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
 <pre><code>require 'mathly'
 
 plotparametriccurve3d(
@@ -1591,11 +1600,13 @@ plotparametriccurve3d(
   {function(t) return t*math.cos(t) end,
    function(t) return t*math.sin(t) end,
    function(t) return t end}, {0, 8*pi})
+plotparametriccurve3d({'t*math.cos(t)', 't*math.sin(t)', 't'}, {0, 8*pi})
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=plotparametricsurface3d href=#m><code>plotparametricsurface3d({x(u, v), y(u, v), z(u,v)}, urange, vrange, title, resolution, orientationq)</a></code></h4>
 <p>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u,v)</code>.</p>
 <p><code>resolution</code> and <code>orientationq</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
+<p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
 <pre><code>require 'mathly'
 
 plotparametricsurface3d(
@@ -1607,6 +1618,7 @@ plotparametricsurface3d(
   {function(u,v) return 2*math.sin(u)*math.cos(v) end,
    function(u,v) return 2*math.sin(u)*math.sin(v) end,
    function(u,v) return 2*math.cos(v) end}, {0, pi}, {0, 2*pi})
+plotparametricsurface3d({'2*math.sin(u)*math.cos(v)', '2*math.sin(u)*math.sin(v)', '2*math.cos(v)'}, {0, pi}, {0, 2*pi})
 
 do -- https://plotly.com/python/3d-surface-plots/
   local a, b, d = 1.32, 1, 0.8
@@ -1628,6 +1640,7 @@ and <code>φ</code> in the range <code>φrange = {φ1, φ2}</code> (default: <co
 plotsphericalsurface3d(1)
 plotsphericalsurface3d(function(theta, phi) return theta + 2 * phi end, {0, 4*pi}, nil, 'Demo')
 plotsphericalsurface3d(function(t, p) return 2 + sin(5*p + 7*t) end)  -- https://www.mathworks.com/help/symbolic/transform-spherical-coordinates-and-plot.html
+plotsphericalsurface3d('@2 + sin(5*p + 7*t)')
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=polynomial href=#m><code>polynomial({x1, x2, ...}, {y1, y2, ...}, xx), polynomial({{x1, y1}, {x2, y2}, ...}, xx)</code></a></h4>
@@ -2178,6 +2191,31 @@ disp(E)
 -- 4   5  6
 -- 7   8  9
 -- 10 11 12
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=easyf href=#m>Shortcut for defining a function for <code>plot</code>, <code>plot3d</code>, <code>parametriccurve2d</code>, etc.</a></h4>
+<P>A string of the the format, '@expression', starting with '@', defines a function for the following functions.</P>
+<table>
+<thead><tr><td>Function</td><td width=10></td><td>Variables/Parameters</td><td width=10></td><td>As in ordinary usage</td></tr></thead>
+<tbody>
+<tr><td><code>plot</code></td><td width=10></td><td><code>x</code></td><td width=10></td><td><code>y = f(x)</code></td>
+<tr><td><code>plot3d</code></td><td width=10></td><td><code>x</code> and <code>y</code></td><td width=10></td><td><code>z = f(x,y)</code></td>
+<tr><td><code>parametriccurve2d</code></td><td width=10></td><td><code>t</code></td><td width=10></td><td><code>x(t)</code> and <code>y(t)</code></td>
+<tr><td><code>plotparametriccurve3d</code></td><td width=10></td><td><code>t</code></td><td width=10></td><td><code>x(t), y(t)</code>, and <code>z(t)</code></td>
+<tr><td><code>polarcurve2d</code></td><td width=10></td><td><code>t</code> (for θ)</td><td width=10></td><td><code>r(t)</code> (for <code>r(θ)</code>)</td>
+<tr><td><code>plotparametricsurface3d</code></td><td width=10></td><td><code>u</code> and <code>v</code></td><td width=10></td><td><code>x(u,v)</code> and <code>y(u,v)</code></td>
+<tr><td><code>plotsphericalsurface3d</code></td><td width=10></td><td><code>t</code> (for θ) and <code>p</code> (for φ)</td><td width=10></td><td><code>ρ(t,p)</code> (for <code>ρ(θ,φ)</code>)</td>
+</table>
+<p>&#x2713; &nbsp; Except for <code>plot</code>, @ is optional for all other functions.</p>
+<pre><code>mathly = require('mathly')
+
+plot(sin, '@0.5*x^2 - 5', '-r', '@cos(x)*x-3', '--g')          -- @ is required
+plot3d('x^2-y^2')                                              -- f(x, y) = x^2 - y^2
+plotparametriccurve3d({'10*sin(t)', '@t^2 - 10*t + 2', 't^3'}) -- C: x(t) = 10*sin(t), y(t) = t^2 - 10*t + 2, z(t) = t^3
+plotparametricsurface3d({'sin(u)*v', 'cos(u)*v - 2', 'u + v'}) -- S: x(u, v) = sin(u)*v, y(u, v) = cos(u)*v - 2, z(u, v) = u + v
+plotsphericalsurface3d('sin(t) + 5*p')                         -- S: ρ(θ, φ) = sin(θ) + 5*φ
+plot(parametriccurve2d({'t', '@t^2'}))                         -- C: x(t) = t, y(t) = t^2, i.e., y = x^2
+plot(polarcurve2d('cos(t) + 2*t'))                             -- C: r(θ) = cos(θ) + 2*θ
 </code></pre>
 <p></p>
 <hr>
