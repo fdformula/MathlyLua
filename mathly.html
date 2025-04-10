@@ -2210,12 +2210,27 @@ disp(E)
 <pre><code>mathly = require('mathly')
 
 plot(sin, '@0.5*x^2 - 5', '-r', '@cos(x)*x-3', '--g')          -- @ is required
-plot3d('x^2-y^2')                                              -- f(x, y) = x^2 - y^2
+plot(parametriccurve2d({'t', '@t^2'}))                         -- C: x(t) = t, y(t) = t^2, i.e., y = x^2
+plot(polarcurve2d('cos(t) + 2*t'))                             -- C: r(θ) = cos(θ) + 2*θ
+plot3d('x^2 - y^2')                                            -- S: f(x, y) = x^2 - y^2
 plotparametriccurve3d({'10*sin(t)', '@t^2 - 10*t + 2', 't^3'}) -- C: x(t) = 10*sin(t), y(t) = t^2 - 10*t + 2, z(t) = t^3
 plotparametricsurface3d({'sin(u)*v', 'cos(u)*v - 2', 'u + v'}) -- S: x(u, v) = sin(u)*v, y(u, v) = cos(u)*v - 2, z(u, v) = u + v
 plotsphericalsurface3d('sin(t) + 5*p')                         -- S: ρ(θ, φ) = sin(θ) + 5*φ
-plot(parametriccurve2d({'t', '@t^2'}))                         -- C: x(t) = t, y(t) = t^2, i.e., y = x^2
-plot(polarcurve2d('cos(t) + 2*t'))                             -- C: r(θ) = cos(θ) + 2*θ
+</code></pre>
+<p>The shortcut for defining a function here might not work if <code>local</code> objects are accessed. For example,</p>
+<pre><code>mathly = require('mathly')
+
+axissquare()
+do
+  local a = 5
+  plot(polarcurve2d(function(t) return cos(a*t) end, {0, 2*pi}))
+end
+</code></pre>
+<p>Here, <code>function(t) return cos(a*t) end</code> can't be rewritten as <code>'cos(a*t)'</code> because <code>a</code>
+is supposed to be a <code>global</code> variable, which is why the following code works.
+<pre><code>mathly = require('mathly')
+a = 5
+plot(polarcurve2d('cos(a*t)', {0, 2*pi}))
 </code></pre>
 <p></p>
 <hr>
@@ -2238,6 +2253,7 @@ matrix.lua. Therefore, this mathly module was developed. But anyway, I appreciat
 Actually, you may find some similarities in the code of matrix.lua and mathly.lua, e.g., m1, m2 are used
 to name arguments of some functions.</li>
 </ol>
+<p style="margin-left: 40px;">David Wang</p>
 <p style="margin-left: 40px;">December 25, 2024</p>
 </div>
 </body>
