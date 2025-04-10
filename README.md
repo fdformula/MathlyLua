@@ -194,6 +194,7 @@ axissquare()
 plot(polarcurve2d('@(t) t*cos(sqrt(t))', {0, 35*pi}))
 plot(parametriccurve2d({'@(t) cos(3*t)/(1 + sin(3*t)^2)', '@(t) sin(5*t)*cos(5*t)/(1 + sin(5*t)^2)'}, {0, 2*pi}, '-g', 150, true))
 
+plot3d('@(x, y) x^2 - y^2')
 do -- https://plotly.com/python/3d-surface-plots/
   local a, b, d = 1.32, 1, 0.8
   local c = a^2 - b^2
