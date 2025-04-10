@@ -171,12 +171,13 @@ require 'mathly'
 x = linspace(0, pi, 100)
 y1 = sin(x)
 y2 = map(math.cos, x)
-y3 = map(function(x) return x^2*math.sin(x) end, x)
+y3 = map('@(x) x^2*math.sin(x)', x)
 
 specs1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example'}}
 specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
 specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size=8}
 
+axisnotsquare()
 plot(math.sin, '--r') -- plot a function
 plot('@(x) x', '@(x) x^3', {range = {0, 1}})
 shownotlegend()
@@ -186,13 +187,10 @@ plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
 showlegend()
 plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1)
 
-axisnotsquare()
 plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
 
-plot(polarcurve2d(function(t) return t*math.cos(math.sqrt(t)) end, {0, 35*pi}))
-plot(polarcurve2d('@(t) t*math.cos(math.sqrt(t))', {0, 35*pi}))
-
 axissquare()
+plot(polarcurve2d('@(t) t*math.cos(math.sqrt(t))', {0, 35*pi}))
 plot(parametriccurve2d({'@(t) cos(3*t)/(1 + sin(3*t)^2)', '@(t) sin(5*t)*cos(5*t)/(1 + sin(5*t)^2)'}, {0, 2*pi}, '-g', 150, true))
 
 do -- https://plotly.com/python/3d-surface-plots/
