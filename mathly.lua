@@ -3032,7 +3032,11 @@ function reverse(tbl)
     return tt(tbl, -1, 1, -1)
   end
 end
-function sort(tbl, compf) table.sort(tbl, compf); return tbl end
+function sort(tbl, compf)
+  if type(compf) == 'string' then compf = str2func(compf) end
+  table.sort(tbl, compf)
+  return tbl
+end
 
 --// function remake(A, opt)
 -- Make A a lower (opt = 'LT'), upper (opt = 'UT'), or a symmetric (opt = 'SYM') matrix by replacing entries with 0's or so
