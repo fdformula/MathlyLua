@@ -178,7 +178,7 @@ specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, 
 specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size78}
 
 plot(math.sin, '--r') -- plot a function
-plot('@x^2 - 3*x + 5', '-r', '@x*sin(x) - 2*x + 5')
+plot('@x^2 + 5', '-r', '@x^2*cos(x) - 2*x + 5')
 shownotlegend()
 plot(x, y1) -- plot a function defined by x and y1
 plot(x, y1, '--xr', x, y2, ':g', text(0.79, 0.71 - 0.08, 'A'), point(0.79, 0.71, {symbol='circle', size=10, color='blue'}))
