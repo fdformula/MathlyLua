@@ -200,6 +200,7 @@ do
   local function y(t) t = 5 * t; return math.sin(t)*math.cos(t)/(1 + math.sin(t)^2) end
   plot(parametriccurve2d({x, y}, {0, 2*pi}, '-g', 150, true)) -- true: show orientation of a parametric curve
 end
+plot(parametriccurve2d({'cos(3*t)/(1 + sin(3*t)^2)', 'sin(5*t)*cos(5*t)/(1 + sin(5*t)^2)'}, {0, 2*pi}, '-g', 150, true))
 
 do -- https://plotly.com/python/3d-surface-plots/
   local a, b, d = 1.32, 1, 0.8
