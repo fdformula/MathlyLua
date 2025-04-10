@@ -1807,7 +1807,7 @@ function plot(...)
     if type(args[i]) == 'function' then
       args[i] = {0, args[i]}
       table.insert(args, i + 1, {0, 0}) -- pretend to be x, y, ...; to be modified before plotting
-    elseif i <= #args and type(args[i]) == 'table' and _hasanyindex(args[i], {'layout', 'names'})  then
+    elseif i <= #args and type(args[i]) == 'table' and _hasanyindex(args[i], {'range', 'layout', 'names'})  then
       layout_arg[#layout_arg + 1] = args[i] -- to be processed finally
       i = i + 1
     else
@@ -1966,6 +1966,7 @@ function plot(...)
     end
   end
 
+  local xrange = nil -- 4/9/25
   for i = 1, #layout_arg do  -- processed finally, 2/9/25
     local names = {}
     for k, v in pairs(layout_arg[i]) do -- layout settings are merged into the 1st trace
@@ -1977,6 +1978,8 @@ function plot(...)
             if ismember(k_, {'xlabel', 'ylabel', 'title', 'name'}) then traces[1][k_] = v_ end
           end
         end
+      elseif k == 'range' then -- 4/9/25
+        xrange = v
       end
     end
     if layout_arg[i]['names'] ~= nil then names = layout_arg[i]['names'] end
@@ -1990,7 +1993,11 @@ function plot(...)
 
   if adjustxrangeq then
     if x_start == nil then
-      x_start, x_stop = -5, 5
+      if xrange ~= nil then
+        x_start, x_stop = xrange[1], xrange[2]
+      else
+        x_start, x_stop = -5, 5
+      end
     end
     x_start = x_start - 0.1
     x_stop = x_stop + 0.1
