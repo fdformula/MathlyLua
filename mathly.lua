@@ -19,8 +19,8 @@ API and Usage
 
   List of functions provided in this module:
 
-    all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display,
-    dot, expand, eye, flatten, fliplr, flipud, format, hasindex, horzcat,
+    all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display, dot,
+    expand, eye, flatten, fliplr, flipud, format, fstr2f, hasindex, horzcat,
     inv, iseven, isinteger, ismember, isodd, lagrangepoly, length, linsolve,
     linspace, lu, map, match, max, mean, min, newtonpoly, norm, ones, polynomial,
     polyval, printf, prod, qr, rand, randi, range, remake, repmat, reshape, round,
@@ -304,12 +304,12 @@ end -- max_min_shared
 function max( x ) return max_min_shared(math.max, x) end
 function min( x ) return max_min_shared(math.min, x) end
 
---// function str2func(str)
+--// function fstr2f(str)
 -- convert a MATLAB-style anonymous function in string to a function handle
--- e.g., str2func('@(x) x^2 - 2*x + 1') returns an anonymous function, function(x) return x^2 -2*x + 1 end.
-function str2func(str)
+-- e.g., fstr2f('@(x) x^2 - 2*x + 1') returns an anonymous function, function(x) return x^2 -2*x + 1 end.
+function fstr2f(str)
   str = string.gsub(str, '%s+', ' ')
-  local head, body = string.match(str, '^%s*@%s*(%(%s*[%w,%s]+%))%s*(.+)%s*$')
+  local head, body = string.match(str, '^%s*@%s*(%(%s*[%w,%s]*%))%s*(.+)%s*$')
   if head ~= nil then
     return eval('function' .. head .. ' return ' .. body .. ' end')
   else
@@ -346,7 +346,7 @@ local function _map( func, ... ) -- ~Mathematica
 end -- _map
 
 function map(func, ...)
-  if type(func) == 'string' then func = str2func(func) end
+  if type(func) == 'string' then func = fstr2f(func) end
   local metaq = false
   for _, v in pairs{...} do
     if getmetatable(v) == mathly_meta then
@@ -367,7 +367,7 @@ end -- map
 --// apply( func, args )
 -- calls a function with arguments
 function apply( func, args )
-  if type(func) == 'string' then func = str2func(func) end
+  if type(func) == 'string' then func = fstr2f(func) end
   return func(table.unpack(args))
 end
 
@@ -444,7 +444,7 @@ function all( x, f, mathlymatrixq )
   if f == nil then
     f = function(x) return math.abs(x) > eps end  -- x ~= 0
   elseif type(f) == 'string' then
-    f = str2func(f)
+    f = fstr2f(f)
   end
   local function traverse(x)
     for i = 1, #x do
@@ -493,7 +493,7 @@ function any( x, f, mathlymatrixq )
   if f == nil then
     f = function(x) return math.abs(x) > eps end  -- x ~= 0
   elseif type(f) == 'string' then
-    f = str2func(f)
+    f = fstr2f(f)
   end
   local function traverse(x)
     for i = 1, #x do
@@ -539,7 +539,7 @@ end -- any
 -- note: 'select' seems to be a better name . however, Lua already uses it.
 function match( A, f )
   if type(A) ~= 'table' then error('match(A, ...): A must be a table.') end
-  if type(f) == 'string' then f = str2func(f) end
+  if type(f) == 'string' then f = fstr2f(f) end
   local B
   local abs = math.abs
   if f == nil then
@@ -1749,7 +1749,7 @@ function plot(...)
   local layout_arg = {}
   for _, v in pairs{...} do
     if type(v) == 'string' and string.sub(v, 1, 1) == '@' then -- @ is followed by expr in terms of x
-      args[#args + 1] = str2func(v)
+      args[#args + 1] = fstr2f(v)
       goto endfor
     end
 
@@ -2065,7 +2065,7 @@ function plot3d(f, xrange, yrange, title, resolution)
   yrange = yrange or {-5, 5}
   local X, Y, Z = {}, {}, {}
 
-  if type(f) == 'string' then f = str2func(f) end
+  if type(f) == 'string' then f = fstr2f(f) end
   if type(f) == 'function' then
     xrange[1], xrange[2] = _correct_range(xrange[1], xrange[2])
     yrange[1], yrange[2] = _correct_range(yrange[1], yrange[2])
@@ -2107,7 +2107,7 @@ function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
     local tmp = rho
     rho = function(t, p) return tmp end
   elseif type(rho) == 'string' then
-    rho = str2func(rho)
+    rho = fstr2f(rho)
   end
   thetarange = thetarange or {0, 2*pi}
   phirange = phirange or {0, pi}
@@ -2152,7 +2152,7 @@ function plotparametricsurface3d(xyz, urange, vrange, title, resolution)
 
   for i = 1, 3 do -- 4/9/25
     if type(xyz[i]) == 'string' then
-      xyz[i] = str2func(xyz[i])
+      xyz[i] = fstr2f(xyz[i])
     end
   end
 
@@ -2184,7 +2184,7 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
 
   for i = 1, 3 do -- 4/9/25
     if type(xyz[i]) == 'string' then
-      xyz[i] = str2func(xyz[i])
+      xyz[i] = fstr2f(xyz[i])
     end
   end
 
@@ -2711,7 +2711,7 @@ function parametriccurve2d(xy, trange, style, resolution, orientationq)
 
   for i = 1, 2 do -- 4/9/25
     if type(xy[i]) == 'string' then
-      xy[i] = str2func(xy[i])
+      xy[i] = fstr2f(xy[i])
     end
   end
 
@@ -2743,7 +2743,7 @@ function polarcurve2d(r, trange, style, resolution, orientationq)
     local f = r
     r = function(t) return f end
   elseif type(r) == 'string' then
-    r = str2func(r)
+    r = fstr2f(r)
   end
   return parametriccurve2d({
       function(t) return r(t) * math.cos(t) end,
@@ -3033,7 +3033,7 @@ function reverse(tbl)
   end
 end
 function sort(tbl, compf)
-  if type(compf) == 'string' then compf = str2func(compf) end
+  if type(compf) == 'string' then compf = fstr2f(compf) end
   table.sort(tbl, compf)
   return tbl
 end

@@ -292,6 +292,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#flipud><code>flipud(A)</code></a></td><td> </td><td>Return a matrix with rows of matrix <code>A</code> reversed.</td></tr>
 <tr><td> </td><td><a href=#format><code>format(fmt)</code></a></td><td> </td><td>Reset or specify the format of the output of <code>disp(...)</code>.</td></tr>
 <tr><td> </td><td><a href=#freqpolygon><code>freqpolygon(x, nbins, style, xrange)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot frequency polygon, where <code>x</code> is a table of numbers.</td></tr>
+<tr><td> </td><td><a href=#fstr2f><code>fstr2f(str)</code></a></td><td> </td><td>Convert a MATLAB-style anonymous function in a string to a Lua function handle.</td></tr>
 <tr><td> </td><td><a href=#gcd><code>gcd(x, y)</code></a></td><td> </td><td>Return the greatest common divisor of <code>x</code> and <code>y</code>.</td></tr>
 <tr><td> </td><td><a href=#hasindex><code>hasindex(tbl, index)</code></a></td><td> </td><td>Check if table <code>tbl</code> contains <code>index</code>.</td></tr>
 <tr><td> </td><td><a href=#hist><code>hist(x, nbins, style, xrange)</code></a></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table or a matrix of numbers and <code>nbins</code> is the number of bins (default: 10).</td></tr>
@@ -354,7 +355,6 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#sort><code>sort(tbl, compf)</code></a></td><td> </td><td>Sort table <code>tbl</code> and return the resulted table.</td></tr>
 <tr><td> </td><td><a href=#printf><code>sprintf(...)</code></a></td><td> </td><td>Return a formatted string, while <code>printf</code> prints one.</td></tr>
 <tr><td> </td><td><a href=#std><code>std(x, opt)</code></a></td><td> </td><td>Return the standard deviation of numbers in <code>x</code>.</td></tr>
-<tr><td> </td><td><a href=#str2func><code>str2func(str)</code></a></td><td> </td><td>Convert a MATLAB-style anonymous function in a string to a Lua function handle.</td></tr>
 <tr><td> </td><td><a href=#strcat><code>strcat(...)</code></a></td><td> </td><td>Concatenate strings and return the resulted string.</td></tr>
 <tr><td> </td><td><a href=#submatrix><code>submatrix(A, i, j, m, n, sr, sc)</code></a></td><td> </td><td>Return a mathly matrix, a block of mathly matrix <code>A</code>, starting at the <code>i</code>-th row and <code>j</code>-th column and ending at the <code>m</code>-th row and <code>n</code>-th column with row step <code>sr</code> and column step <code>sc</code>.</td></tr>
 <tr><td> </td><td><a href=#subtable><code>subtable(tbl, i, j, s)</code></a></td><td> </td><td>Return a slice of table <code>tbl</code> starting from the <code>i</code>-th element to the <code>j</code>-th one with step size <code>s</code>.</td></tr>
@@ -1028,6 +1028,16 @@ plot(hist(A)) -- nil? the default value will be used
 plot(hist{A, xrange = {0, 99}}) -- run multiple times, the two can produce different results
 </code></pre>
 
+<h4>&bull; &nbsp; <a name=fstr2f href=#m><code>fstr2f(str)</code></a></h4>
+<p>Convert a MATLAB-style anonymous function in a string to a Lua function handle.</p>
+<p>See also: <a href=#easyf>Shortcut for defining an anonymous function.</a></p>
+<pre><code>require('mathly')
+
+f = fstr2f('@(x) x*x - 2*x + 1')
+disp(f(1)) -- 0
+plot(f, sin, {range={0, 2}})
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=gcd href=#m><code>gcd(x, y)</code></a></h4>
 <p>Return the greatest common divisor of <code>x</code> and <code>y</code> which can be nonnegative integers of tables of nonnegative integers with the same structure.</p>
 <pre><code>require 'mathly'
@@ -1262,7 +1272,7 @@ elements of <code>f</code> and 2) <code>tbl</code> with entries replaced with co
 <p>See also: <a href=#easyf>Shortcut for defining an anonymous function.</a></p>
 <pre><code>mathly = require('mathly')
 
-#match(seq(1000), function(x) return x % 5 == 0 or x % 6 == 0 end)
+#match(seq(1000), '@(x) x % 5 == 0 or x % 6 == 0')
 -- 333 -- the number of positive integers not exceeding 1000 and divisible by either 5 or 6
 A = mathly{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
 disp(A)
@@ -1418,9 +1428,10 @@ plot(scatter(data), xs, ys, "-")
 x = {1.0, 2, 4, 5, 7, 10, 20, 22, 30}
 y = {52.0, 5, -50, -40, 10, 9, 22, 23, 65}
 str = newtonpoly(x, y)
-f = str2func('@(x) ' .. str) -- or load('function f(x) return ' .. str .. ' end')()
+f = fstr2f('@(x) ' .. str) -- or load('function f(x) return ' .. str .. ' end')()
 xs = linspace(x[1], x[length(x)], 100)
 ys = map(f, xs)
+axisnotsquare()
 plot(x, y, "*", xs, ys, "-")
 </code></pre>
 
@@ -1596,11 +1607,6 @@ plotparametriccurve3d(
    function(t) return math.sin(t) end,
    function(t) return t end}, {0,6*pi}, "Helix")
 
-plotparametriccurve3d(
-  {function(t) return t*math.cos(t) end,
-   function(t) return t*math.sin(t) end,
-   function(t) return t end}, {0, 8*pi})
-
 plotparametriccurve3d({'@(t) t*math.cos(t)', '@(t) t*math.sin(t)', '@(t) t'}, {0, 8*pi})
 </code></pre>
 
@@ -1610,11 +1616,7 @@ plotparametriccurve3d({'@(t) t*math.cos(t)', '@(t) t*math.sin(t)', '@(t) t'}, {0
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
 <pre><code>require 'mathly'
 
-plotparametricsurface3d(
-  {function(u,v) return u end,
-   function(u,v) return v end,
-   function(u,v) return math.sqrt(u^2 + v^2) end}, {-3, 3}, {-3, 3}, 'Demo')
-
+plotparametricsurface3d({'@(u,v) u', '@(u,v) v', '@(u,v) math.sqrt(u^2 + v^2)'}, {-3, 3}, {-3, 3}, 'Demo')
 plotparametricsurface3d({
   '@(u, v) 2*math.sin(u)*math.cos(v)',
   '@(u, v) 2*math.sin(u)*math.sin(v)',
@@ -1658,7 +1660,7 @@ disp(polynomial({1, 2}, {3, 4}, {5, -6, 100}))
 s, coefs = polynomial({1, 2, 3}, {3, 1, 4})
 disp(s)
 -- '2.5*x^2 - 9.5*x + 10.0'
-p = str2func('@(x) ' .. s) -- or load('function p(x) return ' .. s .. ' end')() -- activate the function
+p = fstr2f('@(x) ' .. s) -- or load('function p(x) return ' .. s .. ' end')() -- activate the function
 p(10)
 -- 165.0
 polyval(coefs, 10)
@@ -2043,16 +2045,6 @@ disp(var(A, 1))
 -- 1.5556  4.6667  6.8889
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=str2func href=#m><code>str2func(str)</code></a></h4>
-<p>Convert a MATLAB-style anonymous function in a string to a Lua function handle.</p>
-<p>See also: <a href=#easyf>Shortcut for defining an anonymous function.</a></p>
-<pre><code>require('mathly')
-
-f = str2func('@(x) x*x - 2*x + 1')
-disp(f(1)) -- 0
-plot(f, sin, {range={0, 2}})
-</code></pre>
-
 <h4>&bull; &nbsp; <a name=strcat href=#m><code>strcat(...)</code></a></h4>
 <p>Concatenate strings and return the resulted string.</p>
 <p>See also: <a href=#tblcat><code>tblcat</code></a></p>
@@ -2201,9 +2193,9 @@ disp(E)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=easyf href=#m>Shortcut for defining an anonymous function</a></h4>
-<P>Whenever a function (or function handle) is passed to another function as an argument, it can be defined in a string of the the format, '@(variabls) expression'.
+<P>Whenever a function (or function handle) is passed to another function as an argument, <b>if it can be expressed by a math expression</b>, it can be defined in a string of the the format, '@(variabls) expression'.
 It is a MATLAB-style anonymous function but in a string. A number of functions need such an argument, including <code>all, any, apply, map, match, plot, plot3d, parametriccurve2d,
-plotparametriccurve3d, polarcurve2d, plotparametricsurface3d, plotsphericalsurface3d, sort,</code> etc. The function, <a href=#str2func><code>str2func(str)</code></a>, is called to
+plotparametriccurve3d, polarcurve2d, plotparametricsurface3d, plotsphericalsurface3d, sort,</code> etc. The function, <a href=#fstr2f><code>fstr2f(str)</code></a>, is called to
 convert an anonymous function in a string to a Lua function.</p>
 <pre><code>mathly = require('mathly')
 
@@ -2222,7 +2214,7 @@ disp(sort({2, 5, 1, -3}, '@(x, y) x > y'))
 
 -- to pass a function to another function not defined in mathly
 a = {2, 5, 1, -3}
-table.sort(a, str2func('@(x, y) x > y')) -- or table.sort(a, function(x, y) return x > y end)
+table.sort(a, fstr2f('@(x, y) x > y')) -- or table.sort(a, function(x, y) return x > y end)
 disp(a)
 </code></pre>
 <p>The shortcut for defining a function here might not work if <code>local</code> objects are accessed. For example,</p>
