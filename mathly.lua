@@ -2,7 +2,7 @@
 
 LUA MODULE
 
-  Mathly for Lua - It makes Lua more mathly and like MATLAB.
+  Mathly - Turning Lua into a Tiny, Free but Powerful MATLAB
 
 DESCRIPTION
 
@@ -276,10 +276,10 @@ function tt(x, start, stop, step) -- make x an ordinary table
   return z
 end -- tt
 
-local function max_min_shared( f, x ) -- column wise if x is a matrix
+local function _max_min_shared( f, x ) -- column wise if x is a matrix
   if type(x) == 'table' then
     if type(x[1]) == 'table' then -- a matrix
-      if #x == 1 then return max_min_shared(f, x[1]) end -- mathly{1, 2} gives {{1,2}}
+      if #x == 1 then return _max_min_shared(f, x[1]) end -- mathly{1, 2} gives {{1,2}}
       local maxs = {}
       for j = 1, #x[1] do
         local col = {}
@@ -299,10 +299,10 @@ local function max_min_shared( f, x ) -- column wise if x is a matrix
   else
     return x
   end
-end -- max_min_shared
+end -- _max_min_shared
 
-function max( x ) return max_min_shared(math.max, x) end
-function min( x ) return max_min_shared(math.min, x) end
+function max( x ) return _max_min_shared(math.max, x) end
+function min( x ) return _max_min_shared(math.min, x) end
 
 --// function fstr2f(str)
 -- convert a MATLAB-style anonymous function in string to a function handle
@@ -558,7 +558,6 @@ function match( A, f )
   return X, B
 end -- match
 
------- ↓↓↓ added on 3/20/25
 local function _dec2bho(x, title, f)
   if isinteger(x) then
     return f(x)
@@ -680,7 +679,6 @@ function powermod(b, n, m)
   end
   return x
 end -- powermod
------- ↑↑↑ added on 3/20/25
 
 --// function _largest_width_dplaces(tbl)
 -- find the largest width of integers/strings and number of decimal places
@@ -807,7 +805,7 @@ end -- who
 -- firstq    -- print ',' or not before printing an entry
 -- titleq    -- for save(...)
 -- printnowq -- for display(x) with large matrices
-local function _vartostring_lua( x, firstq, titleq, printnowq ) -- print x, for general purpose, 2/28/25
+local function _vartostring_lua( x, firstq, titleq, printnowq ) -- print x, for general purpose
   if titleq == nil then titleq = true end
   if firstq == nil then firstq = true end
 
@@ -1074,7 +1072,7 @@ function strcat(...)
       s = s .. v
     elseif type(v) == 'number' then
       s = s .. string.char(v)
-    elseif type(v) == 'table' then -- 3/6/25
+    elseif type(v) == 'table' then
       s = s .. strcat(table.unpack(v))
     end
   end
@@ -1503,7 +1501,7 @@ local function _gaussian_rand()
   y = rho * math.sin(theta)
   _next_gaussian_rand = y
   return x
-end
+end -- _gaussian_rand
 
 --// _create_table( r, c, val )
 -- generates a table of r subtables of which each has c elements, with each element equal to val
@@ -1787,7 +1785,7 @@ function plot(...)
         if count < #v then args[#args + 1] = {names = v[#v]} end
       elseif v[1] == 'graph' then -- graph objects: {'graph', x, y, style}
         for i = 2, #v, 3 do
-          if #v == 5 and i == 5 then break end -- 4/4/25, orientation
+          if #v == 5 and i == 5 then break end -- orientation
           if type(v[i]) == 'table' and _hasanyindex(v[i], {'layout', 'names'}) then  -- last item as seen in hist1(...)!
             args[#args + 1] = v[i]
             break
@@ -1803,7 +1801,7 @@ function plot(...)
           args[#args + 1] = v[i + 2] -- style
         end
 
-        if #v == 5 then -- 4/4/25, show orientation of parametric curves
+        if #v == 5 then -- show orientation of parametric curves
           local points = v[5]
           for i = 1, #points do
             args[#args + 1] = points[i][1] -- x
@@ -1987,8 +1985,8 @@ function plot(...)
     end
   end
 
-  local xrange = nil -- 4/9/25
-  for i = 1, #layout_arg do  -- processed finally, 2/9/25
+  local xrange = nil
+  for i = 1, #layout_arg do  -- processed finally
     local names = {}
     for k, v in pairs(layout_arg[i]) do -- layout settings are merged into the 1st trace
       if k ~= 'names' then traces[1][k] = v end
@@ -1999,7 +1997,7 @@ function plot(...)
             if ismember(k_, {'xlabel', 'ylabel', 'title', 'name'}) then traces[1][k_] = v_ end
           end
         end
-      elseif k == 'range' then -- 4/9/25
+      elseif k == 'range' then
         xrange = v
       end
     end
@@ -2150,10 +2148,8 @@ function plotparametricsurface3d(xyz, urange, vrange, title, resolution)
   local u = linspace(urange[1], urange[2], m)
   local v = linspace(vrange[1], vrange[2], n)
 
-  for i = 1, 3 do -- 4/9/25
-    if type(xyz[i]) == 'string' then
-      xyz[i] = fstr2f(xyz[i])
-    end
+  for i = 1, 3 do
+    if type(xyz[i]) == 'string' then xyz[i] = fstr2f(xyz[i]) end
   end
 
   for i = 1, m do
@@ -2182,10 +2178,8 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
   local n = math.max(math.ceil((trange[2] - trange[1]) * 50), resolution)
   local t = linspace(trange[1], trange[2], n)
 
-  for i = 1, 3 do -- 4/9/25
-    if type(xyz[i]) == 'string' then
-      xyz[i] = fstr2f(xyz[i])
-    end
+  for i = 1, 3 do
+    if type(xyz[i]) == 'string' then xyz[i] = fstr2f(xyz[i]) end
   end
 
   x = map(xyz[1], t)
@@ -2709,10 +2703,8 @@ function parametriccurve2d(xy, trange, style, resolution, orientationq)
   local data = {'graph'}
   local ts = linspace(trange[1], trange[2], math.max(math.ceil((trange[2] - trange[1]) * 50), resolution))
 
-  for i = 1, 2 do -- 4/9/25
-    if type(xy[i]) == 'string' then
-      xy[i] = fstr2f(xy[i])
-    end
+  for i = 1, 2 do
+    if type(xy[i]) == 'string' then xy[i] = fstr2f(xy[i]) end
   end
 
   data[2] = map(xy[1], ts)
@@ -2768,7 +2760,7 @@ function scatter(x, y, style)
   return data
 end -- scatter
 
-local _axis_equalq       = false -- 2/10/25
+local _axis_equalq       = false
 local _xaxis_visibleq    = true
 local _yaxis_visibleq    = true
 local _gridline_visibleq = true
@@ -3866,7 +3858,7 @@ local _writehtml_failedq = false -- dwang
 -- From: https://stackoverflow.com/questions/11163748/open-web-browser-using-lua-in-a-vlc-extension#18864453
 -- Attempts to open a given URL in the system default browser, regardless of Operating System.
 local _open_cmd -- this needs to stay outside the function, or it'll re-sniff every time...
-local function open_url(url)
+local function _open_url(url)
   if not _open_cmd then
     if package.config:sub(1,1) == '\\' then -- windows
       _open_cmd = function(url)
@@ -3891,7 +3883,7 @@ local function open_url(url)
   end
 
   _open_cmd(url)
-end -- open_url
+end -- _open_url
 
 -- Figure metatable
 local figure = {}
@@ -4032,7 +4024,7 @@ function figure.toplotstring(self)
     end
   end
 
-  if (not _3d_plotq) and _axis_equalq then -- dwang, 2/10/25
+  if (not _3d_plotq) and _axis_equalq then
     if self['layout'] == nil then self['layout'] = {} end
     if self['layout']['xaxis'] == nil then self['layout']['xaxis'] = {} end
     self['layout']['xaxis']['scaleanchor'] = 'y'
@@ -4094,7 +4086,7 @@ end -- figure.tofile
 function figure.show(self)
   self:tofile(tmp_plot_html_file)
   if not _writehtml_failedq then
-    open_url(tmp_plot_html_file) -- keep the file
+    _open_url(tmp_plot_html_file) -- keep the file
     print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
   end
 end
