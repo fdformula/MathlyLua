@@ -178,7 +178,7 @@ specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, 
 specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size=8}
 
 axisnotsquare()
-plot(sin, '--r') -- plot a function
+plot(sin, '--r')
 plot('@(x) x', '--r', '@(x) x^3', '-g', {range = {0, 1}})
 
 shownotlegend()
