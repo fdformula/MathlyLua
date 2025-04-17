@@ -15,7 +15,7 @@
       (0  0  0  0  0  ... bn dn)
 --]]
 
-require 'mathly'
+require 'mathly';
 
 function tridiagonal_system(a, d, b, B)
   local n = length(d)
