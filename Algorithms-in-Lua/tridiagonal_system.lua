@@ -95,7 +95,7 @@ function test()
 
   -- verify if implementation is correct or not
   print("Deviation of solution for Ax = b from the solution found by built-in method:")
-  disp(inv(A) * B - x)
+  disp(norm(inv(A) * B - x))
 end
 
 test()
