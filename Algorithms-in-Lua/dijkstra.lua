@@ -7,6 +7,8 @@
 
  by David Wang, dwang at liberty dot edu, on 04/16/2025 Wednesday
 --]]
+require 'mathly';
+
 function Dijkstra(G, I, J)
   local n = #G
   if I <= 0 or I > n or J <= 0 or J > n then
