@@ -1,7 +1,7 @@
 --[[
   Solve tridiagnoal system Ax = B by Thomas method
 
-  David Wang, dwang at liberty dot edu
+  David Wang, dwang dot liberty dot edu
 
   input: a, d, b,where a is above diagnal, d is diagonal, and b is below diagonal, of A
          B
@@ -92,9 +92,10 @@ function test()
 
   -- call user-defined function 'tridiagonal_system' to solve the tridiagonal system
   local x = tridiagonal_system(a, d, b, copy(B))    -- MATLAB: B rather than copy(B)
-
+  print('The solution is as follows:')
+  disp(x)
   -- verify if implementation is correct or not
-  print("Deviation of solution for Ax = b from the solution found by built-in method:")
+  print("\nDeviation of solution for Ax = b from the solution found by built-in method:")
   disp(norm(inv(A) * B - x))
 end
 
