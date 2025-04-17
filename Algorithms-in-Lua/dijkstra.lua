@@ -14,39 +14,40 @@ function Dijkstra(G, I, J)
   end
   if I == J then return 0, {I} end
 
-  local S = {{{I}, 0}} -- {{shortest path1, minlen}, ...} where a path = {c, ..., b, a} for a -> b -> ... -> c
-  local S1 = seq(n); S1[I] = 0 -- S1 U {terminal point of each path in S} = {vertices of G}
+  local S = {{{I}, 0}} -- {{shortest path1, length}, ...} where a path = {c, ..., b, a} for a -> b -> ... -> c
+  local S1 = seq(n)    -- S1[i] == i; S1 U {terminal point of each path in S} = {vertices of G}
+  S1[I] = 0            -- delete vertex I
 
+  local index, vertex, minlen
   while true do
-    -- examine every neighbors of S that are not in S, i.e., elements of S1
-    local minpair, minlen = nil, -1 -- minpair = {path, vertex}, path = {c, ..., b, a}
-    for i = 1, #S do
+    minlen = nil
+    for i = 1, #S do       -- examine every neighbors of S that are in S1
       local v = S[i][1][1] -- S[i][1] is a path, S[i][2] is the length of the path
       for j = 1, #S1 do
-        if S1[j] > 0 and G[v][j] > 0 then
+        if S1[j] > 0 and G[v][j] > 0 then -- vertex j is a neighbor of vertex v
           local len = S[i][2] + G[v][j]
-          if minpair == nil or len < minlen then
-            minpair, minlen = {S[i][1], j, i}, len
+          if minlen == nil or len < minlen then
+            index, vertex, minlen = i, j, len
           end
         end
       end
     end
-    if minpair[2] == J then
-      table.insert(minpair[1], 1, minpair[2])
-      return minlen, reverse(minpair[1])
+    if vertex == J then
+      table.insert(S[index][1], 1, vertex)
+      return minlen, reverse(S[index][1])
     else
-      local p = copy(minpair[1])
+      local p = copy(S[index][1])
       local v = p[1] -- path {v, ...} might be deleted from S
-      table.insert(p, 1, minpair[2])
+      table.insert(p, 1, vertex)
       S[#S + 1] = {p, minlen}
-      -- disp(S) -- remove the leading -- to show the process
-      S1[minpair[2]] = 0
+      -- disp(S) -- remove the leading '--' to show the process
+      S1[vertex] = 0 -- delete the vertext from S1
 
       local noneighbors = true -- clean up S, important for large G
       for i = 1, #S1 do
         if S1[i] > 0 and G[v][i] > 0 then noneighbors = false; break end
       end
-      if noneighbors then table.remove(S, minpair[3]) end
+      if noneighbors then table.remove(S, index) end
     end
   end
 end
