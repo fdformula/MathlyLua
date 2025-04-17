@@ -37,11 +37,11 @@ function Dijkstra(G, I, J)
       return minlen, reverse(S[index][1])
     else
       local p = copy(S[index][1])
-      local v = p[1] -- path {v, ...} might be deleted from S
+      local v = p[1]           -- path S[index][1] may be deletable
       table.insert(p, 1, vertex)
       S[#S + 1] = {p, minlen}
-      -- disp(S) -- remove the leading '--' to show the process
-      S1[vertex] = 0 -- delete the vertext from S1
+      -- disp(S)               -- remove the leading '--' to show the process
+      S1[vertex] = 0           -- delete the vertext from S1
 
       local noneighbors = true -- clean up S, important for large G
       for i = 1, #S1 do
