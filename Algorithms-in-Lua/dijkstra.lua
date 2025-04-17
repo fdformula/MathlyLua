@@ -43,7 +43,7 @@ function Dijkstra(G, I, J)
       table.insert(p, 1, vertex)
       S[#S + 1] = {p, minlen}
       -- disp(S)               -- remove the leading '--' to show the process
-      S1[vertex] = 0           -- delete the vertext from S1
+      S1[vertex] = 0           -- delete the vertex from S1
 
       local noneighbors = true -- clean up S, important for large G
       for i = 1, #S1 do
