@@ -2801,20 +2801,23 @@ end
 -- calculate the reduced row-echlon form of matrix A
 -- if B is provided, it works on [ A | B]; useful for finding the inverse of A or
 -- solving Ax = b by rref [ A | b ]
--------- note: A, B are modified on purpose for performance for large matrices!!! --------
-function rref( A, B ) -- gauss-jordan elimination
-  assert(getmetatable(A) == mathly_meta, 'rref( A ): A must be a mathly metatable.')
-  assert(B == nil or getmetatable(B) == mathly_meta, 'rref( A, B ): A and B must be mathly metatables.')
-  local rows, columns = size(A)
+function rref( a, b ) -- gauss-jordan elimination
+  assert(getmetatable(a) == mathly_meta, 'rref( A ): A must be a mathly metatable.')
+  assert(b == nil or getmetatable(b) == mathly_meta, 'rref( A, B ): A and B must be mathly metatables.')
+  local rows, columns = size(a)
   local ROWS = math.min(rows, columns)
 
   local bq = false
   local bcolumns = 0
-  if B ~= nil then
+  if b ~= nil then
     bq = true
-    assert(#B == rows, 'rref(A, B): A and be must have the same number of rows.')
-    bcolumns = #B[1]
+    assert(#b == rows, 'rref(A, B): A and be must have the same number of rows.')
+    bcolumns = #b[1]
   end
+
+  local A = copy(a) -- 4/23/25
+  local B = copy(b) --
+
   local abs = math.abs
   for i = 1, ROWS do
     local largest = abs(A[i][i]) -- choose the pivotal entry
@@ -2901,12 +2904,11 @@ function rref( A, B ) -- gauss-jordan elimination
       end
     end
   end
-  return A
+  if bq then return A, B else return A end
 end -- rref
 
 --// function linsolve( A, b, opt )
 -- solve the linear system Ax = b for x, given that A is a square matrix; return the solution
--- note: A and b are modified
 function linsolve( A, b, opt )
   assert(getmetatable(A) == mathly_meta, 'linsolve( A ): A must be a mathly metatable.')
   local B = b
@@ -2924,8 +2926,8 @@ function linsolve( A, b, opt )
   end
 
   if opt ~= 'UT' and opt ~= 'LT' then
-    rref(A, B)
-    return B
+    local v1, v2 = rref(A, B)
+    return v2
   end
 
   local m, n = size(A)
@@ -2948,14 +2950,12 @@ end -- linsolve
 --// function inv( A )
 -- calculate the inverse of matrix A
 -- rref([A | I]) gives [ I | B ], where B is the inverse of A
--- note: A is modified
 function inv( A )
   assert(getmetatable(A) == mathly_meta, 'inv( A ): A must be a mathly metatable.')
   local rows, columns = size(A)
   assert(rows == columns, 'inv( A ): A must be square.')
-  local B = eye(rows)
-  rref(A, B)
-  return setmetatable(B, mathly_meta)
+  local v1, v2 = rref(A, eye(rows))
+  return setmetatable(v2, mathly_meta)
 end -- inv
 
 --// function size ( A )
@@ -3376,14 +3376,14 @@ end -- qr
 
 --// det( A )
 -- Calculate the determinant of a matrix
--- Note: A is modified
-function det( A )
-  assert(getmetatable(A) == mathly_meta, 'det( A ): A must be a mathly matrix.')
-  local m, n = size(A)
+function det( B )
+  assert(getmetatable(B) == mathly_meta, 'det( A ): A must be a mathly matrix.')
+  local m, n = size(B)
   if m ~= n then
       print('det(A): A must be square.')
       return 0
   end
+  local A = copy(B)
 
   local val = 1 -- by gauss elimination
   local abs = math.abs
