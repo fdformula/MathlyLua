@@ -71,12 +71,12 @@ package.path = "./?.luac;;"
 ## Functions provided in mathly
 
 `..` (or `horzcat`), `all`, `any`, `apply`, `cc`, `clc`, `clear`, `copy`, `cross`, `demathly`, `det`, `diag`, `disp`, `display`, `div`, `dot`, `eval`, `expand`,
-`eye`, `flatten`,  `fliplr`, `flipud`, `format`, `fstr2f`, `gcd`, `hasindex`, `input`, `inv`, `isinteger`, `iseven`, `isodd`, `ismember`, `lagrangepoly`, `length`,
+`eye`, `findroot`, `flatten`,  `fliplr`, `flipud`, `format`, `fstr2f`, `fzero`, `gcd`, `hasindex`, `input`, `inv`, `isinteger`, `iseven`, `isodd`, `ismember`, `lagrangepoly`, `length`,
 `linsolve`, `linspace`, `lu`, `map`, `match`, `mathly`, `max`, `mean`, `min`, `mod`, `newtonpoly`, `norm`, `ones`, `polynomial`, `polyval`, `powermod`, `printf`,
 `prod`, `qr`, `rand`, `randi`, `randn`, `range`, `remake`, `repmat`, `reshape`, `reverse`, `round`, `rr`, `rref`, `save`, `seq`, `size`, `sort`, `sprintf`, `std`,
 `strcat`, `submatrix`, `subtable`, `sum`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`, `who`, `zeros`; `bin2dec`, `oct2hex`, ...
 
- `arc`, `circle`, `line`, `parametriccurve2d`, `point`, `polarcurve2d`, `polygon`, `scatter`, `text`, `wedge`; `boxplot`, `freqpolygon`, `hist`, `hist1`,
+ `arc`, `circle`, `contourplot`, `line`, `parametriccurve2d`, `point`, `polarcurve2d`, `polygon`, `scatter`, `text`, `wedge`; `boxplot`, `freqpolygon`, `hist`, `hist1`,
  `histfreqpolygon`, `pareto`, `pie` (All are graphics objects passed to `plot`.)
 
  `plot`; `plot3d`, `plotparametriccurve3d`, `plotparametricsurface3d`, `plotsphericalsurface3d`
