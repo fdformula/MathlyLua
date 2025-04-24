@@ -248,7 +248,7 @@ D = map(function(x, y, z)
 disp(D)
 </code></pre>
 
-<p>&#x2713; &nbsp; <a name=div></a><a name=mod></a>Functions <code>div</code> and <code>mod</code> are simply the names of <a href=manual.html#3.4.1>Lua operators <code>//</code> and <code>%</code></a>, respectively.
+<p>&#x2713; &nbsp; <a name=eps></a><a name=div></a><a name=mod></a>Functions <code>div</code> and <code>mod</code> are simply the names of <a href=manual.html#3.4.1>Lua operators <code>//</code> and <code>%</code></a>, respectively.
 They make Lua code more understandable to people who are new to Lua. They follow the definition: if <code>d &gt; 0</code>, <code>r = mod(a, d)</code> is the remainder of <code>a</code>
 divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d)</code> gives the quotient.</p>
 
@@ -276,6 +276,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#circle><code>circle(r, center, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a circle.</td></tr>
 <tr><td> </td><td><code>clc()</code></td><td> </td><td>Clear Lua console.</td></tr>
 <tr><td> </td><td><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
+<tr><td> </td><td><a href=#contourplot><code>contourplot(f, xrange, yrange, style)</code></a></td><td> </td><td>Prepare a graphics object for <code>plot</code> to plot a countour map for function <code>f(x, y)</code>.</td></tr>
 <tr><td> </td><td><a href=#copy><code>copy(x)</code></a></td><td> </td><td>Make a deep copy of <code>x</code>.</td></tr>
 <tr><td> </td><td><a href=#cross><code>cross(a, b)</code></a></td><td> </td><td>Calculate the cross/vector product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub>}</code>.</td></tr>
 <tr><td> </td><td><a href=#demathly><code>demathly(x)</code></a></td><td> </td><td>Force <code>x</code> not to be a mathly matrix.</td></tr>
@@ -287,12 +288,14 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#eval><code>eval(str)</code></a></td><td> </td><td>Evaluate the expression in <code>str</code> and return the result.</td></tr>
 <tr><td> </td><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrunk <code>mxn</code> mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
 <tr><td> </td><td><code>eye(n)</code></td><td> </td><td>Return a <code>nxn</code> identity mathly matrix.</td></tr>
+<tr><td> </td><td><a href=#findroot><code>findroot(func, interval, tolerance)</code></a></td><td> </td><td>Find the zero of a function on specified interval.</td></tr>
 <tr><td> </td><td><a href=#flatten><code>flatten(x)</code></a></td><td> </td><td>Remove the structure of <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</td></tr>
 <tr><td> </td><td><a href=#fliplr><code>fliplr(A)</code></a></td><td> </td><td>Return a matrix with columns of matrix <code>A</code> reversed.</td></tr>
 <tr><td> </td><td><a href=#flipud><code>flipud(A)</code></a></td><td> </td><td>Return a matrix with rows of matrix <code>A</code> reversed.</td></tr>
 <tr><td> </td><td><a href=#format><code>format(fmt)</code></a></td><td> </td><td>Reset or specify the format of the output of <code>disp(...)</code>.</td></tr>
 <tr><td> </td><td><a href=#freqpolygon><code>freqpolygon(x, nbins, style, xrange)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot frequency polygon, where <code>x</code> is a table of numbers.</td></tr>
 <tr><td> </td><td><a href=#fstr2f><code>fstr2f(str)</code></a></td><td> </td><td>Convert a MATLAB-style anonymous function in a string to a Lua function handle.</td></tr>
+<tr><td> </td><td><a href=#findroot><code>fzero(func, interval, tolerance)</code></a></td><td> </td><td>Find the zero of a function on specified interval.</td></tr>
 <tr><td> </td><td><a href=#gcd><code>gcd(x, y)</code></a></td><td> </td><td>Return the greatest common divisor of <code>x</code> and <code>y</code>.</td></tr>
 <tr><td> </td><td><a href=#hasindex><code>hasindex(tbl, index)</code></a></td><td> </td><td>Check if table <code>tbl</code> contains <code>index</code>.</td></tr>
 <tr><td> </td><td><a href=#hist><code>hist(x, nbins, style, xrange)</code></a></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table or a matrix of numbers and <code>nbins</code> is the number of bins (default: 10).</td></tr>
@@ -698,6 +701,35 @@ display(tt(x, 2))
 -- {2, 3, 4, 5, 6, 7}
 </code></pre>
 
+<h4>&bull; &nbsp; <a name=contourplot href=#m><code>contourplot(f, xrange, yrange, style)</code></a></h4>
+<P>Prepare a graphics object for <code>plot</code> to plot a countour map for function <code>f(x, y)</code>.</P>
+<pre><code>mathly= require('mathly')
+
+a = {1, 2, {3, 4, {5, 6}}}
+b = copy(a)
+b[3] = 0
+display(a)
+-- {1, 2, {3, 4, {5, 6}}}
+display(b)
+-- {1, 2, 0}
+
+A = mathly{{1, 2}, {3, 4}}
+B = copy(A); B[1][1] = 0
+disp(A)
+-- 1 2
+-- 3 4
+
+x = {1, 2, hi = {2, 3, abc = {1, 2, bcd = 6, 2, 7, 'hello', true, false, cde = 1}}}
+display(x)
+-- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1, bcd = 6}}}
+y = copy(x)
+x.hi.abc.bcd = nil
+display(x)
+-- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1}}}
+display(y)
+-- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1, bcd = 6}}}
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=copy href=#m><code>copy(x)</code></a></h4>
 <P>Make a deep copy of <code>x</code>.</P>
 <pre><code>mathly= require('mathly')
@@ -889,6 +921,22 @@ disp(expand(a, 4, 5, -1))
 disp(expand(a, 2))
 -- 52  67
 -- 82  15
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=fzero></a><a name=findroot href=#m><code>findroot(f, interval, tolerance), fzero(f, interval, tolerance)</code></a></h4>
+<p>Find and return the zero of function <code>f</code> on the specified interval.</p>
+<p>If <code>interval</code> is a single number, say, 1.5, it is set to be the interval, 1.5 &plusmn; 1, i.e., [0.5, 2.5].</p>
+<p>If <code>tolerance</code> is not provided, it defaults to <a href=#eps><code>eps</code></a>.</p>
+<p><code>findroot</code> is a name for <i>Mathematica</i> users. It is an alias for <code>fzero</code>.</p>
+<pre><code>require 'mathly';
+
+print(findroot(sin, 0.3))
+-- 2.2204460492503e-016
+
+print(fzero('@(x) x^2 -2*x + 1', {-1, 1}))
+-- 0.99999998509884
+
+print(fzero('@(x) x^2 -2*x + 1', {-1, 1}, 0.001)) -- tolerance is given
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=flatten href=#m><code>flatten(x)</code></a></h4>

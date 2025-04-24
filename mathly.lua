@@ -19,13 +19,14 @@ API and Usage
 
   List of functions provided in this module:
 
-    all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display, dot,
-    expand, eye, flatten, fliplr, flipud, format, fstr2f, hasindex, horzcat,
-    inv, iseven, isinteger, ismember, isodd, lagrangepoly, length, linsolve,
-    linspace, lu, map, match, max, mean, min, newtonpoly, norm, ones, polynomial,
-    polyval, printf, prod, qr, rand, randi, range, remake, repmat, reshape, round,
-    rr, rref, save, seq, size, sort, sprintf, std, strcat, submatrix, subtable,
-    sum, tblcat, text, tic, toc, transpose, tt, unique, var, vertcat, who, zeros
+    all, any, apply, cc, clc, clear, contourplot, copy, cross, det, diag, disp,
+    display, dot, expand, eye, findroot, flatten, fliplr, flipud, format, fstr2f,
+    fzero, hasindex, horzcat, inv, iseven, isinteger, ismember, isodd, lagrangepoly,
+    length, linsolve, linspace, lu, map, match, max, mean, min, newtonpoly, norm,
+    ones, polynomial, polyval, printf, prod, qr, rand, randi, range, remake, repmat,
+    reshape, round, rr, rref, save, seq, size, sort, sprintf, std, strcat,
+    submatrix, subtable, sum, tblcat, text, tic, toc, transpose, tt, unique, var,
+    vertcat, who, zeros
 
     dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
     oct2hex, hex2bin, hex2dec, hex2oct
@@ -1235,6 +1236,33 @@ function range( start, stop, step ) -- ~Python but inclusive
   return v
 end -- range
 
+--// find and return the zero/root of function f on specified interval
+function fzero(f, intv, tol) -- matlab
+  if type(f) == 'string' then f = fstr2f(f) end
+  if type(intv) == 'number' then intv = {intv - 1, intv + 1} end
+  if type(f) ~= 'function' or type(intv) ~= 'table' then
+    error('fzero(f, interval): f must be a function, and interval must be specified.')
+  end
+
+  local a, b = intv[1], intv[2]
+  if b < a then a, b = b, a end
+
+  local mid = (a + b) / 2
+  tol = tol or eps
+  if tol < 0 then tol = -tol end
+  while math.abs(f(mid)) > eps and b - a > tol do
+    mid = (a + b) / 2
+    if f(a) * f(mid) > 0 then
+      a = mid
+    else
+      b = mid
+    end
+  end
+  return mid
+end -- fzero
+
+function findroot(f, i, t) return fzero(f, i, t) end -- mathematica
+
 --// for lagrangepoly(...), newtonpoly(...), polynomial(...), and scatter(...)
 local function _converse_poly_input(data) -- {{x1, y1}, {x2, y2}, ...}
   local x, y = {}, {}
@@ -1762,6 +1790,11 @@ function plot(...)
 
       if v[1] == 'text' then -- text graph object: {'text', trace}
         traces[#traces + 1] = v[2]
+      elseif v[1] == 'contour' then -- contourplot graph object: {'contour', x, y, z}
+        local trace = {type = 'contour', x = v[2], y = v[3], z = v[4]}
+        for k, v in pairs(v[5]) do trace[k] = v end
+        traces[#traces + 1] = trace
+        adjustxrangeq = false
       elseif v[1] == 'graph-hist' then -- group histogram graph object: {'graph-hist', x, y}
         for i = 2, #v, 2 do
           local trace = {}
@@ -2759,6 +2792,24 @@ function scatter(x, y, style)
   end
   return data
 end -- scatter
+
+--// function contourplot(f, x, y, style)
+-- x and y are tables of the same size
+function contourplot(f, x, y, style)
+  if type(f) == 'string' then f = fstr2f(f) end
+  local X, Y = _converse_poly_input(x)
+  if #X ~= 0 then style = y; x, y = X, Y end
+  x = flatten(x)
+  y = flatten(y)
+  local z = {}
+  for i = 1, #x do
+    z[i] = {}
+		for j = 1, #y do
+			z[i][j] = f(x[i], y[j])
+		end
+	end
+  return {'contour', x, y, z, style or {colorscale = 'Jet', contours = { coloring = 'lines'}}}
+end -- contourplot
 
 local _axis_equalq       = false
 local _xaxis_visibleq    = true
