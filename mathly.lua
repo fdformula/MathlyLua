@@ -1003,6 +1003,8 @@ end -- seq
 -- generates an evenly spaced sequence/table of 'len' numbers on the interval [from, to]. same as seq(...).
 function linspace( from, to, len )
   len = len or 100
+  assert(len > 0, 'linspace( from, to, len ): len must be positive.')
+  if from > to then from, to = to, from end
   return seq(from, to, len)
 end
 
@@ -1770,12 +1772,17 @@ function plot(...)
   local args = {}
   local x_start = nil -- range of x for a plot
   local x_stop
-  local adjustxrangeq = true
+  local adjustxrangeq = false
   local traces = {}
   local layout_arg = {}
   for _, v in pairs{...} do
-    if type(v) == 'string' and string.sub(v, 1, 1) == '@' then -- @ is followed by expr in terms of x
+    if type(v) == 'function' then
+      args[#args + 1] = v
+      adjustxrangeq = true
+      goto endfor
+    elseif type(v) == 'string' and string.sub(v, 1, 1) == '@' then -- @ is followed by expr in terms of x
       args[#args + 1] = fstr2f(v)
+      adjustxrangeq = true
       goto endfor
     end
 
@@ -1794,7 +1801,7 @@ function plot(...)
         local trace = {type = 'contour', x = v[2], y = v[3], z = v[4]}
         for k, v in pairs(v[5]) do trace[k] = v end
         traces[#traces + 1] = trace
-        adjustxrangeq = false
+        x_start, x_stop = v[2][1], v[2][#v[2]]
       elseif v[1] == 'graph-hist' then -- group histogram graph object: {'graph-hist', x, y}
         for i = 2, #v, 2 do
           local trace = {}
@@ -1804,7 +1811,6 @@ function plot(...)
           traces[#traces + 1] = trace
         end
         layout_arg[#layout_arg + 1] = {layout={barmode='group', bargap=0.01}}
-        adjustxrangeq = false
       elseif v[1] == 'graph-box' then -- boxplot: {'graph-box', 'x', data}, 'x' or 'y'
         local count = #v
         if type(v[count][1]) == 'string' then count = count - 1 end -- it is names
@@ -1813,7 +1819,6 @@ function plot(...)
           if v[2] == 'x' then trace['x'] = v[i] else trace['y'] = v[i] end
           trace['type'] = 'box'
           traces[#traces + 1] = trace
-          adjustxrangeq = false
         end
         if count < #v then args[#args + 1] = {names = v[#v]} end
       elseif v[1] == 'graph' then -- graph objects: {'graph', x, y, style}
@@ -2054,7 +2059,7 @@ function plot(...)
     x_start = x_start - 0.1
     x_stop = x_stop + 0.1
     for i = 1, #traces do
-      if #traces[i][1] >=2 and type(traces[i][1][2]) == 'function' then
+      if #traces[i] > 0 and #traces[i][1] >= 2 and type(traces[i][1][2]) == 'function' then
         local func = traces[i][1][2]
         traces[i][1] = linspace(x_start, x_stop, math.ceil(math.abs(x_stop - x_start)) * 10)
         traces[i][2] = map(func, traces[i][1])
@@ -2793,14 +2798,29 @@ function scatter(x, y, style)
   return data
 end -- scatter
 
+local function _contour_data(x)
+  if type(x) ~= 'table' then
+    error('contourplot(f, x, y, style): x and y must be ranges or tables of numbers.')
+  end
+  x = flatten(x)
+  if #x <= 3 then
+    return linspace(x[1], x[2], x[3] or 100)
+  else
+    return x
+  end
+end -- _contour_data
+
 --// function contourplot(f, x, y, style)
 -- x and y are tables of the same size
 function contourplot(f, x, y, style)
   if type(f) == 'string' then f = fstr2f(f) end
-  local X, Y = _converse_poly_input(x)
-  if #X ~= 0 then style = y; x, y = X, Y end
-  x = flatten(x)
-  y = flatten(y)
+  x = _contour_data(x)
+  if y == nil then
+    y = x
+  else
+    y = _contour_data(y)
+  end
+
   local z = {}
   for i = 1, #x do
     z[i] = {}
