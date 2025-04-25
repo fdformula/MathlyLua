@@ -728,7 +728,8 @@ plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, nil, style))
 x = linspace(-5, 5, 100)
 plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, nil, style), x, sin(x), '-r')
 
-plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}), '@(x) 1.3*(x + 1.73) + 1.4', '-r')
+shownotlegend()
+plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}), '@(x) 1.3*(x + 1.73) + 1.4', '-r', cos)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=copy href=#m><code>copy(x)</code></a></h4>
