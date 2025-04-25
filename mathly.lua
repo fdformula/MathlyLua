@@ -1248,18 +1248,22 @@ function fzero(f, intv, tol) -- matlab
 
   local a, b = intv[1], intv[2]
   if b < a then a, b = b, a end
+  local fa = f(a)
+  if fa * f(b) > 0 then
+    error('fzero(f, {a, b} ...): f(x) must have different signs at x=a and x=b.')
+  end
 
-  local mid = (a + b) / 2
   tol = tol or eps
   if tol < 0 then tol = -tol end
-  while math.abs(f(mid)) > eps and b - a > tol do
-    mid = (a + b) / 2
-    if f(a) * f(mid) > 0 then
-      a = mid
+  local mid, fmid
+  repeat
+    mid = (a + b) / 2; fmid = f(mid)
+    if fa * fmid > 0 then
+      a = mid; fa = fmid
     else
       b = mid
     end
-  end
+  until math.abs(fmid) < eps or b - a < tol
   return mid
 end -- fzero
 

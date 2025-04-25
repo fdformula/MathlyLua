@@ -933,13 +933,13 @@ disp(expand(a, 2))
 <pre><code>require 'mathly';
 
 print(findroot(sin, 0.3))
--- 2.2204460492503e-016
+-- 0.0
 
 print(fzero('@(x) x^2 -2*x + 1', {-1, 1}))
--- 0.99999998509884
+-- 0.99999999254942
 
-print(fzero('@(x) x^2 -2*x + 1', {-1, 1}, 0.001)) -- accurate to 3 decimal places
--- 0.9990234375
+print(fzero('@(x) x^2 -2*x + 1', {-1, 1}, 0.01)) -- accurate to 2 decimal places
+-- 0.9921875
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=flatten href=#m><code>flatten(x)</code></a></h4>
