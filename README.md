@@ -38,7 +38,7 @@ Quite a few CudaText plugins are included. Some are customized and even have new
   Ctrl-.           to run all code in the editor (HTML file? open it in a browser)
 
   Ctrl-Alt-Space   to trigger auto (Lua/mathly) lexical completion
-  Shift-Alt-Space  to trigger auto text completion (Ctrl-p d, load an English dictionary as part of the text)
+  Shift-Alt-Space  to trigger auto text completion (Ctrl-P D, load an English dictionary as part of the text)
   Ctrl-P L         to turn on/off Lua lexer switch (when editing Lua script, say, in a HTML file)
 ```
 `F2`, `Ctrl-,`, and `Ctrl-.` work with Bash, Julia, Octave, Python, R, Ruby, and some other languages with interactive REPL terminal.
