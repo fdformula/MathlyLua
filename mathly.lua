@@ -1682,9 +1682,7 @@ end -- randi
 --// tic()
 -- starts a time stamp to measure elapsed time
 local elapsed_time = nil
-function tic()
-  elapsed_time = os.time()
-end
+function tic() elapsed_time = os.clock() end
 
 --// toc()
 -- prints elapsed time from last calling tic() if no values are passed to it;
@@ -1692,11 +1690,9 @@ end
 function toc(print_not)
   if elapsed_time == nil then
     print("Please call tic() first.")
-    if print_not ~= nil then
-      return 0
-    end
+    if print_not ~= nil then return 0 end
   end
-  local tmp = os.difftime(os.time(), elapsed_time)
+  local tmp = os.clock() - elapsed_time
   if print_not == nil then
     print(string.format("%.6f secs.", tmp))
   else
