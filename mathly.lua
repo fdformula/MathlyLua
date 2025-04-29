@@ -1694,7 +1694,7 @@ function toc(print_not)
   end
   local tmp = os.clock() - elapsed_time
   if print_not == nil then
-    print(string.format("%.6f secs.", tmp))
+    print(string.format("%.3f secs.", tmp))
   else
     return tmp
   end
