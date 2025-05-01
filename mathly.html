@@ -2055,20 +2055,21 @@ display(x)
 
 <h4>&bull; &nbsp; <a name=slopefield href=#m><code>slopefield(f, xrange, yrange, ratio)</code></a></h4>
 <p>Return a graphics object for <code><a href=#plot>plot</a></code> to plot the slope field of <code>dy/dx = f(x, y)</code>.</p>
-<p><code>ratio</code> defaults to 1. It can control the length of the dash line segments in a slope field.</p>
-<p><code>xrange</code> and <code>yrange</code> (default to <code>xrange</code>) takes the format of <code>{initial value, terminal value, step}</code></p>
-<p>&#x2713; &nbsp; <code>tbl</code> is changed if it is a variable.</p>
+<p><code>ratio</code> (default to 1) controls the length of the dash line segments in a slope field.</p>
+<p><code>xrange</code> and <code>yrange</code> (default to <code>xrange</code>) take the format of <code>{initial value, terminal value, step (default: 1)}</code>.</p>
 <pre><code>require('mathly')
 
 plot(slopefield(function(x, y) return x + y end, {-3, 3, 0.2}))
 
 plot(slopefield('@(x, y) x^2 - y', {-3.5, 3.5, 0.5}, {-3.5, 3.5, 0.5}, 2))
-x = linspace(-3.03, 2.7, 100)
-y = map('@(x) x^2-2*x+2-exp(-x)', x)
-plot(slopefield('@(x, y) x^2 - y', {-3.5, 3.5, 0.5}, {-3.5, 3.5, 0.5}, 2), x, y, '-r', point(0, 1))
-
-plot(slopefield('@(x, y) -2*y', {-2, 2, 0.3}))
-plot(slopefield('@(x, y) -y/x', {-4, 4, 0.20001}))
+x = linspace(-3, 2.7, 100)
+y1 = map('@(x) x^2 - 2*x + 2 - exp(-x)', x)
+y2 = map('@(x) x^2 - 2*x + 2 - 2*exp(-x -1)', x)
+y3 = map('@(x) x^2 - 2*x + 2 - 8*exp(-x -2)', x)
+plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
+     x, y1, '-r', point(0, 1, {symbol='x', size=7, color='red'}),
+     x, y2, '-b', point(-1, 3, {symbol='circle', size=7, color='blue'}),
+     x, y3, '-g', point(-2, 2, {symbol='square', size=7, color='green'}))
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=sort href=#m><code>sort(tbl, compf)</code></a></h4>
