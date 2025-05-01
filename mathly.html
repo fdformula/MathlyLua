@@ -2061,8 +2061,12 @@ display(x)
 <pre><code>require('mathly')
 
 plot(slopefield(function(x, y) return x + y end, {-3, 3, 0.2}))
-axissquare()
+
 plot(slopefield('@(x, y) x^2 - y', {-3.5, 3.5, 0.5}, {-3.5, 3.5, 0.5}, 2))
+x = linspace(-3.03, 2.7, 100)
+y = map('@(x) x^2-2*x+2-exp(-x)', x)
+plot(slopefield('@(x, y) x^2 - y', {-3.5, 3.5, 0.5}, {-3.5, 3.5, 0.5}, 2), x, y, '-r', point(0, 1))
+
 plot(slopefield('@(x, y) -2*y', {-2, 2, 0.3}))
 plot(slopefield('@(x, y) -y/x', {-4, 4, 0.20001}))
 </code></pre>
