@@ -205,6 +205,15 @@ do -- https://plotly.com/python/3d-surface-plots/
   local function z(u, v) return b * sin(v) * (c*cos(u) - d) / (a - c * cos(u) * cos(v)) end
   plotparametricsurface3d({x, y, z}, {0, 2*pi}, {0, 2*pi})
 end
+
+x = linspace(-3, 2.7, 100)
+y1 = map('@(x) x^2 - 2*x + 2 - exp(-x)', x)
+y2 = map('@(x) x^2 - 2*x + 2 - 2*exp(-x -1)', x)
+y3 = map('@(x) x^2 - 2*x + 2 - 8*exp(-x -2)', x)
+plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
+     x, y1, '-r', point(0, 1, {symbol='x', size=7, color='red'}),
+     x, y2, '-b', point(-1, 3, {symbol='circle', size=7, color='blue'}),
+     x, y3, '-g', point(-2, 2, {symbol='square', size=7, color='green'}))
 ```
 
 ### Note
