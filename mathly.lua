@@ -32,8 +32,8 @@ API and Usage
     oct2hex, hex2bin, hex2dec, hex2oct
 
     arc, circle, line, parametriccurve2d, point, polarcurve2d, polygon, scatter,
-    text, wedge; boxplot, freqpolygon, hist, hist1, histfreqpolygon, pareto, pie
-    (All are graphics objects passed to function 'plot'.)
+    text, wedge; boxplot, freqpolygon, hist, hist1, histfreqpolygon, pareto, pie,
+    slopefield (All are graphics objects passed to function 'plot'.)
 
     plot; plot3d, plotparametriccurve3d, plotparametricsurface3d, plotsphericalsurface3d
 
@@ -1802,6 +1802,14 @@ function plot(...)
         for k, v in pairs(v[5]) do trace[k] = v end
         traces[#traces + 1] = trace
         x_start, x_stop = v[2][1], v[2][#v[2]]
+      elseif v[1] == 'slopefield' then
+        x_start, x_stop = v[2][1], v[2][2]
+        for i = 1, #v[3] do
+          args[#args + 1] = v[3][i][2]
+          args[#args + 1] = v[3][i][3]
+          args[#args + 1] = v[3][i][4]
+        end
+        shownotlegend()
       elseif v[1] == 'graph-hist' then -- group histogram graph object: {'graph-hist', x, y}
         for i = 2, #v, 2 do
           local trace = {}
@@ -1810,7 +1818,7 @@ function plot(...)
           trace['type'] = 'bar'
           traces[#traces + 1] = trace
         end
-        layout_arg[#layout_arg + 1] = {layout={barmode='group', bargap=0.01}}
+        layout_arg[#layout_arg + 1] = {layout = {barmode = 'group', bargap = 0.01}}
       elseif v[1] == 'graph-box' then -- boxplot: {'graph-box', 'x', data}, 'x' or 'y'
         local count = #v
         if type(v[count][1]) == 'string' then count = count - 1 end -- it is names
@@ -2830,6 +2838,45 @@ function contourplot(f, x, y, style)
 	end
   return {'contour', x, y, z, style or {colorscale = 'Jet', contours = { coloring = 'lines'}}}
 end -- contourplot
+
+-- dy/dx = f(x, y)
+function slopefield(f, xrange, yrange, ratio)
+  if type(f) == 'string' then f = fstr2f(f) end
+  if xrange == nil then xrange = {-5, 5} end
+  if yrange == nil then yrange = xrange end
+  if type(f) ~= 'function' or type(xrange) ~= 'table' or type(yrange) ~= 'table' then
+    error('slopefield(f, xrange, yrange, ratio): f is a vector function, xrange and yrange are of the format {begin, end, step}.')
+  end
+  if ratio == nil then ratio = 1 end
+  local xstep, ystep = xrange[3], yrange[3]
+  if xstep == nil then xstep = 1 end
+  if ystep == nil then ystep = 1 end
+  local len = (xrange[2] - xrange[1]) / 50 * ratio -- length of arrows
+  local len2 = len / 2
+
+  local ax, ay, bx, by, slope
+  local k, dashes = 1, {}
+  for x = xrange[1], xrange[2], xstep do
+    for y = yrange[1], yrange[2], ystep do
+      slope = f(x, y)
+      bx, by = x, y
+      if math.abs(slope) < 10*eps then -- horizontal
+        ax, ay, bx = x + len2, y, bx - len2
+      elseif math.abs(slope) > 100000 then -- vertical
+        ax, ay, by = x, y + len2, by - len2
+      else
+        local tmp = len / math.sqrt(1 + slope^2)
+        ax, ay = x + tmp, y + slope * tmp -- ax - x = tmp
+        -- "place" to the midpoint
+        tmp = tmp / 2; ax, bx = ax - tmp, bx - tmp
+        tmp = (by - ay) / 2; ay, by = ay + tmp, by + tmp
+      end
+      dashes[k] = line({ax, ay}, {bx, by}, {width=0.5, color='grey'})
+      k = k + 1
+    end
+  end
+  return {'slopefield', xrange, dashes}
+end -- slopefield
 
 local _axis_equalq       = false
 local _xaxis_visibleq    = true
