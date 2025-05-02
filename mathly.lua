@@ -1763,11 +1763,14 @@ function ismember( x, v )
   return false
 end
 
+local _quiver_annotations = nil
+
 --// function plot(...)
 -- plot the graphs of functions in a way like in MATLAB with more features
 local plotly = {}
 function plot(...)
   _3d_plotq = false
+  _quiver_annotations = nil
 
   local args = {}
   local x_start = nil -- range of x for a plot
@@ -1810,6 +1813,10 @@ function plot(...)
           args[#args + 1] = v[3][i][4]
         end
         shownotlegend()
+      elseif v[1] == 'vectorfield2d' then
+        x_start, x_stop = v[2][1], v[2][2]
+        traces[#traces + 1] = {type = 'scatter', x = {}, y = {}}
+        _quiver_annotations = v[3]
       elseif v[1] == 'graph-hist' then -- group histogram graph object: {'graph-hist', x, y}
         for i = 2, #v, 2 do
           local trace = {}
@@ -2080,9 +2087,21 @@ function plot(...)
   plotly.layout = {}
 end -- plot
 
-local function _correct_range(start, stop)
-  if start > stop then return stop, start else return start, stop end
-end
+local function _correct_range(start, stop, step)
+  local tblq = type(start) == 'table'
+  if tblq then
+    stop = start[2]
+    step = start[3]
+    start = start[1]
+  end
+  if step == nil then
+    step = 1
+  elseif step < 0 then
+    error('In a range of the format {start, stop, step}: step must be positive.')
+  end
+  if start > stop then start, stop = stop, start end
+  if tblq then return {start, stop, step} else return start, stop end
+end -- _correct_range
 
 local function _set_resolution(r, n)
   n = n or 500
@@ -2106,13 +2125,13 @@ local _3d_plotq = false
 -- otherwise, X = f, Y = xrange, Z = yrange, which allows users to set up data and use it to display a graph
 function plot3d(f, xrange, yrange, title, resolution)
   xrange = xrange or {-5, 5}
-  yrange = yrange or {-5, 5}
+  yrange = yrange or xrange
   local X, Y, Z = {}, {}, {}
 
   if type(f) == 'string' then f = fstr2f(f) end
   if type(f) == 'function' then
-    xrange[1], xrange[2] = _correct_range(xrange[1], xrange[2])
-    yrange[1], yrange[2] = _correct_range(yrange[1], yrange[2])
+    xrange = _correct_range(xrange)
+    yrange = _correct_range(yrange)
     resolution = _set_resolution(resolution, 100)
     local n = max(math.ceil(max(xrange[2] - xrange[1], yrange[2] - yrange[1])) * 10, resolution)
     local x = linspace(xrange[1], xrange[2], n)
@@ -2153,10 +2172,8 @@ function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
   elseif type(rho) == 'string' then
     rho = fstr2f(rho)
   end
-  thetarange = thetarange or {0, 2*pi}
-  phirange = phirange or {0, pi}
-  thetarange[1], thetarange[2] = _correct_range(thetarange[1], thetarange[2])
-  phirange[1], phirange[2] = _correct_range(phirange[1], phirange[2])
+  thetarange = _correct_range(thetarange or {0, 2*pi})
+  phirange = _correct_range(phirange or {0, pi})
   resolution = _set_resolution(resolution, 100)
 
   local X, Y, Z = {}, {}, {}
@@ -2182,10 +2199,8 @@ end -- plotsphericalsurface3d
 --// function plotparametricsurface3d(x, y, z, urange, vrange, title)
 -- Plot a surface defined by xyz = {x(u, v), y(u, v), z(u,v)}.
 function plotparametricsurface3d(xyz, urange, vrange, title, resolution)
-  urange = urange or {-5, 5}
-  vrange = vrange or {-5, 5}
-  urange[1], urange[2] = _correct_range(urange[1], urange[2])
-  vrange[1], vrange[2] = _correct_range(vrange[1], vrange[2])
+  urange = _correct_range(urange or {-5, 5})
+  vrange = _correct_range(vrange or urange)
   resolution = _set_resolution(resolution, 100)
 
   local x, y, z = {}, {}, {}
@@ -2216,8 +2231,7 @@ end -- plotparametricsurface3d
 -- xyz = { ... }, the parametric equations, x(t), y(t), z(t), in order, of a space curve,
 -- trange is the range of t
 function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
-  trange = trange or {0, 2 * pi}
-  trange[1], trange[2] = _correct_range(trange[1], trange[2])
+  trange = _correct_range(trange or {0, 2 * pi})
   resolution = _set_resolution(resolution)
 
   local x, y, z
@@ -2627,9 +2641,8 @@ end -- pie
 -- angles: {angle1, angle2}
 function wedge(r, center, angles, style, wedgeq)
   center = center or {0, 0}
-  angles = angles or {0, 2*pi}
+  angles = _correct_range(angles or {0, 2*pi})
   if wedgeq == nil then wedgeq = true end
-  angles[1], angles[2] = _correct_range(angles[1], angles[2])
   local theta = angles[2] - angles[1]
   local arcpts = math.ceil(300 * theta/(2*pi))
   local inc = theta / arcpts
@@ -2743,8 +2756,7 @@ end -- text
 --// function parametriccurve2d(xy, trange, style, resolution)
 -- xy = {x(t), y(t)}
 function parametriccurve2d(xy, trange, style, resolution, orientationq)
-  trange = trange or {-5, 5}
-  trange[1], trange[2] = _correct_range(trange[1], trange[2])
+  trange = _correct_range(trange or {-5, 5})
   resolution = _set_resolution(resolution)
   local data = {'graph'}
   local ts = linspace(trange[1], trange[2], math.max(math.ceil((trange[2] - trange[1]) * 50), resolution))
@@ -2836,47 +2848,66 @@ function contourplot(f, x, y, style)
 			z[i][j] = f(x[i], y[j])
 		end
 	end
-  return {'contour', x, y, z, style or {colorscale = 'Jet', contours = { coloring = 'lines'}}}
+  return {'contour', x, y, z, style or {colorscale = 'Jet', contours = {coloring = 'lines'}}}
 end -- contourplot
 
 -- dy/dx = f(x, y)
-function slopefield(f, xrange, yrange, ratio)
+function slopefield(f, xrange, yrange, scale)
   if type(f) == 'string' then f = fstr2f(f) end
-  if xrange == nil then xrange = {-5, 5} end
-  if yrange == nil then yrange = xrange end
+  xrange = _correct_range(xrange or {-5, 5, 0.5})
+  yrange = _correct_range(yrange or xrange)
   if type(f) ~= 'function' or type(xrange) ~= 'table' or type(yrange) ~= 'table' then
-    error('slopefield(f, xrange, yrange, ratio): f is a vector function, xrange and yrange are of the format {begin, end, step}.')
+    error('slopefield(f, xrange, yrange, scale): f is a function as in dy/dx = f(x, y), xrange and yrange are of the format {begin, end, step}.')
   end
-  if ratio == nil then ratio = 1 end
-  local xstep, ystep = xrange[3], yrange[3]
-  if xstep == nil then xstep = 1 end
-  if ystep == nil then ystep = 1 end
-  local len = (xrange[2] - xrange[1]) / 50 * ratio -- length of arrows
-  local len2 = len / 2
-
-  local ax, ay, bx, by, slope
+  scale = scale or 1
+  if scale < 0 then scale = -scale end
+  local len = (xrange[2] - xrange[1]) / 50 * scale -- length of a dash
   local k, dashes = 1, {}
-  for x = xrange[1], xrange[2], xstep do
-    for y = yrange[1], yrange[2], ystep do
-      slope = f(x, y)
-      bx, by = x, y
-      if math.abs(slope) < 10*eps then -- horizontal
-        ax, ay, bx = x + len2, y, bx - len2
-      elseif math.abs(slope) > 100000 then -- vertical
-        ax, ay, by = x, y + len2, by - len2
-      else
-        local tmp = len / math.sqrt(1 + slope^2)
-        ax, ay = x + tmp, y + slope * tmp -- ax - x = tmp
-        -- "place" to the midpoint
-        tmp = tmp / 2; ax, bx = ax - tmp, bx - tmp
-        tmp = (by - ay) / 2; ay, by = ay + tmp, by + tmp
-      end
-      dashes[k] = line({ax, ay}, {bx, by}, {width=0.5, color='grey'})
+  for x = xrange[1], xrange[2], xrange[3] do
+    for y = yrange[1], yrange[2], yrange[3] do
+      local slope = f(x, y)
+      local xinc = len / math.sqrt(1 + slope^2)
+      local by = y + slope * xinc
+      xinc = xinc / 2 -- place the dash to the midpoint
+      dashes[k] = line({x - xinc, y}, {x + xinc, by}, {width=0.5, color='black'})
       k = k + 1
     end
   end
   return {'slopefield', xrange, dashes}
 end -- slopefield
+
+function directionfield(f, xrange, yrange, scale) return slopefield(f, xrange, yrange, scale) end
+
+-- f(x, y) returns a vector {xcomponent, ycomponent}
+function vectorfield2d(f, xrange, yrange, scale)
+  if type(f) == 'string' then f = fstr2f(f) end
+  xrange = _correct_range(xrange or {-5, 5, 0.5})
+  yrange = _correct_range(yrange or xrange)
+  if type(f) ~= 'function' or type(xrange) ~= 'table' or type(yrange) ~= 'table' then
+    error('vectorfield2d(f, xrange, yrange, scale): f is a vector function, xrange and yrange are of the format {begin, end, step}.')
+  end
+  scale = scale or 5
+  if scale < 0 then scale = -scale end
+  local k, annotations = 1, {}
+  for x = xrange[1], xrange[2], xrange[3] do
+    for y = yrange[1], yrange[2], yrange[3] do
+      local v = f(x, y)
+      annotations[k] = {
+        x = x, y = y, -- head
+        -- axref = 'pixel', yxref = 'pixel',
+        ax = -v[1] * scale, ay = v[2] * scale,  -- tail
+        -- if axref is "pixel" (deafult?), ax is specified in pixels relative to x. ax > 0 moves the tail to the right; otherwise, to the left.
+        -- if ayref is 'pixel', ay is specified in pixels relative to y. ay > 0 moves the tail upwards; otherwise, downwards.
+        showarrow = true, text = tostring(x) .. ':' .. tostring(y), --'',
+        arrowhead = 1, -- default: 1 - a simple line arrowhead; 5 - a simple line, angled arrowhead
+        arrowsize = 1, arrowwidth = 0.8, arrowcolor = 'black'
+      }
+      disp({x,y})
+      k = k + 1
+    end
+  end
+  return {'vectorfield2d', xrange, annotations}
+end -- vectorfield2d
 
 local _axis_equalq       = false
 local _xaxis_visibleq    = true
@@ -4161,6 +4192,12 @@ function figure.toplotstring(self)
     self['layout']['yaxis']['visible'] = _yaxis_visibleq
     self['layout']['yaxis']['showgrid'] = _gridline_visibleq
     self['layout']['showlegend'] = _showlegendq
+  end
+
+  if _quiver_annotations ~= nil then  -- dwang
+    self['layout']['showlegend'] = false
+    self['layout']['annotations'] = _quiver_annotations
+    _quiver_annotations = nil
   end
 
   -- Converting input
