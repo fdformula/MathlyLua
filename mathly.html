@@ -2047,12 +2047,9 @@ display(x)
 <p>They are exactly the same function. Return a graphics object for <code><a href=#plot>plot</a></code> to plot the slope field of <code>dy/dx = f(x, y)</code>.</p>
 <p><code>scale</code> (default to 1) controls the length of the dash line segments in a slope field.</p>
 <p><code>xrange</code> and <code>yrange</code> (default to <code>xrange</code>) take the format of <code>{initial value, terminal value, step (default: 1)}</code>.</p>
-<p>&#x2713; &nbsp; Note: The line segments may not be of the same size. It might be an issue of Plotly JavaScript Graphing Libraries. Downloading the newest version in
-<a href=https://plotly.com/javascript/getting-started/>https://plotly.com/javascript/getting-started/</a> may help fix the issue. You will also edit
-the entry, <code>plotly_engine</code>, found in the file <code>browser-setting.lua</code>.</p>
-</p>
 <pre><code>require('mathly')
 
+axissquare()
 plot(slopefield(function(x, y) return x + y end, {-3, 3, 0.2}))
 plot(directionfield('@(x, y) x^2 - y', {-3.5, 3.5, 0.5}, {-3.5, 3.5, 0.5}, 2))
 
