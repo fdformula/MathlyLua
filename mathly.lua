@@ -1763,14 +1763,13 @@ function ismember( x, v )
   return false
 end
 
-local _quiver_annotations = nil
+local _vecfield_annotations = nil
 
 --// function plot(...)
 -- plot the graphs of functions in a way like in MATLAB with more features
 local plotly = {}
 function plot(...)
   _3d_plotq = false
-  _quiver_annotations = nil
 
   local args = {}
   local x_start = nil -- range of x for a plot
@@ -1816,7 +1815,7 @@ function plot(...)
       elseif v[1] == 'vectorfield2d' then
         x_start, x_stop = v[2][1], v[2][2]
         traces[#traces + 1] = {type = 'scatter', x = {}, y = {}}
-        _quiver_annotations = v[3]
+        _vecfield_annotations = v[3]
       elseif v[1] == 'graph-hist' then -- group histogram graph object: {'graph-hist', x, y}
         for i = 2, #v, 2 do
           local trace = {}
@@ -4193,10 +4192,10 @@ function figure.toplotstring(self)
     self['layout']['showlegend'] = _showlegendq
   end
 
-  if _quiver_annotations ~= nil then  -- dwang
+  if _vecfield_annotations ~= nil then  -- dwang
     self['layout']['showlegend'] = false
-    self['layout']['annotations'] = _quiver_annotations
-    _quiver_annotations = nil
+    self['layout']['annotations'] = _vecfield_annotations
+    _vecfield_annotations = nil
   end
 
   -- Converting input
