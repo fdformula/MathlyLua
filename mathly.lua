@@ -2898,11 +2898,10 @@ function vectorfield2d(f, xrange, yrange, scale)
         ax = -v[1] * scale, ay = v[2] * scale,  -- tail
         -- if axref is "pixel" (deafult?), ax is specified in pixels relative to x. ax > 0 moves the tail to the right; otherwise, to the left.
         -- if ayref is 'pixel', ay is specified in pixels relative to y. ay > 0 moves the tail upwards; otherwise, downwards.
-        showarrow = true, text = tostring(x) .. ':' .. tostring(y), --'',
+        showarrow = true, text = '',
         arrowhead = 1, -- default: 1 - a simple line arrowhead; 5 - a simple line, angled arrowhead
         arrowsize = 1, arrowwidth = 0.8, arrowcolor = 'black'
       }
-      disp({x,y})
       k = k + 1
     end
   end
