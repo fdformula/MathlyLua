@@ -210,6 +210,7 @@ x = linspace(-3, 2.7, 100)
 y1 = map('@(x) x^2 - 2*x + 2 - exp(-x)', x)
 y2 = map('@(x) x^2 - 2*x + 2 - 2*exp(-x -1)', x)
 y3 = map('@(x) x^2 - 2*x + 2 - 8*exp(-x -2)', x)
+axissquare()
 plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
      x, y1, '-r', point(0, 1, {symbol='x', size=7, color='red'}),
      x, y2, '-b', point(-1, 3, {symbol='circle', size=7, color='blue'}),
