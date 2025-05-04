@@ -2059,7 +2059,8 @@ y2 = map('@(x) x^2 - 2*x + 2 - 2*exp(-x -1)', x)
 y3 = map('@(x) x^2 - 2*x + 2 - 8*exp(-x -2)', x)
 xa = linspace(-2.8, 2.7, 90)
 ya = map('@(x) x^2 - 2*x + 2 - 1.2607*exp(-x)', xa)
-plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
+plot({layout={autosize=false, width=400, height=550, title="y' = x^2 - y"}},
+     slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
      x, y1, '-r', point(0, 1, {symbol='x', size=7, color='red'}),
      x, y2, '-b', point(-1, 3, {symbol='circle', size=7, color='blue'}),
      x, y3, '-g', point(-2, 2, {symbol='square', size=7, color='green'}),
@@ -2246,6 +2247,7 @@ plot(vectorfield2d('@(x,y) {-x, -y}'))
 
 plot(vectorfield2d('@(x,y) {-x, y}'))
 plot(vectorfield2d('@(x,y) {-y, x}'))
+plot(vectorfield2d('@(x,y) {-y^2, 2*x^2}', {-5, 5, 0.5}, {-5, 5, 0.5}, 0.8))
 plot(vectorfield2d('@(x,y) {y, -x}'))
 plot(vectorfield2d('@(x,y) {y, x}'))
 

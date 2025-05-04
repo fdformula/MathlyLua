@@ -1764,12 +1764,14 @@ function ismember( x, v )
 end
 
 local _vecfield_annotations = nil
+local _layout_width_height = {}
 
 --// function plot(...)
 -- plot the graphs of functions in a way like in MATLAB with more features
 local plotly = {}
 function plot(...)
   _3d_plotq = false
+  _layout_width_height = {}
 
   local args = {}
   local x_start = nil -- range of x for a plot
@@ -2046,7 +2048,11 @@ function plot(...)
         for k_, v_ in pairs(v) do
           if type(k_) == 'string' then
             k_ = string.lower(k_)
-            if ismember(k_, {'xlabel', 'ylabel', 'title', 'name'}) then traces[1][k_] = v_ end
+            if ismember(k_, {'xlabel', 'ylabel', 'title', 'name'}) then
+              traces[1][k_] = v_
+            elseif ismember(k_, {'autosize', 'width', 'height', 'margin'}) then
+              _layout_width_height[k_] = v_
+            end
           end
         end
       elseif k == 'range' then
@@ -4192,10 +4198,13 @@ function figure.toplotstring(self)
     self['layout']['showlegend'] = _showlegendq
   end
 
-  if _vecfield_annotations ~= nil then  -- dwang
+  if _vecfield_annotations ~= nil then -- dwang
     self['layout']['showlegend'] = false
     self['layout']['annotations'] = _vecfield_annotations
     _vecfield_annotations = nil
+  end
+  for k_, v_ in pairs(_layout_width_height) do
+    self['layout'][k_] = v_
   end
 
   -- Converting input
