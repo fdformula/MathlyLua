@@ -214,7 +214,8 @@ axissquare()
 plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
      x, y1, '-r', point(0, 1, {symbol='x', size=7, color='red'}),
      x, y2, '-b', point(-1, 3, {symbol='circle', size=7, color='blue'}),
-     x, y3, '-g', point(-2, 2, {symbol='square', size=7, color='green'}))
+     x, y3, '-g', point(-2, 2, {symbol='square', size=7, color='green'}),
+     {layout={autosize=false, width=400, height=550, title="y' = x^2 - y"}})
 ```
 
 ### Note
