@@ -2114,6 +2114,31 @@ local function _set_resolution(r, n)
   return r
 end
 
+--// #data == #opts
+-- an option expression: {x=3,y=4,...}. it can't be {3, y=4, ...}
+local function _nice_args(data, opts)
+  local results = {}
+  local options = {}
+  local k = #data + 1
+  for i = 1, #data do
+    if type(data[i]) == 'table' and data[i][1] == nil then -- a = {x=1, y=2}: a[1] == nil
+      options = data[i]; k = i
+      break
+    else
+      results[i] = data[i]
+    end
+  end
+  if k == #opts then -- the last arg tends to be plotly js's style: {color='blue', ...}
+    results[k] = options
+  else
+    while k <= #opts do
+      results[k] = options[opts[k]]
+      k = k + 1
+    end
+  end
+  return results -- table.unpack(results) -- Lua 5.4.6&5.4.7: unpack doesn't work ALWAYS, a bug?
+end -- _nice_args
+
 local _3d_plotq = false
 
 --// data for a 3D plot:
@@ -2129,10 +2154,14 @@ local _3d_plotq = false
 -- if f is a function, xrange = {xstart, xstop}, y = {ystart, ystop}
 -- otherwise, X = f, Y = xrange, Z = yrange, which allows users to set up data and use it to display a graph
 function plot3d(f, xrange, yrange, title, resolution)
+  local args = _nice_args(
+    {f, xrange, yrange, title, resolution},
+    {'f', 'xrange', 'yrange', 'title', 'resolution'})
+  f, xrange, yrange, title, resolution = args[1], args[2], args[3], args[4], args[5]
+
   xrange = xrange or {-5, 5}
   yrange = yrange or xrange
   local X, Y, Z = {}, {}, {}
-
   if type(f) == 'string' then f = fstr2f(f) end
   if type(f) == 'function' then
     xrange = _correct_range(xrange)
@@ -2171,6 +2200,11 @@ end -- plot3d
 -- plot rho, a spherical function of theta and phi, where theta is in the range thetarange = {θ1, θ2}
 -- and phi is in the range phirange = {φ1, φ2}
 function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
+  local args = _nice_args(
+    {rho, thetarange, phirange, title, resolution},
+    {'rho', 'thetarange', 'phirange', 'title', 'resolution'})
+  rho, thetarange, phirange, title, resolution = args[1], args[2], args[3], args[4], args[5]
+
   if type(rho) == 'number' then
     local tmp = rho
     rho = function(t, p) return tmp end
@@ -2204,6 +2238,11 @@ end -- plotsphericalsurface3d
 --// function plotparametricsurface3d(x, y, z, urange, vrange, title)
 -- Plot a surface defined by xyz = {x(u, v), y(u, v), z(u,v)}.
 function plotparametricsurface3d(xyz, urange, vrange, title, resolution)
+  local args = _nice_args(
+    {xyz, urange, vrange, title, resolution},
+    {'xyz', 'urange', 'vrange', 'title', 'resolution'})
+  xyz, urange, vrange, title, resolution = args[1], args[2], args[3], args[4], args[5]
+
   urange = _correct_range(urange or {-5, 5})
   vrange = _correct_range(vrange or urange)
   resolution = _set_resolution(resolution, 100)
@@ -2236,6 +2275,11 @@ end -- plotparametricsurface3d
 -- xyz = { ... }, the parametric equations, x(t), y(t), z(t), in order, of a space curve,
 -- trange is the range of t
 function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
+  local args = _nice_args(
+    {xyz, trange, title, resolution, orientationq},
+    {'xyz', 'trange', 'title', 'resolution', 'orientationq'})
+  xyz, trange, title, resolution, orientationq = args[1], args[2], args[3], args[4], args[5]
+
   trange = _correct_range(trange or {0, 2 * pi})
   resolution = _set_resolution(resolution)
 
@@ -2303,9 +2347,10 @@ end -- _freq_distro
 --// hist(x, nbins, style)
 -- if x is a table of tables/rows, each row is a data set; otherwise, x is a table and a single data set.
 function hist(x, nbins, style, xrange)
-  if _isnamedargs(x) then
-    x, nbins, style, xrange = x[1] or x.x, x[2] or x.nbins, x[3] or x.style, x[4] or x.xrange
-  end
+  local args = _nice_args(
+    {x, nbins, style, xrange},
+    {'x', 'nbins', 'style', 'xrange'})
+  x, nbins, style, xrange = args[1], args[2], args[3], args[4]
 
   if type(x) == 'table' then
     if type(x[1]) ~= 'table' then x = { x } end
@@ -2373,10 +2418,10 @@ end -- _xmin_xmax_width
 -- another version of histogram, as see in most textbooks
 -- the output can be treated as an ordinary graph object such as a curve
 function hist1(x, nbins, style, xrange, freqpolygonq, style1, histq) -- style1: for freqpolygon
-  if _isnamedargs(x) then
-    x, nbins, style, xrange, freqpolygonq, style1, histq =
-    x[1] or x.x, x[2] or x.nbins, x[3] or x.style, x[4] or x.xrange, x[5] or x.freqpolygonq, x[6] or x.style1, x[7] or x.histq
-  end
+  local args = _nice_args(
+    {x, nbins, style, xrange, freqpolygonq, style1, histq},
+    {'x', 'nbins', 'style', 'xrange', 'freqpolygonq', 'style1', 'histq'})
+  x, nbins, style, xrange, freqpolygonq, style1, histq = args[1], args[2], args[3], args[4], args[5], args[6], args[7]
 
   if histq == nil then histq = true end
   nbins = nbins or 10
@@ -2423,9 +2468,11 @@ end -- hist1(x, nbins, style, xrange, freqpolygonq, style1, histq)
 --// function pareto(data, style, style1) -- style1: for freq curve
 -- data = {{label1, value1}, {label2, value2}, ..., {namen, valuen}}
 function pareto(data, style, style1) -- style1: for freq curve
-  if _isnamedargs(data) then
-    data, style, style1 = x[1] or data.data, x[2] or data.style, x[3] or x.style1
-  end
+  local args = _nice_args(
+    {data, style, style1},
+    {'data', 'style', 'style1'})
+  data, style, style1 = args[1], args[2], args[3]
+
   if style == nil then style = '-fs' end
   if style1 == nil then style1 = '-ro' end
 
@@ -2503,22 +2550,29 @@ function pareto(data, style, style1) -- style1: for freq curve
 end -- pareto(data, style, style1)
 
 function freqpolygon(x, nbins, style, xrange)
-  if _isnamedargs(x) then
-    x, nbins, style, xrange = x[1] or x.x, x[2] or x.nbins, x[3] or x.style, x[4] or x.xrange
-  end
+  local args = _nice_args(
+    {x, nbins, style, xrange},
+    {'x', 'nbins', 'style', 'xrange'})
+  x, nbins, style, xrange = args[1], args[2], args[3], args[4]
+
   return hist1(x, nbins, nil, xrange, true, style, false)
 end
 
 function histfreqpolygon(x, nbins, style, xrange, style1)
-  if _isnamedargs(x) then
-    x, nbins, style, xrange, style1 = x[1] or x.x, x[2] or x.nbins, x[3] or x.style, x[4] or x.xrange, x[5] or x.style1
-  end
+  local args = _nice_args(
+    {x, nbins, style, xrange, style1},
+    {'x', 'nbins', 'style', 'xrange', 'style1'})
+  x, nbins, style, xrange, style1 = args[1], args[2], args[3], args[4], args[5]
+
   return hist1(x, nbins, style, xrange, true, style1, true)
 end
 
 --// boxplot(x, nbins, style)
 -- if x is a table of tables/rows, each row is a data set; otherwise, x is a table and a single data set.
 function boxplot(x, names)
+  local args = _nice_args({x, names}, {'x', 'names'})
+  x, names = args[1], args[2]
+
   if type(x) == 'table' then
     if type(x[1]) ~= 'table' then x = { x } end
   else
@@ -2535,32 +2589,15 @@ function boxplot(x, names)
   return gdata
 end -- boxplot
 
-function _isnamedargs(x)
-  if x.bins ~= nil then return false end
-  for k, v in pairs(x) do
-    if type(k) == 'string' then return true end
-  end
-  if x[1] ~= nil and type(x[1]) == 'table' and x[1].bins ~= nil then
-    return true
-  end
-  local typ = 0
-  for k, v in pairs(x) do
-    if typ == 0 then
-      typ = type(v)
-    elseif typ ~= type(v) then
-      return true
-    end
-  end
-  return false
-end -- _isnamedargs
-
 -- offcenter:
 --  1. 0.1, all bins are away from the center by 0.1
 --  2. {{2, 0.1}, {5, 0.3}, ...}, the 2nd, 5th ... bins are away from the center by ...
 function pie(x, nbins, radius, style, offcenter, names) -- nbins, ..., names: space hodlers, also saving the step: local nbins, ..., names
-  if _isnamedargs(x) then
-    x, nbins, radius, style, offcenter, names = x[1] or x.x, x[2] or x.nbins, x[3] or x.radius, x[4] or x.style, x[5] or x.offcenter, x[6] or x.names
-  end
+  local args = _nice_args(
+    {x, nbins, radius, style, offcenter, names},
+    {'x', 'nbins', 'radius', 'style', 'offcenter', 'names'})
+  x, nbins, radius, style, offcenter, names = args[1], args[2], args[3], args[4], args[5], args[6]
+
   local freqs, xmin, xmax, width
   local binsq = x['bins'] ~= nil
   if binsq then
@@ -2645,6 +2682,11 @@ end -- pie
 -- center: center {x, y}
 -- angles: {angle1, angle2}
 function wedge(r, center, angles, style, wedgeq)
+  local args = _nice_args(
+    {r, center, angles, style, wedgeq},
+    {'r', 'center', 'angles', 'style', 'wedgeq'})
+  r, center, angles, style, wedgeq = args[1], args[2], args[3], args[4], args[5]
+
   center = center or {0, 0}
   angles = _correct_range(angles or {0, 2*pi})
   if wedgeq == nil then wedgeq = true end
@@ -2688,14 +2730,28 @@ end -- wedge
 -- center: center {x, y}
 -- angles: {angle1, angle2}
 function arc(r, center, angles, style)
+  local args = _nice_args(
+    {r, center, angles, style},
+    {'r', 'center', 'angles', 'style'})
+  r, center, angles, style = args[1], args[2], args[3], args[4]
+
   return wedge(r, center, angles, style, false)
 end
 
 function circle(r, center, style)
+  local args = _nice_args(
+    {r, center, style},
+    {'r', 'center', 'style'})
+  r, center, style = args[1], args[2], args[3]
+
+  if center == nil then center = {0, 0} end
   return arc(r, center, {0, 2*pi}, style)
 end
 
 function polygon(xy, style)
+  local args = _nice_args({xy, style}, {'xy', 'style'})
+  xy, style = args[1], args[2]
+
   local x, y = {}, {}
   local k = 1
   for i = 1, #xy do
@@ -2714,6 +2770,9 @@ function polygon(xy, style)
 end -- polygon
 
 function line(x1y1, x2y2, style)
+  local args = _nice_args({x1y1, x2y2, style}, {'x1y1', 'x2y2', 'style'})
+  x1y1, x2y2, style = args[1], args[2], args[3]
+
   local data = {'graph', {x1y1[1], x2y2[1]}, {x1y1[2], x2y2[2]}}
   if style == nil then data[4] = '-' else data[4] = style end
   return data
@@ -2721,6 +2780,9 @@ end
 
 -- style: e.g., {symbol='circle-open', size=10, color='blue'}
 function point(x, y, style)  -- plot a point at (x, y)
+  local args = _nice_args({x, y, style}, {'x', 'y', 'style'})
+  x, y, style = args[1], args[2], args[3], args[4], args[5], args[6], args[7]
+
   if type(x) == 'number' then
     x, y = {x}, {y}
   else
@@ -2747,6 +2809,11 @@ end -- point
 --
 -- style: {family = 'sans serif', size = 18, color = '#ff0000'}
 function text(x, y, txt, style)
+  local args = _nice_args(
+    {x, y, txt, style},
+    {'x', 'y', 'txt', 'style'})
+  x, y, txt, style = args[1], args[2], args[3], args[4]
+
   style = style or {color = 'black'}
   local trace = {{x}, {y}}
   trace['text'] = txt
@@ -2761,6 +2828,11 @@ end -- text
 --// function parametriccurve2d(xy, trange, style, resolution)
 -- xy = {x(t), y(t)}
 function parametriccurve2d(xy, trange, style, resolution, orientationq)
+  local args = _nice_args(
+    {xy, trange, style, resolution, orientationq},
+    {'xy', 'trange', 'style', 'resolution', 'orientationq'})
+  xy, trange, style, resolution, orientationq = args[1], args[2], args[3], args[4], args[5]
+
   trange = _correct_range(trange or {-5, 5})
   resolution = _set_resolution(resolution)
   local data = {'graph'}
@@ -2794,6 +2866,11 @@ end -- parametriccurve2d
 --//function polarcurve2d(r, trange, style, resolution)
 -- r(θ), a polar function
 function polarcurve2d(r, trange, style, resolution, orientationq)
+  local args = _nice_args(
+    {r, trange, style, resolution, orientationq},
+    {'r', 'trange', 'style', 'resolution', 'orientationq'})
+  r, trange, style, resolution, orientationq = args[1], args[2], args[3], args[4], args[5]
+
   if type(r) == 'number' then
     local f = r
     r = function(t) return f end
@@ -2809,6 +2886,11 @@ end -- polarcurve2d
 --// function scatter(x, y, style)
 -- x and y are tables of the same size
 function scatter(x, y, style)
+  local args = _nice_args(
+    {x, y, style},
+    {'x', 'y', 'style'})
+  x, y, style = args[1], args[2], args[3]
+
   local X, Y = _converse_poly_input(x)
   if #X ~= 0 then style = y; x, y = X, Y end
   x = flatten(x)
@@ -2838,6 +2920,11 @@ end -- _contour_data
 --// function contourplot(f, x, y, style)
 -- x and y are tables of the same size
 function contourplot(f, x, y, style)
+  local args = _nice_args(
+    {f, x, y, style},
+    {'f', 'x', 'y', 'style'})
+  f, x, y, style = args[1], args[2], args[3], args[4]
+
   if type(f) == 'string' then f = fstr2f(f) end
   x = _contour_data(x)
   if y == nil then
@@ -2858,6 +2945,11 @@ end -- contourplot
 
 -- dy/dx = f(x, y)
 function slopefield(f, xrange, yrange, scale)
+  local args = _nice_args(
+    {f, xrange, yrange, scale},
+    {'f', 'xrange', 'yrange', 'scale'})
+  f, xrange, yrange, scale = args[1], args[2], args[3], args[4]
+
   if type(f) == 'string' then f = fstr2f(f) end
   xrange = _correct_range(xrange or {-5, 5, 0.5})
   yrange = _correct_range(yrange or xrange)
@@ -2885,6 +2977,11 @@ function directionfield(f, xrange, yrange, scale) return slopefield(f, xrange, y
 
 -- f(x, y) returns a vector {xcomponent, ycomponent}
 function vectorfield2d(f, xrange, yrange, scale)
+  local args = _nice_args(
+    {f, xrange, yrange, scale},
+    {'f', 'xrange', 'yrange', 'scale'})
+  f, xrange, yrange, scale = args[1], args[2], args[3], args[4]
+
   if type(f) == 'string' then f = fstr2f(f) end
   xrange = _correct_range(xrange or {-5, 5, 0.5})
   yrange = _correct_range(yrange or xrange)
