@@ -2129,7 +2129,11 @@ local function _nice_args(data, opts)
     end
   end
   if k == #opts then -- the last arg tends to be plotly js's style: {color='blue', ...}
-    results[k] = options
+    if options[opts[k]] ~= nil then
+      results[k] = options[opts[k]]
+    else
+      results[k] = options
+    end
   else
     while k <= #opts do
       results[k] = options[opts[k]]
