@@ -2339,9 +2339,8 @@ plot(polarcurve2d('@(t) cos(a*t)', {0, 2*pi}))
 <a href=#arc><code></code>arc</code></a>, <a href=#circle><code></code>circle</code></a>, <a href=#polygon><code></code>polygon</code></a>,
 <a href=#line><code></code>line</code></a>, <a href=#point><code></code>point</code></a>, and <a href=#text><code></code>text</code></a>.</p>
 
-<p>As with many other programming languages, the basic rule is that <b>unnamed arguments go first and in
-specific order as defined in the definition of a Lua function, and named arguments must be put in a list</b>. In the list, each item is named,
-and the order of items doesn't matter. For example,</p>
+<p>The basic rule is that <b>unnamed arguments go first and are in specific order, and all named arguments
+must be put in a single list</b>. In the list, each item is named, and the order of items doesn't matter. For example,</p>
 <pre><code>require 'mathly';
 
 -- the following commands generate each the same graphics object
