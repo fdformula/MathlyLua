@@ -2342,7 +2342,7 @@ plot(polarcurve2d('@(t) cos(a*t)', {0, 2*pi}))
 <p>As with many other programming languages, the basic rule is that <b>unnamed arguments go first and in
 specific order as defined in the definition of a Lua function, and named arguments must be put in a list</b>. In the list, each item is named,
 and the order of items doesn't matter. For example,</p>
-<pre><code>mathly = require('mathly')
+<pre><code>require 'mathly';
 
 -- the following commands generate each the same graphics object
 vectorfield2d('@(x, y) {-y, x}', {-5, 5}, nil, 3)             -- unnamed arguments
@@ -2354,6 +2354,11 @@ vectorfield2d('@(x, y) {-y, x}', {scale=3, xrange={-5, 5}})
 vectorfield2d({f='@(x, y) {-y, x}', xrange={-5, 5}, scale=3}) -- named arguments
 vectorfield2d({scale=3, xrange={-5, 5}, f='@(x, y) {-y, x}'})
 vectorfield2d{scale=3, xrange={-5, 5}, f='@(x, y) {-y, x}'}
+</code></pre>
+<p>Note: Since <a href=#plot><code>plot</code></a> is so basic and general a tool, it is designed to treat arguments differently.
+It can take two or more "named" arguments which can occur before an unnamed argument. For instance,</p>
+<pre><code>require 'mathly';
+plot({layout={width=600, height=300}}, sin, {range={0,2*pi}})
 </code></pre>
 <p></p>
 <hr>
