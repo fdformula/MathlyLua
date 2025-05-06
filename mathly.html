@@ -2247,10 +2247,12 @@ plot(vectorfield2d('@(x,y) {-y^2, 2*x^2}', {-5, 5, 0.5}, {-5, 5, 0.5}, 0.8))
 plot(vectorfield2d('@(x,y) {y, -x}'))
 plot(vectorfield2d('@(x,y) {y, x}'))
 plot(vectorfield2d('@(x,y) {-y, -x}', {scale=10}),
-     {layout={width=800, height=800, title='<b>F</b>(x, y) = {-y, -x}'}})
+     {layout={width=800, height=600, title='<b>F</b>(x, y) = {-y, -x}'}})
 
-plot(vectorfield2d('@(x,y) {y, sin(x)}', {-2*pi, 2*pi, pi/8}, nil, 7))
-plot(vectorfield2d('@(x,y) {3*cos(3*x), 2*cos(2*y)}', {-1, 1, 1/6}, {-1.5, 1.5, 1/6}, 8))
+plot(vectorfield2d('@(x,y) {y, sin(x)}', {xrange={-2*pi, 2*pi, pi/8}, scale=7}),
+     {layout={width=700, height=700}})
+plot(vectorfield2d('@(x,y) {3*cos(3*x), 2*cos(2*y)}', {-1, 1, 1/10}, {-1.5, 1.5, 1/10}, 15),
+     {layout={width=605, height=800}})
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=vertcat href=#m><code>vertcat(A, B, ...)</code></a></h4>
