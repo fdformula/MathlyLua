@@ -2163,9 +2163,15 @@ function namedargs(data, opts)
   local options = nil
   local k = #data + 1
   for i = 1, #data do
-    if type(data[i]) == 'table' and data[i][1] == nil then -- a = {x=1, y=2}: a[1] == nil
-      options = data[i]; k = i
-      break
+    local optq = false
+    if type(data[i]) == 'table' and data[i][1] == nil then -- more test
+      for j = i, #opts do
+        optq = data[i][opts[j]] ~= nil
+        if optq then break end
+      end
+    end
+    if optq then -- a = {x=1, y=2}: a[1] == nil
+      options = data[i]; k = i; break
     else
       results[i] = data[i]
     end
