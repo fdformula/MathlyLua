@@ -185,7 +185,7 @@ plot('@(x) x', '--r', '@(x) x^3', '-g', {range = {0, 1}})
 shownotlegend()
 plot(x, y1) -- plot a function defined by x and y1
 plot(x, y1, '--xr', x, y2, ':g', text(0.79, 0.71 - 0.08, 'A'), point(0.79, 0.71, {symbol='circle', size=10, color='blue'}))
-plot(x, y1, {xlabel="x-axis", ylabel="y-axis", color='red'})
+plot(x, y1, {color='red', layout={xaxis={title="x-axis"}, yaxis={title="y-axis"}}})
 
 showlegend()
 plot(x, y1, specs3, x, y2, specs2, sin, x, y3, specs1)
