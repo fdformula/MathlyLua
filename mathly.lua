@@ -2009,7 +2009,12 @@ function plot(...)
               if optq then -- this arg is options
                 for k, v in pairs(args[i]) do
                   if type(k) == 'string' then
-                    trace[string.lower(k)] = v
+                    local key = string.lower(k)
+                    if key == 'layout' then
+                      layout_arg[#layout_arg + 1] = {layout = v} -- to be processed finally
+                    else
+                      trace[key] = v
+                    end
                   else
                     trace[k] = v
                   end
