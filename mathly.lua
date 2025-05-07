@@ -2115,8 +2115,7 @@ local function _set_resolution(r, n)
 end
 
 --// function merge(t1, t2)
--- merge two tables of any types into a single one. it is a general tool.
--- if t1 and t2 are flatten tables, it functions like finding the union of two sets.
+-- merge two tables of any structure into a single one
 function merge(t1, t2)
   if type(t1) ~= 'table' then
     if type(t2) ~= 'table' then

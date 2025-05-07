@@ -1460,8 +1460,8 @@ disp(merge(1, 2))
 -- {1, 2}
 
 -- 2) one argument is a table, and the other one is not
-disp(merge(1, {2, 3, 4, p = {10, 9}}))
--- {2, 3, 4, 1, p = {10, 9}}
+disp(merge('a', {2, 3, 4, p = {10, 9}}))
+-- {2, 3, 4, 'a', p = {10, 9}}
 disp(merge({2, 3, 4, p = {10, 9}}, 12))
 -- {2, 3, 4, 12, p = {10, 9}}
 disp(merge({2, 3, 4, p = {10, 9}}, 2))
@@ -1470,8 +1470,8 @@ disp(merge({2, 3, 4, p = {10, 9}}, 2))
 -- 3) both arguments are tables
 disp(merge({5, 2, 3, 4}, {2, 4, 5, 6, 7}))
 -- {5, 2, 3, 4, 6, 7}
-disp(merge({1, 2, 3, x={3, 1, 5, w=180}}, {2, 3, 5, y=8, x={5, 1, 9, w=100, z={4, 5, 6}}}))
--- {1, 2, 3, 5, x = {3, 1, 5, 9, z = {4, 5, 6}, w = 100}, y = 8} -- named item w is overwritten
+disp(merge({1, 2, 3, x={3, 1, 5, w=180}}, {2, 3, 5, y=8, x={5, 1, 'abc', w=100, z={4, 5, 6}}}))
+-- {1, 2, 3, 5, x = {3, 1, 5, 'abc', z = {4, 5, 6}, w = 100}, y = 8} -- named item w is overwritten
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=namedargs href=#m><code>namedargs(data, opts)</code></a></h4>
