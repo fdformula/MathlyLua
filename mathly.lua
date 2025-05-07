@@ -1872,7 +1872,6 @@ function plot(...)
 ::endfor::
   end
 
-  plotly.gridq = false
   plotly.layout = {}
 
   local i = 1
@@ -2001,8 +2000,7 @@ function plot(...)
               for k, v in pairs(args[i]) do
                 if type(k) == 'string' then
                   k = string.lower(k)
-                  optq = ismember(k, {'layout', 'color', 'size', 'width', 'mode',
-                                      'xlabel', 'ylabel', 'title', 'symbol', 'name'})
+                  optq = ismember(k, {'layout', 'color', 'size', 'width', 'mode', 'symbol', 'name'})
                   if optq then break end
                 end
               end
@@ -2048,20 +2046,24 @@ function plot(...)
   for i = 1, #layout_arg do  -- processed finally
     local names = {}
     for k, v in pairs(layout_arg[i]) do -- layout settings are merged into the 1st trace
-      if k ~= 'names' then traces[1][k] = v end
       if k == 'layout' then
         for k_, v_ in pairs(v) do
           if type(k_) == 'string' then
             k_ = string.lower(k_)
-            if ismember(k_, {'xlabel', 'ylabel', 'title', 'name'}) then
+            if k_ == 'name' then
               traces[1][k_] = v_
-            elseif ismember(k_, {'autosize', 'width', 'height', 'margin'}) then
+            elseif ismember(k_, {'autosize', 'grid', 'width', 'height', 'title', 'xaxis', 'yaxis', 'margin'}) then
               _layout_width_height[k_] = v_
+              if k_ == 'grid' then
+                _layout_width_height[k_]['pattern'] = 'independent'
+              end
             end
           end
         end
       elseif k == 'range' then
         xrange = v
+      elseif k ~= 'names' then
+        traces[1][k] = v
       end
     end
     if layout_arg[i]['names'] ~= nil then names = layout_arg[i]['names'] end
@@ -2093,7 +2095,6 @@ function plot(...)
   end
 
   plotly.plots(traces):show()
-  plotly.gridq = false
   plotly.layout = {}
 end -- plot
 
@@ -2176,18 +2177,16 @@ function namedargs(data, opts)
       results[i] = data[i]
     end
   end
-  if options ~= nil then
-    if k == #opts then -- the last arg tends to be plotly js's style: {color='blue', ...}
-      if options[opts[k]] ~= nil then
-        results[k] = options[opts[k]]
-      else
-        results[k] = options
-      end
+  if options == nil then return results end
+  if k == #opts then
+    if options[opts[k]] ~= nil then
+      results[k] = options[opts[k]]
     else
-      while k <= #opts do
-        results[k] = options[opts[k]]
-        k = k + 1
-      end
+      results[k] = options
+    end
+  else
+    while k <= #opts do
+      results[k] = options[opts[k]]; k = k + 1
     end
   end
   return results -- table.unpack(results) -- Lua 5.4.6&5.4.7: doesn't work well
@@ -2238,14 +2237,12 @@ function plot3d(f, xrange, yrange, title, resolution)
   end
 
   _3d_plotq = true
-  plotly.gridq = false
   plotly.layout = {}
   if title ~= nil then plotly.layout.title = title end
   plotly.layout.margin = { l = 20, r = 20, b = 20, t = 40}
 
   local trace = {x = X, y = Y, z = Z, type = 'surface'}
   plotly.plots({trace}):show()
-  plotly.gridq = false
   plotly.layout = {}
   _3d_plotq = false
 end -- plot3d
@@ -2350,7 +2347,6 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
   z = map(xyz[3], t)
 
   _3d_plotq = true
-  plotly.gridq = false
   plotly.layout = {}
   if title ~= nil then plotly.layout.title = title end
   plotly.layout.margin = { l = 20, r = 20, b = 20, t = 40}
@@ -2368,7 +2364,6 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
     end
   end
   plotly.plots(traces):show(); traces = nil
-  plotly.gridq = false
   plotly.layout = {}
   _3d_plotq = false
 end -- plotparametriccurve3d
@@ -2818,11 +2813,11 @@ function polygon(xy, style)
   return data
 end -- polygon
 
-function line(x1y1, x2y2, style)
-  local args = namedargs({x1y1, x2y2, style}, {'x1y1', 'x2y2', 'style'})
-  x1y1, x2y2, style = args[1], args[2], args[3]
+function line(point1, point2, style)
+  local args = namedargs({point1, point2, style}, {'point1', 'point2', 'style'})
+  point1, point2, style = args[1], args[2], args[3]
 
-  local data = {'graph', {x1y1[1], x2y2[1]}, {x1y1[2], x2y2[2]}}
+  local data = {'graph', {point1[1], point2[1]}, {point1[2], point2[2]}}
   if style == nil then data[4] = '-' else data[4] = style end
   return data
 end
@@ -4149,7 +4144,6 @@ local json = { version = "dkjson 2.8" }
 -- https://cdn.plot.ly/plotly-latest.min.js
 plotly.cdn_main = "<script src='" .. plotly_engine .. "'></script>" -- dwang
 plotly.id_count = 1
-plotly.gridq = false -- dwang, organize traces/figures according to specified grids, e.g., 2x2
 plotly.layout = {} -- dwang
 
 local _writehtml_failedq = false -- dwang
@@ -4212,9 +4206,6 @@ Shorthand options:
 | *ms* | marker-size (numeric value - default 2) |
 | *c* or *color* | sets color of line and marker |
 | *mode* | shorter mode forms (options: "m"="markers", "l"="lines", "m+l" or "l+m"="markers+lines") |
-| *title* | sets/updates the title of the figure |
-| *xlabel* | sets/updates the xlabel of the figure |
-| *ylabel* | sets/updates the ylabel of the figure |
 ]]
 ---@param self plotly.figure
 ---@param trace table
@@ -4227,31 +4218,11 @@ function figure.plot(self, trace)
     trace["marker"] = {}
   end
   for name, val in pairs(trace) do
-    if name == 'layout' then -- dwang
-      if plotly.gridq then
-        print("Only the first option that defines 'layout' matters.")
-      else
-        if val['grid'] ~= nil then
-          if val['grid']['rows'] ~= nil and val['grid']['columns'] ~= nil then
-            plotly.gridq = true
-            plotly.layout = val
-            plotly.layout['grid']['pattern'] = 'independent'
-          else
-            print('Invalid grid: both rows and columns must be specified.')
-          end
-        end
-      end
-      trace[name] = nil
-    elseif name == "ls" or name == 'style' then -- dwang, name == 'style'
+    if name == "ls" or name == 'style' then -- dwang, name == 'style'
       trace["line"]["dash"] = _dash_style[val]
       trace[name] = nil
     elseif name == "lw" or name == 'width' then -- dwang, name == 'width'
       trace["line"]["width"] = val
-      trace[name] = nil
-    elseif name == "title" then
-      if plotly.gridq == false or plotly.layout["title"] == nil then
-        plotly.layout["title"] = val
-      end
       trace[name] = nil
     elseif name == 1 then
       trace["x"] = val
@@ -4271,16 +4242,6 @@ function figure.plot(self, trace)
       trace[name] = nil
     elseif name == "mode" and _mode_shorthand[val] then
       trace["mode"] = _mode_shorthand[val]
-    elseif name == "xlabel" then
-      if plotly.gridq == false or plotly.layout["xaxis"] == nil then
-        plotly.layout["xaxis"] = {title={text=val}}
-      end
-      trace[name] = nil
-    elseif name == "ylabel" then
-      if plotly.gridq == false or plotly.layout["yaxis"] == nil then
-        plotly.layout["yaxis"] = {title={text=val}}
-      end
-      trace[name] = nil
     end
   end
 
@@ -4297,32 +4258,6 @@ function figure.update_layout(self, layout)
 end
 
 function figure.toplotstring(self)
-  if plotly.gridq then -- dwang
-    if type(self['layout']['grid']['rows']) == 'string' then
-      self['layout']['grid']['rows'] = tonumber(self['layout']['grid']['rows'])
-    end
-    if type(self['layout']['grid']['cloumns']) == 'string' then
-      self['layout']['grid']['cloumns'] = tonumber(self['layout']['grid']['cloumns'])
-    end
-
-    if self['layout']['grid']['rows'] * self['layout']['grid']['columns'] < #self['data'] then
-      return '<html><body>Invalid grid: rows * columns &lt; the number of traces.</body></html>'
-    end
-
-    self['layout']['xaxis'] = nil
-    self['layout']['yaxis'] = nil
-    if _3d_plotq then self['layout']['zaxis'] = nil end
-
-    -- plotly-2.9.0.min.js, hopefully all versions, determines if grid options are used
-    -- by checking whether the texts of xaxis and yaxis are different for traces
-    for i = 1,#self['data'] do
-      local s = tostring(i)
-      self['data'][i]['xaxis'] = 'x' .. s -- they are different :-)
-      self['data'][i]['yaxis'] = 'y' .. s
-      if _3d_plotq then self['data'][i]['zaxis'] = 'z' .. s end
-    end
-  end
-
   if (not _3d_plotq) and _axis_equalq then
     if self['layout'] == nil then self['layout'] = {} end
     if self['layout']['xaxis'] == nil then self['layout']['xaxis'] = {} end
@@ -4351,6 +4286,31 @@ function figure.toplotstring(self)
   end
   for k_, v_ in pairs(_layout_width_height) do
     self['layout'][k_] = v_
+  end
+  if self['layout']['grid'] ~= nil then
+    if type(self['layout']['grid']['rows']) == 'string' then
+      self['layout']['grid']['rows'] = tonumber(self['layout']['grid']['rows'])
+    end
+    if type(self['layout']['grid']['cloumns']) == 'string' then
+      self['layout']['grid']['cloumns'] = tonumber(self['layout']['grid']['cloumns'])
+    end
+
+    if self['layout']['grid']['rows'] * self['layout']['grid']['columns'] < #self['data'] then
+      return '<html><body>Invalid grid: rows * columns &lt; the number of traces.</body></html>'
+    end
+
+    self['layout']['xaxis'] = nil
+    self['layout']['yaxis'] = nil
+    if _3d_plotq then self['layout']['zaxis'] = nil end
+
+    -- plotly-2.9.0.min.js, hopefully all versions, determines if grid options are used
+    -- by checking whether the texts of xaxis and yaxis are different for traces
+    for i = 1,#self['data'] do
+      local s = tostring(i)
+      self['data'][i]['xaxis'] = 'x' .. s -- they are different :-)
+      self['data'][i]['yaxis'] = 'y' .. s
+      if _3d_plotq then self['data'][i]['zaxis'] = 'z' .. s end
+    end
   end
 
   -- Converting input
