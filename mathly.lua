@@ -22,11 +22,11 @@ API and Usage
     all, any, apply, cc, clc, clear, contourplot, copy, cross, det, diag, disp,
     display, dot, expand, eye, findroot, flatten, fliplr, flipud, format, fstr2f,
     fzero, hasindex, horzcat, inv, iseven, isinteger, ismember, isodd, lagrangepoly,
-    length, linsolve, linspace, lu, map, match, max, mean, min, newtonpoly, norm,
-    ones, polynomial, polyval, printf, prod, qr, rand, randi, range, remake, repmat,
-    reshape, round, rr, rref, save, seq, size, sort, sprintf, std, strcat,
-    submatrix, subtable, sum, tblcat, text, tic, toc, transpose, tt, unique, var,
-    vertcat, who, zeros
+    length, linsolve, linspace, lu, map, match, max, mean, merge, min, namedargs,
+    newtonpoly, norm, ones, polynomial, polyval, printf, prod, qr, rand, randi, range,
+    remake, repmat, reshape, round, rr, rref, save, seq, size, sort, sprintf, std,
+    strcat, submatrix, subtable, sum, tblcat, text, tic, toc, transpose, tt, unique,
+    var, vertcat, who, zeros
 
     dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
     oct2hex, hex2bin, hex2dec, hex2oct
@@ -2114,9 +2114,47 @@ local function _set_resolution(r, n)
   return r
 end
 
+--// function merge(t1, t2)
+-- merge two tables of any types into a single one. it is a general tool.
+-- if t1 and t2 are flatten tables, it functions like finding the union of two sets.
+function merge(t1, t2)
+  if type(t1) ~= 'table' then
+    if type(t2) ~= 'table' then
+      if t1 ~= t2 then
+        return {t1, t2}
+      else
+        return {t1}
+      end
+    end  else
+    if type(t2) ~= 'table' then t1, t2 = t2, t1 end
+  end
+  if type(t1) ~= 'table' then -- t2 is a table
+    local t = copy(t2)
+    if not ismember(t1, t) then t[#t + 1] = t1 end
+    return t
+  end
+
+  local t = copy(t1)
+  for k2, v2 in pairs(t2) do
+    if type(k2) == 'string' then
+      if t1[k2] == nil then
+        t[k2] = copy(t2[k2])
+      else -- merge
+        if type(t1[k2]) == 'table' and type(v2) == 'table' then
+          t[k2] = merge(t1[k2], t2[k2]) -- merge
+        else
+          t[k2] = copy(v2) -- t2 overwrites t1
+        end
+      end
+    else -- it's a number index
+      if not ismember(v2, t) then t[#t + 1] = v2 end
+    end
+  end
+  return t
+end -- merge
+
 --// #data == #opts
--- an option expression: {x=3,y=4,...}. it can't be {3, y=4, ...}
-local function _named_args(data, opts)
+function namedargs(data, opts)
   local results = {}
   local options = nil
   local k = #data + 1
@@ -2142,8 +2180,8 @@ local function _named_args(data, opts)
       end
     end
   end
-  return results -- table.unpack(results) -- Lua 5.4.6&5.4.7: unpack doesn't work ALWAYS, a bug?
-end -- _named_args
+  return results -- table.unpack(results) -- Lua 5.4.6&5.4.7: doesn't work well
+end -- namedargs
 
 local _3d_plotq = false
 
@@ -2160,7 +2198,7 @@ local _3d_plotq = false
 -- if f is a function, xrange = {xstart, xstop}, y = {ystart, ystop}
 -- otherwise, X = f, Y = xrange, Z = yrange, which allows users to set up data and use it to display a graph
 function plot3d(f, xrange, yrange, title, resolution)
-  local args = _named_args(
+  local args = namedargs(
     {f, xrange, yrange, title, resolution},
     {'f', 'xrange', 'yrange', 'title', 'resolution'})
   f, xrange, yrange, title, resolution = args[1], args[2], args[3], args[4], args[5]
@@ -2206,7 +2244,7 @@ end -- plot3d
 -- plot rho, a spherical function of theta and phi, where theta is in the range thetarange = {θ1, θ2}
 -- and phi is in the range phirange = {φ1, φ2}
 function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
-  local args = _named_args(
+  local args = namedargs(
     {rho, thetarange, phirange, title, resolution},
     {'rho', 'thetarange', 'phirange', 'title', 'resolution'})
   rho, thetarange, phirange, title, resolution = args[1], args[2], args[3], args[4], args[5]
@@ -2244,7 +2282,7 @@ end -- plotsphericalsurface3d
 --// function plotparametricsurface3d(x, y, z, urange, vrange, title)
 -- Plot a surface defined by xyz = {x(u, v), y(u, v), z(u,v)}.
 function plotparametricsurface3d(xyz, urange, vrange, title, resolution)
-  local args = _named_args(
+  local args = namedargs(
     {xyz, urange, vrange, title, resolution},
     {'xyz', 'urange', 'vrange', 'title', 'resolution'})
   xyz, urange, vrange, title, resolution = args[1], args[2], args[3], args[4], args[5]
@@ -2281,7 +2319,7 @@ end -- plotparametricsurface3d
 -- xyz = { ... }, the parametric equations, x(t), y(t), z(t), in order, of a space curve,
 -- trange is the range of t
 function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
-  local args = _named_args(
+  local args = namedargs(
     {xyz, trange, title, resolution, orientationq},
     {'xyz', 'trange', 'title', 'resolution', 'orientationq'})
   xyz, trange, title, resolution, orientationq = args[1], args[2], args[3], args[4], args[5]
@@ -2353,7 +2391,7 @@ end -- _freq_distro
 --// hist(x, nbins, style)
 -- if x is a table of tables/rows, each row is a data set; otherwise, x is a table and a single data set.
 function hist(x, nbins, style, xrange)
-  local args = _named_args(
+  local args = namedargs(
     {x, nbins, style, xrange},
     {'x', 'nbins', 'style', 'xrange'})
   x, nbins, style, xrange = args[1], args[2], args[3], args[4]
@@ -2424,7 +2462,7 @@ end -- _xmin_xmax_width
 -- another version of histogram, as see in most textbooks
 -- the output can be treated as an ordinary graph object such as a curve
 function hist1(x, nbins, style, xrange, freqpolygonq, style1, histq) -- style1: for freqpolygon
-  local args = _named_args(
+  local args = namedargs(
     {x, nbins, style, xrange, freqpolygonq, style1, histq},
     {'x', 'nbins', 'style', 'xrange', 'freqpolygonq', 'style1', 'histq'})
   x, nbins, style, xrange, freqpolygonq, style1, histq = args[1], args[2], args[3], args[4], args[5], args[6], args[7]
@@ -2473,7 +2511,7 @@ end -- hist1(x, nbins, style, xrange, freqpolygonq, style1, histq)
 --// function pareto(data, style, style1) -- style1: for freq curve
 -- data = {{label1, value1}, {label2, value2}, ..., {namen, valuen}}
 function pareto(data, style, style1) -- style1: for freq curve
-  local args = _named_args(
+  local args = namedargs(
     {data, style, style1},
     {'data', 'style', 'style1'})
   data, style, style1 = args[1], args[2], args[3]
@@ -2555,7 +2593,7 @@ function pareto(data, style, style1) -- style1: for freq curve
 end -- pareto(data, style, style1)
 
 function freqpolygon(x, nbins, style, xrange)
-  local args = _named_args(
+  local args = namedargs(
     {x, nbins, style, xrange},
     {'x', 'nbins', 'style', 'xrange'})
   x, nbins, style, xrange = args[1], args[2], args[3], args[4]
@@ -2564,7 +2602,7 @@ function freqpolygon(x, nbins, style, xrange)
 end
 
 function histfreqpolygon(x, nbins, style, xrange, style1)
-  local args = _named_args(
+  local args = namedargs(
     {x, nbins, style, xrange, style1},
     {'x', 'nbins', 'style', 'xrange', 'style1'})
   x, nbins, style, xrange, style1 = args[1], args[2], args[3], args[4], args[5]
@@ -2575,7 +2613,7 @@ end
 --// boxplot(x, nbins, style)
 -- if x is a table of tables/rows, each row is a data set; otherwise, x is a table and a single data set.
 function boxplot(x, names)
-  local args = _named_args({x, names}, {'x', 'names'})
+  local args = namedargs({x, names}, {'x', 'names'})
   x, names = args[1], args[2]
 
   if type(x) == 'table' then
@@ -2598,7 +2636,7 @@ end -- boxplot
 --  1. 0.1, all bins are away from the center by 0.1
 --  2. {{2, 0.1}, {5, 0.3}, ...}, the 2nd, 5th ... bins are away from the center by ...
 function pie(x, nbins, radius, style, offcenter, names) -- nbins, ..., names: space hodlers, also saving the step: local nbins, ..., names
-  local args = _named_args(
+  local args = namedargs(
     {x, nbins, radius, style, offcenter, names},
     {'x', 'nbins', 'radius', 'style', 'offcenter', 'names'})
   x, nbins, radius, style, offcenter, names = args[1], args[2], args[3], args[4], args[5], args[6]
@@ -2687,7 +2725,7 @@ end -- pie
 -- center: center {x, y}
 -- angles: {angle1, angle2}
 function wedge(r, center, angles, style, wedgeq)
-  local args = _named_args(
+  local args = namedargs(
     {r, center, angles, style, wedgeq},
     {'r', 'center', 'angles', 'style', 'wedgeq'})
   r, center, angles, style, wedgeq = args[1], args[2], args[3], args[4], args[5]
@@ -2735,7 +2773,7 @@ end -- wedge
 -- center: center {x, y}
 -- angles: {angle1, angle2}
 function arc(r, center, angles, style)
-  local args = _named_args(
+  local args = namedargs(
     {r, center, angles, style},
     {'r', 'center', 'angles', 'style'})
   r, center, angles, style = args[1], args[2], args[3], args[4]
@@ -2744,7 +2782,7 @@ function arc(r, center, angles, style)
 end
 
 function circle(r, center, style)
-  local args = _named_args(
+  local args = namedargs(
     {r, center, style},
     {'r', 'center', 'style'})
   r, center, style = args[1], args[2], args[3]
@@ -2754,7 +2792,7 @@ function circle(r, center, style)
 end
 
 function polygon(xy, style)
-  local args = _named_args({xy, style}, {'xy', 'style'})
+  local args = namedargs({xy, style}, {'xy', 'style'})
   xy, style = args[1], args[2]
 
   local x, y = {}, {}
@@ -2771,7 +2809,7 @@ function polygon(xy, style)
 end -- polygon
 
 function line(x1y1, x2y2, style)
-  local args = _named_args({x1y1, x2y2, style}, {'x1y1', 'x2y2', 'style'})
+  local args = namedargs({x1y1, x2y2, style}, {'x1y1', 'x2y2', 'style'})
   x1y1, x2y2, style = args[1], args[2], args[3]
 
   local data = {'graph', {x1y1[1], x2y2[1]}, {x1y1[2], x2y2[2]}}
@@ -2781,7 +2819,7 @@ end
 
 -- style: e.g., {symbol='circle-open', size=10, color='blue'}
 function point(x, y, style)  -- plot a point at (x, y)
-  local args = _named_args({x, y, style}, {'x', 'y', 'style'})
+  local args = namedargs({x, y, style}, {'x', 'y', 'style'})
   x, y, style = args[1], args[2], args[3], args[4], args[5], args[6], args[7]
 
   if type(x) == 'number' then
@@ -2810,7 +2848,7 @@ end -- point
 --
 -- style: {family = 'sans serif', size = 18, color = '#ff0000'}
 function text(x, y, txt, style)
-  local args = _named_args(
+  local args = namedargs(
     {x, y, txt, style},
     {'x', 'y', 'txt', 'style'})
   x, y, txt, style = args[1], args[2], args[3], args[4]
@@ -2829,7 +2867,7 @@ end -- text
 --// function parametriccurve2d(xy, trange, style, resolution)
 -- xy = {x(t), y(t)}
 function parametriccurve2d(xy, trange, style, resolution, orientationq)
-  local args = _named_args(
+  local args = namedargs(
     {xy, trange, style, resolution, orientationq},
     {'xy', 'trange', 'style', 'resolution', 'orientationq'})
   xy, trange, style, resolution, orientationq = args[1], args[2], args[3], args[4], args[5]
@@ -2867,7 +2905,7 @@ end -- parametriccurve2d
 --//function polarcurve2d(r, trange, style, resolution)
 -- r(θ), a polar function
 function polarcurve2d(r, trange, style, resolution, orientationq)
-  local args = _named_args(
+  local args = namedargs(
     {r, trange, style, resolution, orientationq},
     {'r', 'trange', 'style', 'resolution', 'orientationq'})
   r, trange, style, resolution, orientationq = args[1], args[2], args[3], args[4], args[5]
@@ -2887,7 +2925,7 @@ end -- polarcurve2d
 --// function scatter(x, y, style)
 -- x and y are tables of the same size
 function scatter(x, y, style)
-  local args = _named_args(
+  local args = namedargs(
     {x, y, style},
     {'x', 'y', 'style'})
   x, y, style = args[1], args[2], args[3]
@@ -2921,7 +2959,7 @@ end -- _contour_data
 --// function contourplot(f, x, y, style)
 -- x and y are tables of the same size
 function contourplot(f, x, y, style)
-  local args = _named_args(
+  local args = namedargs(
     {f, x, y, style},
     {'f', 'x', 'y', 'style'})
   f, x, y, style = args[1], args[2], args[3], args[4]
@@ -2946,7 +2984,7 @@ end -- contourplot
 
 -- dy/dx = f(x, y)
 function slopefield(f, xrange, yrange, scale)
-  local args = _named_args(
+  local args = namedargs(
     {f, xrange, yrange, scale},
     {'f', 'xrange', 'yrange', 'scale'})
   f, xrange, yrange, scale = args[1], args[2], args[3], args[4]
@@ -2978,7 +3016,7 @@ function directionfield(f, xrange, yrange, scale) return slopefield(f, xrange, y
 
 -- f(x, y) returns a vector {xcomponent, ycomponent}
 function vectorfield2d(f, xrange, yrange, scale)
-  local args = _named_args(
+  local args = namedargs(
     {f, xrange, yrange, scale},
     {'f', 'xrange', 'yrange', 'scale'})
   f, xrange, yrange, scale = args[1], args[2], args[3], args[4]
