@@ -1764,14 +1764,14 @@ function ismember( x, v )
 end
 
 local _vecfield_annotations = nil
-local _layout_width_height = {}
+local __layout = {}
 
 --// function plot(...)
 -- plot the graphs of functions in a way like in MATLAB with more features
 local plotly = {}
 function plot(...)
   _3d_plotq = false
-  _layout_width_height = {}
+  __layout = {}
 
   local args = {}
   local x_start = nil -- range of x for a plot
@@ -2053,9 +2053,9 @@ function plot(...)
             if k_ == 'name' then
               traces[1][k_] = v_
             elseif ismember(k_, {'autosize', 'grid', 'width', 'height', 'title', 'xaxis', 'yaxis', 'margin'}) then
-              _layout_width_height[k_] = v_
+              __layout[k_] = v_
               if k_ == 'grid' then
-                _layout_width_height[k_]['pattern'] = 'independent'
+                __layout[k_]['pattern'] = 'independent'
               end
             end
           end
@@ -2571,7 +2571,7 @@ function pareto(data, style, style1) -- style1: for freq curve
   -- 'plot' the names
   x1 = 0
   local texts = {}
-  local shiftx, shifty = width * 0.3, dat[1][2]*0.04
+  local shiftx, shifty = width * 0.4, dat[1][2]*0.04
   for i = 1, #dat do
     local shift = (width - #dat[i][1])/2
     if shift < shiftx then shift = shiftx end
@@ -4284,8 +4284,14 @@ function figure.toplotstring(self)
     self['layout']['annotations'] = _vecfield_annotations
     _vecfield_annotations = nil
   end
-  for k_, v_ in pairs(_layout_width_height) do
-    self['layout'][k_] = v_
+  for k_, v_ in pairs(__layout) do self['layout'][k_] = v_ end
+  if self['layout']['width'] == nil and self['layout']['height'] == nil then
+    self['layout']['width'] = 600 -- 4x3
+    self['layout']['height'] = 450
+  elseif self['layout']['height'] == nil then
+    self['layout']['height'] = self['layout']['width']
+  else
+    self['layout']['width'] = self['layout']['height']
   end
   if self['layout']['grid'] ~= nil then
     if type(self['layout']['grid']['rows']) == 'string' then
@@ -4299,9 +4305,9 @@ function figure.toplotstring(self)
       return '<html><body>Invalid grid: rows * columns &lt; the number of traces.</body></html>'
     end
 
-    self['layout']['xaxis'] = nil
-    self['layout']['yaxis'] = nil
-    if _3d_plotq then self['layout']['zaxis'] = nil end
+    -- self['layout']['xaxis'] = nil
+    -- self['layout']['yaxis'] = nil
+    -- if _3d_plotq then self['layout']['zaxis'] = nil end
 
     -- plotly-2.9.0.min.js, hopefully all versions, determines if grid options are used
     -- by checking whether the texts of xaxis and yaxis are different for traces

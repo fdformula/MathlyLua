@@ -421,9 +421,6 @@ all(x, '@(x) x % 2 == 0')
 <h4>&bull; &nbsp; <a name=apply href=#m><code>apply(f, ...)</code></a></h4>
 <p>As with some other programming languages like <i>Mathematica</i>, it evaluates function <code>f</code> with provided arguments.</p>
 <pre><code>require 'mathly';
-apply(function(x, y, z) return x + y + z end, {1, 2, 3})
--- 6
--- or
 apply('@(x, y, z) x + y + z', {1, 2, 3})
 </code></pre>
 
@@ -1032,8 +1029,7 @@ disp(fliplr(a))
 
 data = {1, 11, 4, 7, 6, 5, 10, 4, 3, 15, 13, 1, 4, 10, 9}
 axissquare()
-
-plot(pie(data), {layout={width=500, height=500}})
+plot(pie(data))
 plot(pie(data, 5, {style='-g'}))
 plot(pie(data, 5, {style='-gfs'}))
 plot(pie(data, 5, {offcenter=0.1})) -- each bin is away from the center by 0.1
@@ -1048,7 +1044,8 @@ plot(pie{x = {bins = {0.0930, 0.1163, 0.0233, 0.2791, 0.1395, 0.3488}}, style='-
 data1 = {1, 2, 3, 4, 2, 12, 3, 4, 2, 12, 9, 9, 9, 8, 5, 3, 3, 2, 1, 5, 3, 2}
 data2 = {2, 1, 2, 4, 5, 7, 11}
 data3 = {3, 2, 3, 4, 2, 2, 9, 11}
-plot(boxplot(data1))
+axisnotsquare(); shownotlegend()
+plot(boxplot(data1), {layout={width=500, height=400}})
 plot(boxplot({data1, data2}, {"name 1", "name 2"}))
 plot(boxplot({data1, data2, data3, {2, 3, 5, 7, 11, 20, 1, 2, 3}}))
 
@@ -1071,6 +1068,7 @@ plot(gobj)
 gobj = hist1(x, {xrange={20,120}, nbins=12, freqpolygonq=true, style='bfs', style1={color='red'}})
 plot(gobj)
 
+axisnotsquare()
 plot(freqpolygon(x))
 plot(freqpolygon(x, {style='--r*'}))
 plot(histfreqpolygon(x))
@@ -1079,13 +1077,13 @@ plot(histfreqpolygon(x, {style='-bfs', style1='--r*'}))
 x = {{'Apple', 382}, {'Orange', 22}, {'Pearl', 91}, {'Peach', 53}, {'Banana', 19}, {'Strawberry', 35}}
 plot(pareto(x))
 plot(pareto(x, '-bfs', '--r')) -- or: plot(pareto(x, {style='-bfs', style1='--r'}))
-plot(pareto(x, '-fs'), {layout={width=800, height=500}})
+plot(pareto(x, '-fs'))
 
 showaxes()
+axisnotsquare()
 plot(hist(randn(1, 100)))
-
 A = randi({0, 99}, 3, 50)
-plot(hist(A), {layout={width=800, height=400}})
+plot(hist(A), {layout={width=800, height=600}})
 plot(hist(A, {xrange = {0, 99}})) -- run multiple times, the two can produce different results
 </code></pre>
 
@@ -1640,27 +1638,26 @@ y1 = sin(x)
 y2 = map(math.cos, x)
 y3 = map('@(x) x^2*math.sin(x)', x)
 
-specs1 = {layout={width=700, height=900, grid={rows=2, columns=2}, title='Example'}}
+specs1 = {layout={width=600, height=600, grid={rows=2, columns=2}, title='Example'}}
 specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
 specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size=8}
-defaultlayout = {layout={width=500, height=500}}
 
-plot(math.sin, '--r', defaultlayout)
-plot('@(x) x', '@(x) x^3', {range = {0, 1}}, defaultlayout)
+plot(math.sin, '--r')
+plot('@(x) x', '@(x) x^3', {range = {0, 1}})
 shownotlegend()
-plot(x, y1, '--xr', x, y2, defaultlayout) -- plot a function defined by x and y1 ...
-plot(x, y1, '--xr', x, y2, ':g', text(0.79, 0.71 - 0.08, 'A'), point(0.79, 0.71, {symbol='circle', size=10, color='blue'}), defaultlayout)
-plot(x, y1, {color='red'}, {layout={xaxis={title="x-axis"}, yaxis={title="y-axis"}}}, defaultlayout)
+plot(x, y1, '--xr', x, y2) -- plot a function defined by x and y1 ...
+plot(x, y1, '--xr', x, y2, ':g', text(0.79, 0.71 - 0.08, 'A'), point(0.79, 0.71, {symbol='circle', size=10, color='blue'}))
+plot(x, y1, {color='red'}, {layout={xaxis={title="x-axis"}, yaxis={title="y-axis"}}})
 showlegend()
 plot(x, y1, x, y2, specs1, math.sin, '--r')
 plot(x, y1, specs1, x, y2, x, y3, 'o')
-plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1) -- layout? specs1 overwrites specs2
+plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1) -- layout? the last one overwrites others
 
 axisnotsquare()
 plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
-plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
-plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}})
-plot(rand(100,3), {layout={width=900, height=400, grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
+plot(rand(125, 4), specs1, {names={'f1', 'f2', 'f3', 'g'}})
+plot(rand(125, 4), specs1)
+plot(rand(100,3), specs1, {layout={grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=plot3d href=#m><code>plot3d(f, xrange, yrange, title, resolution)</code></a></h4>
@@ -2294,25 +2291,21 @@ display(unique({4,5,2,1,-2,2,4,2,7,6,19}))
 
 <pre><code>require('mathly')
 
-defaultlayout = {layout={width=600, height=600}}
 axissquare()
-plot(vectorfield2d('@(x,y) {sin(y), sin(x)}', {-pi, pi, pi/8}, {-pi, pi, pi/8}, 20), defaultlayout)
+plot(vectorfield2d('@(x,y) {sin(y), sin(x)}', {-pi, pi, pi/8}, {-pi, pi, pi/8}, 20))
 
-plot(vectorfield2d('@(x,y) {x, y}'), defaultlayout)
-plot(vectorfield2d('@(x,y) {-x, -y}'), defaultlayout)
+plot(vectorfield2d('@(x,y) {x, y}'))
+plot(vectorfield2d('@(x,y) {-x, -y}'))
 
-plot(vectorfield2d('@(x,y) {-x, y}'), defaultlayout)
-plot(vectorfield2d('@(x,y) {-y, x}'), defaultlayout)
-plot(vectorfield2d('@(x,y) {-y^2, 2*x^2}', {-5, 5, 0.5}, {-5, 5, 0.5}, 0.8), defaultlayout)
-plot(vectorfield2d('@(x,y) {y, -x}'), defaultlayout)
-plot(vectorfield2d('@(x,y) {y, x}'), defaultlayout)
-plot(vectorfield2d('@(x,y) {-y, -x}', {scale=10}),
-     {layout={width=800, height=600, title='<b>F</b>(x, y) = {-y, -x}'}})
+plot(vectorfield2d('@(x,y) {-x, y}'))
+plot(vectorfield2d('@(x,y) {-y, x}'))
+plot(vectorfield2d('@(x,y) {-y^2, 2*x^2}', {-5, 5, 0.5}, {-5, 5, 0.5}, 0.8))
+plot(vectorfield2d('@(x,y) {y, -x}'))
+plot(vectorfield2d('@(x,y) {y, x}'))
+plot(vectorfield2d('@(x,y) {-y, -x}', {scale=10}), {layout={width=800, height=600, title='<b>F</b>(x, y) = {-y, -x}'}})
 
-plot(vectorfield2d('@(x,y) {y, sin(x)}', {xrange={-2*pi, 2*pi, pi/8}, scale=7}),
-     {layout={width=700, height=700}})
-plot(vectorfield2d('@(x,y) {3*cos(3*x), 2*cos(2*y)}', {-1, 1, 1/10}, {-1.5, 1.5, 1/10}, 15),
-     {layout={width=605, height=800}})
+plot(vectorfield2d('@(x,y) {y, sin(x)}', {xrange={-2*pi, 2*pi, pi/8}, scale=7}))
+plot(vectorfield2d('@(x,y) {3*cos(3*x), 2*cos(2*y)}', {-1, 1, 1/10}, {-1.5, 1.5, 1/10}, 15), {layout={width=600, height=700}})
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=vertcat href=#m><code>vertcat(A, B, ...)</code></a></h4>
