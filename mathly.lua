@@ -978,6 +978,11 @@ function clear()
     load(string.format("%s = nil", vars[i]))()
   end
   if _ ~= nil then _ = nil end
+  _axis_equalq       = false
+  _xaxis_visibleq    = true
+  _yaxis_visibleq    = true
+  _gridline_visibleq = true
+  _showlegendq       = false
 end -- clear
 
 --// seq( from, to, len )
@@ -2096,6 +2101,7 @@ function plot(...)
 
   plotly.plots(traces):show()
   plotly.layout = {}
+  __layout = {}
 end -- plot
 
 local function _correct_range(start, stop, step)
@@ -3058,7 +3064,7 @@ local _axis_equalq       = false
 local _xaxis_visibleq    = true
 local _yaxis_visibleq    = true
 local _gridline_visibleq = true
-local _showlegendq       = true
+local _showlegendq       = false
 
 function axissquare()    _axis_equalq = true  end
 function axisnotsquare() _axis_equalq = false end
