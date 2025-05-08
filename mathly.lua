@@ -4288,7 +4288,7 @@ function figure.toplotstring(self)
     self['layout']['height'] = 450
   elseif self['layout']['height'] == nil then
     self['layout']['height'] = self['layout']['width']
-  else
+  elseif self['layout']['width'] == nil then
     self['layout']['width'] = self['layout']['height']
   end
   if self['layout']['grid'] ~= nil then
