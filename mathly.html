@@ -501,8 +501,8 @@ end
 
 axisnotsquare()
 r = function(t) return math.sin(1.6 * t^2) + math.cos(4 * t)^5 end
-plot(polarcurve2d(r, {0, 8*pi}, '-sfn'))
-plot(polarcurve2d(r, {0, 8*pi}, '-sfn', 10000)) -- increase resolution to improve smoothness
+plot(polarcurve2d(r, {0, 8*pi}, '-sfn'), {layout={width=800, height=800}})
+plot(polarcurve2d(r, {0, 8*pi}, '-sfn', 10000), {layout={width=800, height=800}}) -- increase resolution to improve smoothness
 
 gobjs = {}
 for i = 1, 6 do
@@ -1094,7 +1094,7 @@ plot(hist(A, {xrange = {0, 99}})) -- run multiple times, the two can produce dif
 
 f = fstr2f('@(x) x*x - 2*x + 1')
 disp(f(1)) -- 0
-plot(f, sin, {range = {0, 2}}, {layout={width=500, height=300}})
+plot(f, sin, {range = {0, 2}})
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=gcd href=#m><code>gcd(x, y)</code></a></h4>
@@ -1241,7 +1241,7 @@ disp(x)
 
 x = linspace(0, 2*pi, 500)
 y = cos(x)
-plot(x, y, '-or', {layout={width=500, height=300}})
+plot(x, y, '-or')
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=lu href=#m><code>lu(A)</code></a></h4>
@@ -1515,12 +1515,12 @@ disp(newtonpoly(x, y))
 xs = linspace(x[1], x[length(x)], 100)
 ys = newtonpoly(x, y, xs)
 axissquare()
-plot(x, y, "*", xs, ys, "-", {layout={width=500, height=400}})
+plot(x, y, "*", xs, ys, "-")
 
 data = {{-1.0, -2.0}, {0, -3}, {3, 10}, {7, 6}, {10, -2}}
 xs = linspace(data[1][1], data[#data][1], 100)
 ys = newtonpoly(data, xs)
-plot(scatter(data), xs, ys, "-", {layout={width=500, height=400}})
+plot(scatter(data), xs, ys, "-", {layout={width=250, height=500}})
 
 x = {1.0, 2, 4, 5, 7, 10, 20, 22, 30}
 y = {52.0, 5, -50, -40, 10, 9, 22, 23, 65}
@@ -1529,7 +1529,7 @@ f = fstr2f('@(x) ' .. str) -- or load('function f(x) return ' .. str .. ' end')(
 xs = linspace(x[1], x[length(x)], 100)
 ys = map(f, xs)
 axisnotsquare()
-plot(x, y, "*", xs, ys, "-", {layout={width=500, height=400}})
+plot(x, y, "*", xs, ys, "-")
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=zeros></a><a name=rand></a><a name=randi></a><a name=randn></a><a name=ones href=#m><code>ones</code>, <code>zeros</code>, <code>rand</code>, <code>randi</code>, <code>randn</code></a></h4>
@@ -1654,9 +1654,7 @@ plot(x, y1, specs1, x, y2, x, y3, 'o')
 plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1) -- layout? the last one overwrites others
 
 axisnotsquare()
-plot(rand(125, 4)) -- plots functions defined in each column of a matrix with the range of x from 0 to # of rows
-plot(rand(125, 4), specs1, {names={'f1', 'f2', 'f3', 'g'}})
-plot(rand(125, 4), specs1)
+plot(rand(125, 4), specs1, {names={'f1', 'f2', 'f3', 'g'}}) -- plot functions defined in each column of a matrix with x changing from 0 to # of rows
 plot(rand(100,3), specs1, {layout={grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
 </code></pre>
 
@@ -1696,12 +1694,7 @@ plot3d(X, Y, Z, 'Demo 2')
 <p><code>resolution</code> and <code>orientationq</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
 <pre><code>require 'mathly';
-
-plotparametriccurve3d(
-  {function(t) return math.cos(t) end,
-   function(t) return math.sin(t) end,
-   function(t) return t end}, {0,6*pi}, "Helix")
-
+plotparametriccurve3d({math.cos, math.sin, '@(t) t'}, {0,6*pi}, "Helix")
 plotparametriccurve3d({'@(t) t*math.cos(t)', '@(t) t*math.sin(t)', '@(t) t'}, {0, 8*pi})
 </code></pre>
 
@@ -2116,7 +2109,7 @@ plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
      x, y2, '-b', point(-1, 3, {symbol='circle', size=7, color='blue'}),
      x, y3, '-g', point(-2, 2, {symbol='square', size=7, color='green'}),
      xa, ya, '-n', point(-1.5, 1.6, {symbol='circle', size=7, color='purple'}),
-     {layout={autosize=false, width=500, height=760, title="y' = x<sup>2</sup> - y"}})
+     {layout={width=400, height=700, title="y' = x<sup>2</sup> - y"}})
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=sort href=#m><code>sort(tbl, compf)</code></a></h4>

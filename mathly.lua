@@ -4211,17 +4211,13 @@ Shorthand options:
 ---@param trace table
 ---@return plotly.figure
 function figure.plot(self, trace)
-  if not trace["line"] then
-    trace["line"] = {}
-  end
-  if not trace["marker"] then
-    trace["marker"] = {}
-  end
+  if not trace["line"] then trace["line"] = {} end
+  if not trace["marker"] then trace["marker"] = {} end
   for name, val in pairs(trace) do
-    if name == "ls" or name == 'style' then -- dwang, name == 'style'
+    if name == "ls" or name == 'style' then
       trace["line"]["dash"] = _dash_style[val]
       trace[name] = nil
-    elseif name == "lw" or name == 'width' then -- dwang, name == 'width'
+    elseif name == "lw" or name == 'width' then
       trace["line"]["width"] = val
       trace[name] = nil
     elseif name == 1 then
@@ -4230,10 +4226,10 @@ function figure.plot(self, trace)
     elseif name == 2 then
       trace["y"] = val
       trace[name] = nil
-    elseif name == "ms" or name == 'size' then -- dwang, name == 'size'
+    elseif name == "ms" or name == 'size' then
       trace["marker"]["size"] = val
       trace[name] = nil
-    elseif name == 'symbol' then -- dwang
+    elseif name == 'symbol' then
       trace["marker"]["symbol"] = val
       trace[name] = nil
     elseif name == "c" or name == "color" then
@@ -4258,17 +4254,14 @@ function figure.update_layout(self, layout)
 end
 
 function figure.toplotstring(self)
-  if (not _3d_plotq) and _axis_equalq then
-    if self['layout'] == nil then self['layout'] = {} end
-    if self['layout']['xaxis'] == nil then self['layout']['xaxis'] = {} end
-    self['layout']['xaxis']['scaleanchor'] = 'y'
-    if self['layout']['yaxis'] == nil then self['layout']['yaxis'] = {} end
-    self['layout']['yaxis']['scaleratio'] = 1
-  end
-
   if self['layout'] == nil then self['layout'] = {} end
   if self['layout']['xaxis'] == nil then self['layout']['xaxis'] = {} end
   if self['layout']['yaxis'] == nil then self['layout']['yaxis'] = {} end
+  if (not _3d_plotq) and _axis_equalq then
+    self['layout']['xaxis']['scaleanchor'] = 'y'
+    self['layout']['yaxis']['scaleratio'] = 1
+  end
+
   if _3d_plotq then
     if self['layout']['zaxis'] == nil then self['layout']['zaxis'] = {} end
   else -- only valid for 2d graphs
@@ -4279,12 +4272,12 @@ function figure.toplotstring(self)
     self['layout']['showlegend'] = _showlegendq
   end
 
-  if _vecfield_annotations ~= nil then -- dwang
+  if _vecfield_annotations ~= nil then
     self['layout']['showlegend'] = false
     self['layout']['annotations'] = _vecfield_annotations
     _vecfield_annotations = nil
   end
-  for k_, v_ in pairs(__layout) do self['layout'][k_] = v_ end
+  self:update_layout(__layout)
   if self['layout']['width'] == nil and self['layout']['height'] == nil then
     self['layout']['width'] = 600 -- 4x3
     self['layout']['height'] = 450
@@ -4297,17 +4290,14 @@ function figure.toplotstring(self)
     if type(self['layout']['grid']['rows']) == 'string' then
       self['layout']['grid']['rows'] = tonumber(self['layout']['grid']['rows'])
     end
-    if type(self['layout']['grid']['cloumns']) == 'string' then
-      self['layout']['grid']['cloumns'] = tonumber(self['layout']['grid']['cloumns'])
+    if type(self['layout']['grid']['columns']) == 'string' then
+      self['layout']['grid']['columns'] = tonumber(self['layout']['grid']['columns'])
     end
-
-    if self['layout']['grid']['rows'] * self['layout']['grid']['columns'] < #self['data'] then
-      return '<html><body>Invalid grid: rows * columns &lt; the number of traces.</body></html>'
+    if self['layout']['grid']['columns'] == nil or
+       self['layout']['grid']['rows'] == nil or
+       self['layout']['grid']['rows'] * self['layout']['grid']['columns'] < #self['data'] then
+      return '<html><body>Invalid grid: rows and/or columns not defined, or rows * columns &lt; the number of traces.</body></html>'
     end
-
-    -- self['layout']['xaxis'] = nil
-    -- self['layout']['yaxis'] = nil
-    -- if _3d_plotq then self['layout']['zaxis'] = nil end
 
     -- plotly-2.9.0.min.js, hopefully all versions, determines if grid options are used
     -- by checking whether the texts of xaxis and yaxis are different for traces
