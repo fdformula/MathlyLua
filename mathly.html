@@ -456,6 +456,7 @@ each take also a last argument, <code>orientationq</code> (default: false). If i
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining an anonymous function.</a></p>
 
 <pre><code>require 'mathly';
+
 clear()
 plot(sin, point({{-2, 1.5}, {2, -1}, {2.5, 2}}), point(-1, sin(-1), {symbol='circle-open', size=18, color='red'}))
 
@@ -481,6 +482,7 @@ plot(math.sin, '-rfa')
 
 x = linspace(-2.337, 0.779, 100)
 X = linspace(-5, 5, 200)
+axisnotsquare()
 plot(X, cos(X), X, sin(X), '-rff') -- shade regions between two curves
 plot(x, cos(x), x, sin(x), '-rff', X, cos(X), X, sin(X)) -- shade part of  ...
 
@@ -2379,6 +2381,7 @@ end
 is supposed to be a <code>global</code> variable, which is why the following code works.
 <pre><code>mathly = require('mathly')
 clear()
+axissquare()
 a = 5
 plot(polarcurve2d('@(t) cos(a*t)', {0, 2*pi}))
 </code></pre>
