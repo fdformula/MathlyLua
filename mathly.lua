@@ -978,11 +978,10 @@ function clear()
     load(string.format("%s = nil", vars[i]))()
   end
   if _ ~= nil then _ = nil end
-  _axis_equalq       = false
-  _xaxis_visibleq    = true
-  _yaxis_visibleq    = true
-  _gridline_visibleq = true
-  _showlegendq       = false
+  axisnotsquare()
+  showaxes()
+  showgridlines()
+  shownotlegend()
 end -- clear
 
 --// seq( from, to, len )
