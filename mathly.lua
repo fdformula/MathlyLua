@@ -1768,14 +1768,13 @@ function ismember( x, v )
 end
 
 local _vecfield_annotations = nil
-local __layout = {}
 
 --// function plot(...)
 -- plot the graphs of functions in a way like in MATLAB with more features
 local plotly = {}
 function plot(...)
   _3d_plotq = false
-  __layout = {}
+  plotly.layout = {}
 
   local args = {}
   local x_start = nil -- range of x for a plot
@@ -1875,8 +1874,6 @@ function plot(...)
     end
 ::endfor::
   end
-
-  plotly.layout = {}
 
   local i = 1
   while i <= #args do
@@ -2057,9 +2054,9 @@ function plot(...)
             if k_ == 'name' then
               traces[1][k_] = v_
             elseif ismember(k_, {'autosize', 'grid', 'width', 'height', 'title', 'xaxis', 'yaxis', 'margin'}) then
-              __layout[k_] = v_
+              plotly.layout[k_] = v_
               if k_ == 'grid' then
-                __layout[k_]['pattern'] = 'independent'
+                plotly.layout[k_]['pattern'] = 'independent'
               end
             end
           end
@@ -2100,7 +2097,6 @@ function plot(...)
 
   plotly.plots(traces):show()
   plotly.layout = {}
-  __layout = {}
 end -- plot
 
 local function _correct_range(start, stop, step)
@@ -4251,7 +4247,6 @@ function figure.plot(self, trace)
   return self
 end -- figure.plot
 
----Updates the plotly figure layout (options can be seen here: https://plotly.com/javascript/reference/layout/)
 function figure.update_layout(self, layout)
   for name, val in pairs(layout) do
     self["layout"][name] = val
@@ -4282,7 +4277,7 @@ function figure.toplotstring(self)
     self['layout']['annotations'] = _vecfield_annotations
     _vecfield_annotations = nil
   end
-  self:update_layout(__layout)
+  self:update_layout(plotly.layout)
   if self['layout']['width'] == nil and self['layout']['height'] == nil then
     self['layout']['width'] = 600 -- 4x3
     self['layout']['height'] = 450

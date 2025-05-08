@@ -23,8 +23,9 @@ pre {color: green}
 <li><a href=#twothings>Two important things you need to know</a></li>
 <li><a href=#math>Basic mathematical functions and elementwise operations</a></li>
 <li><a href=#m>Table of other functions</a></li>
-<li><a href=#easyf href=#m>Shortcut for defining an anonymous function</a></li>
-<li><a href=#namedargs0 href=#m>Named arguments</a></li>
+<li><a href=#easyf>Shortcut for defining an anonymous function</a></li>
+<li><a href=#namedargs0>Named arguments</a></li>
+<li><a href=#layout>Plotly JavaScript figure option: <code>layout</code> </a></li>
 </ol>
 <h2><a name=intro></a>Introduction</h2>
 <p>Mathly for <a href=https://www.lua.org>Lua</a> is a Lua module which turns Lua into a tiny but powerful MATLAB. It provides a group of commonly used MATLAB functions and features,
@@ -276,7 +277,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#cc><code>cc(x...)</code></a></td><td> </td><td>Convert table <code>x</code> into a column vector or return specified column(s) of a mathly matrix...</td></tr>
 <tr><td> </td><td><a href=#circle><code>circle(r, center, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a circle.</td></tr>
 <tr><td> </td><td><code>clc()</code></td><td> </td><td>Clear Lua console.</td></tr>
-<tr><td> </td><td><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory, reset default plotting settings, and make it ready for a new task.</td></tr>
+<tr><td> </td><td><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
 <tr><td> </td><td><a href=#contourplot><code>contourplot(f, xdata, ydata, style)</code></a></td><td> </td><td>Prepare a graphics object for <code>plot</code> to plot the contour map of function <code>f(x, y)</code>.</td></tr>
 <tr><td> </td><td><a href=#copy><code>copy(x)</code></a></td><td> </td><td>Make a deep copy of <code>x</code>.</td></tr>
 <tr><td> </td><td><a href=#cross><code>cross(a, b)</code></a></td><td> </td><td>Calculate the cross/vector product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub>}</code>.</td></tr>
@@ -456,7 +457,6 @@ each take also a last argument, <code>orientationq</code> (default: false). If i
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining an anonymous function.</a></p>
 
 <pre><code>require 'mathly';
-
 clear()
 plot(sin, point({{-2, 1.5}, {2, -1}, {2.5, 2}}), point(-1, sin(-1), {symbol='circle-open', size=18, color='red'}))
 
@@ -482,7 +482,6 @@ plot(math.sin, '-rfa')
 
 x = linspace(-2.337, 0.779, 100)
 X = linspace(-5, 5, 200)
-axisnotsquare()
 plot(X, cos(X), X, sin(X), '-rff') -- shade regions between two curves
 plot(x, cos(x), x, sin(x), '-rff', X, cos(X), X, sin(X)) -- shade part of  ...
 
@@ -1215,6 +1214,10 @@ f(10)
 g = fstr2f('@(x) ' .. s) -- a simpler way
 g(10)
 -- 113.0
+
+xs = linspace(-2, 5, 100)
+plot(xs, lagrangepoly(x, y, xs))
+plot(xs, newtonpoly(x, y, xs))
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=linsolve href=#m><code>linsolve(A, b, opt)</code></a></h4>
@@ -1631,7 +1634,7 @@ Some possible symbols are <code>circle</code>, <code>circle-open</code>, <code>c
 </tbody></table>
 <p></p>
 <p>As per filling regions, see <a href=#gobjspecs><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a>.</p>
-<p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
+<p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining an anonymous function</a>; <a href=#layout>Plotly JavaScript figure option: <code>layout</code></a>.</p>
 <p></p>
 <p><b>Some examples</b></p>
 <pre><code>require 'mathly';
@@ -1639,27 +1642,36 @@ Some possible symbols are <code>circle</code>, <code>circle-open</code>, <code>c
 clear()
 x = linspace(0, pi, 100)
 y1 = sin(x)
-y2 = map(math.cos, x)
-y3 = map('@(x) x^2*math.sin(x)', x)
+y2 = cos(x)
+y3 = map('@(x) x^2 * sin(x)', x)
 
 specs1 = {layout={width=600, height=600, grid={rows=2, columns=2}, title='Example'}}
-specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
-specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size=8}
+specs2 = {color='blue', name='cos <i>x</i>', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
+specs3 = {width=3, name='x<sup>2</sup>', style=':', color='cyan', symbol='circle-open', size=4}
 
-plot(math.sin, '--r')
-plot('@(x) x', '@(x) x^3', {range = {0, 1}})
+plot(sin)
+plot(function(x) return x^2 end)
+plot(sin, '-r',
+     '@(x) x^2', {color='blue'},
+     {range = {-0.5, 1}},
+     {layout = {title = 'Demo', xaxis = {title = 'x'}, yaxis = {title = 'y'},
+                margin = {l = 40, r = 40, t = 40, b = 40, pad = 40}}})
 shownotlegend()
-plot(x, y1, '--xr', x, y2) -- plot a function defined by x and y1 ...
-plot(x, y1, '--xr', x, y2, ':g', text(0.79, 0.71 - 0.08, 'A'), point(0.79, 0.71, {symbol='circle', size=10, color='blue'}))
-plot(x, y1, {color='red'}, {layout={xaxis={title="x-axis"}, yaxis={title="y-axis"}}})
+plot(x, y1, '--xr',
+     x, y2, ':g',
+     text(0.79, 0.71 - 0.08, 'A'),
+     point(0.79, 0.71, {symbol='circle', size=10, color='blue'}))
+plot(x, y1, x, y2, specs1, sin, '--r')
 showlegend()
-plot(x, y1, x, y2, specs1, math.sin, '--r')
-plot(x, y1, specs1, x, y2, x, y3, 'o')
-plot(x, y1, specs3, x, y2, specs2, math.sin, x, y3, specs1) -- layout? the last one overwrites others
+plot(x, y1, specs3,
+     x, y2, specs2,
+     sin, {name = 'sin <i>x</i>'},
+     x, y3, {name = 'x<sup>2</sup> sin <i>x</i>'},
+     specs1) -- multiple layouts are merged into one with the last one overwriting others
 
 axisnotsquare()
-plot(rand(125, 4), specs1, {names={'f1', 'f2', 'f3', 'g'}}) -- plot functions defined in each column of a matrix with x changing from 0 to # of rows
-plot(rand(100,3), specs1, {layout={grid={rows=3, columns=2}, title='Example'}}, rand(100,2))
+plot(rand(125, 4), specs1, {names={'f1', 'f2', 'f3', 'g'}}) -- each column of a matrix defines a function with x changing from 0 to # of rows
+plot(rand(100,3), specs1, {layout={grid={rows=3, columns=2}}}, rand(100,2))
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=plot3d href=#m><code>plot3d(f, xrange, yrange, title, resolution)</code></a></h4>
@@ -2381,7 +2393,6 @@ end
 is supposed to be a <code>global</code> variable, which is why the following code works.
 <pre><code>mathly = require('mathly')
 clear()
-axissquare()
 a = 5
 plot(polarcurve2d('@(t) cos(a*t)', {0, 2*pi}))
 </code></pre>
@@ -2420,6 +2431,21 @@ It can take two or more "named" arguments which can occur before an unnamed argu
 <pre><code>require 'mathly';
 clear()
 plot({layout={width=600, height=400}}, sin, {range={0,2*pi}})
+</code></pre>
+
+<h2><a name=layout href=#top>Plotly JavaScript figure option: <code>layout</code></a></h2>
+<P>You can find the basic usage of the figure option, <code>layout</code>, in examples of this documentation. For more information
+about the option and more control of your figure, you may refer to the official website of Plotly Javascript Figure Reference
+at <a href=https://plotly.com/javascript/reference/layout/>https://plotly.com/javascript/reference/layout/</a>.</p>
+<p>The following is a complete summary of the option seen in our examples.</p>
+<pre><code>{layout = {
+  width = 600, height = 450, -- mathly default setting, 4x3
+  title = "&lt;b&gt;Demo:&lt;/b&gt; y = x&lt;sup&gt;2&lt;/sup&gt;", -- HTML tags may be used here: <b>Demo:</b> y = x<sup>2</sup>
+  xaxis = {title = "x label"}, yaxis = {title = "y label"},
+  grid = {rows = 2, columns = 3},
+  margin = {l = 40, r = 40, t = 40, b = 40, pad = 10},
+  autosize = false
+}}
 </code></pre>
 <p></p>
 <hr>
