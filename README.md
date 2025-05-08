@@ -180,7 +180,7 @@ specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', siz
 
 axisnotsquare()
 plot(sin, '--r')
-plot('@(x) x', '--r', '@(x) x^3', '-g', {range = {0, 1}})
+plot('@(x) x', '--r', sin, '@(x) x^3', '-g', {range = {0, 1.5}})
 
 shownotlegend()
 plot(x, y1) -- plot a function defined by x and y1
@@ -215,7 +215,8 @@ plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
      x, y1, '-r', point(0, 1, {symbol='x', size=7, color='red'}),
      x, y2, '-b', point(-1, 3, {symbol='circle', size=7, color='blue'}),
      x, y3, '-g', point(-2, 2, {symbol='square', size=7, color='green'}),
-     {layout={autosize=false, width=550, height=800, title="y' = x<sup>2</sup> - y"}})
+     {layout={autosize=false, width=380, height=600, title="y' = x<sup>2</sup> - y",
+              margin={l=40, r=20, t=45, b=40, pad=10}}})
 ```
 
 ### Note
