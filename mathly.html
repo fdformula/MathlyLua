@@ -54,7 +54,7 @@ download prebuilt binary commands for Microsoft Windows in, say,
 <a href="https://www.nuget.org/packages/lua/">https://www.nuget.org/packages/lua/</a>. Another way to get prebuilt Lua is to
 download <a href=https://studio.zerobrane.com/>ZeroBrane Studio</a>, a lightweight Lua IDE for various platforms. It may come with
 multiple versions of Lua.</p>
-<p>Microsoft Windows users may download the file <a href=https://github.com/fdformula/MathlyLua><code>cudatext-for-mathly-win-*.7z</code></a>, including
+<p>&#x2713; &nbsp; <a name=cudatext></a>Microsoft Windows users may download the file <a href=https://github.com/fdformula/MathlyLua><code>cudatext-for-mathly-win-*.7z</code></a>, including
 Lua 5.4.6. Run <a href=https://7-zip.org/>7zip</a> to extract it to <code>C:/</code> . <a href=https://cudatext.github.io/>CudaText</a> is a very good "IDE" for
 Lua and running mathly as well. Quite a few CudaText plugins are included. Some are customized and even have new features added.
 While in CudaText, press</p>
@@ -66,7 +66,9 @@ While in CudaText, press</p>
 
   Ctrl-Alt-Space   to trigger (Lua/mathly) auto lexical completion
   Shift-Alt-Space  to trigger auto text completion (Ctrl-P D, load an English dictionary as part of the text)
+
   Ctrl-P L         to turn on/off Lua lexer switch (when editing Lua script, say, in a HTML file)
+  Ctrl-P P         to insert a <a href=#plot>plot</a> template
 </code></pre>
 <p><code>F2</code>, <code>Ctrl-,</code>, and <code>Ctrl-.</code> work with Bash, Julia, Octave, Python, R, Ruby, and some other
 languages with interactive REPL terminal. CudaText detects and selects the very language
@@ -2460,6 +2462,7 @@ graphing library. However, it doesn't set limitations for you to experiment with
   autosize = false
 }})
 </code></pre>
+<p>&#x2713; &nbsp; In CudaText, press Ctrl-P P to insert such a <code>plot</code> template. See <a href=#cudatext>CudaText</a>.
 <p></p>
 <hr>
 <h2 style="margin-left: 20px;">Note</h2>
