@@ -1498,9 +1498,11 @@ function f(x, y, z)
   return x + y + z
 end
 
+f(1, 10, 100)
 f(1, 10, {z = 100})
 f(1, {z = 100, y = 10})
 f({y = 10, z = 100, x = 1})
+
 f(1, {z = 100}) -- same as f(1, nil, 100)
 f({z = 100})    -- same as f(nil, nil, 100)
 </code></pre>
