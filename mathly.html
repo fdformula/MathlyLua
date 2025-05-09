@@ -33,7 +33,7 @@ for example, <code>linspace</code>, <code>zeros</code>, <code>rand</code>, <code
 <code>plot</code>. They make coding and testing a thought/algorithm much easier and faster than working in most other
 programming languages. If there is anything many love the most about MATLAB, these tools are.</p>
 
-<p>Mathly uses Plotly JavaScript graphing tools (see <a href="https://plotly.com/javascript/">https://plotly.com/javascript/</a>)
+<p>Mathly uses Plotly JavaScript graphing library (see <a href="https://plotly.com/javascript/">https://plotly.com/javascript/</a>)
 to plot graphs of single-variable functions. Therefore, graphs are shown in an internet browser.</p>
 
 <p>The entire mathly tool together with Lua interpreter is less than 5 MB, while providing enough features for instructors and college students to implement
@@ -1634,7 +1634,7 @@ Some possible symbols are <code>circle</code>, <code>circle-open</code>, <code>c
 </tbody></table>
 <p></p>
 <p>As per filling regions, see <a href=#gobjspecs><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a>.</p>
-<p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining an anonymous function</a>; <a href=#layout>Plotly JavaScript figure option: <code>layout</code></a>.</p>
+<p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining an anonymous function</a>; <a href=#layout>Plotly JavaScript Figure Reference: <code>layout</code></a>.</p>
 <p></p>
 <p><b>Some examples</b></p>
 <pre><code>require 'mathly';
@@ -2437,6 +2437,9 @@ plot({layout={width=600, height=400}}, sin, {range={0,2*pi}})
 <P>You can find the basic usage of the figure option, <code>layout</code>, in examples of this documentation. For more information
 about the option and more control of your figure, you may refer to the official website of Plotly Javascript Figure Reference
 at <a href=https://plotly.com/javascript/reference/layout/>https://plotly.com/javascript/reference/layout/</a>.</p>
+<p>For simplicity and the small size of mathly, we just cover a very small subset of the features provided by Plotly JavaScript
+graphing library. However, it doesn't set limitations for you to experiment with various options/properties supported by Plotly.</p>
+<p>Given time, Plotly shall prevail and hopefully dominate in Python, Julia, and many other programming languages.</p>
 <p>A summary of the option seen in our examples is as follows.</p>
 <pre><code>{layout = {
   width = 600, height = 450, -- mathly default setting, 4x3
@@ -2448,9 +2451,7 @@ at <a href=https://plotly.com/javascript/reference/layout/>https://plotly.com/ja
 }}
 </code></pre>
 <p>You may use it as a template, drop some options, and fine-tune some others for your needs. For example,</p>
-<pre><code>require 'mathly';
-clear()
-plot(sin, '-r', {layout = {
+<pre><code>plot(sin, '-r', {layout = {
   title = "Example",
   xaxis = {title = "x"}, yaxis = {title = "sin &lt;i&gt;x&lt;/i&gt;"},
   margin = {l = 70, r = 40, t = 40, b = 40, pad = 5},
