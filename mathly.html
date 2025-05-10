@@ -1038,7 +1038,9 @@ plot(pie(data, 5, {style='-gfs'}))
 plot(pie(data, 5, {offcenter=0.1})) -- each bin is away from the center by 0.1
 plot(pie{nbins = 7, x = data})
 plot(pie(data, 7, {offcenter = {{2, 0.1}, {5, 0.2}}, style = '-fs'})) -- the 2nd & 5th bins are away from the center by ...
-plot(pie{x = {bins = {0.0930, 0.1163, 0.0233, 0.2791, 0.1395, 0.3488}}, style='-', offcenter = {{3, 0.6}, {5, 0.1}, {1, 0.15}}})
+plot(pie{x = {bins = {0.0930, 0.1163, 0.0233, 0.2791, 0.1395, 0.3488}}, style='-',
+         offcenter = {{3, 0.6}, {5, 0.1}, {1, 0.15}},
+         names = {'A', 'B', 'C', 'D', 'E', 'F'}})
 </code></pre>
 
 <p>More examples,</p>
@@ -1077,7 +1079,7 @@ plot(freqpolygon(x, {style='--r*'}))
 plot(histfreqpolygon(x))
 plot(histfreqpolygon(x, {style='-bfs', style1='--r*'}))
 
-x = {{'Apple', 382}, {'Orange', 22}, {'Pearl', 91}, {'Peach', 53}, {'Banana', 19}, {'Strawberry', 35}}
+x = {{'A', 382}, {'B', 22}, {'C', 91}, {'D', 53}, {'E', 19}, {'F', 35}}
 plot(pareto(x))
 plot(pareto(x, '-bfs', '--r')) -- or: plot(pareto(x, {style='-bfs', style1='--r'}))
 plot(pareto(x, '-fs'))
@@ -1503,7 +1505,7 @@ end
 f(1, 10, 100)
 f(1, 10, {z = 100})
 f(1, {z = 100, y = 10})
-f({y = 10, z = 100, x = 1})
+f({y = 10, z = 100, x = 1}) -- or simply: f{y = 10, z = 100, x = 1}
 
 f(1, {z = 100}) -- same as f(1, nil, 100)
 f({z = 100})    -- same as f(nil, nil, 100)
@@ -1677,6 +1679,7 @@ axisnotsquare()
 plot(rand(125, 4), specs1, {names={'f1', 'f2', 'f3', 'g'}}) -- each column of a matrix defines a function with x changing from 0 to # of rows
 plot(rand(100,3), specs1, {layout={grid={rows=3, columns=2}}}, rand(100,2))
 </code></pre>
+<p>&#x2713; &nbsp; In CudaText, press Ctrl-P P to insert a <code>plot</code> template. See <a href=#cudatext>CudaText</a>.
 
 <h4>&bull; &nbsp; <a name=plot3d href=#m><code>plot3d(f, xrange, yrange, title, resolution)</code></a></h4>
 <p>Plot a surface defined by <code>z = f(x, y)</code>. It is not designed as complicated as <code>plot(...)</code> for 2D graphs. It can only plot one surface at a time.</p>
@@ -1733,7 +1736,6 @@ plotparametricsurface3d({
 do -- https://plotly.com/python/3d-surface-plots/
   local a, b, d = 1.32, 1, 0.8
   local c = a^2 - b^2
-  local u, v = linspace(0, 2*pi, 100), linspace(0, 2*pi, 100)
   local function x(u, v) return (d * (c - a * cos(u) * cos(v)) + b^2 * cos(u)) / (a - c * cos(u) * cos(v)) end
   local function y(u, v) return b * sin(u) * (a - d*cos(v)) / (a - c * cos(u) * cos(v)) end
   local function z(u, v) return b * sin(v) * (c*cos(u) - d) / (a - c * cos(u) * cos(v)) end

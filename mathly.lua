@@ -2641,14 +2641,14 @@ end -- boxplot
 -- offcenter:
 --  1. 0.1, all bins are away from the center by 0.1
 --  2. {{2, 0.1}, {5, 0.3}, ...}, the 2nd, 5th ... bins are away from the center by ...
-function pie(x, nbins, radius, style, offcenter, names) -- nbins, ..., names: space hodlers, also saving the step: local nbins, ..., names
+function pie(x, nbins, radius, style, offcenter, names)
   local args = namedargs(
     {x, nbins, radius, style, offcenter, names},
     {'x', 'nbins', 'radius', 'style', 'offcenter', 'names'})
   x, nbins, radius, style, offcenter, names = args[1], args[2], args[3], args[4], args[5], args[6]
 
   local freqs, xmin, xmax, width
-  local binsq = x['bins'] ~= nil
+  local binsq = x['bins'] ~= nil -- x = {bins = {freq1, freq2, ...}}
   if binsq then
     freqs = x['bins']
     freqs = tt(rr(freqs) / sum(freqs))
@@ -2697,7 +2697,13 @@ function pie(x, nbins, radius, style, offcenter, names) -- nbins, ..., names: sp
   local labels = {}
   local allintq = all(x, isinteger, false)
   if binsq then
-    for i = 1, nbins do labels[i] = '' end
+    for i = 1, nbins do
+      if type(names) == 'table' and i <= #names then
+        labels[i] = names[i]
+      else
+        labels[i] = ''
+      end
+    end
   else
     local x1 = xmin
     local allintq = all(x, isinteger, false) == 1
