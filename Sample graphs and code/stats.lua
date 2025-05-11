@@ -2,8 +2,7 @@ require 'mathly';
 clear()
 
 --stats1.png
-axissquare(); shownotaxes(); shownotgridlines(); showlegend()
-plot(pie({bins={5, 6, 1, 10, 7, 6}}, {offcenter = {{4, 0.1}}, style = '-fs', names={'A', 'B', 'C', 'D', 'E', 'F', 'G'}}))
+plot(pie({bins={5, 6, 1, 10, 7, 6}}, {style = {pull = {0, 0.1, 0, 0, 0, 0}}, names={'A', 'B', 'C', 'D', 'E', 'F'}, title='Demo'}))
 
 --stats2.png
 axisnotsquare()
@@ -15,7 +14,7 @@ x = flatten(randn(1, 5000, mu, sigma))
 
 function n(x, mu, sigma)
   local z = (x - mu) / sigma
-  return math.exp(-0.5 * z^2) / (math.sqrt(2 * pi) * sigma)
+  return exp(-0.5 * z^2) / (sqrt(2 * pi) * sigma)
 end
 
 X = linspace(mu - 4 * sigma, mu + 4 * sigma, 5000)
