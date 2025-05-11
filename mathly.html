@@ -1016,7 +1016,7 @@ disp(fliplr(a))
 <tr><td><code>hist1(x, nbins, style, xrange)</code></td><td> </td><td>Return an ordinary graphics object for <code><a href=#plot>plot</a></code> to plot a histogram.</td></tr>
 <tr><td><code>histfreqpolygon(x, nbins, style, xrange, style1)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a histogram plus a frequency polygon, where <code>style</code> defines the style of the histogram while <code>style1</code> specifies the style of the frequency polygon.</td></tr>
 <tr><td><code>pareto(data, style, style1)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pareto chart.</td></tr>
-<tr><td><code>pie(x, nbins, radius, style, offcenter, names)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pie chart, where <code>radius</code> is the radius of the pie disk (default: 1), and <code>offcenter</code> specifies which wedges are away from the center by given distances (default: 0). Note: <code>pie({bins = {freq1, freq2, ...}}...)</code> is for plotting a pie chart for bins with frequences <code>freq1, freq2, ..., in order</code>, and <code>names = {'name1', 'name2', ...}</code> can be given in this situation.</td></tr>
+<tr><td><code>pie(x, nbins, radius, style, offcenter, names)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pie chart, where <code>radius</code> is the radius of the pie disk (default: 1), and <code>offcenter</code> specifies which wedges are away from the center by given distances (default: 0). Note: <code>pie({bins = {freq1, freq2, ...}}...)</code> is for plotting a pie chart for bins with frequences <code>freq1, freq2, ..., in order</code>.</td></tr>
 </tbody></table>
 <p>With this group of functions,</p>
 <table><tbody>
@@ -1031,10 +1031,11 @@ disp(fliplr(a))
 <pre><code>require 'mathly';
 clear()
 data = {1, 11, 4, 7, 6, 5, 10, 4, 3, 15, 13, 1, 4, 10, 9}
-axissquare()
+axissquare(); shownotlegend()
 plot(pie(data))
 plot(pie(data, 5, {style='-g'}))
-plot(pie(data, 5, {style='-gfs'}))
+showlegend(); shownotaxes()
+plot(pie(data, 5, {style='-fs', names={'A', 'B', 'C', 'D', 'E'}}))
 plot(pie(data, 5, {offcenter=0.1})) -- each bin is away from the center by 0.1
 plot(pie{nbins = 7, x = data})
 plot(pie(data, 7, {offcenter = {{2, 0.1}, {5, 0.2}}, style = '-fs'})) -- the 2nd & 5th bins are away from the center by ...

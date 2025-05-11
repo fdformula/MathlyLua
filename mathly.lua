@@ -2159,6 +2159,12 @@ function merge(t1, t2)
   return t
 end -- merge
 
+local _axis_equalq       = false
+local _xaxis_visibleq    = true
+local _yaxis_visibleq    = true
+local _gridline_visibleq = true
+local _showlegendq       = false
+
 --// #data == #opts
 function namedargs(data, opts)
   local results = {}
@@ -2693,40 +2699,27 @@ function pie(x, nbins, radius, style, offcenter, names)
     data[#data + 1] = v[4]
     angle1 = angle2
   end
+  if not _showlegendq then return data end
 
   local labels = {}
-  local allintq = all(x, isinteger, false)
-  if binsq then
-    for i = 1, nbins do
-      if type(names) == 'table' and i <= #names then
-        labels[i] = names[i]
-      else
-        labels[i] = ''
-      end
-    end
-  else
-    local x1 = xmin
-    local allintq = all(x, isinteger, false) == 1
-    for i = 1, nbins do
-      local x2 = x1 + width
-      if allintq then
-        labels[i] = sprintf("[%d, %d]", x1, x2 - 1)
-      else
-        labels[#labels + 1] = sprintf("[%.2f, %.2f)", x1, x2)
-      end
-      x1 = x2
-    end
-  end
+  local allintq = all(x, isinteger, false) == 1
+  local namesq = type(names) == 'table'
+  local x2, s
   for i = 1, nbins do
-    if binsq then
-      if type(names) == 'table' and i <= #names then
-        labels[i] = names[i] .. sprintf(" (%.2f%%)", freqs[i] * 100)
-      else
-        labels[i] = sprintf("%.2f%%", freqs[i] * 100)
-      end
+    if namesq and i <= #names then
+      s = names[i]
+    elseif binsq then
+      s = 'class ' .. i
     else
-      labels[i] = labels[i] .. sprintf(" (%.2f%%)", freqs[i] * 100)
+      x2 = xmin + width
+      if allintq then
+        s = sprintf("[%d, %d]", xmin, x2 - 1)
+      else
+        s = sprintf("[%.2f, %.2f)", xmin, x2)
+      end
+      xmin = x2
     end
+    labels[i] = s .. sprintf(" (%.2f%%)", freqs[i] * 100)
   end
   data[#data + 1] = {names=labels}
   return data
@@ -3060,12 +3053,6 @@ function vectorfield2d(f, xrange, yrange, scale)
   end
   return {'vectorfield2d', xrange, annotations}
 end -- vectorfield2d
-
-local _axis_equalq       = false
-local _xaxis_visibleq    = true
-local _yaxis_visibleq    = true
-local _gridline_visibleq = true
-local _showlegendq       = false
 
 function axissquare()    _axis_equalq = true  end
 function axisnotsquare() _axis_equalq = false end
