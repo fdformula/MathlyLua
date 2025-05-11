@@ -332,7 +332,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#ones><code>ones(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 1. If <code>m = 1</code>, return a table.</td></tr>
 <tr><td> </td><td><a href=#parametriccurve2d><code>parametriccurve2d({x(t), y(t)}, trange, style, resolution, orientationq)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a parametric curve.</td></tr>
 <tr><td> </td><td><a href=#pareto><code>pareto(data, style, style1)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pareto chart.</td></tr>
-<tr><td> </td><td><a href=#pie><code>pie(x, radius, nbins, style, offcenter, names)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a pie chart.</td></tr>
+<tr><td> </td><td><a href=#pie><code>pie(x, nbins, radius, style, names, offcenter, title)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a pie chart.</td></tr>
 <tr><td> </td><td><a href=#plot><code>plot(x, y, ...)</code></a></td><td> </td><td>Plot the graph(s) of functions defined by data points <code>x</code> and <code>y</code> and ...</td></tr>
 <tr><td> </td><td><a href=#plot3d><code>plot3d(f, xrange, yrange, title, resolution)</code></a></td><td> </td><td>Plot the 3D graph of <code>z = f(x, y)</code>.</td></tr>
 <tr><td> </td><td><a href=#plotparametriccurve3d><code>plotparametriccurve3d({x(t), y(t), z(t)}, trange, titl, resolution)</code></a></td><td> </td><td>Plot a space curve defined by <code>{x(t), y(t), z(t)}</code>.</td></tr>
@@ -1016,7 +1016,7 @@ disp(fliplr(a))
 <tr><td><code>hist1(x, nbins, style, xrange)</code></td><td> </td><td>Return an ordinary graphics object for <code><a href=#plot>plot</a></code> to plot a histogram.</td></tr>
 <tr><td><code>histfreqpolygon(x, nbins, style, xrange, style1)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a histogram plus a frequency polygon, where <code>style</code> defines the style of the histogram while <code>style1</code> specifies the style of the frequency polygon.</td></tr>
 <tr><td><code>pareto(data, style, style1)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pareto chart.</td></tr>
-<tr><td><code>pie(x, nbins, radius, style, offcenter, names)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pie chart, where <code>radius</code> is the radius of the pie disk (default: 1), and <code>offcenter</code> specifies which wedges are away from the center by given distances (default: 0). Note: <code>pie({bins = {freq1, freq2, ...}}...)</code> is for plotting a pie chart for bins with frequences <code>freq1, freq2, ..., in order</code>.</td></tr>
+<tr><td><code>pie(x, nbins, radius, style, names, offcenter, title)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pie chart, where <code>radius</code> is the radius of the pie disk (default: 1), and <code>offcenter</code> specifies which wedges are away from the center by given distances (default: 0). Note: <code>pie({bins = {freq1, freq2, ...}}...)</code> is for plotting a pie chart for bins with frequences <code>freq1, freq2, ..., in order</code>.</td></tr>
 </tbody></table>
 <p>With this group of functions,</p>
 <table><tbody>
@@ -1042,6 +1042,13 @@ plot(pie(data, 7, {offcenter = {{2, 0.1}, {5, 0.2}}, style = '-fs'})) -- the 2nd
 plot(pie{x = {bins = {0.0930, 0.1163, 0.0233, 0.2791, 0.1395, 0.3488}}, style='-',
          offcenter = {{3, 0.6}, {5, 0.1}, {1, 0.15}},
          names = {'A', 'B', 'C', 'D', 'E', 'F'}})
+
+-- insidetextorientation: auto, horizontal, radial, tangential
+-- textposition: auto, inside, outside
+plot(pie({x = {5, 6, 1, 10, 7, 6}, style={insidetextorientation='radial'}, names = {'Abcd', 'B', 'C', 'D', 'E', 'F'}, title = 'Demo'}))
+plot(pie({x = {5, 6, 1, 10, 7, 6}, style={textposition='outside'}, names = {'Abcd', 'B', 'C', 'D', 'E', 'F'}, title = 'Demo'}))
+plot(pie({x = linspace(0, pi, 1000), style={textq=true}, names = {'Abcd', 'B', 'C', 'D', 'E', 'F'}, title = 'Demo'}))
+plot(pie({x = linspace(0, pi, 1000), nbins=7, style={textq=true}, title = 'Demo'}))
 </code></pre>
 
 <p>More examples,</p>
