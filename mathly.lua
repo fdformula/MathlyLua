@@ -2662,17 +2662,15 @@ end -- boxplot
 -- offcenter:
 --  1. 0.1, all bins are away from the center by 0.1
 --  2. {{2, 0.1}, {5, 0.3}, ...}, the 2nd, 5th ... bins are away from the center by ...
--- insidetextorientation: auto, horizontal, radial, tangential
--- textposition: auto, inside, outside
-function pie(x, nbins, radius, style, names, offcenter, title)
-  local args = namedargs({x, nbins, radius, style, names, offcenter, title}, {'x', 'nbins', 'radius', 'style', 'names', 'offcenter', 'title'})
-  x, nbins, radius, style, names, offcenter, title = args[1], args[2], args[3], args[4], args[5], args[6], args[7]
+function pie(x, nbins, style, names, title)
+  local args = namedargs({x, nbins, style, names, title}, {'x', 'nbins', 'style', 'names', 'title'})
+  x, nbins, style, names, title = args[1], args[2], args[3], args[4], args[5]
 
   _axis_equalq       = true
   _xaxis_visibleq    = false
   _yaxis_visibleq    = false
   _gridline_visibleq = false
-  _showlegendq       = true
+  _showlegendq       = false
 
   local freqs, xmin, xmax, width
   local binsq = x['bins'] ~= nil -- x = {bins = {freq1, freq2, ...}}
@@ -2714,64 +2712,10 @@ function pie(x, nbins, radius, style, names, offcenter, title)
     end
   end
 
-  local textq, textposition, insidetextorientation = nil, nil, nil
-  if type(style) == 'table' then
-    textq, textposition, insidetextorientation = style.textq, style.textposition, style.insidetextorientation
-  end
-  if offcenter == nil and (textq ~= nil or textposition ~= nil or insidetextorientation ~= nil) then
-    local textinfo, hoverinfo = 'percent', 'label+percent'
-    hoverinfo = 'label+percent+name'; textinfo = "label+percent"; _showlegendq = false
-    textposition = textposition or 'auto'
-    insidetextorientation = insidetextorientation or 'auto'
-    local gobj = {type = 'pie', values = freqs, labels = labels, textinfo = textinfo, hoverinfo = hoverinfo,
-                  textposition = textposition, insidetextorientation = insidetextorientation}
-    if title ~= nil then gobj.layout = {title = {text = title}} end
-    return gobj
-  end
-
-  radius = radius or 1
-  local data = {'graph'}
-  local angle1 = 0
-  for i = 1, nbins do
-    local angle2
-    if i == nbins then
-      angle2 = 2 * pi
-    else
-      angle2 = angle1 + freqs[i]*2*pi
-    end
-    local center = {0, 0}
-    local off = 0
-    if offcenter ~= nil then
-      if type(offcenter) == 'number' then
-        off = offcenter
-      elseif type(offcenter) == 'table' and type(offcenter[1]) == 'table' then
-        for j = 1, #offcenter do
-          if offcenter[j][1] == i then
-            off = offcenter[j][2]
-            break
-          end
-        end
-      end
-      local mid = (angle1 + angle2) / 2
-      local r = math.abs(off)
-      center[1], center[2] = r * math.cos(mid), r * math.sin(mid)
-    end
-    local v = wedge(radius, center, {angle1, angle2}, style)
-    data[#data + 1] = v[2]
-    data[#data + 1] = v[3]
-    data[#data + 1] = v[4]
-    angle1 = angle2
-  end
-  if not _showlegendq then return data end
-
-  local allintq = all(x, isinteger, false) == 1
-  local namesq = type(names) == 'table'
-  for i = 1, nbins do
-    labels[i] = labels[i] .. sprintf(" (%.2f%%)", freqs[i] * 100)
-  end
-  data[#data + 1] = {names=labels}
-  if title ~= nil then data.layout = {title = title} end
-  return data
+  local gobj = {type = 'pie', values = freqs, labels = labels, textinfo = "label+percent", hoverinfo = 'label+percent'}
+  gobj = merge(style, gobj)
+  if title ~= nil then gobj.layout = {title = {text = title}} end
+  return gobj
 end -- pie
 
 --// plot a wedge of a disk/circle
