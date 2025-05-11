@@ -1767,12 +1767,23 @@ function ismember( x, v )
   return false
 end
 
+local _axis_equalq       = false
+local _xaxis_visibleq    = true
+local _yaxis_visibleq    = true
+local _gridline_visibleq = true
+local _showlegendq       = false
 local _vecfield_annotations = nil
 
 --// function plot(...)
 -- plot the graphs of functions in a way like in MATLAB with more features
 local plotly = {}
 function plot(...)
+  local axis_equalq = _axis_equalq
+  local xaxis_visibleq = _xaxis_visibleq
+  local yaxis_visibleq = _yaxis_visibleq
+  local gridline_visibleq = _gridline_visibleq
+  local showlegendq = _showlegendq
+
   _3d_plotq = false
   plotly.layout = {}
 
@@ -1786,11 +1797,11 @@ function plot(...)
     if type(v) == 'function' then
       args[#args + 1] = v
       adjustxrangeq = true
-      goto endfor
+      goto end_for
     elseif type(v) == 'string' and string.sub(v, 1, 1) == '@' then -- @ is followed by expr in terms of x
       args[#args + 1] = fstr2f(v)
       adjustxrangeq = true
-      goto endfor
+      goto end_for
     end
 
     if type(v) == 'table' then
@@ -1821,6 +1832,9 @@ function plot(...)
         x_start, x_stop = v[2][1], v[2][2]
         traces[#traces + 1] = {type = 'scatter', x = {}, y = {}}
         _vecfield_annotations = v[3]
+      elseif v.type == 'pie' then
+        if v.layout ~= nil then  layout_arg[#layout_arg + 1] = {layout = v.layout} end
+        traces[#traces + 1] = v
       elseif v[1] == 'graph-hist' then -- group histogram graph object: {'graph-hist', x, y}
         for i = 2, #v, 2 do
           local trace = {}
@@ -1866,13 +1880,14 @@ function plot(...)
             args[#args + 1] = points[i][3] -- style
           end
         end
+        if v.layout ~= nil then  layout_arg[#layout_arg + 1] = {layout = v.layout} end
       else
         args[#args + 1] = v
       end
     else
       args[#args + 1] = v
     end
-::endfor::
+::end_for::
   end
 
   local i = 1
@@ -2034,7 +2049,7 @@ function plot(...)
             traces[#traces + 1] = trace
           else
             print('Invalid input: x and y must be of the same size.')
-            return
+            return exit_plot
           end
         end
       else -- invalid input, skipped
@@ -2096,7 +2111,14 @@ function plot(...)
   end
 
   plotly.plots(traces):show()
+
+::exit_plot::
   plotly.layout = {}
+  _axis_equalq = axis_equalq
+  _xaxis_visibleq = xaxis_visibleq
+  _yaxis_visibleq = yaxis_visibleq
+  _gridline_visibleq = gridline_visibleq
+  _showlegendq = showlegendq
 end -- plot
 
 local function _correct_range(start, stop, step)
@@ -2158,12 +2180,6 @@ function merge(t1, t2)
   end
   return t
 end -- merge
-
-local _axis_equalq       = false
-local _xaxis_visibleq    = true
-local _yaxis_visibleq    = true
-local _gridline_visibleq = true
-local _showlegendq       = false
 
 --// #data == #opts
 function namedargs(data, opts)
@@ -2376,7 +2392,6 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
 end -- plotparametriccurve3d
 
 local function _freq_distro(x, nbins, xmin, xmax, width)
-  local freqs
   nbins = nbins or 10
   x = sort(x)
 
@@ -2647,23 +2662,71 @@ end -- boxplot
 -- offcenter:
 --  1. 0.1, all bins are away from the center by 0.1
 --  2. {{2, 0.1}, {5, 0.3}, ...}, the 2nd, 5th ... bins are away from the center by ...
-function pie(x, nbins, radius, style, offcenter, names)
-  local args = namedargs(
-    {x, nbins, radius, style, offcenter, names},
-    {'x', 'nbins', 'radius', 'style', 'offcenter', 'names'})
-  x, nbins, radius, style, offcenter, names = args[1], args[2], args[3], args[4], args[5], args[6]
+-- insidetextorientation: auto, horizontal, radial, tangential
+-- textposition: auto, inside, outside
+function pie(x, nbins, radius, style, names, offcenter, title)
+  local args = namedargs({x, nbins, radius, style, names, offcenter, title}, {'x', 'nbins', 'radius', 'style', 'names', 'offcenter', 'title'})
+  x, nbins, radius, style, names, offcenter, title = args[1], args[2], args[3], args[4], args[5], args[6], args[7]
+
+  _axis_equalq       = true
+  _xaxis_visibleq    = false
+  _yaxis_visibleq    = false
+  _gridline_visibleq = false
+  _showlegendq       = true
 
   local freqs, xmin, xmax, width
   local binsq = x['bins'] ~= nil -- x = {bins = {freq1, freq2, ...}}
+  local namesq = type(names) == 'table'
+  local allintq = all(x, isinteger, false) == 1
   if binsq then
     freqs = x['bins']
     freqs = tt(rr(freqs) / sum(freqs))
     nbins = #freqs
   else
-    nbins = nbins or 10
-    x = sort(flatten(x))
-    xmin, xmax, width = _xmin_xmax_width(x, nil, nbins, all(x, isinteger) == 1)
-    freqs = _freq_distro(x, nbins, xmin, xmax, width)
+    if nbins == nil then
+      if namesq then nbins = #names else nbins = 10 end
+    end
+    x = flatten(x)
+    if nbins >= #x then
+      freqs = tt(rr(x) / sum(x)); nbins = #x
+      binsq = true
+    else
+      x = sort(x)
+      xmin, xmax, width = _xmin_xmax_width(x, nil, nbins, allintq)
+      freqs = _freq_distro(x, nbins, xmin, xmax, width)
+    end
+  end
+
+  local labels = {}
+  for i = 1, nbins do
+    if namesq and i <= #names then
+      labels[i] = names[i]
+    elseif binsq then
+      labels[i] = 'class ' .. i
+    else
+      local x2 = xmin + width
+      if allintq then
+        labels[i] = sprintf("[%d, %d]", xmin, x2 - 1)
+      else
+        labels[i] = sprintf("[%.2f, %.2f)", xmin, x2)
+      end
+      xmin = x2
+    end
+  end
+
+  local textq, textposition, insidetextorientation = nil, nil, nil
+  if type(style) == 'table' then
+    textq, textposition, insidetextorientation = style.textq, style.textposition, style.insidetextorientation
+  end
+  if offcenter == nil and (textq ~= nil or textposition ~= nil or insidetextorientation ~= nil) then
+    local textinfo, hoverinfo = 'percent', 'label+percent'
+    hoverinfo = 'label+percent+name'; textinfo = "label+percent"; _showlegendq = false
+    textposition = textposition or 'auto'
+    insidetextorientation = insidetextorientation or 'auto'
+    local gobj = {type = 'pie', values = freqs, labels = labels, textinfo = textinfo, hoverinfo = hoverinfo,
+                  textposition = textposition, insidetextorientation = insidetextorientation}
+    if title ~= nil then gobj.layout = {title = {text = title}} end
+    return gobj
   end
 
   radius = radius or 1
@@ -2701,27 +2764,13 @@ function pie(x, nbins, radius, style, offcenter, names)
   end
   if not _showlegendq then return data end
 
-  local labels = {}
   local allintq = all(x, isinteger, false) == 1
   local namesq = type(names) == 'table'
-  local x2, s
   for i = 1, nbins do
-    if namesq and i <= #names then
-      s = names[i]
-    elseif binsq then
-      s = 'class ' .. i
-    else
-      x2 = xmin + width
-      if allintq then
-        s = sprintf("[%d, %d]", xmin, x2 - 1)
-      else
-        s = sprintf("[%.2f, %.2f)", xmin, x2)
-      end
-      xmin = x2
-    end
-    labels[i] = s .. sprintf(" (%.2f%%)", freqs[i] * 100)
+    labels[i] = labels[i] .. sprintf(" (%.2f%%)", freqs[i] * 100)
   end
   data[#data + 1] = {names=labels}
+  if title ~= nil then data.layout = {title = title} end
   return data
 end -- pie
 
