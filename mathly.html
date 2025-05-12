@@ -1069,7 +1069,7 @@ Y = map(function(x) return n(x, mu, sigma) * 7.8 end, X)
 
 gobj = hist1(x, 12)
 axisnotsquare(); shownotlegend()
-plot(gobj, X, Y, '--r')
+plot(gobj, X, Y, '--r') -- plot other graphs together with the graphics object returned by hist1 on a single figure
 gobj = hist1(x, 12, {color='blue', fill='toself'}, {20, 120}, true, {color='red'})
 plot(gobj)
 gobj = hist1(x, {xrange={20,120}, nbins=12, freqpolygonq=true, style='bfs', style1={color='red'}})
@@ -1088,7 +1088,7 @@ plot(pareto(x, '-fs'))
 
 showaxes()
 axisnotsquare()
-plot(hist(randn(1, 100)))
+plot(hist(randn(1, 100))) -- we can't plot a function together with the graphics object returned by hist on a single figure
 A = randi({0, 99}, 3, 50)
 plot(hist(A), {layout={width=800, height=600}})
 plot(hist(A, {xrange = {0, 99}})) -- run multiple times, the two can produce different results
