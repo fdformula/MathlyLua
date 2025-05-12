@@ -1880,7 +1880,6 @@ function plot(...)
             args[#args + 1] = points[i][3] -- style
           end
         end
-        if v.layout ~= nil then  layout_arg[#layout_arg + 1] = {layout = v.layout} end
       else
         args[#args + 1] = v
       end
