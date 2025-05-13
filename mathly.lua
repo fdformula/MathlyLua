@@ -3630,7 +3630,7 @@ function qr(A)  -- by Gram-Schmidt process
   assert(m >= n, 'qr(A): A is a mxn matrix, where m >= n.')
 
   -- constructing Q
-  local Q = copy(submatrix(A, 1, 1, m, 1)) -- A[:, 1]
+  local Q = submatrix(A, 1, 1, m, 1) -- A[:, 1]
   Q = Q * (1 / norm(Q))
   for i = 2, n do
     local u = submatrix(A, 1, i, m, i) -- A[:, i]
