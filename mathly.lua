@@ -1165,7 +1165,7 @@ local function _stdvar( x, opt, sqrtq )
 
       local s = {}  --  column wise
       for j = 1, n do
-        local avg = mean(submatrix(x, '*', j))
+        local avg = mean(copy(x, '*', j))
         s[j] = 0
         for i = 1, m do
           s[j] = s[j] + (x[i][j] - avg)^2
@@ -3232,12 +3232,12 @@ function linsolve( A, b, opt )
   if opt == 'UT' then -- solve it by back substitution
     y[n] = B[n][1] / A[n][n]
     for i = n - 1, 1, -1 do
-      y[i] = (B[i][1] - sum(submatrix(A, i, {i + 1, n}) * rr(subtable(y, i + 1, n)))) / A[i][i]
+      y[i] = (B[i][1] - sum(copy(A, i, {i + 1, n}) * rr(subtable(y, i + 1, n)))) / A[i][i]
     end
   else -- solve it by forward substitution
     y[1] = B[1][1] / A[1][1]
     for i = 2, n do
-      y[i] = (B[i][1] - sum(submatrix(A, i, {1, i - 1}) * rr(subtable(y, 1, i - 1)))) / A[i][i]
+      y[i] = (B[i][1] - sum(copy(A, i, {1, i - 1}) * rr(subtable(y, 1, i - 1)))) / A[i][i]
     end
   end
   return cc(y)
@@ -3630,13 +3630,13 @@ function qr(A)  -- by Gram-Schmidt process
   assert(m >= n, 'qr(A): A is a mxn matrix, where m >= n.')
 
   -- constructing Q
-  local Q = submatrix(A, '*', 1) -- A(:, 1)
+  local Q = copy(A, '*', 1) -- A(:, 1)
   Q = Q * (1 / norm(Q))
   for i = 2, n do
-    local u = submatrix(A, '*', i) -- A(:, i)
+    local u = copy(A, '*', i) -- A(:, i)
     local v = copy(u)
     for j = 1, i - 1 do
-      local vj = submatrix(Q, '*', j) -- Q(:, j)
+      local vj = copy(Q, '*', j) -- Q(:, j)
       v = v - (sum(u * vj) / sum(vj * vj)) * vj -- u .* vj, vj .* vj
     end
     v = v * (1 / norm(v))  -- normalizing the column vector
@@ -3647,7 +3647,7 @@ function qr(A)  -- by Gram-Schmidt process
   local R = zeros(n, n)
   for i = 1, n do
     for j = i, n do
-      R[i][j] = sum(submatrix(A, '*', j) * submatrix(Q, '*', i)) -- A(:, j) .* Q(:, i)
+      R[i][j] = sum(copy(A, '*', j) * copy(Q, '*', i)) -- A(:, j) .* Q(:, i)
     end
   end
 
