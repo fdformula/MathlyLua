@@ -570,6 +570,7 @@ disp(dec2hex(a))
 <h4>&bull; &nbsp; <a name=cc></a><a name=rr></a><a name=tt href=#m><code>cc, rr, tt</code></a></h4>
 <p>A matrix operation may be applied to an ordinary table. It takes the table as a row or column vector according to the very context.
 If you want full control, you can use <code>cc</code> or <code>rr</code> to tell mathly whether the table is a column or row vector.</p>
+<p>Each function has an argument, <code>irange</code>, a range of index values. See <a href=#copy>copy</a>.</p>
 <table><tbody>
 <tr><td width=20></td><td><code>cc(x, i, irange)</code></td><td> </td><td width=10> </td><td>Convert table <code>x</code> into a column vector or return specified columns of a mathly matrix...</td></tr>
 <tr><td></td><td><code>rr(x, i, irange)</code></td><td> </td><td> </td><td>Convert table <code>x</code> into a row vector or return specified rows of a mathly matrix...</td></tr>
@@ -748,9 +749,10 @@ plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, {style = style}), x, y, '-r',
 <h4>&bull; &nbsp; <a name=copy href=#m><code>copy(x, rowrange, columnrange)</code></a></h4>
 <P>It is a general tool for making a deep copy of <code>x</code>. If <code>x</code> is a table, <code>rowrange</code> can be specified. If it is further a (mathly) matrix,
 <code>columnrange</code> can be specified.</P>
-<p><code>rowrange</code> and <code>columnrange</code> are in the format of <code>{start, stop[, step]}, where <code>start</code> and <code>stop</code> are index values.
-Both can be negative with -1 referring to the last element of <code>x<code> (or <code>x[1]</code>), -2 the next last element, and so on. Note: If one or both are specified,
-it may not work well if <code>x</code> is a table with named items like <code>{1, 2, y = {3, 4}}</code>.</p>
+<p>Arguments <code>rowrange</code> and <code>columnrange</code> are ranges of index values described below. Note: If one or both are specified, it may not work well if <code>x</code> is a table with named items like <code>{1, 2, y = {3, 4}}</code>.</p>
+<p>&#x2713; &nbsp; A <em>range of index values</em> is denoted in the format of <code>{start, stop[, step]}, where <code>start</code> and <code>stop</code> are the starting and
+terminal index values increasing by <code>step</code>. Both can be negative with <code>-1</code> referring to the last element (row/column) of of a table (or matrix), <code>-2</code> the next last
+element, and so on. <code>step</code> defaults to <code>1</code> if <code>start</code> is less than <code>stop</code>; otherwise, it defaults to <code>-1</code>. Especially, '*' as a shortcut can be used to denote the whole range of index values.</p>
 <pre><code>mathly= require('mathly')
 
 a = {1, 2, {3, 4, x = {5, y = 6, 7}}}
@@ -2221,7 +2223,7 @@ print(strcat(34,'Hello, ', {'the ', 'world', '!'}, 34)) -- 34? ascii code for "
 
 <h4>&bull; &nbsp; <a name=submatrix href=#m><code>submatrix(A, rowrange, columnrange)</code></a></h4>
 <p>Return a mathly matrix, a block of mathly matrix <code>A</code>.</p>
-<p>It is basically an alias for <code><a href=#copy>copy</a></code>.</p>
+<p>It may be considered as an alias for <code><a href=#copy>copy</a></code>.</p>
 <p>See also: <a href=#cc><code>cc, rr, tt</code></a>; <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <code><a href=#match>match</a></code>.</p>
 <pre><code>mathly = require('mathly')
 
@@ -2269,6 +2271,7 @@ disp(B)
 
 <h4>&bull; &nbsp; <a name=subtable href=#m><code>subtable(tbl, irange)</code></a></h4>
 <p>Return a slice of table <code>tbl</code> from the i-th element to the j-th one increasing by <code>step</code>, where <code>irange = {i, j, step}</code>.</p>
+<p>Argument <code>irange</code> is a range of index values. See <a href=#copy>copy</a>.</p>
 <p>See also: <a href=#cc><code>cc, rr, tt</code></a></p>
 <pre><code>mathly = require('mathly')
 

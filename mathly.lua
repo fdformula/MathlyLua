@@ -202,7 +202,7 @@ function rr(x, I, irange)
   end
 end
 
---// function cc(x, i, start, stop)
+--// function cc(x, i, irange)
 -- cc(x):            make x a column vector and return it
 -- cc(x, i):         return the ith column of x
 -- cc(x, i, irange): return ith column with on specified rows
