@@ -143,47 +143,43 @@ function round(x, dplaces)
   end
 end -- round
 
---// _adjust_index(siz, start, stop, normalq)
--- adjust values of indices, start and stop. they must be in the range from 1 to siz. the can be -1, -2, ...
--- if normalq is missing, start <= stop is required
-local function _adjust_index(siz, start, stop, normalq)
-  start = start or 1
-  if start < 0 then start = siz + start + 1 end -- -1, -2, ... --> siz, siz - 1
-  if start < 1 or start > siz then error('start = ' .. tostring(start) .. ' is out of range.') end
-
-  stop = stop or siz
-  if stop < 0 then stop = siz + stop + 1 end
-  if stop < 1 or stop > siz then error('stop = ' .. tostring(stop) .. ' is out of range.') end
-
-  if normalq == nil and stop < start then error('Invalid input, stop < start: '.. tostring(stop) .. ' < ' .. tostring(start) .. '.') end
-  return start, stop
-end
-
-local function _adjust_index_step(siz, start, stop, step)
-  start, stop = _adjust_index(siz, start, stop, false)
-  if step == nil then
-    if start <= stop then step = 1 else step = -1 end
+-- r: {start, stop[, step]}; -1 --> #x
+local function _index_range(r, x)
+  if r == nil or r == '*' then
+    r = {1, #x, 1}
+  elseif type(r) == 'number' then
+    r = {r, r, 1}
   end
-  if step == 0 or (step > 0 and start > stop) or (step < 0 and start < stop) then
-    error('Invalid input, start, stop, step: ' .. tostring(start) .. ', ' .. tostring(stop) .. ', ' .. tostring(step) .. '.')
+  if r[1] < 0 then r[1] = #x + r[1] + 1 end
+  if r[2] < 0 then r[2] = #x + r[2] + 1 end
+  if r[1] < 0 or r[1] > #x or r[2] < 0 or r[2] > #x then
+    error('Invalid range {start, stop, step}: start or stop are out of boundary.')
   end
-  return start, stop, step
-end
+  if r[3] == nil then
+    if r[1] < r[2] then r[3] = 1 else r[3] = -1 end
+  elseif r[1] < r[2] and r[3] < 0 then
+    error('Invalid range {start, stop, step}: if start < stop, step must be positive.')
+  elseif r[1] > r[2] and r[3] > 0 then
+    error('Invalid range {start, stop, step}: if start > stop, step must be negative.')
+  end
+  assert(isinteger(r[1]) and isinteger(r[2]) and isinteger(r[3]), 'Invalid range {start, stop, step}: start, stop, and step must be all integers.')
+  return r
+end -- _index_range
 
 --// function rr(x, i, start, stop)
--- rr(x):                 make x a row vector and return it
--- rr(x, i):              return the ith row of x
--- rr(x, i, start, stop): return submatrix(x, i, start, i, stop), stop defaults to #x[1]
+-- rr(x):            make x a row vector and return it
+-- rr(x, i):         return the ith row of x
+-- rr(x, i, irange): return ith row on specified columns
 --
 -- if i is a list of indice, return rows defined in the list and in order (the latter allows rearrangement and repetition of rows)
 --
 -- i = -1, last row; i = -2, the row before the last row; ... similar with start and stop
-function rr(x, I, start, stop, step)
+function rr(x, I, irange)
   if I == nil then
     return setmetatable({ flatten(x) }, mathly_meta) -- convert x to a row vector
   else
     assert(getmetatable(x) == mathly_meta, 'rr(x, i...): x must be a mathly matrix.')
-    start, stop, step = _adjust_index_step(#x[1], start, stop, step)
+    irange = _index_range(irange or '*', x[1])
     local rows = {}
     if type(I) ~= 'table' then I = { I } end
     for m = 1, #I do
@@ -193,7 +189,7 @@ function rr(x, I, start, stop, step)
       if i > 0 and i <= siz then
         local y = {}
         local k = 1
-        for j = start, stop, step do
+        for j = irange[1], irange[2], irange[3] do
           y[k] = x[i][j]
           k = k + 1
         end
@@ -207,28 +203,28 @@ function rr(x, I, start, stop, step)
 end
 
 --// function cc(x, i, start, stop)
--- cc(x):                 make x a column vector and return it
--- cc(x, i):              return the ith column of x
--- cc(x, i, start, stop): return submatrix(x, start, i, stop, i), stop defaults to #x
+-- cc(x):            make x a column vector and return it
+-- cc(x, i):         return the ith column of x
+-- cc(x, i, irange): return ith column with on specified rows
 --
 -- if i is a list of indice, return columns defined in the list and in order (the latter allows rearrangement and repetition of columns)
 -- i = -1, last columns; i = -2, the column before the last column; ...
-function cc(x, I, start, stop, step)
+function cc(x, I, irange)
   if I == nil then
     return setmetatable(map(function(x) return {x} end, flatten(x)), mathly_meta) -- convert x to a column vector
   else
     assert(getmetatable(x) == mathly_meta, 'cc(x, i...): x must be a mathly matrix.')
-    start, stop, step = _adjust_index_step(#x, start, stop, step)
+    irange = _index_range(irange, x)
     if type(I) ~= 'table' then I = { I } end
     local abs = math.abs
-    local cols = mathly(math.ceil((abs(stop - start) + 1) / abs(step)), #I, 0)
+    local cols = mathly(math.ceil((abs(irange[2] - irange[1]) + 1) / abs(irange[3])), #I, 0)
     for jj = 1, #I do
       local j = I[jj]
       local siz = #x[1]
       if j < 0 then j = siz + j + 1 end -- j = -1, -2, ...
       if j > 0 and j <= siz then
         local ii = 1
-        for i = start, stop, step do
+        for i = irange[1], irange[2], irange[3] do
           cols[ii][jj] = x[i][j]
           ii = ii + 1
         end
@@ -240,13 +236,12 @@ function cc(x, I, start, stop, step)
   end
 end
 
--- tt(x, startpos, endpos, step)
 -- convert x to a table (columnwisely if its a mathly matrix) or flatten it first
 -- and return a slice of it
 -- want row wise? see flatten(tbl)
 --
--- t or subtable? t converts first, while subtable doesn't.
-function tt(x, start, stop, step) -- make x an ordinary table
+-- tt or subtable? tt converts first, while subtable doesn't.
+function tt(x, irange) -- make x an ordinary table
   local y = {}
   if getmetatable(x) == mathly_meta then -- column wise
     if #x == 1 then -- row vector
@@ -266,11 +261,10 @@ function tt(x, start, stop, step) -- make x an ordinary table
     return { x }
   end
 
-  start, stop, step = _adjust_index_step(#y, start, stop, step)
-
+  irange = _index_range(irange, y)
   local z = {}
   local k = 1
-  for i = start, stop, step do
+  for i = irange[1], irange[2], irange[3] do
     z[k] = y[i]
     k = k + 1
   end
@@ -374,23 +368,45 @@ end
 
 --// copy ( x )
 -- make a copy of x
-function copy( x ) -- for general purpose
-  local y = {}
-  if type(x) ~= 'table' then
-    return x
-  else
+function copy(x, rrange, crange)
+  local function _copy( x ) -- for general purpose
+    local y = {}
     for k, v in pairs(x) do
       if type(v) ~= 'table' then
         y[k] = v
       else
-        y[k] = copy(v)
+        y[k] = _copy(v)
       end
     end
-    if getmetatable( x ) == mathly_meta then
-      return setmetatable(y, mathly_meta)
+    return y
+  end
+
+  local mathlyq = getmetatable( x ) == mathly_meta
+  if type(x) ~= 'table' then
+    return x
+  elseif not mathlyq and rrange == nil and crange == nil then
+    return _copy(x)
+  else
+    local y, I = {}, 1
+    rrange = _index_range(rrange or {1, -1, 1}, x)
+    if crange == nil then
+      for i = rrange[1], rrange[2], rrange[3] do
+        if type(x[i]) ~= 'table' then y[I] = x[i] else y[I] = _copy(x[i]) end
+        I = I + 1
+      end
     else
-      return y
+      crange = _index_range(crange, x[1])
+      for i = rrange[1], rrange[2], rrange[3] do
+        local J = 1
+        y[I] = {}
+        for j = crange[1], crange[2], crange[3] do
+          y[I][J] = x[i][j]; J = J + 1
+        end
+        I = I + 1
+      end
     end
+    if mathlyq then setmetatable(y, mathly_meta) end
+    return y
   end
 end -- copy
 
@@ -1149,7 +1165,7 @@ local function _stdvar( x, opt, sqrtq )
 
       local s = {}  --  column wise
       for j = 1, n do
-        local avg = mean(submatrix(x, 1, j, #x, j))
+        local avg = mean(submatrix(x, '*', j))
         s[j] = 0
         for i = 1, m do
           s[j] = s[j] + (x[i][j] - avg)^2
@@ -3081,7 +3097,7 @@ end
 -- calculate the reduced row-echlon form of matrix A
 -- if B is provided, it works on [ A | B]; useful for finding the inverse of A or
 -- solving Ax = b by rref [ A | b ]
-function rref( a, b ) -- gauss-jordan elimination
+function rref(a, b) -- gauss-jordan elimination
   assert(getmetatable(a) == mathly_meta, 'rref( A ): A must be a mathly metatable.')
   assert(b == nil or getmetatable(b) == mathly_meta, 'rref( A, B ): A and B must be mathly metatables.')
   local rows, columns = size(a)
@@ -3216,12 +3232,12 @@ function linsolve( A, b, opt )
   if opt == 'UT' then -- solve it by back substitution
     y[n] = B[n][1] / A[n][n]
     for i = n - 1, 1, -1 do
-      y[i] = (B[i][1] - sum(submatrix(A, i, i + 1, i, n) * rr(subtable(y, i + 1, n)))) / A[i][i]
+      y[i] = (B[i][1] - sum(submatrix(A, i, {i + 1, n}) * rr(subtable(y, i + 1, n)))) / A[i][i]
     end
   else -- solve it by forward substitution
     y[1] = B[1][1] / A[1][1]
     for i = 2, n do
-      y[i] = (B[i][1] - sum(submatrix(A, i, 1, i, i - 1) * rr(subtable(y, 1, i - 1)))) / A[i][i]
+      y[i] = (B[i][1] - sum(submatrix(A, i, {1, i - 1}) * rr(subtable(y, 1, i - 1)))) / A[i][i]
     end
   end
   return cc(y)
@@ -3301,9 +3317,10 @@ function reverse(tbl)
   if type(tbl) == 'string' then
     return string.reverse(tbl)
   else
-    return tt(tbl, -1, 1, -1)
+    return tt(tbl, {-1, 1, -1})
   end
 end
+
 function sort(tbl, compf)
   if type(compf) == 'string' then compf = fstr2f(compf) end
   table.sort(tbl, compf)
@@ -3548,38 +3565,21 @@ function expand( A, m, n, v )
   return setmetatable(z, mathly_meta)
 end -- expand
 
---// function submatrix( A, startrow, startcol, endrow, endcol, steprow, stepcol )
 -- extract a submatrix of matrix A
-function submatrix( A, startrow, startcol, endrow, endcol, steprow, stepcol )
-  assert(getmetatable(A) == mathly_meta, 'submatrix( A ): A must be a mathly metatable.')
-  local rows, columns = size(A)
-  startrow, endrow, steprow = _adjust_index_step(rows, startrow, endrow, steprow)
-  startcol, endcol, stepcol = _adjust_index_step(columns, startcol, endcol, stepcol)
+function submatrix(A, rrange, crange)
+  assert(getmetatable(A) == mathly_meta, 'submatrix( A ): A must be a mathly matrix.')
+  return copy(A, rrange, crange)
+end
 
-  local B = {}
-  local I, J
-  I = 1
-  for i = startrow, endrow, steprow do
-    B[I] = {}; J = 1
-    for j = startcol, endcol, stepcol do
-      B[I][J] = A[i][j]
-      J = J + 1
-    end
-    I = I + 1
-  end
-  return setmetatable(B, mathly_meta)
-end -- submatrix
-
---// function subtable( A, startpos, endpos, step )
 -- return a specified slice of a vector
-function subtable( tbl, startpos, endpos, step )
-  startpos, endpos, step = _adjust_index_step(#tbl, startpos, endpos, step)
+function subtable(tbl, irange)
+  irange = _index_range(irange, tbl)
   local x = {}
-  for i = startpos, endpos, step do
+  for i = irange[1], irange[2], irange[3] do
     x[#x + 1] = tbl[i]
   end
   return x
-end -- subtable
+end
 
 --// function lu(A)
 -- Return L and U in LU factorization A = L * U, where L and U are lower and upper traingular matrices, respectively.
@@ -3630,13 +3630,13 @@ function qr(A)  -- by Gram-Schmidt process
   assert(m >= n, 'qr(A): A is a mxn matrix, where m >= n.')
 
   -- constructing Q
-  local Q = submatrix(A, 1, 1, m, 1) -- A[:, 1]
+  local Q = submatrix(A, '*', 1) -- A(:, 1)
   Q = Q * (1 / norm(Q))
   for i = 2, n do
-    local u = submatrix(A, 1, i, m, i) -- A[:, i]
-    local v = copy(u)            -- MATLAB: v = u
+    local u = submatrix(A, '*', i) -- A(:, i)
+    local v = copy(u)
     for j = 1, i - 1 do
-      local vj = submatrix(Q, 1, j, m, j) -- Q[:, j]
+      local vj = submatrix(Q, '*', j) -- Q(:, j)
       v = v - (sum(u * vj) / sum(vj * vj)) * vj -- u .* vj, vj .* vj
     end
     v = v * (1 / norm(v))  -- normalizing the column vector
@@ -3647,7 +3647,7 @@ function qr(A)  -- by Gram-Schmidt process
   local R = zeros(n, n)
   for i = 1, n do
     for j = i, n do
-      R[i][j] = sum(submatrix(A, 1, j, m, j) * submatrix(Q, 1, i, m, i)) -- A[:, j] .* Q[:, i])
+      R[i][j] = sum(submatrix(A, '*', j) * submatrix(Q, '*', i)) -- A(:, j) .* Q(:, i)
     end
   end
 
