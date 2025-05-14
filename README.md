@@ -170,7 +170,7 @@ By the way, `tt` converts a mathly matrix to a table columnwisely or flattens an
 
 ### Some examples
 ```Lua
-require 'mathly'
+require 'mathly';
 
 x = linspace(0, pi, 100)
 y1 = sin(x)
