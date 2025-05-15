@@ -2136,7 +2136,7 @@ function plot(...)
   _showlegendq = showlegendq
 end -- plot
 
-local function _correct_range(start, stop, step)
+local function _plot_interval(start, stop, step)
   local tblq = type(start) == 'table'
   if tblq then
     stop = start[2]
@@ -2150,7 +2150,7 @@ local function _correct_range(start, stop, step)
   end
   if start > stop then start, stop = stop, start end
   if tblq then return {start, stop, step} else return start, stop end
-end -- _correct_range
+end -- _plot_interval
 
 local function _set_resolution(r, n)
   n = n or 500
@@ -2255,8 +2255,8 @@ function plot3d(f, xrange, yrange, title, resolution)
   local X, Y, Z = {}, {}, {}
   if type(f) == 'string' then f = fstr2f(f) end
   if type(f) == 'function' then
-    xrange = _correct_range(xrange)
-    yrange = _correct_range(yrange)
+    xrange = _plot_interval(xrange)
+    yrange = _plot_interval(yrange)
     resolution = _set_resolution(resolution, 100)
     local n = max(math.ceil(max(xrange[2] - xrange[1], yrange[2] - yrange[1])) * 10, resolution)
     local x = linspace(xrange[1], xrange[2], n)
@@ -2300,8 +2300,8 @@ function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
   elseif type(rho) == 'string' then
     rho = fstr2f(rho)
   end
-  thetarange = _correct_range(thetarange or {0, 2*pi})
-  phirange = _correct_range(phirange or {0, pi})
+  thetarange = _plot_interval(thetarange or {0, 2*pi})
+  phirange = _plot_interval(phirange or {0, pi})
   resolution = _set_resolution(resolution, 100)
 
   local X, Y, Z = {}, {}, {}
@@ -2332,8 +2332,8 @@ function plotparametricsurface3d(xyz, urange, vrange, title, resolution)
     {'xyz', 'urange', 'vrange', 'title', 'resolution'})
   xyz, urange, vrange, title, resolution = args[1], args[2], args[3], args[4], args[5]
 
-  urange = _correct_range(urange or {-5, 5})
-  vrange = _correct_range(vrange or urange)
+  urange = _plot_interval(urange or {-5, 5})
+  vrange = _plot_interval(vrange or urange)
   resolution = _set_resolution(resolution, 100)
 
   local x, y, z = {}, {}, {}
@@ -2369,7 +2369,7 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
     {'xyz', 'trange', 'title', 'resolution', 'orientationq'})
   xyz, trange, title, resolution, orientationq = args[1], args[2], args[3], args[4], args[5]
 
-  trange = _correct_range(trange or {0, 2 * pi})
+  trange = _plot_interval(trange or {0, 2 * pi})
   resolution = _set_resolution(resolution)
 
   local x, y, z
@@ -2451,7 +2451,7 @@ function hist(x, nbins, style, xrange)
   nbins = nbins or 10
 
   if xrange ~= nil then
-    xmin, xmax = _correct_range(xrange[1], xrange[2])
+    xmin, xmax = _plot_interval(xrange[1], xrange[2])
   else
     local tmp = flatten(x)
     xmin, xmax = min(tmp), max(tmp)
@@ -2488,7 +2488,7 @@ end -- hist
 local function _xmin_xmax_width(x, xrange, nbins, allintq)
   local xmin, xmax, width
   if xrange ~= nil then
-    xmin, xmax = _correct_range(xrange[1], xrange[2])
+    xmin, xmax = _plot_interval(xrange[1], xrange[2])
   else
     xmin, xmax = x[1], x[#x]
   end
@@ -2744,7 +2744,7 @@ function wedge(r, center, angles, style, wedgeq)
   r, center, angles, style, wedgeq = args[1], args[2], args[3], args[4], args[5]
 
   center = center or {0, 0}
-  angles = _correct_range(angles or {0, 2*pi})
+  angles = _plot_interval(angles or {0, 2*pi})
   if wedgeq == nil then wedgeq = true end
   local theta = angles[2] - angles[1]
   local arcpts = math.ceil(300 * theta/(2*pi))
@@ -2885,7 +2885,7 @@ function parametriccurve2d(xy, trange, style, resolution, orientationq)
     {'xy', 'trange', 'style', 'resolution', 'orientationq'})
   xy, trange, style, resolution, orientationq = args[1], args[2], args[3], args[4], args[5]
 
-  trange = _correct_range(trange or {-5, 5})
+  trange = _plot_interval(trange or {-5, 5})
   resolution = _set_resolution(resolution)
   local data = {'graph'}
   local ts = linspace(trange[1], trange[2], math.max(math.ceil((trange[2] - trange[1]) * 50), resolution))
@@ -3003,8 +3003,8 @@ function slopefield(f, xrange, yrange, scale)
   f, xrange, yrange, scale = args[1], args[2], args[3], args[4]
 
   if type(f) == 'string' then f = fstr2f(f) end
-  xrange = _correct_range(xrange or {-5, 5, 0.5})
-  yrange = _correct_range(yrange or xrange)
+  xrange = _plot_interval(xrange or {-5, 5, 0.5})
+  yrange = _plot_interval(yrange or xrange)
   if type(f) ~= 'function' or type(xrange) ~= 'table' or type(yrange) ~= 'table' then
     error('slopefield(f, xrange, yrange, scale): f is a function as in dy/dx = f(x, y), xrange and yrange are of the format {begin, end, step}.')
   end
@@ -3035,8 +3035,8 @@ function vectorfield2d(f, xrange, yrange, scale)
   f, xrange, yrange, scale = args[1], args[2], args[3], args[4]
 
   if type(f) == 'string' then f = fstr2f(f) end
-  xrange = _correct_range(xrange or {-5, 5, 0.5})
-  yrange = _correct_range(yrange or xrange)
+  xrange = _plot_interval(xrange or {-5, 5, 0.5})
+  yrange = _plot_interval(yrange or xrange)
   if type(f) ~= 'function' or type(xrange) ~= 'table' or type(yrange) ~= 'table' then
     error('vectorfield2d(f, xrange, yrange, scale): f is a vector function, xrange and yrange are of the format {begin, end, step}.')
   end
