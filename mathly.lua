@@ -144,7 +144,8 @@ function round(x, dplaces)
 end -- round
 
 -- r: {start, stop[, step]}; -1 --> #x
-local function _index_range(r, x)
+local function _index_range(R, x)
+  local r = copy(R)
   if r == nil or r == '*' then
     r = {1, #x, 1}
   elseif type(r) == 'number' then
@@ -366,8 +367,7 @@ function apply( func, args )
   return func(table.unpack(args))
 end
 
---// copy ( x )
--- make a copy of x
+-- make a deep copy of x
 function copy(x, rrange, crange)
   local function _copy( x ) -- for general purpose
     local y = {}
@@ -2136,7 +2136,7 @@ function plot(...)
   _showlegendq = showlegendq
 end -- plot
 
-local function _plot_interval(start, stop, step)
+local function _correct_range(start, stop, step)
   local tblq = type(start) == 'table'
   if tblq then
     stop = start[2]
@@ -2150,7 +2150,7 @@ local function _plot_interval(start, stop, step)
   end
   if start > stop then start, stop = stop, start end
   if tblq then return {start, stop, step} else return start, stop end
-end -- _plot_interval
+end -- _correct_range
 
 local function _set_resolution(r, n)
   n = n or 500
@@ -2255,8 +2255,8 @@ function plot3d(f, xrange, yrange, title, resolution)
   local X, Y, Z = {}, {}, {}
   if type(f) == 'string' then f = fstr2f(f) end
   if type(f) == 'function' then
-    xrange = _plot_interval(xrange)
-    yrange = _plot_interval(yrange)
+    xrange = _correct_range(xrange)
+    yrange = _correct_range(yrange)
     resolution = _set_resolution(resolution, 100)
     local n = max(math.ceil(max(xrange[2] - xrange[1], yrange[2] - yrange[1])) * 10, resolution)
     local x = linspace(xrange[1], xrange[2], n)
@@ -2300,8 +2300,8 @@ function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
   elseif type(rho) == 'string' then
     rho = fstr2f(rho)
   end
-  thetarange = _plot_interval(thetarange or {0, 2*pi})
-  phirange = _plot_interval(phirange or {0, pi})
+  thetarange = _correct_range(thetarange or {0, 2*pi})
+  phirange = _correct_range(phirange or {0, pi})
   resolution = _set_resolution(resolution, 100)
 
   local X, Y, Z = {}, {}, {}
@@ -2332,8 +2332,8 @@ function plotparametricsurface3d(xyz, urange, vrange, title, resolution)
     {'xyz', 'urange', 'vrange', 'title', 'resolution'})
   xyz, urange, vrange, title, resolution = args[1], args[2], args[3], args[4], args[5]
 
-  urange = _plot_interval(urange or {-5, 5})
-  vrange = _plot_interval(vrange or urange)
+  urange = _correct_range(urange or {-5, 5})
+  vrange = _correct_range(vrange or urange)
   resolution = _set_resolution(resolution, 100)
 
   local x, y, z = {}, {}, {}
@@ -2369,7 +2369,7 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
     {'xyz', 'trange', 'title', 'resolution', 'orientationq'})
   xyz, trange, title, resolution, orientationq = args[1], args[2], args[3], args[4], args[5]
 
-  trange = _plot_interval(trange or {0, 2 * pi})
+  trange = _correct_range(trange or {0, 2 * pi})
   resolution = _set_resolution(resolution)
 
   local x, y, z
@@ -2451,7 +2451,7 @@ function hist(x, nbins, style, xrange)
   nbins = nbins or 10
 
   if xrange ~= nil then
-    xmin, xmax = _plot_interval(xrange[1], xrange[2])
+    xmin, xmax = _correct_range(xrange[1], xrange[2])
   else
     local tmp = flatten(x)
     xmin, xmax = min(tmp), max(tmp)
@@ -2488,7 +2488,7 @@ end -- hist
 local function _xmin_xmax_width(x, xrange, nbins, allintq)
   local xmin, xmax, width
   if xrange ~= nil then
-    xmin, xmax = _plot_interval(xrange[1], xrange[2])
+    xmin, xmax = _correct_range(xrange[1], xrange[2])
   else
     xmin, xmax = x[1], x[#x]
   end
@@ -2744,7 +2744,7 @@ function wedge(r, center, angles, style, wedgeq)
   r, center, angles, style, wedgeq = args[1], args[2], args[3], args[4], args[5]
 
   center = center or {0, 0}
-  angles = _plot_interval(angles or {0, 2*pi})
+  angles = _correct_range(angles or {0, 2*pi})
   if wedgeq == nil then wedgeq = true end
   local theta = angles[2] - angles[1]
   local arcpts = math.ceil(300 * theta/(2*pi))
@@ -2885,7 +2885,7 @@ function parametriccurve2d(xy, trange, style, resolution, orientationq)
     {'xy', 'trange', 'style', 'resolution', 'orientationq'})
   xy, trange, style, resolution, orientationq = args[1], args[2], args[3], args[4], args[5]
 
-  trange = _plot_interval(trange or {-5, 5})
+  trange = _correct_range(trange or {-5, 5})
   resolution = _set_resolution(resolution)
   local data = {'graph'}
   local ts = linspace(trange[1], trange[2], math.max(math.ceil((trange[2] - trange[1]) * 50), resolution))
@@ -3003,8 +3003,8 @@ function slopefield(f, xrange, yrange, scale)
   f, xrange, yrange, scale = args[1], args[2], args[3], args[4]
 
   if type(f) == 'string' then f = fstr2f(f) end
-  xrange = _plot_interval(xrange or {-5, 5, 0.5})
-  yrange = _plot_interval(yrange or xrange)
+  xrange = _correct_range(xrange or {-5, 5, 0.5})
+  yrange = _correct_range(yrange or xrange)
   if type(f) ~= 'function' or type(xrange) ~= 'table' or type(yrange) ~= 'table' then
     error('slopefield(f, xrange, yrange, scale): f is a function as in dy/dx = f(x, y), xrange and yrange are of the format {begin, end, step}.')
   end
@@ -3035,8 +3035,8 @@ function vectorfield2d(f, xrange, yrange, scale)
   f, xrange, yrange, scale = args[1], args[2], args[3], args[4]
 
   if type(f) == 'string' then f = fstr2f(f) end
-  xrange = _plot_interval(xrange or {-5, 5, 0.5})
-  yrange = _plot_interval(yrange or xrange)
+  xrange = _correct_range(xrange or {-5, 5, 0.5})
+  yrange = _correct_range(yrange or xrange)
   if type(f) ~= 'function' or type(xrange) ~= 'table' or type(yrange) ~= 'table' then
     error('vectorfield2d(f, xrange, yrange, scale): f is a vector function, xrange and yrange are of the format {begin, end, step}.')
   end
@@ -3565,20 +3565,61 @@ function expand( A, m, n, v )
   return setmetatable(z, mathly_meta)
 end -- expand
 
--- extract a submatrix of matrix A
-function submatrix(A, rrange, crange)
+-- extract a submatrix of matrix A if B is not specified, or set the submatrix of A with B (A is modified!)
+function submatrix(A, rrange, crange, B)
   assert(getmetatable(A) == mathly_meta, 'submatrix( A ): A must be a mathly matrix.')
-  return copy(A, rrange, crange)
+  if B == nil then return copy(A, rrange, crange) end
+
+  rrange = _index_range(rrange, A)
+  crange = _index_range(crange, A[1])
+  if type(B) == 'table' then
+    local b = mathly(B)
+    local I, J = size(b)
+    if rrange[2] - rrange[1] + 1 > I or crange[2] - crange[1] + 1 > J then
+      error('submatrix(A, rrange, crange, B): not enough data in B for the substitution.')
+    end
+    I = 1
+    for i = rrange[1], rrange[2], rrange[3] do
+      J = 1
+      for j = crange[1], crange[2], crange[3] do
+        A[i][j] = b[I][J]
+        J = J + crange[3]
+      end
+      I = I + rrange[3]
+    end
+  else
+    for i = rrange[1], rrange[2], rrange[3] do
+      for j = crange[1], crange[2], crange[3] do
+        A[i][j] = B
+      end
+    end
+  end
+  return A
 end
 
 -- return a specified slice of a vector
-function subtable(tbl, irange)
-  irange = _index_range(irange, tbl)
-  local x = {}
-  for i = irange[1], irange[2], irange[3] do
-    x[#x + 1] = tbl[i]
+function subtable(A, irange, B)
+  irange = _index_range(irange, A)
+  local I = 1
+  if B == nil then
+    local x = {}
+    for i = irange[1], irange[2], irange[3] do
+      x[I] = A[i]; I = I + irange[3]
+    end
+    return x
+  elseif type(B) == 'table' then
+    if irange[2] - irange[1] + 1 > #B then
+      error('subtable(A, irange, B): not enough data in B for the substitution.')
+    end
+    for i = irange[1], irange[2], irange[3] do
+      A[i] = B[I]; I = I + irange[3]
+    end
+  else
+    for i = irange[1], irange[2], irange[3] do
+      A[i] = B
+    end
   end
-  return x
+  return A
 end
 
 --// function lu(A)

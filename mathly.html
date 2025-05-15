@@ -216,7 +216,7 @@ or row vector. (See <a href=#cc><code>cc, rr, tt</code></a>)</p>
 <code>deg</code>, <code>exp</code>, <code>floor</code>, <code>log</code>, <code>rad</code>, <code>random</code>,
 <code>sin</code>, <code>sqrt</code>, and <code>tan</code>. They evaluate a function at every number in a
 table and keep the structure of the table.</p>
-<pre><code>require('mathly')
+<pre><code>mathly = require('mathly')
 
 A = randi(100, 5, 6)
 disp(cos(A))
@@ -368,8 +368,8 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#printf><code>sprintf(...)</code></a></td><td> </td><td>Return a formatted string, while <code>printf</code> prints one.</td></tr>
 <tr><td> </td><td><a href=#std><code>std(x, opt)</code></a></td><td> </td><td>Return the standard deviation of numbers in <code>x</code>.</td></tr>
 <tr><td> </td><td><a href=#strcat><code>strcat(...)</code></a></td><td> </td><td>Concatenate strings and return the resulted string.</td></tr>
-<tr><td> </td><td><a href=#submatrix><code>submatrix(A, rowrange, columnrange)</code></a></td><td> </td><td>Return a mathly matrix, a block of mathly matrix <code>A</code>.</td></tr>
-<tr><td> </td><td><a href=#subtable><code>subtable(tbl, irange)</code></a></td><td> </td><td>Return a slice of table <code>tbl</code>.</td></tr>
+<tr><td> </td><td><a href=#submatrix><code>submatrix(A, rowrange, columnrange, B)</code></a></td><td> </td><td>Return a mathly matrix of <code>A</code> if <code>B</code> is not specified; otherwise, reset the submatrix of <code>A</code> with <code>B</code>.</td></tr>
+<tr><td> </td><td><a href=#subtable><code>subtable(A, irange, B)</code></a></td><td> </td><td>Return a slice of table <code>A</code> if <code>B</code> is not provided; otherwise, set the slice with <code>B</code>.</td></tr>
 <tr><td> </td><td><a href=#sum><code>sum(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the sum of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
 <tr><td> </td><td><a href=#tblcat><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Flatten and concatenate tables into a single table. Tables here may just be numbers, boolean values, or strings.</td></tr>
 <tr><td> </td><td><a href=#text><code>text(x, y, txt, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to write a text string on a graph.</td></tr>
@@ -424,7 +424,7 @@ all(x, '@(x) x % 2 == 0')
 
 <h4>&bull; &nbsp; <a name=apply href=#m><code>apply(f, ...)</code></a></h4>
 <p>As with some other programming languages like <i>Mathematica</i>, it evaluates function <code>f</code> with provided arguments.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 apply('@(x, y, z) x + y + z', {1, 2, 3})
 </code></pre>
 
@@ -459,7 +459,7 @@ each take also a last argument, <code>orientationq</code> (default: false). If i
 
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining an anonymous function.</a></p>
 
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 clear()
 plot(sin, point({{-2, 1.5}, {2, -1}, {2.5, 2}}), point(-1, sin(-1), {symbol='circle-open', size=18, color='red'}))
 
@@ -787,8 +787,6 @@ y = copy(x, {-1, 1, -3})
 disp(y)
 -- {7, 4, 1}
 
--- matrix examples? see <a href=#submatrix>submatrix</a>, another name for 'copy'
-
 x = {1, 2, hi = {2, 3, abc = {1, 2, bcd = 6, 2, 7, 'hello', true, false, cde = 1}}}
 display(x)
 -- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1, bcd = 6}}}
@@ -798,12 +796,54 @@ display(x)
 -- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1}}}
 display(y)
 -- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1, bcd = 6}}}
+
+-- matrix examples
+a = mathly{{22, 15, 94, 77, 48}, {43, 58, 96, 64,  5},
+           {20, 85, 90, 37, 92}, {16, 67,  9, 56, 33}}
+disp(a)
+-- 22  15  94  77  48
+-- 43  58  96  64   5
+-- 20  85  90  37  92
+-- 16  67   9  56  33
+
+b = copy(a, 2, {1, 3}) -- MATLAB: a(2, 1:3)
+disp(b)
+-- 43  58  96
+
+b = copy(a, {1, 3}, 2) -- MATLAB: a(1:3, 2)
+disp(b)
+-- 15
+-- 58
+-- 85
+
+b = copy(a, '*', {1, 3}) -- or copy(a, nil, {1, 3}) -- MATLAB: a(1:end, 1:3)
+disp(b)
+-- 22  15  94
+-- 43  58  96
+-- 20  85  90
+-- 16  67   9
+
+b = copy(a, {1, -2}) -- or copy(a, {1, -2}, '*') -- MATLAB: a(1:end-1, 1:end)
+disp(b)
+-- 22  15  94  77  48
+-- 43  58  96  64   5
+-- 20  85  90  37  92
+
+b = copy(a, {3, -1}, {2, -2}) -- MATLAB: a(3:end, 2:end)
+disp(b)
+--  85  90  37
+--  67   9  56
+
+B = copy(a, {1, -2, 2}, {1, 4}) -- MATLAB: a(1:2:end-1, 1:4)
+disp(B)
+-- 22  15  94  77
+-- 20  85  90  37
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=cross href=#m><code>cross(a, b)</code></a></h4>
 <P>Return the cross/vector product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>}</code>
 and <code>b = {b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub>}</code>.</P>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 display(cross({1, 2, 3}, {3, 4, 5}))
 -- {-2, 4, -2}
 </code></pre>
@@ -813,7 +853,7 @@ display(cross({1, 2, 3}, {3, 4, 5}))
 <p>It is provided for special purposes. If no matrix operations are needed/allowed or the structure of a
 matrix is damaged (on purpose), you had better call it.</p>
 <p>See also: <a href=#mathly>mathly</a>.</p>
-<pre><code>require('mathly')
+<pre><code>mathly = require('mathly')
 
 A = mathly{{1, 2}, {3, 4}}
 A[1][2] = {5, 6, 7}
@@ -900,7 +940,7 @@ diag({2,3,4,5}, 1) + diag({1,2,3,4,5}) + diag({3,4,5,6}, -1) -- See also: <a nam
 <tr><td><code>display(x)</code></td><td> - </td><td>Print a table, including any mathly matrix, with structure.</td></tr>
 </table>
 <p>&#x2713; &nbsp; You can always use <code>disp</code> in all cases (except that you want to know the structure of a mathly matrix).</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 
 a = eye(3)
 disp(a)
@@ -920,7 +960,7 @@ disp(x) -- or display(x)
 <h4>&bull; &nbsp; <a name=dot href=#m><code>dot(a, b)</code></a></h4>
 <P>Return the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ...}</code>
 and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ...}</code>.</P>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 display(dot({1, 2, 3}, {3, 4, 5}))
 -- 26
 display(dot({1, 2}, {3, 4}))
@@ -929,7 +969,7 @@ display(dot({1, 2}, {3, 4}))
 
 <h4>&bull; &nbsp; <a name=eval href=#m><code>eval(str)</code></a></h4>
 <p>Evaluate the expression in <code>str</code> and return the result.</p>
-<pre><code>require('mathly')
+<pre><code>mathly = require('mathly')
 
 x = eval('    2 * 3 - 4   ')
 print(x)
@@ -976,7 +1016,7 @@ disp(expand(a, 2))
 <p>If <code>interval</code> is a single number, say, 1.5, it is set to be the interval, 1.5 &plusmn; 1, i.e., [0.5, 2.5].</p>
 <p>If <code>accuracy</code> is not provided, it defaults to <a href=#eps><code>eps</code></a>.</p>
 <p><code>findroot</code> is a name for <i>Mathematica</i> users. It is an alias for <code>fzero</code>.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 
 print(findroot(sin, 0.3))
 -- 0.0
@@ -1061,7 +1101,7 @@ disp(fliplr(a))
 <p>See also: <a href=#arc><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a></p>
 <p>Note: Named arguments are allowed for this group of functions. See <a href=#namedargs>named arguments</a>.</p>
 <p>Take <code>pie</code> as an example. It's the only function of this group that doesn't use the <code>style</code> described above.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 clear()
 data = {1, 11, 4, 7, 6, 5, 10, 4, 3, 15, 13, 1, 4, 10, 9}
 plot(pie(data, 5))
@@ -1079,7 +1119,7 @@ plot(pie(randi({-100, 100}, 1, 200),
 </code></pre>
 
 <p>More examples,</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 clear()
 data1 = {1, 2, 3, 4, 2, 12, 3, 4, 2, 12, 9, 9, 9, 8, 5, 3, 3, 2, 1, 5, 3, 2}
 data2 = {2, 1, 2, 4, 5, 7, 11}
@@ -1134,7 +1174,7 @@ plot(pareto(x, '-fs'))
 <h4>&bull; &nbsp; <a name=fstr2f href=#m><code>fstr2f(str)</code></a></h4>
 <p>Convert a MATLAB-style anonymous function in a string to a Lua function handle.</p>
 <p>See also: <a href=#easyf>Shortcut for defining an anonymous function.</a></p>
-<pre><code>require('mathly')
+<pre><code>mathly = require('mathly')
 clear()
 f = fstr2f('@(x) x*x - 2*x + 1')
 disp(f(1)) -- 0
@@ -1143,7 +1183,7 @@ plot(f, sin, {range = {0, 2}})
 
 <h4>&bull; &nbsp; <a name=gcd href=#m><code>gcd(x, y)</code></a></h4>
 <p>Return the greatest common divisor of <code>x</code> and <code>y</code> which can be nonnegative integers of tables of nonnegative integers with the same structure.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 gcd(126, 12)
 disp(gcd({126, 35}, {12, 5}))
 disp(gcd({126, {35, 12}}, {12, {5, 36}}))
@@ -1151,7 +1191,7 @@ disp(gcd({126, {35, 12}}, {12, {5, 36}}))
 
 <h4>&bull; &nbsp; <a name=hasindex href=#m><code>hasindex(tbl, idx)</code></a></h4>
 <p>Check if table <code>tbl</code> contains index <code>idx</code>.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 
 opt = {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}}
 print(hasindex(opt, 'grid'))
@@ -1199,7 +1239,7 @@ disp(A .. cc(b)) -- augmented coefficient matrix for Ax = b
 <h4>&bull; &nbsp; <a href=#m name=input><code>input(prompt, s)</code></a></h4>
 <p>Take user's input from keyboard and return a string if <code>s = 's'</code>; otherwise, evaluate the input expression and return the result.</p>
 <p><code>prompt</code> is the text displayed to user. <code>s</code> defaults to <code>nil</code>.</p>
-<pre><code>require('mathly')
+<pre><code>mathly = require('mathly')
 
 x = input('Please enter a number: ')
 print(x * 10)
@@ -1227,7 +1267,7 @@ inv(A) * A - I
 
 <h4>&bull; &nbsp; <a name=ismember href=#m><code>ismember(x, table)</code></a></h4>
 <p>Check if <code>x</code> is a member of <code>table</code>.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 
 x = {1, 2, 3, {4, 5, {6}}}
 print(ismember(3, x))
@@ -1241,7 +1281,7 @@ print(ismember(4, x))
 <p>If <code>xx</code> is provided, return the value(s) of the polynomial at <code>xx</code>;
 otherwise, return the string of the polynomial.</p>
 <p>See also: <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polynomial><code>polynomial</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 
 x, y = {0, 1, 2}, {3, 1, 4}
 disp(lagrangepoly(x, y)) -- or: lagrangepoly({{0, 3}, {1, 1}, {2, 4}})
@@ -1288,7 +1328,7 @@ disp(x)
 <h4>&bull; &nbsp; <a name=linspace href=#m><code>linspace(x, y, n)</code></a></h4>
 <p>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</p>
 <p>See also: <a href=#range><code>range</code></a>, <a href=#seq><code>seq</code></a>.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 clear()
 x = linspace(0, 2*pi, 500)
 y = cos(x)
@@ -1460,7 +1500,7 @@ mathly(a, 3, 4)
 <h4>&bull; &nbsp; <a name=max></a><a name=min href=#m><code>max(x)</code>, <code>min(x))</code></a></h4>
 <p>If <code>x</code> is an array or row/column vector, return the largest/smallest of all elements in it; if it is a matrix, return a table consisting of the largest/smallest of each column of <code>x</code>.</p>
 <table><tbody>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 
 x = {1, -10, 2, 31, 4, 7}
 print(min(x), max(x))
@@ -1530,7 +1570,7 @@ disp(merge({1, 2, 3, x={3, 1, 5, w=180}}, {2, 3, 5, y=8, x={5, 1, 'abc', w=100, 
 
 <h4>&bull; &nbsp; <a name=namedargs href=#m><code>namedargs(data, opts)</code></a></h4>
 <p>It provides support for named arguments. If you want your function to accept named arguments, it helps.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 
 function f(x, y, z)
   local args = namedargs({x, y, z}, {'x', 'y', 'z'}) -- these two lines are the usage of namedargs[...]
@@ -1558,7 +1598,7 @@ f({z = 100})    -- same as f(nil, nil, 100)
 <p>If <code>xx</code> is provided, return the value(s) of the polynomial at <code>xx</code>;
 otherwise, return the string of the polynomial.</p>
 <p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#polynomial><code>polynomial</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 
 clear()
 x = {-1.0, 0, 7, 10}
@@ -1599,7 +1639,7 @@ plot(x, y, "*", xs, ys, "-")
 <tr><td width=20></td><td> </td><td> </td><td width=10> </td><td><u>Note</u>: Each function returns a table rather than a mathly column vector if <code>m = 1</code>.</td></tr>
 </tbody></table>
 <pre><code>
-require 'mathly';
+mathly = require('mathly')
 
 A = ones(2) -- or ones(2, 2)
 disp(A)
@@ -1686,7 +1726,7 @@ Some possible symbols are <code>circle</code>, <code>circle-open</code>, <code>c
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining an anonymous function</a>; <a href=#layout>Plotly JavaScript Figure Reference: <code>layout</code></a>.</p>
 <p></p>
 <p><b>Some examples</b></p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 
 clear()
 x = linspace(0, pi, 100)
@@ -1738,7 +1778,7 @@ Z = {{z11,  ...,  z1n}, {z21,  ...,  z2n}, ..., {zn1,  ...,  zn2}}
 <p>where <code>zij = f(xi, yj)</code>, if a surface is defined by <code>z = f(x, y)</code>.</p>
 <p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 
 plot3d('@(x, y) x^2 - y^2')
 
@@ -1759,7 +1799,7 @@ plot3d(X, Y, Z, 'Demo 2')
 <p>Plot a space curve defined by <code>{x(t), y(t), z(t)}</code>.</p>
 <p><code>resolution</code> and <code>orientationq</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 plotparametriccurve3d({math.cos, math.sin, '@(t) t'}, {0,6*pi}, "Helix")
 plotparametriccurve3d({'@(t) t*math.cos(t)', '@(t) t*math.sin(t)', '@(t) t'}, {0, 8*pi})
 </code></pre>
@@ -1768,7 +1808,7 @@ plotparametriccurve3d({'@(t) t*math.cos(t)', '@(t) t*math.sin(t)', '@(t) t'}, {0
 <p>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u,v)</code>.</p>
 <p><code>resolution</code> and <code>orientationq</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 
 plotparametricsurface3d({'@(u,v) u', '@(u,v) v', '@(u,v) math.sqrt(u^2 + v^2)'}, {-3, 3}, {-3, 3}, 'Demo')
 plotparametricsurface3d({
@@ -1790,7 +1830,7 @@ end
 <p>Plot spherical function <code>ρ(θ, φ)</code>, where <code>θ</code> is in the range <code>θrange = {θ1, θ2}</code> (default: <code>{0, 2*pi}</code>)
 and <code>φ</code> in the range <code>φrange = {φ1, φ2}</code> (default: <code>{0, pi}</code>). If <code>ρ(θ, φ)</code> is a number, the radius of a sphere centered at the origin, plot the sphere.</p>
 <p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
-<pre><code>require('mathly')
+<pre><code>mathly = require('mathly')
 plotsphericalsurface3d(1)
 plotsphericalsurface3d('@(theta, phi) theta + 2 * phi', {0, 4*pi}, nil, 'Demo')
 plotsphericalsurface3d(function(t, p) return 2 + sin(5*p + 7*t) end)
@@ -1801,7 +1841,7 @@ plotsphericalsurface3d(function(t, p) return 2 + sin(5*p + 7*t) end)
 <p>If <code>xx</code> is provided, return the value(s) of the polynomial at (each of) <code>xx</code>;
 otherwise, return the string and the coefficients of the polynomial.</p>
 <p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 
 disp(polynomial({1, 2}, {3, 4}))
 -- 'x + 2.0'
@@ -1850,7 +1890,7 @@ a<sub>1</sub>x + a<sub>0</sub></code>,
 <code>coefs = {a<sub>n</sub>, a<sub>n-1</sub>, ..., a<sub>0</sub>}</code>.
 For example, <code>p(x) = -2x<sup>4</sup> + 4x<sup>2</sup> - 5x</code>, <code>coef = {-2, 0, 4, -5, 0}.</code></p>
 <p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polynomial><code>polynomial</code></a>.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 disp(polyval({1, 2, 1}, 0)) -- evaluate x<sup>2</sup> + 2x + 1 at x = 0
 -- 1.0
 disp(polyval({1, 2, 1}, {0, 5, 9, 100})) -- evaluate at x = 0, 5, 9, 100
@@ -1860,7 +1900,7 @@ disp(polyval({1, 2, 1}, {0, 5, 9, 100})) -- evaluate at x = 0, 5, 9, 100
 <h4>&bull; &nbsp; <a name=powermod href=#m><code>powermod(b, n, m)</code></a></h4>
 <p>Return <code>b<sup>n</sup> mod m</code>, i.e., the remainder of <code>b<sup>n</sup></code> divided by <code>m</code>.</p>
 <p>Note: <code>b, n</code>, and <code>m</code> are nonnegative integers with <code>m &gt; 0</code>.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 powermod(211, 410, 19) -- 6
 </pre></code>
 
@@ -1924,7 +1964,7 @@ disp(Q * R - A)
 <h4>&bull; &nbsp; <a name=range href=#m><code>range(x, y, s)</code></a></h4>
 <p>Return a table of numbers starting at <code>x</code>, in between <code>x</code> and <code>y</code>, and incrementing by <code>s</code> (1 by default).</p>
 <p>See also: <a href=#linspace><code>linspace</code></a>, <a href=#seq><code>seq</code></a>.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 
 x = range(1, 10)
 disp(x)
@@ -2045,7 +2085,7 @@ disp(c)
 <h4>&bull; &nbsp; <a name=reverse href=#m><code>reverse(tbl)</code></a></h4>
 <p>Return a table with order of elements in table <code>tbl</code> reversed.</p>
 <p>&#x2713; &nbsp; If <code>tbl</code> is a matrix, it is flattened columnwisely first to a table and then reversed.</p>
-<pre><code>require('mathly')
+<pre><code>mathly = require('mathly')
 
 a = seq(10)
 disp(a)
@@ -2056,7 +2096,7 @@ disp(reverse(a)) -- same as tt(a, {-1, 1})
 
 <h4>&bull; &nbsp; <a name=round href=#m><code>round(x, n)</code></a></h4>
 <p>Round <code>x</code> to <code>n</code> decimal places (default: 0).</p>
-<pre><code>require('mathly')
+<pre><code>mathly = require('mathly')
 
 a = mathly({{117.37826, 696.56562}, {-594.53232, 636.11108}})
 round(a)
@@ -2116,7 +2156,7 @@ disp((b^T)[3]) -- solution for Ax = b<sub>3</sub>
 <p>&#x2713; &nbsp; If the name of <code>datafile</code> ends in <code>.m</code>, the data is saved in the format of MATLAB
 scripts. Note: Data like <code>x = {1, true, 'abc', c = {2, {3}, d = 'bcd'}}</code> are undefined in MATLAB.</p>
 <p>&#x2713; &nbsp; <b>If no path is specified, the data file will be saved in the present working directory.</b></p>
-<pre><code>mathly = require 'mathly';
+<pre><code>mathly = require('mathly')
 
 a = randi(100, 3, 2)
 disp(a)
@@ -2152,7 +2192,7 @@ print(c)
 <h4>&bull; &nbsp; <a name=seq href=#m><code>seq(x, y, n)</code></a></h4>
 <p>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</p>
 <p>See also: <a href=#linspace><code>linspace</code></a>, <a href=#range><code>range</code></a>.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 
 x = seq(1, 10) -- same as range(1, 10)
 disp(x)
@@ -2167,7 +2207,7 @@ display(x)
 <p>They are exactly the same function. Return a graphics object for <code><a href=#plot>plot</a></code> to plot the slope field of <code>dy/dx = f(x, y)</code>.</p>
 <p><code>scale</code> (default to 1) controls the length of the dash line segments in a slope field.</p>
 <p><code>xrange</code> and <code>yrange</code> (default to <code>xrange</code>) take the format of <code>{initial value, terminal value, step (default: 1)}</code>.</p>
-<pre><code>require('mathly')
+<pre><code>mathly = require('mathly')
 
 clear()
 axissquare()
@@ -2194,7 +2234,7 @@ plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
 <p>Provided for convenience, it is almost exactly the same as <a href="manual.html#pdf-table.sort"><code>table.sort(tbl, compf)</code></a>.</p>
 <p>For <code>table.sort(tbl)</code>, <code>tbl</code> must be a variable rather than a specific table. Otherwise, say, <code>table.sort({2, 0, 2, 4})</code> actually does nothing.</p>
 <p>&#x2713; &nbsp; <code>tbl</code> is changed if it is a variable.</p>
-<pre><code>require('mathly')
+<pre><code>mathly = require('mathly')
 
 a = seq(10)
 disp(a)
@@ -2237,7 +2277,7 @@ disp(var(A, 1))
 <h4>&bull; &nbsp; <a name=strcat href=#m><code>strcat(...)</code></a></h4>
 <p>Concatenate strings and return the resulted string.</p>
 <p>See also: <a href=#tblcat><code>tblcat</code></a></p>
-<pre><code>require('mathly')
+<pre><code>mathly = require('mathly')
 
 print(strcat('Good', ' ', 'morning', '!'))
 -- Good morning!
@@ -2247,9 +2287,11 @@ print(strcat(34,'Hello, ', {'the ', 'world', '!'}, 34)) -- 34? ascii code for "
 -- "Hello, the world!"
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=submatrix href=#m><code>submatrix(A, rowrange, columnrange)</code></a></h4>
-<p>Return a mathly matrix, a block of mathly matrix <code>A</code>.</p>
-<p>It may be considered as an alias for <code><a href=#copy>copy</a></code>.</p>
+<h4>&bull; &nbsp; <a name=submatrix href=#m><code>submatrix(A, rowrange, columnrange, B)</code></a></h4>
+<p>If <code>B</code> is not specified, return a submatrix of matrix <code>A</code> (exactly the same like
+<code><a href=#copy>copy</a></code>); otherwise, set or replace the block of matrix <code>A</code>,
+specified by <code>rowrange</code> and <code>columnrange</code>, with <code>B</code>, a matrix or a number.</p>
+<p>&#x2713; &nbsp;Note: <code>A</code> is modified if <code>B</code> is specified.
 <p>See also: <a href=#cc><code>cc, rr, tt</code></a>; <a href=#diag><code>diag</code></a>,
 <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>,
 <a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>,
@@ -2258,54 +2300,67 @@ print(strcat(34,'Hello, ', {'the ', 'world', '!'}, 34)) -- 34? ascii code for "
 (or <code>horzcat</code>)</a>; <code><a href=#match>match</a></code>.</p>
 <pre><code>mathly = require('mathly')
 
-a = mathly{{22, 15, 94, 77, 48}, {43, 58, 96, 64,  5},
-           {20, 85, 90, 37, 92}, {16, 67,  9, 56, 33}}
+-- 1) copy/extra a submatrix of A
+a = mathly{{22, 15, 94, 77, 48, 31}, {43, 58, 96, 64,  5, 12},
+           {20, 85, 90, 37, 92, 7}, {16, 67,  9, 56, 33, 10}}
 disp(a)
--- 22  15  94  77  48
--- 43  58  96  64   5
--- 20  85  90  37  92
--- 16  67   9  56  33
+-- 22  15  94  77  48  31
+-- 43  58  96  64   5  12
+-- 20  85  90  37  92   7
+-- 16  67   9  56  33  10
+submatrix(a, {2, -1}, {2, 6, 2})  -- -1: last row/column
+-- 58  64  12
+-- 85  37   7
+-- 67  56  10
+-- more copy examples? See <a href=#copy>copy</a>.
 
-b = submatrix(a, 2, {1, 3}) -- MATLAB: a(2, 1:3)
-disp(b)
--- 43  58  96
-
-b = submatrix(a, {1, 3}, 2) -- MATLAB: a(1:3, 2)
-disp(b)
--- 15
--- 58
--- 85
-
-b = submatrix(a, '*', {1, 3}) -- or submatrix(a, nil, {1, 3}) -- MATLAB: a(1:end, 1:3)
-disp(b)
--- 22  15  94
--- 43  58  96
--- 20  85  90
--- 16  67   9
-
-b = submatrix(a, {1, -2}) -- or submatrix(a, {1, -2}, '*') -- MATLAB: a(1:end-1, 1:end)
-disp(b)
--- 22  15  94  77  48
--- 43  58  96  64   5
--- 20  85  90  37  92
-
-b = submatrix(a, {3, -1}, {2, -2}) -- MATLAB: a(3:end, 2:end)
-disp(b)
---  85  90  37
---  67   9  56
-
-B = submatrix(a, {1, -2, 2}, {1, 4}) -- MATLAB: a(1:2:end-1, 1:4)
-disp(B)
--- 22  15  94  77
--- 20  85  90  37
+-- 2) Set/replace a submatrix of matrix A with B, a number or matrix
+b = copy(a); disp(b)
+submatrix(b, 3, {2, 4}, mathly{{1, 2, 3}, {4, 5, 6}})
+-- 22  15  94  77  48  31
+-- 43  58  96  64   5  12
+-- 20   1   2   3  92   7
+-- 16  67   9  56  33  10
+b = copy(a)
+submatrix(b, {3, -1}, {4, -1}, mathly{{1, 2, 3}, {4, 5, 6}})
+-- 22  15  94  77  48  31
+-- 43  58  96  64   5  12
+-- 20  85  90   1   2   3
+-- 16  67   9   4   5   6
+b = copy(a)
+submatrix(b, {3, -1}, {4, -1, 2}, mathly{{1, 2, 3}, {4, 5, 6}})
+-- 22  15  94  77  48  31
+-- 43  58  96  64   5  12
+-- 20  85  90   1  92   3
+-- 16  67   9   4  33   6
+b = copy(a)
+submatrix(b, {3, 4}, {2, 4}, 100)
+-- 22   15   94   77   48   31
+-- 43   58   96   64    5   12
+-- 20  100  100  100   92    7
+-- 16  100  100  100   33   10
+b = copy(a)
+submatrix(a, {1, -1, 2}, '*', 0) -- '*' can be replaced with nil
+--  0   0   0   0   0   0
+-- 43  58  96  64   5  12
+--  0   0   0   0   0   0
+-- 16  67   9  56  33  10
+b = copy(a)
+submatrix(a, '*', {1, -1, 2}, 0)
+-- 0   0   0   0   0   0
+-- 0  58   0  64   0  12
+-- 0   0   0   0   0   0
+-- 0  67   0  56   0  10
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=subtable href=#m><code>subtable(tbl, irange)</code></a></h4>
-<p>Return a slice of table <code>tbl</code> from the i-th element to the j-th one increasing by <code>step</code>, where <code>irange = {i, j, step}</code>.</p>
+<h4>&bull; &nbsp; <a name=subtable href=#m><code>subtable(A, irange, B)</code></a></h4>
+<p>If <code>B</code> is not provided, return a slice of table <code>A</code>; otherwise, set the slice with <code>B</code>, a table or a number.</p>
 <p>Argument <code>irange</code> is a range of index values. See <a href=#copy>copy</a>.</p>
 <p>See also: <a href=#cc><code>cc, rr, tt</code></a></p>
+<p>&#x2713; &nbsp;Note: <code>A</code> is modified if <code>B</code> is not provided.
 <pre><code>mathly = require('mathly')
 
+-- 1) copy/extract a slice of A
 x = {1, 2, {3}, 4, {{5, 6, {7}}}}
 display(subtable(x, {2, 4}))
 -- {2, {3}, 4}
@@ -2324,6 +2379,24 @@ display(subtable(x, {-1, 1, -1}))
 -- {12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
 display(subtable(x, {-1, 1, -2}))
 -- {12, 10, 8, 6, 4, 2}
+
+-- 2) set a slice of A with B
+a = mathly{{22, 15, 94, 77, 48, 31}, {43, 58, 96, 64,  5, 12}}
+disp(a)
+-- 22  15  94  77  48  31
+-- 43  58  96  64   5  12
+subtable(a[1], {2, -1}, {1, 2, 3, 4, 5})
+disp(a)
+-- 22   1   2   3   4   5
+-- 43  58  96  64   5  12
+
+a = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+subtable(a, {2, -1, 2}, {-1, -2, -3, -4, -5, -6, -7, -8})
+disp(a)
+-- {1, -1, 3, -3, 5, -5, 7, -7, 9}
+subtable(a, {3, -3}, 100)
+disp(a)
+-- {1, -1, 100, 100, 100, 100, 100, -7, 9}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=tblcat href=#m><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></code></a></h4>
@@ -2347,7 +2420,7 @@ disp(tblcat(1, {c = 2, a = {3, 4}}, true, {ab = {5, 6, 'OK'}, aa = 7}))
 <h4>&bull; &nbsp; <a name=text href=#m><code>text(x, y, txt, style)</code></a></h4>
 <p>Return a text object for <code><a href=#plot>plot</a></code> to write a text string <code>txt</code> at the point <code>(x, y)</code> on a graph.</p>
 <p><code>style</code> (default: <code>{color='black'}</code>): e.g., <code>{family = 'Arial Black', size = 18, color = '#ff0000'}</code>.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 
 clear()
 x = linspace(-pi, pi, 200)
@@ -2361,7 +2434,7 @@ plot(x, cos(x), text(0, -0.2, 'Demo', {family = 'Sans Serif', size = 28, color =
 <tr><td width=20></td><td><code>toc(...)</code></td><td> </td><td width=10> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
 </tbody></table>
 <pre><code>
-require 'mathly';
+mathly = require('mathly')
 
 tic() -- start recording the time
 for i = 1, 10000000 do
@@ -2375,7 +2448,7 @@ printf("The loop took %.2f seconds.", x)
 
 <h4>&bull; &nbsp; <a name=unique href=#m><code>unique(tbl)</code></a></h4>
 <p>Return the same data as in table <code>tbl</code> but with no repetitions. Data is sorted.</p>
-<pre><code>require('mathly')
+<pre><code>mathly = require('mathly')
 display(unique({4,5,2,1,-2,2,4,2,7,6,19}))
 -- {-2, 1, 2, 4, 5, 6, 7, 19}
 </code></pre>
@@ -2386,7 +2459,7 @@ display(unique({4,5,2,1,-2,2,4,2,7,6,19}))
 <p><code>xrange</code> and <code>yrange</code> (default to <code>xrange</code>) take the format of <code>{initial value, terminal value, step (default: 1)}</code>.</p>
 <p>&#x2713; &nbsp; Note: How to know the vector at a point in a generated vector field? The point is the <em>head</em> of an arrow, and the arrow denotes the vector at that point.</p>
 
-<pre><code>require('mathly')
+<pre><code>mathly = require('mathly')
 
 clear()
 axissquare()
@@ -2506,7 +2579,7 @@ plot(polarcurve2d('@(t) cos(a*t)', {0, 2*pi}))
 <p>The basic rule is that <b>unnamed arguments go first and are in specific order, and all named arguments
 must be put in a single list</b>. In the list, each item is named, and the order of items doesn't matter.</p>
 <p>See also: <a href=#namedargs><code>function namedargs(data, opts)</code></a>.</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 
 -- the following commands generate each the same graphics object
 vectorfield2d('@(x, y) {-y, x}', {-5, 5}, nil, 3)             -- unnamed arguments
@@ -2521,7 +2594,7 @@ vectorfield2d{scale=3, xrange={-5, 5}, f='@(x, y) {-y, x}'}
 </code></pre>
 <p>Note: Since <a href=#plot><code>plot</code></a> is so basic and general a tool, it is designed to treat arguments differently.
 It can take two or more "named" arguments which can occur before an unnamed argument. For instance,</p>
-<pre><code>require 'mathly';
+<pre><code>mathly = require('mathly')
 clear()
 plot({layout={width=600, height=400}}, sin, {range={0,2*pi}})
 </code></pre>
