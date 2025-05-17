@@ -313,6 +313,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
 <tr><td> </td><td><code>iseven(x)</code></a></td><td> </td><td>Check if <code>x</code> is even.</td></tr>
 <tr><td> </td><td><code>isodd(x)</code></a></td><td> </td><td>Check if <code>x</code> is odd.</td></tr>
+<tr><td> </td><td><code>ismatrix(x)</code></a></td><td> </td><td>Check if <code>x</code> is a mxn matrix.</td></tr>
 <tr><td> </td><td><a href=#ismember><code>ismember(x, table)</code></a></td><td> </td><td>Check if <code>x</code> is a member of <code>table</code>.</td></tr>
 <tr><td> </td><td><a href=#lagrangepoly><code>lagrangepoly(...)</code></a></td><td> </td><td>Return the Lagrange interpolating polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
 <tr><td> </td><td><code>length(x)</code></td><td> </td><td>Return the length of a table or string.</td></tr>
@@ -368,7 +369,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#printf><code>sprintf(...)</code></a></td><td> </td><td>Return a formatted string, while <code>printf</code> prints one.</td></tr>
 <tr><td> </td><td><a href=#std><code>std(x, opt)</code></a></td><td> </td><td>Return the standard deviation of numbers in <code>x</code>.</td></tr>
 <tr><td> </td><td><a href=#strcat><code>strcat(...)</code></a></td><td> </td><td>Concatenate strings and return the resulted string.</td></tr>
-<tr><td> </td><td><a href=#submatrix><code>submatrixsubmatrix(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></a></td><td> </td><td>Return a mathly matrix of <code>A</code> if <code>B</code> is not specified; otherwise, copy to the submatrix of <code>A</code> from <code>B</code>.</td></tr>
+<tr><td> </td><td><a href=#submatrix><code>submatrix(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></a></td><td> </td><td>Return a mathly matrix of <code>A</code> if <code>B</code> is not specified; otherwise, copy to the submatrix of <code>A</code> from <code>B</code>.</td></tr>
 <tr><td> </td><td><a href=#subtable><code>subtable(A, irange, B, irange1)</code></a></td><td> </td><td>Return a slice of table <code>A</code> if <code>B</code> is not provided; otherwise, set the slice with <code>B</code>.</td></tr>
 <tr><td> </td><td><a href=#sum><code>sum(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the sum of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
 <tr><td> </td><td><a href=#tblcat><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Flatten and concatenate tables into a single table. Tables here may just be numbers, boolean values, or strings.</td></tr>
@@ -750,15 +751,23 @@ plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, {style = style}), x, y, '-r',
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=copy href=#m><code>copy(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></a></h4>
+<table><tbody>
+<tr><td width=20></td><td>Make a deep copy of matrix <code>A</code></td><td width=10> - </td><td><code>copy(A, rowrange, columnrange)</code></td></tr>
+<tr><td></td><td>Make a deep copy of table <code>A</code></td><td> - </td><td><code>copy(A, irange)</code></td></tr>
+<tr><td></td><td></td><td> </td><td>&nbsp;</td></tr>
+<tr><td></td><td>Copy to matrix <code>A</code> from matrix <code>B</code></td><td> - </td><td><code>copy(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></td></tr>
+<tr><td></td><td>Copy to table <code>A</code> from table <code>B</code></td><td> - </td><td><code>copy(A, irange, B, irange1)</code></td></tr>
+</tbody></table>
+
 <P>It is a general tool for making a deep copy of <code>x</code>. If <code>x</code> is a table, <code>rowrange</code> can be specified. If it is further a (mathly) matrix,
 <code>columnrange</code> can be specified.</P>
-<P>If <code>B</code> is provided, copy to <code>A</code> from <code>B</code>.</P>
+
 <p>Arguments <code>rowrange*</code> and <code>columnrange*</code> are ranges of index values described below.</p>
 <p>&#x2713; &nbsp; A <em>range of index values</em> is denoted in the format of <code>{start, stop[, step]}, where <code>start</code> and <code>stop</code> are the starting and
 terminal index values increasing by <code>step</code>. Both can be negative with <code>-1</code> referring to the last element (row/column) of of a table (or matrix), <code>-2</code> the next last
 element, and so on. <code>step</code> defaults to <code>1</code> if <code>start</code> is less than <code>stop</code>; otherwise, it defaults to <code>-1</code>. Especially, '*' as a shortcut can
 be used to denote the whole range of index values.</p>
-<p>&raquo; Make a deep copy of any kind of tables:</p>
+<p>&raquo; Make a deep copy of any kind of tables</p>
 <pre><code>mathly= require('mathly')
 
 a = {1, 2, {3, 4, x = {5, y = 6, 7}}}
@@ -797,7 +806,7 @@ display(x)
 display(y)
 -- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1, bcd = 6}}}
 </code></pre>
-<p>&raquo; Make a deep copy of a mxn matrix:</p>
+<p>&raquo; Make a deep copy of a mxn matrix</p>
 <pre><code>mathly= require('mathly')
 
 a = mathly{{22, 15, 94, 77, 48}, {43, 58, 96, 64,  5},
@@ -839,7 +848,8 @@ copy(a, {1, -2, 2}, {1, 4}) -- MATLAB: a(1:2:end-1, 1:4)
 -- 22  15  94  77
 -- 20  85  90  37
 </code></pre>
-<p>&raquo; Copy to a matrix from another matrix:</p>
+<p>&raquo; Copy to matrix <code>A</code> from another matrix <code>B</code></p>
+&#x2713; &nbsp; Be careful that <code>A</code> is modified!</P>
 <pre><code>mathly= require('mathly')
 
 a = mathly{{22, 15, 94, 77, 48, 31}, {43, 58, 96, 64,  5, 12},
@@ -865,7 +875,7 @@ copy(b, {3, -1}, {4, -1}, {{1, 2, 3}, {4, 5, 6}}) -- MATLAB: b(3:end, 4:end) = [
 -- 16  67   9   4   5   6
 
 b = copy(a)
-copy(b, {3, 4}, {4, -1, 2}, {{1, 2, 3, 4, 5, 6}, {4, 5, 6, 7, 8, 9}}, {1, 2}, {1, -1, 3})
+copy(b, {3, 4}, {4, -1, 2}, {{1, 2, 3, 4, 5, 6}, {4, 5, 6, 7, 8, 9}}, '*', {1, -1, 3})
 -- 22  15  94  77  48  31
 -- 43  58  96  64   5  12
 -- 20  85  90   1  92   4
@@ -900,20 +910,21 @@ copy(b, 1, {1, -1, 2}, {100, 200, 300})
 --  16   67    9   56   33   10
 
 b = copy(a)
-copy(b, {1, 4}, 2, {-1, -2, -3, -4, -5})
+copy(b, '*', 2, {-1, -2, -3, -4, -5})
 -- 22  -1  94  77  48  31
 -- 43  -2  96  64   5  12
 -- 20  -3  90  37  92   7
 -- 16  -4   9  56  33  10
 
 b = copy(a)
-copy(b, {1, 4}, 2, {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10}, {2, -1, 2})
+copy(b, '*', 2, {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10}, {2, -1, 2})
 -- 22  -2  94  77  48  31
 -- 43  -4  96  64   5  12
 -- 20  -6  90  37  92   7
 -- 16  -8   9  56  33  10
 </code></pre>
-<p>&raquo; Copy to a table from another table - usage: copy(A, irange, B, irange1)</p>
+<p>&raquo; Copy to table <code>A</code> from another table <code>B</code> - usage: copy(A, irange, B, irange1)</p>
+&#x2713; &nbsp; Be careful that <code>A</code> is modified!</P>
 <pre><code>mathly= require('mathly')
 
 a = mathly{{22, 15, 94, 77, 48, 31}, {43, 58, 96, 64,  5, 12}}
@@ -2389,7 +2400,7 @@ print(strcat(34,'Hello, ', {'the ', 'world', '!'}, 34)) -- 34? ascii code for "
 -- "Hello, the world!"
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=submatrix href=#m><code>submatrixsubmatrix(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></a></h4>
+<h4>&bull; &nbsp; <a name=submatrix href=#m><code>submatrix(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></a></h4>
 <p>It is an alias of <a href=#copy>copy</a> when <code>A</code> is a mathly matrix.</p>
 
 <h4>&bull; &nbsp; <a name=subtable href=#m><code>subtable(A, irange, B, irange1)</code></a></h4>
