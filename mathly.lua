@@ -55,6 +55,10 @@ LICENSE
     David Wang - original author
 
 --]]
+
+-- Note: test if x is a matrix simply by type(x) == 'table' and type(x[1]) == 'table'
+--       A complete way is ismatrix(x). It is time consuming but usually not necessary.
+
 require 'browser-setting'
 
 local mathly = {_TYPE='module', _NAME='mathly', _VERSION='12.25.2024.5'}
@@ -99,7 +103,7 @@ function eval(str)
   else
     error('[string "' .. string.sub(val, 17))
   end
-end --eval
+end
 
 -- s = 's' --> return input as a string; otherwise, evaluate the input expression and return the result
 function input(prompt, s)
@@ -139,7 +143,7 @@ function round(x, dplaces)
     end
     return tmp
   end
-end -- round
+end
 
 -- r: {start, stop[, step]}; -1 --> #x
 local function _index_range(R, x)
@@ -163,7 +167,7 @@ local function _index_range(R, x)
   end
   assert(isinteger(r[1]) and isinteger(r[2]) and isinteger(r[3]), 'Invalid range {start, stop, step}: start, stop, and step must be all integers.')
   return r
-end -- _index_range
+end
 
 -- rr(x):            make x a row vector and return it
 -- rr(x, i):         return the ith row of x
@@ -231,7 +235,7 @@ function cc(x, I, irange)
     end
     return setmetatable(cols, mathly_meta)
   end
-end -- cc
+end
 
 -- convert x to a table (columnwisely if its a mathly matrix) or flatten it first
 -- and return a slice of it
@@ -266,7 +270,7 @@ function tt(x, irange) -- make x an ordinary table
     k = k + 1
   end
   return z
-end -- tt
+end
 
 local function _max_min_shared(f, x) -- column wise if x is a matrix
   if type(x) == 'table' then
@@ -291,7 +295,7 @@ local function _max_min_shared(f, x) -- column wise if x is a matrix
   else
     return x
   end
-end -- _max_min_shared
+end
 
 function max(x) return _max_min_shared(math.max, x) end
 function min(x) return _max_min_shared(math.min, x) end
@@ -314,7 +318,6 @@ local function _map(func, ...) -- Mathematica
   for _, v in pairs{...} do
     args[#args + 1] = v
   end
-
   if type(args[1]) ~= 'table' then
     return func(table.unpack(args))
   else
@@ -333,7 +336,7 @@ local function _map(func, ...) -- Mathematica
     end
     return y
   end
-end -- _map
+end
 
 function map(func, ...)
   if type(func) == 'string' then func = fstr2f(func) end
@@ -346,13 +349,12 @@ function map(func, ...)
   end
 
   local result = _map(func, ...)
-
   if metaq then
     return setmetatable(result, mathly_meta)
   else
     return result
   end
-end -- map
+end
 
 -- calls a function with arguments
 function apply(func, args)
@@ -407,7 +409,7 @@ function copy(A, rrange, crange, B, rrange1, crange1)
 
   -- copy to A from B
   rrange = _index_range(rrange, A)
-  if ismatrix(A) then
+  if type(A[1]) == 'table' then
     crange = _index_range(crange, A[1])
     if type(B) == 'table' then
       local b
@@ -474,7 +476,7 @@ function unique(tbl)
     end
   end
   return y
-end -- unique
+end
 
 --// format(fmt)
 -- Reset or specify the format of the output of disp(...)
@@ -619,7 +621,7 @@ function match(A, f)
   local k = 1
   map(function(x, y) if abs(x) > 10*eps then X[k] = y; k = k + 1 end end, B, A)
   return X, B
-end -- match
+end
 
 local function _dec2bho(x, title, f)
   if isinteger(x) then
@@ -633,7 +635,7 @@ local function _dec2bho(x, title, f)
   else
     error(title .. '(x): x must be an integer or a table of integers.')
   end
-end -- _dec2bho
+end
 
 --// calculate the (64-bit) binary expansion of signed decimal integer x
 function dec2bin(x)
@@ -647,7 +649,7 @@ function dec2bin(x)
     return str
   end
   return _dec2bho(x, 'dec2bin', _dec2bin)
-end -- dec2bin
+end
 
 --// calculate the hexadecimal expansion of signed decimal integer x
 function dec2hex(x) return _dec2bho(x, 'dec2hex', function(x) return sprintf('%x', x) end) end
@@ -724,7 +726,7 @@ function gcd(x, y)
   else
     error('gcd(x, y): x and y must be nonnegative integers or tables of nonnegative integers with the same structure.')
   end
-end -- gcd
+end
 
 --// calculate b^n mod m
 function powermod(b, n, m)
@@ -741,7 +743,7 @@ function powermod(b, n, m)
     power = (power * power) % m
   end
   return x
-end -- powermod
+end
 
 --// function _largest_width_dplaces(tbl)
 -- find the largest width of integers/strings and number of decimal places
@@ -769,7 +771,7 @@ local function _largest_width_dplaces(tbl) -- works with strings, numbers, and t
     end
   end
   return width, dplaces
-end -- _largest_width_dplaces
+end
 
 --[[ Lua 5.4.6
 The largest number print or io.write prints each digit is ±9223372036854775807,
@@ -860,7 +862,7 @@ function who(usercalledq) -- ~R
   else
     return list
   end
-end -- who
+end
 
 -- generate the string version of a variable y starting with 'y = '
 -- firstq    -- print ',' or not before printing an entry
@@ -938,7 +940,7 @@ function disp(A)
   else
     display(A)
   end
-end -- disp
+end
 
 -- print a table with its structure while disp(x) prints a matrix
 -- display({1, 2, {3, 4, opt = {height = 3, width = 5}, 6, 'string', false}, 7, 8})
@@ -957,7 +959,7 @@ function ismatrix(x)
     end
   end
   return true
-end -- ismatrix
+end
 
 -- generate the string version of MATLAB variable y starting with 'y ='
 local function _vartostring_matlab(x)
@@ -977,7 +979,7 @@ local function _vartostring_matlab(x)
     s = string.gsub(s, "}", "]")
   end
   return s
-end -- _vartostring_matlab
+end
 
 -- save variables and their values to a Lua or MATLAB script file
 function save(fname, ...)
@@ -1037,7 +1039,7 @@ function clear()
   showaxes()
   showgridlines()
   shownotlegend()
-end -- clear
+end
 
 -- generates an evenly spaced sequence/table of 'len' numbers on the interval [from, to]. same as linspace(...).
 function seq(from, to, len) -- ~R, generate a sequence of numbers
@@ -1055,7 +1057,7 @@ function seq(from, to, len) -- ~R, generate a sequence of numbers
     i = i + 1
   end
   return lst
-end -- seq
+end
 
 -- generates an evenly spaced sequence/table of 'len' numbers on the interval [from, to]. same as seq(...).
 function linspace(from, to, len)
@@ -1088,7 +1090,7 @@ function prod(x)
   else
     return 0
   end
-end -- prod
+end
 
 -- calculates the sum of all elements of a table
 -- calculates the sum of all elements of each column in a matrix
@@ -1120,7 +1122,7 @@ function sum(x)
   else
     return 0
   end
-end -- sum
+end
 
 -- // function strcat(s1, s2, ...)
 function strcat(...)
@@ -1135,7 +1137,7 @@ function strcat(...)
     end
   end
   return s
-end -- strcat
+end
 
 -- calculates the mean of all elements of a table
 -- calculates the mean of all elements of each column in a matrix
@@ -1240,7 +1242,7 @@ function dot(a, b)
     end
     return val
   end
-end -- dot
+end
 
 -- calculates the dot/inner product if two vectors
 function cross(a, b) -- Mathematica
@@ -1254,7 +1256,7 @@ function cross(a, b) -- Mathematica
             a[3] * b[1] - a[1] * b[3],
             a[1] * b[2] - a[2] * b[1]}
   end
-end -- cross
+end
 
 -- generates a evenly spaced sequence/table of numbers starting at 'start' and likely ending at 'stop' by 'step'.
 function range(start, stop, step) -- ~Python but inclusive
@@ -1285,7 +1287,7 @@ function range(start, stop, step) -- ~Python but inclusive
     end
   end
   return v
-end -- range
+end
 
 --// find and return the zero/root of function f on specified interval
 function fzero(f, intv, tol) -- matlab
@@ -1314,7 +1316,7 @@ function fzero(f, intv, tol) -- matlab
     end
   until math.abs(fmid) < eps or b - a < tol
   return mid
-end -- fzero
+end
 
 function findroot(f, i, t) return fzero(f, i, t) end -- mathematica
 
@@ -1328,7 +1330,7 @@ local function _converse_poly_input(data) -- {{x1, y1}, {x2, y2}, ...}
     end
   end
   return x, y
-end -- _converse_poly_input
+end
 
 --// lagrangepoly(x, y, xx)
 -- return the Lagrange function or the value(s) of the Lagrange function defined by data x and y, tables of numbers
@@ -1578,7 +1580,7 @@ local function _gaussian_rand()
   y = rho * math.sin(theta)
   _next_gaussian_rand = y
   return x
-end -- _gaussian_rand
+end
 
 -- generates a table of r subtables of which each has c elements, with each element equal to val
 -- if c == nil, c = r;
@@ -1608,7 +1610,7 @@ local function _create_table(row, col, val, metaq)
   else
     return setmetatable(x, mathly_meta)
   end
-end -- _create_table
+end
 
 function mathly:new(rows, columns, value)
 	if type(rows) == "table" then -- check for a given matrix
@@ -1653,7 +1655,7 @@ function eye(row)
     A[i][i] = 1
   end
   return setmetatable(A, mathly_meta)
-end -- eye
+end
 
 -- generates a table of r subtables of which each has c elements, with each element equal to 1
 -- if c == nil, c = r.
@@ -1679,7 +1681,7 @@ function randn(row, col, mu, sigma)
   else
     return map(function(x) return mu + sigma * x end, x)
   end
-end -- randn
+end
 
 --// function randi(imax, m, n)
 -- generate a mxn matrix of which each entry is a random integer in [1, imax]
@@ -1714,7 +1716,7 @@ function randi(imax, m, n)
   else
     return setmetatable(B, mathly_meta)
   end
-end -- randi
+end
 
 --// tic()
 -- starts a time stamp to measure elapsed time
@@ -1734,7 +1736,7 @@ function toc(print_not)
   else
     return tmp
   end
-end -- toc
+end
 
 -- removes the structure of a table and returns the resulted table.
 -- if tbl is a mathly matrix, the result is row wise (rather than column wise)
@@ -1757,7 +1759,7 @@ function flatten(x)
   end
   flat(x)
   return y
-end -- flatten
+end
 
 -- if tbl table has recursively an index, idx, return true.
 function hasindex(tbl, idx)
@@ -1773,7 +1775,7 @@ function hasindex(tbl, idx)
     end
     return false
   end
-end -- hasindex
+end
 
 local function _hasanyindex(tbl, indice)
   for i = 1, #indice do
@@ -2159,7 +2161,7 @@ local function _plot_interval(start, stop, step)
   end
   if start > stop then start, stop = stop, start end
   if tblq then return {start, stop, step} else return start, stop end
-end -- _plot_interval
+end
 
 local function _set_resolution(r, n)
   n = n or 500
@@ -2502,7 +2504,7 @@ local function _xmin_xmax_width(x, xrange, nbins, allintq)
     width = (xmax - xmin) / nbins
   end
   return xmin, xmax, width
-end -- _xmin_xmax_width
+end
 
 -- another version of histogram, as see in most textbooks
 -- the output can be treated as an ordinary graph object such as a curve
@@ -2672,7 +2674,7 @@ function boxplot(x, names)
   end
   if names ~= nil then gdata[#gdata + 1] = names end
   return gdata
-end -- boxplot
+end
 
 function pie(x, nbins, style, names, title)
   local args = namedargs({x, nbins, style, names, title}, {'x', 'nbins', 'style', 'names', 'title'})
@@ -2816,7 +2818,7 @@ function polygon(xy, style)
   local data = {'graph', x, y}
   data[4] = style or '-fs'
   return data
-end -- polygon
+end
 
 function line(point1, point2, style)
   local args = namedargs({point1, point2, style}, {'point1', 'point2', 'style'})
@@ -2871,7 +2873,7 @@ function text(x, y, txt, style)
   trace['textposition'] = 'bottom'
   trace['name'] = ''
   return {'text', trace}
-end -- text
+end
 
 -- xy = {x(t), y(t)}
 function parametriccurve2d(xy, trange, style, resolution, orientationq)
@@ -2927,7 +2929,7 @@ function polarcurve2d(r, trange, style, resolution, orientationq)
       function(t) return r(t) * math.cos(t) end,
       function(t) return r(t) * math.sin(t) end
     }, trange or {0, 2*pi}, style, resolution, orientationq)
-end -- polarcurve2d
+end
 
 -- x and y are tables of the same size
 function scatter(x, y, style)
@@ -2948,7 +2950,7 @@ function scatter(x, y, style)
     data[4] = style
   end
   return data
-end -- scatter
+end
 
 local function _contour_data(x)
   if type(x) ~= 'table' then
@@ -2960,7 +2962,7 @@ local function _contour_data(x)
   else
     return x
   end
-end -- _contour_data
+end
 
 -- x and y are tables of the same size
 function contourplot(f, x, y, style)
@@ -3240,7 +3242,7 @@ function inv(A)
   assert(rows == columns, 'inv(A): A must be square.')
   local v1, v2 = rref(A, eye(rows))
   return setmetatable(v2, mathly_meta)
-end -- inv
+end
 
 -- return rows and columns of matrix A, given that A is a valid vector, matrix, string, or a number.
 function size(A)
@@ -3255,7 +3257,7 @@ function size(A)
   else
     return 1, 1
   end
-end -- size
+end
 
 -- Return a mxn block matrix with each entry a copy of matrix A.
 function repmat(A, m, n)
@@ -3414,7 +3416,7 @@ function length(A)
   else
     return 1
   end
-end -- length
+end
 
 -- // function diag(A, k)
 -- return the table of all entries of the k-th diagonal as a column vector
@@ -3548,15 +3550,15 @@ end -- expand
 -- 1. make a COPY of A, or
 -- 2. COPY to A from B
 function submatrix(A, rrange, crange, B, rrange1, crange1)
-  assert(ismatrix(A), 'submatrix(A, ...): A must be a matrix.')
+  assert(type(A) == 'table' and type(A[1]) == 'table', 'submatrix(A, ...): A must be a matrix.')
   return copy(A, rrange, crange, B, rrange1, crange1)
-end -- submatrix
+end
 
 -- return a specified slice of a vector
 function subtable(A, irange, B, irange1)
-  assert(type(A) == 'table' and not ismatrix(A), "subtable(A, irange, B, irange1): table A can't be a matrix.")
+  assert(type(A) == 'table' and type(A[1]) ~= 'table', "subtable(A, irange, B, irange1): table A can't be a matrix.")
   return copy(A, irange, B, irange1)
-end -- subtable
+end
 
 -- Return L and U in LU factorization A = L * U, where L and U are lower and upper traingular matrices, respectively.
 function lu(A) -- by Crout's method
@@ -3758,7 +3760,7 @@ function tblcat(...)
     end
   end
   return tbl
-end -- tblcat
+end
 
 -----------[[ Set behaviours of +, -, *, and ^ -----------]]
 
@@ -3777,7 +3779,7 @@ function mathly.numtableadd(m1, m2, op)
     end
   end
   return val
-end -- mathly.numtableadd
+end
 
 -- Special case: if m1 is a row/column mathly matrix, m2 can be a Lua table of any type.
 -- This case saves the trouble of accessing b as b[i] rathern than b[i][1] while doing Ax - b or Ax + b
@@ -3847,7 +3849,7 @@ function mathly.matlabvmul(v1, v2)
     for i = 1,#v1 do x[i] = { v1[i][1] * v22[i] } end
   end
   return setmetatable(x, mathly_meta)
-end -- mathly.matlabvmul
+end
 
 -- Multiply two matrices; m1 columns must be equal to m2 rows
 -- if A and B are row/column vectors, find A .* B as in MATLAB and Julia
@@ -3940,7 +3942,7 @@ function mathly.mulnum(m1, num)
 		end
 	end
 	return setmetatable(mtx, mathly_meta)
-end -- mathly.mulnum
+end
 
 -- Set division "/" behaviour
 mathly_meta.__div = function(m1, m2)
@@ -4006,7 +4008,7 @@ function mathly.pow(m1, n)
   	end
   end
   return setmetatable(mtx, mathly_meta)
-end -- mathly.pow
+end
 
 --[[
   Set power "^" behaviour
@@ -4038,7 +4040,7 @@ function mathly.equal(m1, m2)
     end
   end
   return true
-end -- mathly.equal
+end
 
 -- Set equal "==" behaviour
 mathly_meta.__eq = function(...)
@@ -4067,7 +4069,7 @@ function mathly.tostring(mtx)
   else -- a row vector
     return table.concat(map(_tostring1, mtx), " ")
   end
-end -- mathly.tostring
+end
 
 --// mathly (rows [, comlumns [, value]])
 -- set __call behaviour of matrix
