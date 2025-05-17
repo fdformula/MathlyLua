@@ -368,7 +368,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#printf><code>sprintf(...)</code></a></td><td> </td><td>Return a formatted string, while <code>printf</code> prints one.</td></tr>
 <tr><td> </td><td><a href=#std><code>std(x, opt)</code></a></td><td> </td><td>Return the standard deviation of numbers in <code>x</code>.</td></tr>
 <tr><td> </td><td><a href=#strcat><code>strcat(...)</code></a></td><td> </td><td>Concatenate strings and return the resulted string.</td></tr>
-<tr><td> </td><td><a href=#submatrix><code>submatrix(A, rrange, crange, B, rrange1, crange1)</code></a></td><td> </td><td>Return a mathly matrix of <code>A</code> if <code>B</code> is not specified; otherwise, copy to the submatrix of <code>A</code> from <code>B</code>.</td></tr>
+<tr><td> </td><td><a href=#submatrix><code>submatrixsubmatrix(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></a></td><td> </td><td>Return a mathly matrix of <code>A</code> if <code>B</code> is not specified; otherwise, copy to the submatrix of <code>A</code> from <code>B</code>.</td></tr>
 <tr><td> </td><td><a href=#subtable><code>subtable(A, irange, B, irange1)</code></a></td><td> </td><td>Return a slice of table <code>A</code> if <code>B</code> is not provided; otherwise, set the slice with <code>B</code>.</td></tr>
 <tr><td> </td><td><a href=#sum><code>sum(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the sum of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
 <tr><td> </td><td><a href=#tblcat><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Flatten and concatenate tables into a single table. Tables here may just be numbers, boolean values, or strings.</td></tr>
@@ -776,19 +776,16 @@ disp(A)
 -- 1 2
 -- 3 4
 
-x = {1, 2, 3, 4, 5, 6, 7}
-y = copy(x, {2, -1})
+x = {1, 2, 3, 4, 5, 6, 7, 'abc'}
+y = copy(x, {5, -1})
 disp(y)
--- {2, 3, 4, 5, 6, 7}
+-- {5, 6, 7, 'abc'}
 y = copy(x, {2, -1, 2})
 disp(y)
--- {2, 4, 6}
-y = copy(x, {-1, 1, -1})
-disp(y)
--- {7, 6, 5, 4, 3, 2, 1}
+-- {2, 4, 6, 'abc'}
 y = copy(x, {-1, 1, -3})
 disp(y)
--- {7, 4, 1}
+-- {'abc', 5, 2}
 
 x = {1, 2, hi = {2, 3, abc = {1, 2, bcd = 6, 2, 7, 'hello', true, false, cde = 1}}}
 display(x)
@@ -2392,7 +2389,7 @@ print(strcat(34,'Hello, ', {'the ', 'world', '!'}, 34)) -- 34? ascii code for "
 -- "Hello, the world!"
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=submatrix href=#m><code>submatrix(A, rrange, crange, B, rrange1, crange1)</code></a></h4>
+<h4>&bull; &nbsp; <a name=submatrix href=#m><code>submatrixsubmatrix(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></a></h4>
 <p>It is an alias of <a href=#copy>copy</a> when <code>A</code> is a mathly matrix.</p>
 
 <h4>&bull; &nbsp; <a name=subtable href=#m><code>subtable(A, irange, B, irange1)</code></a></h4>
