@@ -282,7 +282,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><code>clc()</code></td><td> </td><td>Clear Lua console.</td></tr>
 <tr><td> </td><td><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
 <tr><td> </td><td><a href=#contourplot><code>contourplot(f, xdata, ydata, style)</code></a></td><td> </td><td>Prepare a graphics object for <code>plot</code> to plot the contour map of function <code>f(x, y)</code>.</td></tr>
-<tr><td> </td><td><a href=#copy><code>copy(x, rowrange, columnrange)</code></a></td><td> </td><td>Make a deep copy of <code>x</code>.</td></tr>
+<tr><td> </td><td><a href=#copy><code>copy(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></a></td><td> </td><td>Make a deep copy of <code>x</code> if <code>B</code> is not provided; otherwise, copy to <code>A</code> from <code>B</code>.</td></tr>
 <tr><td> </td><td><a href=#cross><code>cross(a, b)</code></a></td><td> </td><td>Calculate the cross/vector product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub>}</code>.</td></tr>
 <tr><td> </td><td><a href=#demathly><code>demathly(x)</code></a></td><td> </td><td>Force <code>x</code> not to be a mathly matrix.</td></tr>
 <tr><td> </td><td><code>det(A)</code></td><td> </td><td>Calculate the determinant of square matrix <code>A</code>.</td></tr>
@@ -368,8 +368,8 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#printf><code>sprintf(...)</code></a></td><td> </td><td>Return a formatted string, while <code>printf</code> prints one.</td></tr>
 <tr><td> </td><td><a href=#std><code>std(x, opt)</code></a></td><td> </td><td>Return the standard deviation of numbers in <code>x</code>.</td></tr>
 <tr><td> </td><td><a href=#strcat><code>strcat(...)</code></a></td><td> </td><td>Concatenate strings and return the resulted string.</td></tr>
-<tr><td> </td><td><a href=#submatrix><code>submatrix(A, rowrange, columnrange, B)</code></a></td><td> </td><td>Return a mathly matrix of <code>A</code> if <code>B</code> is not specified; otherwise, reset the submatrix of <code>A</code> with <code>B</code>.</td></tr>
-<tr><td> </td><td><a href=#subtable><code>subtable(A, irange, B)</code></a></td><td> </td><td>Return a slice of table <code>A</code> if <code>B</code> is not provided; otherwise, set the slice with <code>B</code>.</td></tr>
+<tr><td> </td><td><a href=#submatrix><code>submatrix(A, rrange, crange, B, rrange1, crange1)</code></a></td><td> </td><td>Return a mathly matrix of <code>A</code> if <code>B</code> is not specified; otherwise, copy to the submatrix of <code>A</code> from <code>B</code>.</td></tr>
+<tr><td> </td><td><a href=#subtable><code>subtable(A, irange, B, irange1)</code></a></td><td> </td><td>Return a slice of table <code>A</code> if <code>B</code> is not provided; otherwise, set the slice with <code>B</code>.</td></tr>
 <tr><td> </td><td><a href=#sum><code>sum(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the sum of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
 <tr><td> </td><td><a href=#tblcat><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Flatten and concatenate tables into a single table. Tables here may just be numbers, boolean values, or strings.</td></tr>
 <tr><td> </td><td><a href=#text><code>text(x, y, txt, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to write a text string on a graph.</td></tr>
@@ -749,13 +749,16 @@ y = map('@(x) 1.3*(x + 1.73) + 1.4', x)
 plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, {style = style}), x, y, '-r', cos)
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=copy href=#m><code>copy(x, rowrange, columnrange)</code></a></h4>
+<h4>&bull; &nbsp; <a name=copy href=#m><code>copy(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></a></h4>
 <P>It is a general tool for making a deep copy of <code>x</code>. If <code>x</code> is a table, <code>rowrange</code> can be specified. If it is further a (mathly) matrix,
 <code>columnrange</code> can be specified.</P>
-<p>Arguments <code>rowrange</code> and <code>columnrange</code> are ranges of index values described below. Note: If one or both are specified, it may not work well if <code>x</code> is a table with named items like <code>{1, 2, y = {3, 4}}</code>.</p>
+<P>If <code>B</code> is provided, copy to <code>A</code> from <code>B</code>.</P>
+<p>Arguments <code>rowrange*</code> and <code>columnrange*</code> are ranges of index values described below.</p>
 <p>&#x2713; &nbsp; A <em>range of index values</em> is denoted in the format of <code>{start, stop[, step]}, where <code>start</code> and <code>stop</code> are the starting and
 terminal index values increasing by <code>step</code>. Both can be negative with <code>-1</code> referring to the last element (row/column) of of a table (or matrix), <code>-2</code> the next last
-element, and so on. <code>step</code> defaults to <code>1</code> if <code>start</code> is less than <code>stop</code>; otherwise, it defaults to <code>-1</code>. Especially, '*' as a shortcut can be used to denote the whole range of index values.</p>
+element, and so on. <code>step</code> defaults to <code>1</code> if <code>start</code> is less than <code>stop</code>; otherwise, it defaults to <code>-1</code>. Especially, '*' as a shortcut can
+be used to denote the whole range of index values.</p>
+<p>&raquo; Make a deep copy of any kind of tables:</p>
 <pre><code>mathly= require('mathly')
 
 a = {1, 2, {3, 4, x = {5, y = 6, 7}}}
@@ -796,8 +799,10 @@ display(x)
 -- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1}}}
 display(y)
 -- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1, bcd = 6}}}
+</code></pre>
+<p>&raquo; Make a deep copy of a mxn matrix:</p>
+<pre><code>mathly= require('mathly')
 
--- matrix examples
 a = mathly{{22, 15, 94, 77, 48}, {43, 58, 96, 64,  5},
            {20, 85, 90, 37, 92}, {16, 67,  9, 56, 33}}
 disp(a)
@@ -806,38 +811,138 @@ disp(a)
 -- 20  85  90  37  92
 -- 16  67   9  56  33
 
-b = copy(a, 2, {1, 3}) -- MATLAB: a(2, 1:3)
-disp(b)
+copy(a, 2) -- MATLAB: a(2, :)
+-- 43  58  96  64   5
+
+copy(a, 2, {1, 3}) -- MATLAB: a(2, 1:3)
 -- 43  58  96
 
-b = copy(a, {1, 3}, 2) -- MATLAB: a(1:3, 2)
-disp(b)
+copy(a, '*', 2) -- MATLAB: a(:, 2)
+-- 15
+-- 58
+-- 85
+-- 67
+
+copy(a, {1, 3}, 2) -- MATLAB: a(1:3, 2)
 -- 15
 -- 58
 -- 85
 
-b = copy(a, '*', {1, 3}) -- or copy(a, nil, {1, 3}) -- MATLAB: a(1:end, 1:3)
-disp(b)
+copy(a, '*', {1, 3}) -- or copy(a, nil, {1, 3}) -- MATLAB: a(:, 1:3)
 -- 22  15  94
 -- 43  58  96
 -- 20  85  90
 -- 16  67   9
 
-b = copy(a, {1, -2}) -- or copy(a, {1, -2}, '*') -- MATLAB: a(1:end-1, 1:end)
-disp(b)
--- 22  15  94  77  48
+copy(a, {2, -2}) -- or copy(a, {1, -2}, '*') -- MATLAB: a(2:end-1, :)
 -- 43  58  96  64   5
 -- 20  85  90  37  92
 
-b = copy(a, {3, -1}, {2, -2}) -- MATLAB: a(3:end, 2:end)
-disp(b)
---  85  90  37
---  67   9  56
-
-B = copy(a, {1, -2, 2}, {1, 4}) -- MATLAB: a(1:2:end-1, 1:4)
-disp(B)
+copy(a, {1, -2, 2}, {1, 4}) -- MATLAB: a(1:2:end-1, 1:4)
 -- 22  15  94  77
 -- 20  85  90  37
+</code></pre>
+<p>&raquo; Copy to a matrix from another matrix:</p>
+<pre><code>mathly= require('mathly')
+
+a = mathly{{22, 15, 94, 77, 48, 31}, {43, 58, 96, 64,  5, 12},
+           {20, 85, 90, 37, 92, 7}, {16, 67,  9, 56, 33, 10}}
+disp(a)
+-- 22  15  94  77  48  31
+-- 43  58  96  64   5  12
+-- 20  85  90  37  92   7
+-- 16  67   9  56  33  10
+
+b = copy(a)
+copy(b, 3, {2, 4}, {1, 2, 3}) -- MATLAB: b(3, 2:4) = [1, 2, 3]
+-- 22  15  94  77  48  31
+-- 43  58  96  64   5  12
+-- 20   1   2   3  92   7
+-- 16  67   9  56  33  10
+
+b = copy(a)
+copy(b, {3, -1}, {4, -1}, {{1, 2, 3}, {4, 5, 6}}) -- MATLAB: b(3:end, 4:end) = [1, 2, 3; 4, 5, 6]
+-- 22  15  94  77  48  31
+-- 43  58  96  64   5  12
+-- 20  85  90   1   2   3
+-- 16  67   9   4   5   6
+
+b = copy(a)
+copy(b, {3, 4}, {4, -1, 2}, {{1, 2, 3, 4, 5, 6}, {4, 5, 6, 7, 8, 9}}, {1, 2}, {1, -1, 3})
+-- 22  15  94  77  48  31
+-- 43  58  96  64   5  12
+-- 20  85  90   1  92   4
+-- 16  67   9   4  33   7
+
+b = copy(a)
+copy(b, {3, 4}, {2, 4}, 100)
+-- 22   15   94   77   48   31
+-- 43   58   96   64    5   12
+-- 20  100  100  100   92    7
+-- 16  100  100  100   33   10
+
+b = copy(a)
+copy(b, {1, -1, 2}, '*', 0) -- '*' can be replaced with nil or {1, -1, 1}
+--  0   0   0   0   0   0
+-- 43  58  96  64   5  12
+--  0   0   0   0   0   0
+-- 16  67   9  56  33  10
+
+b = copy(a)
+copy(b, '*', {1, -1, 2}, 0)
+-- 0  15   0  77   0  31
+-- 0  58   0  64   0  12
+-- 0  85   0  37   0   7
+-- 0  67   0  56   0  10
+
+b = copy(a)
+copy(b, 1, {1, -1, 2}, {100, 200, 300})
+-- 100   15  200   77  300   31
+--  43   58   96   64    5   12
+--  20   85   90   37   92    7
+--  16   67    9   56   33   10
+
+b = copy(a)
+copy(b, {1, 4}, 2, {-1, -2, -3, -4, -5})
+-- 22  -1  94  77  48  31
+-- 43  -2  96  64   5  12
+-- 20  -3  90  37  92   7
+-- 16  -4   9  56  33  10
+
+b = copy(a)
+copy(b, {1, 4}, 2, {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10}, {2, -1, 2})
+-- 22  -2  94  77  48  31
+-- 43  -4  96  64   5  12
+-- 20  -6  90  37  92   7
+-- 16  -8   9  56  33  10
+</code></pre>
+<p>&raquo; Copy to a table from another table - usage: copy(A, irange, B, irange1)</p>
+<pre><code>mathly= require('mathly')
+
+a = mathly{{22, 15, 94, 77, 48, 31}, {43, 58, 96, 64,  5, 12}}
+disp(a)
+-- 22  15  94  77  48  31
+-- 43  58  96  64   5  12
+copy(a[1], {2, -1}, {1, 2, 3, 4, 5})
+disp(a)
+-- 22   1   2   3   4   5
+-- 43  58  96  64   5  12
+
+a = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+b = copy(a)
+copy(b, {2, -1, 2}, {-1, -2, -3, -4, -5, -6, -7, -8})
+disp(b)
+-- {1, -1, 3, -2, 5, -3, 7, -4, 9}
+
+b = copy(a)
+copy(b, {2, -1, 2}, {-1, -2, -3, -4, -5, -6, -7, -8, -9}, {2, -1, 2})
+disp(b)
+-- {1, -2, 3, -4, 5, -6, 7, -8, 9}
+
+b = copy(a)
+copy(b, {3, -3}, 100)
+disp(b)
+-- {1, 2, 100, 100, 100, 100, 100, 8, 9}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=cross href=#m><code>cross(a, b)</code></a></h4>
@@ -2287,117 +2392,11 @@ print(strcat(34,'Hello, ', {'the ', 'world', '!'}, 34)) -- 34? ascii code for "
 -- "Hello, the world!"
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=submatrix href=#m><code>submatrix(A, rowrange, columnrange, B)</code></a></h4>
-<p>If <code>B</code> is not specified, return a submatrix of matrix <code>A</code> (exactly the same like
-<code><a href=#copy>copy</a></code>); otherwise, set or replace the block of matrix <code>A</code>,
-specified by <code>rowrange</code> and <code>columnrange</code>, with <code>B</code>, a matrix or a number.</p>
-<p>&#x2713; &nbsp;Note: <code>A</code> is modified if <code>B</code> is specified.
-<p>See also: <a href=#cc><code>cc, rr, tt</code></a>; <a href=#diag><code>diag</code></a>,
-<a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>,
-<a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>,
-<a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>,
-<a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code>
-(or <code>horzcat</code>)</a>; <code><a href=#match>match</a></code>.</p>
-<pre><code>mathly = require('mathly')
+<h4>&bull; &nbsp; <a name=submatrix href=#m><code>submatrix(A, rrange, crange, B, rrange1, crange1)</code></a></h4>
+<p>It is an alias of <a href=#copy>copy</a> when <code>A</code> is a mathly matrix.</p>
 
--- 1) copy/extra a submatrix of A
-a = mathly{{22, 15, 94, 77, 48, 31}, {43, 58, 96, 64,  5, 12},
-           {20, 85, 90, 37, 92, 7}, {16, 67,  9, 56, 33, 10}}
-disp(a)
--- 22  15  94  77  48  31
--- 43  58  96  64   5  12
--- 20  85  90  37  92   7
--- 16  67   9  56  33  10
-submatrix(a, {2, -1}, {2, 6, 2})  -- -1: last row/column
--- 58  64  12
--- 85  37   7
--- 67  56  10
--- more copy examples? See <a href=#copy>copy</a>.
-
--- 2) Set/replace a submatrix of matrix A with B, a number or matrix
-b = copy(a); disp(b)
-submatrix(b, 3, {2, 4}, mathly{{1, 2, 3}, {4, 5, 6}})
--- 22  15  94  77  48  31
--- 43  58  96  64   5  12
--- 20   1   2   3  92   7
--- 16  67   9  56  33  10
-b = copy(a)
-submatrix(b, {3, -1}, {4, -1}, mathly{{1, 2, 3}, {4, 5, 6}})
--- 22  15  94  77  48  31
--- 43  58  96  64   5  12
--- 20  85  90   1   2   3
--- 16  67   9   4   5   6
-b = copy(a)
-submatrix(b, {3, -1}, {4, -1, 2}, mathly{{1, 2, 3}, {4, 5, 6}})
--- 22  15  94  77  48  31
--- 43  58  96  64   5  12
--- 20  85  90   1  92   3
--- 16  67   9   4  33   6
-b = copy(a)
-submatrix(b, {3, 4}, {2, 4}, 100)
--- 22   15   94   77   48   31
--- 43   58   96   64    5   12
--- 20  100  100  100   92    7
--- 16  100  100  100   33   10
-b = copy(a)
-submatrix(a, {1, -1, 2}, '*', 0) -- '*' can be replaced with nil
---  0   0   0   0   0   0
--- 43  58  96  64   5  12
---  0   0   0   0   0   0
--- 16  67   9  56  33  10
-b = copy(a)
-submatrix(a, '*', {1, -1, 2}, 0)
--- 0   0   0   0   0   0
--- 0  58   0  64   0  12
--- 0   0   0   0   0   0
--- 0  67   0  56   0  10
-</code></pre>
-
-<h4>&bull; &nbsp; <a name=subtable href=#m><code>subtable(A, irange, B)</code></a></h4>
-<p>If <code>B</code> is not provided, return a slice of table <code>A</code>; otherwise, set the slice with <code>B</code>, a table or a number.</p>
-<p>Argument <code>irange</code> is a range of index values. See <a href=#copy>copy</a>.</p>
-<p>See also: <a href=#cc><code>cc, rr, tt</code></a></p>
-<p>&#x2713; &nbsp;Note: <code>A</code> is modified if <code>B</code> is not provided.
-<pre><code>mathly = require('mathly')
-
--- 1) copy/extract a slice of A
-x = {1, 2, {3}, 4, {{5, 6, {7}}}}
-display(subtable(x, {2, 4}))
--- {2, {3}, 4}
-
-a = mathly{1, 2, 3, 4, 5, 6, 7} -- {{1, 2, 3, 4, 5, 6, 7}}
-display(subtable(a[1], {3, 5}))
--- {3, 4, 5}
-
-x = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
-y = subtable(x, {1, 11, 3})
-display(y)
--- {1, 4, 7, 10}
-display(subtable(x, {1, -1, 2})) -- -1? see <a href=#cc>notes</a>
--- {1, 3, 5, 7, 9, 11}
-display(subtable(x, {-1, 1, -1}))
--- {12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
-display(subtable(x, {-1, 1, -2}))
--- {12, 10, 8, 6, 4, 2}
-
--- 2) set a slice of A with B
-a = mathly{{22, 15, 94, 77, 48, 31}, {43, 58, 96, 64,  5, 12}}
-disp(a)
--- 22  15  94  77  48  31
--- 43  58  96  64   5  12
-subtable(a[1], {2, -1}, {1, 2, 3, 4, 5})
-disp(a)
--- 22   1   2   3   4   5
--- 43  58  96  64   5  12
-
-a = {1, 2, 3, 4, 5, 6, 7, 8, 9}
-subtable(a, {2, -1, 2}, {-1, -2, -3, -4, -5, -6, -7, -8})
-disp(a)
--- {1, -1, 3, -3, 5, -5, 7, -7, 9}
-subtable(a, {3, -3}, 100)
-disp(a)
--- {1, -1, 100, 100, 100, 100, 100, -7, 9}
-</code></pre>
+<h4>&bull; &nbsp; <a name=subtable href=#m><code>subtable(A, irange, B, irange1)</code></a></h4>
+<p>It is an alias of <a href=#copy>copy</a> when <code>A</code> is a table but not a mxn matrix.</p>
 
 <h4>&bull; &nbsp; <a name=tblcat href=#m><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></code></a></h4>
 <p>Flatten and concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers, boolean values, or strings.</p>

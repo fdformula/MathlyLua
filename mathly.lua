@@ -367,8 +367,9 @@ function apply( func, args )
   return func(table.unpack(args))
 end
 
--- make a deep copy of x
-function copy(x, rrange, crange)
+-- 1. make a COPY of A, or
+-- 2. COPY to A from B
+function copy(A, rrange, crange, B, rrange1, crange1)
   local function _copy( x ) -- for general purpose
     local y = {}
     for k, v in pairs(x) do
@@ -381,33 +382,89 @@ function copy(x, rrange, crange)
     return y
   end
 
-  local mathlyq = getmetatable( x ) == mathly_meta
-  if type(x) ~= 'table' then
-    return x
-  elseif not mathlyq and rrange == nil and crange == nil then
-    return _copy(x)
-  else
-    local y, I = {}, 1
-    rrange = _index_range(rrange or {1, -1, 1}, x)
-    if crange == nil then
+  if type(A) ~= 'table' then return A end
+  if type(A[1]) ~= 'table' then crange, B, rrange1 = nil, crange, B end
+  local mathlyq = getmetatable( A ) == mathly_meta
+  if B == nil then -- make a copy of A
+    if not mathlyq and rrange == nil and crange == nil then
+      return _copy(A)
+    else
+      local y, I = {}, 1
+      rrange = _index_range(rrange or {1, -1, 1}, A)
+      if crange == nil then
+        for i = rrange[1], rrange[2], rrange[3] do
+          if type(A[i]) ~= 'table' then y[I] = A[i] else y[I] = _copy(A[i]) end
+          I = I + 1
+        end
+      else
+        crange = _index_range(crange, A[1])
+        for i = rrange[1], rrange[2], rrange[3] do
+          local J = 1
+          y[I] = {}
+          for j = crange[1], crange[2], crange[3] do
+            y[I][J] = A[i][j]; J = J + 1
+          end
+          I = I + 1
+        end
+      end
+      if mathlyq then setmetatable(y, mathly_meta) end
+      return y
+    end
+  end
+
+  -- copy to A from B
+  rrange = _index_range(rrange, A)
+  if mathlyq or type(A[1]) == 'table' then -- a mxn matrix
+    crange = _index_range(crange, A[1])
+    if type(B) == 'table' then
+      local b
+      if getmetatable(B) ~= mathly_meta then
+        if rrange[1] == rrange[2] then
+          b = rr(B); crange1 = rrange1; rrange1 = {1, 1, 1}
+        elseif crange[1] == crange[2] then
+          b = cc(B); crange1 = {1, 1, 1}
+        else
+          b = mathly(B)
+        end
+      else
+        b = B
+      end
+      rrange1 = _index_range(rrange1, b)
+      crange1 = _index_range(crange1, b[1])
+      if math.ceil((rrange[2] - rrange[1] + 1) / rrange[3]) > math.ceil((rrange1[2] - rrange1[1] + 1) / rrange1[3]) or
+         math.ceil((crange[2] - crange[1] + 1) / crange[3]) > math.ceil((crange1[2] - crange1[1] + 1) / crange1[3]) then
+        error('copy(A, rrange, crange, B, rrange1, crange1): not enough data in B for the copy.')
+      end
+      local I, J
+      I = rrange1[1]
       for i = rrange[1], rrange[2], rrange[3] do
-        if type(x[i]) ~= 'table' then y[I] = x[i] else y[I] = _copy(x[i]) end
-        I = I + 1
+        J = crange1[1]
+        for j = crange[1], crange[2], crange[3] do
+          A[i][j] = b[I][J]
+          J = J + crange1[3]
+        end
+        I = I + rrange1[3]
       end
     else
-      crange = _index_range(crange, x[1])
       for i = rrange[1], rrange[2], rrange[3] do
-        local J = 1
-        y[I] = {}
-        for j = crange[1], crange[2], crange[3] do
-          y[I][J] = x[i][j]; J = J + 1
-        end
-        I = I + 1
+        for j = crange[1], crange[2], crange[3] do A[i][j] = B end
       end
     end
-    if mathlyq then setmetatable(y, mathly_meta) end
-    return y
+  else -- treat A and B as a simple table: copy(A, rrange, B, rrange1)
+    if type(B) == 'number' then
+      for i = rrange[1], rrange[2], rrange[3] do A[i] = B end
+    else
+      rrange1 = _index_range(rrange1, B)
+      if math.ceil((rrange[2] - rrange[1] + 1) / rrange[3]) > math.ceil((rrange1[2] - rrange1[1] + 1) / rrange1[3]) then
+        error('copy(A, irange, B, irange1): not enough data in table B for the copy.')
+      end
+      local I = rrange1[1]
+      for i = rrange[1], rrange[2], rrange[3] do
+        A[i] = B[I]; I = I + rrange1[3]
+      end
+    end
   end
+  return A
 end -- copy
 
 --// function unique(tbl)
@@ -2136,7 +2193,7 @@ function plot(...)
   _showlegendq = showlegendq
 end -- plot
 
-local function _correct_range(start, stop, step)
+local function _plot_interval(start, stop, step)
   local tblq = type(start) == 'table'
   if tblq then
     stop = start[2]
@@ -2150,7 +2207,7 @@ local function _correct_range(start, stop, step)
   end
   if start > stop then start, stop = stop, start end
   if tblq then return {start, stop, step} else return start, stop end
-end -- _correct_range
+end -- _plot_interval
 
 local function _set_resolution(r, n)
   n = n or 500
@@ -2255,8 +2312,8 @@ function plot3d(f, xrange, yrange, title, resolution)
   local X, Y, Z = {}, {}, {}
   if type(f) == 'string' then f = fstr2f(f) end
   if type(f) == 'function' then
-    xrange = _correct_range(xrange)
-    yrange = _correct_range(yrange)
+    xrange = _plot_interval(xrange)
+    yrange = _plot_interval(yrange)
     resolution = _set_resolution(resolution, 100)
     local n = max(math.ceil(max(xrange[2] - xrange[1], yrange[2] - yrange[1])) * 10, resolution)
     local x = linspace(xrange[1], xrange[2], n)
@@ -2300,8 +2357,8 @@ function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
   elseif type(rho) == 'string' then
     rho = fstr2f(rho)
   end
-  thetarange = _correct_range(thetarange or {0, 2*pi})
-  phirange = _correct_range(phirange or {0, pi})
+  thetarange = _plot_interval(thetarange or {0, 2*pi})
+  phirange = _plot_interval(phirange or {0, pi})
   resolution = _set_resolution(resolution, 100)
 
   local X, Y, Z = {}, {}, {}
@@ -2332,8 +2389,8 @@ function plotparametricsurface3d(xyz, urange, vrange, title, resolution)
     {'xyz', 'urange', 'vrange', 'title', 'resolution'})
   xyz, urange, vrange, title, resolution = args[1], args[2], args[3], args[4], args[5]
 
-  urange = _correct_range(urange or {-5, 5})
-  vrange = _correct_range(vrange or urange)
+  urange = _plot_interval(urange or {-5, 5})
+  vrange = _plot_interval(vrange or urange)
   resolution = _set_resolution(resolution, 100)
 
   local x, y, z = {}, {}, {}
@@ -2369,7 +2426,7 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
     {'xyz', 'trange', 'title', 'resolution', 'orientationq'})
   xyz, trange, title, resolution, orientationq = args[1], args[2], args[3], args[4], args[5]
 
-  trange = _correct_range(trange or {0, 2 * pi})
+  trange = _plot_interval(trange or {0, 2 * pi})
   resolution = _set_resolution(resolution)
 
   local x, y, z
@@ -2451,7 +2508,7 @@ function hist(x, nbins, style, xrange)
   nbins = nbins or 10
 
   if xrange ~= nil then
-    xmin, xmax = _correct_range(xrange[1], xrange[2])
+    xmin, xmax = _plot_interval(xrange[1], xrange[2])
   else
     local tmp = flatten(x)
     xmin, xmax = min(tmp), max(tmp)
@@ -2488,7 +2545,7 @@ end -- hist
 local function _xmin_xmax_width(x, xrange, nbins, allintq)
   local xmin, xmax, width
   if xrange ~= nil then
-    xmin, xmax = _correct_range(xrange[1], xrange[2])
+    xmin, xmax = _plot_interval(xrange[1], xrange[2])
   else
     xmin, xmax = x[1], x[#x]
   end
@@ -2744,7 +2801,7 @@ function wedge(r, center, angles, style, wedgeq)
   r, center, angles, style, wedgeq = args[1], args[2], args[3], args[4], args[5]
 
   center = center or {0, 0}
-  angles = _correct_range(angles or {0, 2*pi})
+  angles = _plot_interval(angles or {0, 2*pi})
   if wedgeq == nil then wedgeq = true end
   local theta = angles[2] - angles[1]
   local arcpts = math.ceil(300 * theta/(2*pi))
@@ -2885,7 +2942,7 @@ function parametriccurve2d(xy, trange, style, resolution, orientationq)
     {'xy', 'trange', 'style', 'resolution', 'orientationq'})
   xy, trange, style, resolution, orientationq = args[1], args[2], args[3], args[4], args[5]
 
-  trange = _correct_range(trange or {-5, 5})
+  trange = _plot_interval(trange or {-5, 5})
   resolution = _set_resolution(resolution)
   local data = {'graph'}
   local ts = linspace(trange[1], trange[2], math.max(math.ceil((trange[2] - trange[1]) * 50), resolution))
@@ -3003,8 +3060,8 @@ function slopefield(f, xrange, yrange, scale)
   f, xrange, yrange, scale = args[1], args[2], args[3], args[4]
 
   if type(f) == 'string' then f = fstr2f(f) end
-  xrange = _correct_range(xrange or {-5, 5, 0.5})
-  yrange = _correct_range(yrange or xrange)
+  xrange = _plot_interval(xrange or {-5, 5, 0.5})
+  yrange = _plot_interval(yrange or xrange)
   if type(f) ~= 'function' or type(xrange) ~= 'table' or type(yrange) ~= 'table' then
     error('slopefield(f, xrange, yrange, scale): f is a function as in dy/dx = f(x, y), xrange and yrange are of the format {begin, end, step}.')
   end
@@ -3035,8 +3092,8 @@ function vectorfield2d(f, xrange, yrange, scale)
   f, xrange, yrange, scale = args[1], args[2], args[3], args[4]
 
   if type(f) == 'string' then f = fstr2f(f) end
-  xrange = _correct_range(xrange or {-5, 5, 0.5})
-  yrange = _correct_range(yrange or xrange)
+  xrange = _plot_interval(xrange or {-5, 5, 0.5})
+  yrange = _plot_interval(yrange or xrange)
   if type(f) ~= 'function' or type(xrange) ~= 'table' or type(yrange) ~= 'table' then
     error('vectorfield2d(f, xrange, yrange, scale): f is a vector function, xrange and yrange are of the format {begin, end, step}.')
   end
@@ -3566,61 +3623,18 @@ function expand( A, m, n, v )
 end -- expand
 
 -- extract a submatrix of matrix A if B is not specified, or set the submatrix of A with B (A is modified!)
-function submatrix(A, rrange, crange, B)
-  assert(getmetatable(A) == mathly_meta, 'submatrix( A ): A must be a mathly matrix.')
-  if B == nil then return copy(A, rrange, crange) end
-
-  rrange = _index_range(rrange, A)
-  crange = _index_range(crange, A[1])
-  if type(B) == 'table' then
-    local b = mathly(B)
-    local I, J = size(b)
-    if rrange[2] - rrange[1] + 1 > I or crange[2] - crange[1] + 1 > J then
-      error('submatrix(A, rrange, crange, B): not enough data in B for the substitution.')
-    end
-    I = 1
-    for i = rrange[1], rrange[2], rrange[3] do
-      J = 1
-      for j = crange[1], crange[2], crange[3] do
-        A[i][j] = b[I][J]
-        J = J + crange[3]
-      end
-      I = I + rrange[3]
-    end
-  else
-    for i = rrange[1], rrange[2], rrange[3] do
-      for j = crange[1], crange[2], crange[3] do
-        A[i][j] = B
-      end
-    end
-  end
-  return A
-end
+-- 1. make a COPY of A, or
+-- 2. COPY to A from B
+function submatrix(A, rrange, crange, B, rrange1, crange1)
+  assert(getmetatable(A) == mathly_meta, 'submatrix(A, ...): A must be a mathly matrix.')
+  return copy(A, rrange, crange, B, rrange1, crange1)
+end -- submatrix
 
 -- return a specified slice of a vector
-function subtable(A, irange, B)
-  irange = _index_range(irange, A)
-  local I = 1
-  if B == nil then
-    local x = {}
-    for i = irange[1], irange[2], irange[3] do
-      x[I] = A[i]; I = I + irange[3]
-    end
-    return x
-  elseif type(B) == 'table' then
-    if irange[2] - irange[1] + 1 > #B then
-      error('subtable(A, irange, B): not enough data in B for the substitution.')
-    end
-    for i = irange[1], irange[2], irange[3] do
-      A[i] = B[I]; I = I + irange[3]
-    end
-  else
-    for i = irange[1], irange[2], irange[3] do
-      A[i] = B
-    end
-  end
-  return A
-end
+function subtable(A, irange, B, irange1)
+  assert(type(A) == 'table' and type(A[1]) ~= 'table', "subtable(A, irange, B, irange1): A can't be a mxn matrix.")
+  return copy(A, irange, B, irange1)
+end -- subtable
 
 --// function lu(A)
 -- Return L and U in LU factorization A = L * U, where L and U are lower and upper traingular matrices, respectively.
