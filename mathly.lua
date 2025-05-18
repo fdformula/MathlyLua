@@ -1690,18 +1690,17 @@ end
 -- generate a mxn matrix of which each entry is a random integer in [imin, imax]
 --
 function randi(imax, m, n)
-  local imin
+  local imin = 1
   if type(imax) == 'number' then
-    imin = 1
+    if imax < 1 then imin = 0 end
   elseif type(imax) == 'table' then
-    imin = imax[1]
-    imax = imax[2]
+    imin, imax = imax[1], imax[2]
   end
+  assert(isinteger(imin) and isinteger(imax),
+         'randi(imax, m, n), randi({imin, imax}, m, n): imin and imax must be integer.')
+  if imin > imax then imin, imax = imax, imin end
   if m == nil then return math.random(imin, imax) end
   if n == nil then n = m end
-
-  assert(imin < imax,
-         'randi({iminm, imax}, m, n): imin must be less than imax.')
 
   local B = {}
   -- math.randomseed(os.time()) -- keep generating same seq? Lua 5.4.6
