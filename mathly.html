@@ -763,10 +763,12 @@ plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, {style = style}), x, y, '-r',
 <code>columnrange</code> can be specified.</P>
 
 <p>Arguments <code>rowrange*</code> and <code>columnrange*</code> are ranges of index values described below.</p>
-<p>&#x2713; &nbsp; A <em>range of index values</em> is denoted in the format of <code>{start, stop[, step]}, where <code>start</code> and <code>stop</code> are the starting and
-terminal index values increasing by <code>step</code>. Both can be negative with <code>-1</code> referring to the last element (row/column) of of a table (or matrix), <code>-2</code> the next last
+<p>&#x2713; &nbsp; A <em>range of index values</em> is denoted in the format of <code>{start, stop[, step]}</code>, where <code>start</code> and <code>stop</code> are the starting and
+terminal index values, respectively, increasing by <code>step</code>. Both can be negative with <code>-1</code> referring to the last element (row/column) of of a table (or matrix), <code>-2</code> the next last
 element, and so on. <code>step</code> defaults to <code>1</code> if <code>start</code> is less than <code>stop</code>; otherwise, it defaults to <code>-1</code>. Especially, '*' as a shortcut can
 be used to denote the whole range of index values.</p>
+<p>For example, given that <code>x = {1, 2, 3, 4, 5, 6, 7}</code>, <code>{1, -1}</code> is the same as <code>'*', {1, -1, 1}</code>, or <code>{1, 7, 1}</code>, and
+<code>{-1, 1}</code> is the same as <code>{7, 1}</code> or <code>{7, 1, -1}</code>.
 <p>&raquo; Make a deep copy of any kind of tables</p>
 <pre><code>mathly= require('mathly')
 
@@ -847,6 +849,54 @@ copy(a, {2, -2}) -- or copy(a, {1, -2}, '*') -- MATLAB: a(2:end-1, :)
 copy(a, {1, -2, 2}, {1, 4}) -- MATLAB: a(1:2:end-1, 1:4)
 -- 22  15  94  77
 -- 20  85  90  37
+</code></pre>
+<p>For MATLAB users, the following comparison may be helpful.</p>
+<pre><code>-- copy or set a submatrix
+A = randi(99, 4, 5)
+disp(A)
+
+MATLAB: B = randi([-100, 100], 5, 7)
+Mathly: B = randi({-100, 100}, 5, 7)
+
+MATLAB: x = A(1:2:end, 2)
+Mathly: x = copy(A, {1, -1, 2}, 2) -- end ==> -1
+
+MATLAB: x = A(2:end, 1:3:end)
+Mathly: x = copy(A, {2, -1}, {1, -1, 3})
+
+MATLAB: A(:, 2) = [1, 2, 3, 4]
+Mathly: copy(A, '*', 2, {1, 2, 3, 4})
+
+MATLAB: A(2, :) = [1, 2, 3, 4, 5]
+Mathly: copy(A, 2, '*', {1, 2, 3, 4, 5})
+
+MATLAB: A(1:2, 2:4) = [-1, -2, -3; 0, 1, 2]
+Mathyl: copy(A, {1, 2}, {2, 4}, {{-1, -2, -3}, {0, 1, 2}})
+
+MATLAB: A(1:2:end, 4:-1:2) = B(1:3:end, 5:-1:3)
+Mathly: copy(A, {1, -1, 2}, {4, 2, -1}, B, {1, -1, 3}, {5, 3, -1})
+
+-- copy or set a table/vector
+A = randi(99, 1, 5)
+disp(A)
+
+MATLAB: B = randi([-100, 100], 1, 7)
+Mathly: B = randi({-100, 100}, 1, 7)
+
+MATLAB: x = A(1:2:end)
+Mathly: x = copy(A, {1, -1, 2})
+
+MATLAB: x = A(end:-1:1)
+Mathly: x = copy(A, {-1, 1})
+
+MATLAB: A(1:end-1) = [1, 2, 3, 4]
+Mathly: copy(A, {1, -2}, {1, 2, 3, 4})
+
+MATLAB: A(1:2:end) = [-1, -2, -3]
+Mathyl: copy(A, {1, -1, 2}, {-1, -2, -3})
+
+MATLAB: A(1:2:end) = B(1:3:end)
+Mathly: copy(A, {1, -1, 2}, B, {1, -1, 3})
 </code></pre>
 <p>&raquo; Copy to matrix <code>A</code> from another matrix <code>B</code></p>
 &#x2713; &nbsp; Be careful that <code>A</code> is modified!</P>
