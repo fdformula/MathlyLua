@@ -3207,19 +3207,25 @@ function linsolve(A, b, opt)
 
   local m, n = size(A)
   assert(m == n and n == #B, 'linsolve(A, b, ...): A must be square and the dimensions of A and b must match.')
-  local y = zeros(1, n)
-  if opt == 'UT' then -- solve it by back substitution
-    y[n] = B[n][1] / A[n][n]
-    for i = n - 1, 1, -1 do
-      y[i] = (B[i][1] - sum(copy(A, i, {i + 1, n}) * rr(subtable(y, i + 1, n)))) / A[i][i]
-    end
-  else -- solve it by forward substitution
-    y[1] = B[1][1] / A[1][1]
-    for i = 2, n do
-      y[i] = (B[i][1] - sum(copy(A, i, {1, i - 1}) * rr(subtable(y, 1, i - 1)))) / A[i][i]
+  local y = zeros(m, #B[1])
+  for j = 1, #B[1] do
+    if opt == 'UT' then -- back substitution
+      y[n][j] = B[n][j] / A[n][n]
+      for i = n - 1, 1, -1 do
+        local s = B[i][j]
+        for k = i + 1,  n do s = s - A[i][k] * y[k][j] end
+        y[i][j] = s / A[i][i]
+      end
+    else -- forward substitution
+      y[1][j] = B[1][j] / A[1][1]
+      for i = 2, n do
+        local s = B[i][j]
+        for k = 1, i - 1 do s = s - A[i][k] * y[k][j] end
+        y[i][j] = s / A[i][i]
+      end
     end
   end
-  return cc(y)
+  if #y[1] == 1 then return tt(y) else return y end
 end -- linsolve
 
 -- calculate the inverse of matrix A
