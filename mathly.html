@@ -330,7 +330,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
 <tr><td> </td><td><a href=#namedargs><code>namedargs(data, opts)</code></a></td><td> </td><td>Provide support for named arguments.</td></tr>
 <tr><td> </td><td><a href=#newtonpoly><code>newtonpoly(...)</code></a></td><td> </td><td>Return the Newton interpolating polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
-<tr><td> </td><td><code>norm(x)</code></td><td> </td><td>Return the Euclidean norm of a row/column vector <code>x</code>.</td></tr>
+<tr><td> </td><td><a href=#norm><code>norm(x)</code></a></td><td> </td><td>Return the Euclidean norm of a row/column vector <code>x</code>.</td></tr>
 <tr><td> </td><td><a href=#ones><code>ones(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 1. If <code>m = 1</code>, return a table.</td></tr>
 <tr><td> </td><td><a href=#parametriccurve2d><code>parametriccurve2d({x(t), y(t)}, trange, style, resolution, orientationq)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a parametric curve.</td></tr>
 <tr><td> </td><td><a href=#pareto><code>pareto(data, style, style1)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pareto chart.</td></tr>
@@ -1761,6 +1761,20 @@ f(1, {z = 100}) -- same as f(1, nil, 100)
 f({z = 100})    -- same as f(nil, nil, 100)
 </code></pre>
 
+<h4>&bull; &nbsp; <a name=norm href=#m><code>norm(x)</code></a></h4>
+<p>Return the Euclidean norm of a tabel/vector <code>x</code>.</p>
+<p>Note: If two matrices <code>A</code> and <code>B</code> have the same dimensions,
+<code>norm(A - B)</code> can be used to determine if they are equal.</p>
+<pre><code>mathly = require('mathly')
+
+norm({1, 2, 3, 4, 5})
+
+A = randi({-100, 100}, 7)
+norm(A[1])
+
+norm(A * inv(A) - eye(7))
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=newtonpoly href=#m><code>newtonpoly({x1, x2, ...}, {y1, y2, ...}, xx), newtonpoly({{x1, y1}, {x2, y2}, ...}, xx)</code></a></h4>
 <p>Return the Newton interpolating polynomial, defined by data <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>, or the value(s) of the polynomial at <code>xx</code>.</p>
 <p>If <code>xx</code> is provided, return the value(s) of the polynomial at <code>xx</code>;
@@ -2130,15 +2144,19 @@ disp(Q * R - A)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=range href=#m><code>range(x, y, s)</code></a></h4>
-<p>Return a table of numbers starting at <code>x</code>, in between <code>x</code> and <code>y</code>, and incrementing by <code>s</code> (1 by default).</p>
+<p>Return a table of numbers starting at <code>x</code>, in between <code>x</code> and <code>y</code>, and incrementing by <code>s</code> (<code>1</code> by default if <code>x</code> &lt; <code>y</code>; <code>-1</code>, otherwise).</p>
 <p>See also: <a href=#linspace><code>linspace</code></a>, <a href=#seq><code>seq</code></a>.</p>
 <pre><code>mathly = require('mathly')
 
-x = range(1, 10)
+x = range(1, 10) -- or range(10)
 disp(x)
 -- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 
-display(range(10, 1, -1))
+x = range(-1, -10) -- or range(-10)
+disp(x)
+-- {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10}
+
+display(range(10, 1))
 -- {10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
 
 disp(range(0, 6, 0.5))

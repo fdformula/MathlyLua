@@ -1232,57 +1232,46 @@ function var(x, opt) return _stdvar(x, opt, false) end
 function dot(a, b)
   local t1 = flatten(a)
   local t2 = flatten(b)
-  if #t1 ~= #t2 then
-    print('dot(a, b): vectors a and b are not of the same size.')
-    return nil
-  else
-    local val = 0
-    for i = 1,#t1 do
-      val = val + t1[i] * t2[i]
-    end
-    return val
+  local v = 0
+  for i = 1, math.min(#t1, #t2) do
+    v = v + t1[i] * t2[i]
   end
+  return v
 end
 
 -- calculates the dot/inner product if two vectors
-function cross(a, b) -- Mathematica
+function cross(a, b)
   local t1 = flatten(a)
   local t2 = flatten(b)
-  if #t1 ~= 3 or #t2 ~=3 then
-    print('cross(a, b): a and b must be 3D vectors.')
-    return nil
-  else
-    return {a[2] * b[3] - a[3] * b[2],
-            a[3] * b[1] - a[1] * b[3],
-            a[1] * b[2] - a[2] * b[1]}
-  end
+  if #t1 ~= 3 or #t2 ~=3 then error('cross(a, b): a and b must be 3D vectors.') end
+  return {a[2] * b[3] - a[3] * b[2], a[3] * b[1] - a[1] * b[3], a[1] * b[2] - a[2] * b[1]}
 end
 
 -- generates a evenly spaced sequence/table of numbers starting at 'start' and likely ending at 'stop' by 'step'.
 function range(start, stop, step) -- ~Python but inclusive
-  if start == nil then
-    print('range(start, stop, step): no input.')
-    return {}
+  if start == nil then error('range(start, stop, step): no input.') end
+  if stop == nil then
+    stop = start
+    if start > 0 then start = 1 else start = -1 end
   end
-  if stop == nil then stop = start; start = 1 end
-  if step == nil then step = 1 end
+  if step == nil then
+    if start < stop then step = 1 else step = -1 end
+  end
   if start <= stop and step < 0 then
-    printf("range(%d, %d, step): step must be positive.\n", start, stop)
-    return {}
+    error(sprintf("range(%d, %d, step): step must be positive.\n", start, stop))
   elseif start >= stop and step > 0 then
-    printf("range(%d, %d, step): step must be negative.\n", start, stop)
-    return {}
+    error(sprintf("range(%d, %d, step): step must be negative.\n", start, stop))
   end
 
-  local v = {}
+  local v, k = {}, 1
   if step > 0 then
-    while start <= stop + 100*eps do -- weird 1*eps doesn't work
-      v[#v + 1] = start
+    while start <= stop + 100*eps do
+      v[k] = start; k = k +1
       start = start + step
     end
   else
     while start >= stop - 100*eps do
-      v[#v + 1] = start
+      v[k] = start; k = k +1
       start = start + step
     end
   end
