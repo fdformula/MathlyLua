@@ -1476,12 +1476,13 @@ plot(xs, newtonpoly(x, y, xs))
 
 <h4>&bull; &nbsp; <a name=linsolve href=#m><code>linsolve(A, b, opt)</code></a></h4>
 <p>Solve a linear system <code>Ax = b</code> and return the solution.</p>
+<p>If <code>b</code> is a matrix with multiple columns, <code>b = [b<sub>1</sub> | b<sub>2</sub> | ... | b<sub>m</sub>]</code>, it returns a solution matrix <code>[x<sub>1</sub> | x<sub>2</sub> | ... | x<sub>m</sub>]</code>, where <code>Ax<sub>i</sub> = b<sub>i</sub>, i = 1, 2, ..., m</code>.</p>
 <p>The argument <code>opt</code> is optional:</p>
 <ol>
 <li><code>'LT'</code>: <code>A</code> is lower triangular</li>
 <li><code>'UT'</code>: <code>A</code> is upper triangular</li>
 </ol>
-<p>If <code>A</code> is neither upper nor lower triangular, <a href=#rref><code>rref(A, b)</code></a> is called, and <code>b</code> finally holds the solution.</p>
+<p>If <code>A</code> is neither upper nor lower triangular, <a href=#rref><code>rref(A, b)</code></a> is called.</p>
 <pre><code>mathly = require('mathly')
 
 a = mathly{{58, 18, 88}, {68, 30, 71}, {14, 75, 49}}
@@ -1491,6 +1492,15 @@ disp(x)
 -- -2.1499
 -- -1.3064
 --  2.6955
+
+b = mathly{{89, 6, 4}, {20, 1, 6}}^T
+-- 89 20
+--  6  1
+--  4  6
+x = linsolve(a, b)
+-- -2.1499  -0.5443
+-- -1.3064  -0.2323
+--  2.6955   0.6335
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=linspace href=#m><code>linspace(x, y, n)</code></a></h4>
@@ -1762,17 +1772,18 @@ f({z = 100})    -- same as f(nil, nil, 100)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=norm href=#m><code>norm(x)</code></a></h4>
-<p>Return the Euclidean norm of a table/vector <code>x</code>.</p>
-<p>Note: If two matrices <code>A</code> and <code>B</code> have the same dimensions,
-<code>norm(A - B)</code> can be used to determine if they are equal.</p>
+<p>Return the Euclidean/Frobenius norm of a vector/matrix.</p>
+<p>Note: With MATLAB, if <code>x</code> is a mxn matrix with <code>m, n ≥ 2</code>, call <code>norm(x, "fro")</code>.</p>
 <pre><code>mathly = require('mathly')
 
-norm({1, 2, 3, 4, 5})
+norm{1, 2, 3, 4, 5}
 
 A = randi({-100, 100}, 7)
-norm(A[1])
+norm(A)
 
-norm(A * inv(A) - eye(7))
+norm(A * inv(A) - eye(7)) < 10*eps -- check if two vectors/matrices are equal
+
+norm({1, 2, {3, {4, 5}}, 6}) -- equal to norm({1, 2, 3, 4, 5, 6})
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=newtonpoly href=#m><code>newtonpoly({x1, x2, ...}, {y1, y2, ...}, xx), newtonpoly({{x1, y1}, {x2, y2}, ...}, xx)</code></a></h4>
@@ -2301,7 +2312,8 @@ round(pi, 4)
 <p>If there is one more argument, i.e., <code>rref(A, B)</code>, <code>A</code> and <code>B</code> will be merged horizontally into A.
 <p><code>A</code> and <code>B</code> must be mathly matrices with the same row number.</p>
 <p>Return the reduced row-echelon form of a mathly matrix <code>A</code>.</p>
-<p>To solve <code>Ax = b</code>, call <code>rref(A, b)</code>, and <code>b</code> holds finally the solution.</p>
+<p>To solve <code>Ax = b</code>, call <code>rref(A, b)</code> which returns the reduced row-echelon form of <code>A</code> and the solution.</p>
+<p>See also: <a href=#linsolve><code>linsolve</code></a></p>
 <pre><code>mathly = require('mathly')
 
 a = mathly{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
@@ -2721,7 +2733,7 @@ was obviously wrong because the boundary condition at one endpoint is not satisf
 anything wrong in both the algorithm and the code. I had to wonder if there were bugs in the module. In many
 cases, it is easier to start a small project from scratch than using and debugging others' code. In
 addition, matrix.lua addresses a column vector like a[i][1] and a row vector a[1][i], rather than a[i]
-in both cases, which is quite ugly and unnatural. Furthermore, no basic plotting utilities are provided in
+in both cases, which is quite ugly and unnatural. Furthermore, no basic graphics capabilities are provided in
 matrix.lua. Therefore, this mathly module was developed. But anyway, I appreciate the work in matrix.lua.
 Actually, you may find some similarities in the code of matrix.lua and mathly.lua, e.g., m1, m2 are used
 to name arguments of some functions.</li>

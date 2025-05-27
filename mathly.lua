@@ -1550,8 +1550,15 @@ function polyval(P, x)
   end
 end -- polyval
 
--- calculate the Euclidean norm of a vector
-function norm(v) return math.sqrt(dot(v, v)) end
+-- calculate the Euclidean/Frobenius norm of a vector/matrix
+-- if x is a mxn matrix with m, n ≥ 2, MATLAB: norm(x, "fro")
+function norm(x)
+  if type(x) ~= 'number' and type(x) ~= 'table' then
+    error('norm(x): x must be a table, vector or matrix of numbers.')
+  end
+  local v = flatten(x)
+  return math.sqrt(dot(v, v))
+end
 
 -- https://en.wikipedia.org/wiki/Box-Muller_transform
 _next_gaussian_rand = nil -- reset
