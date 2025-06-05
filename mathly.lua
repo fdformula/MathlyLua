@@ -325,7 +325,11 @@ local function _map(func, ...) -- Mathematica
     for k, v in pairs(args[1]) do
       local arg = {}
       for j = 1,#args do
-        arg[#arg + 1] = args[j][k]
+        if type(args[j]) ~= 'table' then
+          arg[#arg + 1] = args[j] -- 6/5/25
+        else
+          arg[#arg + 1] = args[j][k]
+        end
       end
 
       if type(v) ~= 'table' then
@@ -3564,16 +3568,14 @@ end
 -- Return L and U in LU factorization A = L * U, where L and U are lower and upper traingular matrices, respectively.
 function lu(A) -- by Crout's method
   assert(getmetatable(A) == mathly_meta, 'lu(A): A must be a mathly square matrix.')
-  local m, n = size(A)
-  assert(n == m and n > 1, "lu(A): A is not square.\n")
+  local s, n = size(A)
+  assert(n == s and n > 1, "lu(A): A is not square.\n")
   local abs = math.abs
 
   local L = zeros(n, n)
   local U = zeros(n, n)
 
-  for i = 1, n do
-    local s
-    -- calculate L[i][1 : i]
+  for i = 1, n do -- calculate L[i][1 : i]
     for j = 1, i do
       s = 0
       for k = 1, j - 1 do
@@ -3582,8 +3584,7 @@ function lu(A) -- by Crout's method
       L[i][j] = A[i][j] - s
     end
 
-    -- calculate U[i][i : end]
-    U[i][i] = 1
+    U[i][i] = 1  -- calculate U[i][i : end]
     for j = i + 1, n do
       s = 0
       for k = 1, i - 1 do

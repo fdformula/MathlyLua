@@ -1535,7 +1535,8 @@ disp(L * U - A)
 
 <h4>&bull; &nbsp; <a name=map href=#m><code>map(f, tbl1, tbl2, ...)</code></a></h4>
 <p>Apply function <code>f</code> to each group of corresponding atomic elements in tables, <code>tbl1, tbl2, ...</code>, and return the result.</p>
-<p>&#x2713; &nbsp; <code>tbl1, tbl2, ...</code> must be tables of the same structure.</p>
+<p>&#x2713; &nbsp; <code>tbl1</code> must be a table; <code>tbl2, ...</code> must be tables of the same structure of <code>tbl1</code> or a number or a string.
+If, say, <code>tbl2</code> is not a table, it is treated as a table of the same structure of <code>tbl1</code> with each entry equaling to <code>tbl2</code>.</p>
 <p>See also: <a href=#easyf>Shortcut for defining an anonymous function.</a></p>
 <pre><code>mathly = require('mathly')
 
@@ -1575,6 +1576,21 @@ disp(x2)
 -- {1, 4, 9, 16, 36, {0, 1, 4, B = 9}, A = 25}
 disp(map('@(x, y) x + y', x1, x2))
 -- {2, 6, 12, 20, 42, {0, 2, 6, B = 12}, A = 30}
+
+disp(map('@(x, y) x + y', {1, 2, 3}, 10)) -- 10 is treated as {10, 10, 10}
+-- {11, 12, 13}
+
+disp(map('@(x, y, z) x + y + z', {1, 2, 3}, 10, 100)) -- 10 is treated as {10, 10, 10}, and 100 as {100, 100, 100}
+-- {111, 112, 113}
+
+disp(map('@(x, y, z) x + y + z', {1, 2, 3}, 10, {100, 200, 300}))
+-- {111, 212, 313}
+
+disp(map('@(x, y) x .. y', {'1', '2', '3'}, '10')) -- '10' is treated as {'10', '10', '10'}
+-- {'110', '210', '310'}
+
+disp(map('@(x, y) 2 * x * y + 1', {1, {2, {3, {4}}}}, 10)) -- 10 is treated as {10, {10, {10, {10}}}}
+-- {21, {41, {61, {81}}}}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=match href=#m><code>match(tbl, f)</code></a></h4>
@@ -1771,21 +1787,6 @@ f(1, {z = 100}) -- same as f(1, nil, 100)
 f({z = 100})    -- same as f(nil, nil, 100)
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=norm href=#m><code>norm(x)</code></a></h4>
-<p>Return the Euclidean/Frobenius norm of a vector/matrix.</p>
-<p>Note: With MATLAB, if <code>x</code> is a mxn matrix with <code>m, n ≥ 2</code>, call <code>norm(x, "fro")</code>.</p>
-<pre><code>mathly = require('mathly')
-
-norm{1, 2, 3, 4, 5}
-
-A = randi({-100, 100}, 7)
-norm(A)
-
-norm(A * inv(A) - eye(7)) < 10*eps -- check if two vectors/matrices are equal
-
-norm({1, 2, {3, {4, 5}}, 6}) -- equal to norm({1, 2, 3, 4, 5, 6})
-</code></pre>
-
 <h4>&bull; &nbsp; <a name=newtonpoly href=#m><code>newtonpoly({x1, x2, ...}, {y1, y2, ...}, xx), newtonpoly({{x1, y1}, {x2, y2}, ...}, xx)</code></a></h4>
 <p>Return the Newton interpolating polynomial, defined by data <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>, or the value(s) of the polynomial at <code>xx</code>.</p>
 <p>If <code>xx</code> is provided, return the value(s) of the polynomial at <code>xx</code>;
@@ -1818,6 +1819,21 @@ xs = linspace(x[1], x[length(x)], 100)
 ys = map(f, xs)
 axisnotsquare()
 plot(x, y, "*", xs, ys, "-")
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=norm href=#m><code>norm(x)</code></a></h4>
+<p>Return the Euclidean/Frobenius norm of a vector/matrix.</p>
+<p>Note: With MATLAB, if <code>x</code> is a mxn matrix with <code>m, n ≥ 2</code>, call <code>norm(x, "fro")</code>.</p>
+<pre><code>mathly = require('mathly')
+
+norm{1, 2, 3, 4, 5}
+
+A = randi({-100, 100}, 7)
+norm(A)
+
+norm(A * inv(A) - eye(7)) < 10*eps -- check if two vectors/matrices are equal
+
+norm({1, 2, {3, {4, 5}}, 6}) -- flattened first; same as norm({1, 2, 3, 4, 5, 6})
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=zeros></a><a name=rand></a><a name=randi></a><a name=randn></a><a name=ones href=#m><code>ones</code>, <code>zeros</code>, <code>rand</code>, <code>randi</code>, <code>randn</code></a></h4>
