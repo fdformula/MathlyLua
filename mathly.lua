@@ -1066,7 +1066,7 @@ function ls(path, printq)
     re = re:gsub('%?', '.')
     re = re:gsub('%*', '.*')
     re = '^' .. re
-    path = path1
+    if path1 == '' then path = pwd() end
   end
 
   for f in io.popen(qq(__is_windows, "dir /b ", "ls -pa ") .. '"'.. path .. '"'):lines() do
@@ -1118,6 +1118,7 @@ end
 
 -- e.g., linux: rm(fname, '-fr'); windows: rm(fname, '/F /S')
 function rm(fname, opt)
+  if opt == nil then opt = '' end
   os.execute(qq(__is_windows, 'del ', 'rm ') .. opt .. ' "'.. fname .. '"')
 end
 --↑↑↑↑↑↑↑↑↑↑↑↑ basic file system commands ↑↑↑↑↑↑↑↑↑↑↑↑--

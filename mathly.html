@@ -279,14 +279,15 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#boxplot><code>boxplot(x, names)</code></a></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a box plot (or box-and-whisker plot), where <code>x</code> is a table or a matrix of numbers. <code>names = {'name1', 'name2', ...}</code> is optional.</td></tr>
 <tr><td> </td><td><a href=#cat><code>cat(filename)</code></a></td><td> </td><td>Print the content of text file <code>filename</code> in Lua REPL.</td></tr>
 <tr><td> </td><td><a href=#cc><code>cc(x, I, irange)</code></a></td><td> </td><td>Convert table <code>x</code> into a column vector or return specified column(s) of a mathly matrix...</td></tr>
+<tr><td> </td><td><a name=cd><code>cd(path)</code></a></td><td> </td><td>Changes the current directory to <code>path</code></td>.</tr>
 <tr><td> </td><td><a href=#circle><code>circle(r, center, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a circle.</td></tr>
-<tr><td> </td><td><code>clc()</code></td><td> </td><td>Clear Lua console.</td></tr>
-<tr><td> </td><td><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
+<tr><td> </td><td><a name=clc></a><code>clc()</code></td><td> </td><td>Clear Lua console.</td></tr>
+<tr><td> </td><td><a name=clear></a><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
 <tr><td> </td><td><a href=#contourplot><code>contourplot(f, xdata, ydata, style)</code></a></td><td> </td><td>Prepare a graphics object for <code>plot</code> to plot the contour map of function <code>f(x, y)</code>.</td></tr>
 <tr><td> </td><td><a href=#copy><code>copy(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></a></td><td> </td><td>Make a deep copy of <code>x</code> if <code>B</code> is not provided; otherwise, copy to <code>A</code> from <code>B</code>.</td></tr>
 <tr><td> </td><td><a href=#cross><code>cross(a, b)</code></a></td><td> </td><td>Calculate the cross/vector product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub>}</code>.</td></tr>
 <tr><td> </td><td><a href=#demathly><code>demathly(x)</code></a></td><td> </td><td>Force <code>x</code> not to be a mathly matrix.</td></tr>
-<tr><td> </td><td><code>det(A)</code></td><td> </td><td>Calculate the determinant of square matrix <code>A</code>.</td></tr>
+<tr><td> </td><td><a name=det></a><code>det(A)</code></td><td> </td><td>Calculate the determinant of square matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a href=#diag><code>diag(A, ...)</code></a></td><td> </td><td>Return a column vector consisting of specified diagonal entries of mathly matrix <code>A</code> or create a mathly matrix with vector <code>A</code> as its diagonal entries.</td></tr>
 <tr><td> </td><td><a href=#dir><code>dir(path, printq)</code></a></td><td> </td><td>List files in the folder <code>path</code> (the current directory by default).</td></tr>
 <tr><td> </td><td><a href=#directionfield><code>directionfield(f, xrange, yrange, scale)</code></a></td><td> </td><td>Exactly the same as <code>slopefield</code>.</td></tr>
@@ -295,7 +296,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#dot><code>dot(a, b)</code></a></td><td> </td><td>Calculate the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ..., a<sub>n</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ..., b<sub>n</sub>}</code>.</td></tr>
 <tr><td> </td><td><a href=#eval><code>eval(str)</code></a></td><td> </td><td>Evaluate the expression in <code>str</code> and return the result.</td></tr>
 <tr><td> </td><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrunk <code>mxn</code> mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
-<tr><td> </td><td><code>eye(n)</code></td><td> </td><td>Return a <code>nxn</code> identity mathly matrix.</td></tr>
+<tr><td> </td><td><a name=eye></a><code>eye(n)</code></td><td> </td><td>Return a <code>nxn</code> identity mathly matrix.</td></tr>
 <tr><td> </td><td><a href=#findroot><code>findroot(func, interval, tolerance)</code></a></td><td> </td><td>Find the zero of a function on specified interval.</td></tr>
 <tr><td> </td><td><a href=#flatten><code>flatten(x)</code></a></td><td> </td><td>Remove the structure of <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</td></tr>
 <tr><td> </td><td><a href=#fliplr><code>fliplr(A)</code></a></td><td> </td><td>Return a matrix with columns of matrix <code>A</code> reversed.</td></tr>
@@ -312,16 +313,16 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#horzcat><code>horzcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
 <tr><td> </td><td><a href=#input><code>input(prompt, s)</code></a></td><td> </td><td>Input from keyboard, return a string (if <code>s = 's'</code>); otherwise, evaluate the input expression, and return the result.</td></tr>
 <tr><td> </td><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of square mathly matrix <code>A</code>.</td></tr>
-<tr><td> </td><td><a href=#isdir><code>isdir(filename)</code></a></td><td> </td><td>Check if <code>filename</code> is a directory/folder.</td></tr>
+<tr><td> </td><td><a name=isdir><code>isdir(filename)</code></a></td><td> </td><td>Check if <code>filename</code> is a directory/folder.</td></tr>
 <tr><td> </td><td><a href=#isfile><code>isfile(filename)</code></a></td><td> </td><td>Check if <code>filename</code> is a file.</td></tr>
-<tr><td> </td><td><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
-<tr><td> </td><td><code>iseven(x)</code></td><td> </td><td>Check if <code>x</code> is even.</td></tr>
-<tr><td> </td><td><code>isodd(x)</code></td><td> </td><td>Check if <code>x</code> is odd.</td></tr>
-<tr><td> </td><td><code>ismatrix(x)</code></td><td> </td><td>Check if <code>x</code> is a mxn matrix.</td></tr>
+<tr><td> </td><td><a name=isinteger></a><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
+<tr><td> </td><td><a name=iseven></a><code>iseven(x)</code></td><td> </td><td>Check if <code>x</code> is even.</td></tr>
+<tr><td> </td><td><a name=isodd></a><code>isodd(x)</code></td><td> </td><td>Check if <code>x</code> is odd.</td></tr>
+<tr><td> </td><td><a name=ismatrix></a><code>ismatrix(x)</code></td><td> </td><td>Check if <code>x</code> is a mxn matrix.</td></tr>
 <tr><td> </td><td><a href=#ismember><code>ismember(x, table)</code></a></td><td> </td><td>Check if <code>x</code> is a member of <code>table</code>.</td></tr>
 <tr><td> </td><td><a href=#iswindows><code>iswindows()</code></a></td><td> </td><td>Check if the operationg system is Microsoft Windows.</td></tr>
 <tr><td> </td><td><a href=#lagrangepoly><code>lagrangepoly(...)</code></a></td><td> </td><td>Return the Lagrange interpolating polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
-<tr><td> </td><td><code>length(x)</code></td><td> </td><td>Return the length of a table or string.</td></tr>
+<tr><td> </td><td><a name=length></a><code>length(x)</code></td><td> </td><td>Return the length of a table or string.</td></tr>
 <tr><td> </td><td><a href=#line><code>line(point1, point2, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a straight line.</td></tr>
 <tr><td> </td><td><a href=#linsolve><code>linsolve(A, b, opt)</code></a></td><td> </td><td>Solve a linear system <code>Ax = b</code> and return the solution.</td></tr>
 <tr><td> </td><td><a href=#linspace><code>linspace(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</td></tr>
@@ -334,6 +335,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#mean><code>mean(x)</code></a></td><td> </td><td>Return mean value of numbers in <code>x</code>.</td></tr>
 <tr><td> </td><td><a href=#merge><code>merge(tbl1, tbl2)</code></a></td><td> </td><td>Merge two tables of any structure into a single one.</td></tr>
 <tr><td> </td><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
+<tr><td> </td><td><a name=mv><code>mv(fname1, fname2)</code></a></td><td> </td><td>Rename file/folder <code>fname1</code> to <code>fname2</code></td>.</tr>
 <tr><td> </td><td><a href=#namedargs><code>namedargs(data, opts)</code></a></td><td> </td><td>Provide support for named arguments.</td></tr>
 <tr><td> </td><td><a href=#newtonpoly><code>newtonpoly(...)</code></a></td><td> </td><td>Return the Newton interpolating polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
 <tr><td> </td><td><a href=#norm><code>norm(x)</code></a></td><td> </td><td>Return the Euclidean norm of a row/column vector <code>x</code>.</td></tr>
@@ -361,17 +363,18 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#randi><code>randi(...)</code></a></td><td> </td><td>Return a matrix of which each element is a random integer in a specified range.</td></tr>
 <tr><td> </td><td><a href=#randn><code>randn(...)</code></a></td><td> </td><td>Return a matrix of normally distributed numbers.</td></tr>
 <tr><td> </td><td><a href=#range><code>range(x, y, s)</code></a></td><td> </td><td>Return a table of numbers starting at <code>x</code>, in between <code>x</code> and <code>y</code>, and incrementing by <code>s</code>.</td></tr>
-<tr><td> </td><td><code><a href=#remake>remake(A, opt)</a></code></td><td> </td><td>Generate a lower, upper, diagonal, symmetrical, or ...  matrix from matrix <code>A</code>.</td></tr>
+<tr><td> </td><td><a href=#remake><code>remake(A, opt)</code></a></td><td> </td><td>Generate a lower, upper, diagonal, symmetrical, or ...  matrix from matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a href=#repmat><code>repmat(A, m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> block matrix with each entry a copy of matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a href=#reshape><code>reshape(A, m, n)</code></a></td><td> </td><td>Rearrange existing elements in a table or mathly matrix <code>A</code> and return a new <code>mxn</code> mathly matrix.</td></tr>
 <tr><td> </td><td><a href=#reverse><code>reverse(tbl)</code></a></td><td> </td><td>Return a table with order of elements in table <code>tbl</code> reversed.</td></tr>
+<tr><td> </td><td><a href=#rm><code>rm(fname, opt)</code></a></td><td> </td><td>Remove file/folder <code>fname</code></td>.</tr>
 <tr><td> </td><td><a href=#round><code>round(x, n)</code></a></td><td> </td><td>Round <code>x</code> to <code>n</code> decimal places.</td></tr>
 <tr><td> </td><td><a href=#rr><code>rr(x, i, irange)</code></a></td><td> </td><td>Convert table <code>x</code> into a row vector or return specified row(s) of a mathly matrix...</td></tr>
 <tr><td> </td><td><a href=#rref><code>rref(A, ...)</code></a></td><td> </td><td>Return the reduced row-echelon form of a mathly matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a href=#save><code>save(datafile, ...)</code></a></td><td> </td><td>Save specified or all user-defined variables and their values to a Lua or MATLAB script file.</td></tr>
 <tr><td> </td><td><a href=#scatter><code>scatter(x, y, style)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a scatter plot.</td></tr>
 <tr><td> </td><td><a href=#seq><code>seq(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</td></tr>
-<tr><td> </td><td><code>size(A)</code></td><td> </td><td>Return the dimensions of a mathly matrix <code>A</code>.</td></tr>
+<tr><td> </td><td><a name=size></a><code>size(A)</code></td><td> </td><td>Return the dimensions of a mathly matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a href=#slopefield><code>slopefield(f, xrange, yrange, scale)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot the slope field of <code>dy/dx = f(x, y)</code>.</td></tr>
 <tr><td> </td><td><a href=#sort><code>sort(tbl, compf)</code></a></td><td> </td><td>Sort table <code>tbl</code> and return the resulted table.</td></tr>
 <tr><td> </td><td><a href=#printf><code>sprintf(...)</code></a></td><td> </td><td>Return a formatted string, while <code>printf</code> prints one.</td></tr>
@@ -384,13 +387,13 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#text><code>text(x, y, txt, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to write a text string on a graph.</td></tr>
 <tr><td> </td><td><a href=#tic><code>tic()</code></a></td><td> </td><td>Start a wall-clock timer.</td></tr>
 <tr><td> </td><td><a href=#toc><code>toc</code></a></td><td> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
-<tr><td> </td><td><code><a href=#cc>tt(x, irange)</a></code></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and return a specified slice of the resulted table.</td></tr>
+<tr><td> </td><td><a href=#cc><code>tt(x, irange)</code></a></td><td> </td><td>Convert a mathly matrix to a table columnwisely or flatten any other table first and return a specified slice of the resulted table.</td></tr>
 <tr><td> </td><td><a href=#unique><code>unique(tbl)</code></a></td><td> </td><td>Return the same data as in table <code>tbl</code> but with no repetitions.</td></tr>
 <tr><td> </td><td><a href=#var><code>var(x, opt)</code></a></td><td> </td><td>Return the variance of numbers in <code>x</code>.</td></tr>
 <tr><td> </td><td><a href=#vectorfield2d><code>vectorfield2d(f, xrange, yrange, scale)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot the vector field of vector function <code>f(x, y)</code>.</td></tr>
 <tr><td> </td><td><a href=#vertcat><code>vertcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order vertically. Matrices must have the same number of columns.</td></tr>
 <tr><td> </td><td><a href=#wedge><code>wedge(r, center, angles, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a wedge of a disk.</td></tr>
-<tr><td> </td><td><code>who()</code></td><td> </td><td>List all user-defined variables in the memory.</td></tr>
+<tr><td> </td><td><a name=who></a><code>who()</code></td><td> </td><td>List all user-defined variables in the memory.</td></tr>
 <tr><td> </td><td><a href=#zeros><code>zeros</code></a></td><td> </td><td>Return a <code>mxn</code> mathly matrix of which each element is 0. If <code>m = 1</code>, return a table.<hr></td></tr>
 
 <tr><td> </td><td><a href=#axissquare><code>axissquare(), axisnotsquare()</code></a></td><td> </td><td>Force/stop a square axis aspect ratio. <b>Note</b>: This last group of functions are not valid for 3D graphs.</td></tr>
@@ -1445,8 +1448,18 @@ A = mathly{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
 inv(A) * A - I
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=isdir href=#m><code>isdir(fname)</code></a></h4>
-<p>Return true if <code>fname</code> is a directory/folder.</p>
+
+<h4>&bull; &nbsp; <a name=rm href=#m><code>rm(fname, opt)</code></a></h4>
+<p>Remove file/folder <code>fname</code>.</p>
+<pre><code>
+rm('_tmp-mathly_plot-6_4.html')
+
+if iswindows() then
+  rm('_tmp-*6_4.html', '/F /S')
+else
+  rm('_tmp-*6_4.html', '-fr')
+end
+</code></pre>
 
 
 <h4>&bull; &nbsp; <a name=isfile href=#m><code>isfile(fname)</code></a></h4>
