@@ -73,12 +73,14 @@ package.path = "./?.luac;;"
 
 ## Functions provided in mathly
 
-`..` (or `horzcat`), `all`, `any`, `apply`, `cat`, `cc`, `clc`, `clear`, `copy`, `cross`, `demathly`, `det`, `diag`, `dir`, `disp`, `display`, `div`, `dot`, `eval`, `expand`,
+`..` (or `horzcat`), `all`, `any`, `apply`, `cc`, `clc`, `clear`, `copy`, `cross`, `demathly`, `det`, `diag`, `disp`, `display`, `div`, `dot`, `eval`, `expand`,
 `eye`, `findroot`, `flatten`,  `fliplr`, `flipud`, `format`, `fstr2f`, `fzero`, `gcd`, `hasindex`, `input`, `inv`, `isinteger`, `iseven`, `isodd`, `ismatrix`, `ismember`,
-`iswindows`, `lagrangepoly`, `length`, `linsolve`, `linspace`, `ls`, `lu`, `map`, `match`, `mathly`, `max`, `mean`, `merge`, `min`, `mod`, `namedargs`, `newtonpoly`, `norm`,
-`ones`, `polynomial`, `polyval`, `powermod`, `printf`, `prod`, `pwd`, `qq`, `qr`, `rand`, `randi`, `randn`, `range`, `remake`, `repmat`, `reshape`, `reverse`, `round`, `rr`,
+`lagrangepoly`, `length`, `linsolve`, `linspace`, `lu`, `map`, `match`, `mathly`, `max`, `mean`, `merge`, `min`, `mod`, `namedargs`, `newtonpoly`, `norm`,
+`ones`, `polynomial`, `polyval`, `powermod`, `printf`, `prod`, `qq`, `qr`, `rand`, `randi`, `randn`, `range`, `remake`, `repmat`, `reshape`, `reverse`, `round`, `rr`,
 `rref`, `save`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`,
 `who`, `zeros`; `bin2dec`, `oct2hex`, ...
+
+`cat`, `dir`, `isdir`, `isfile`, `iswindows`, `ls`, `pwd`
 
 `arc`, `circle`, `contourplot`, `line`, `parametriccurve2d`, `point`, `polarcurve2d`, `polygon`, `scatter`, `text`, `wedge`; `boxplot`, `freqpolygon`, `hist`, `hist1`,
 `histfreqpolygon`, `pareto`, `pie`; `directionfield` (or `slopefield`), `vectorfield2d` (All are graphics objects passed to `plot`.)
