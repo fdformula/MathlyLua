@@ -1574,8 +1574,21 @@ plot(x, y, '-or')
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=dir></a><a name=ls href=#m><code>ls(path, printq)</code> or <code>dir(path, printq)</code></a></h4>
-<p>Return a list of files and subfolders in the folder <code>path</code> (the current directory by default). If <code>printq = false</code>, it doesn't print the list in Lua REPL.</p>
+<p>Return a list of files and subfolders in the folder <code>path</code> (the current directory by default).
+If <code>printq = true</code> (default), it prints the list in Lua REPL.</p>
+<p>Characters ? and * are allowed in a file name, where ? matches any single character, and * zero or more consecutive characters.</p>
 <p>See also: <a href=#isfile><code>isfile</code></a></p>
+<pre><code>
+x = dir('*.lua') -- a list of all Lua code files in curecnt folder
+
+y = ls('b?o*g.lua') -- a list of all Lua code files in currect folder of which file names start with 'b', their 3rd letter is 'o', and all end with 'g.lua'.
+-- e.g., browser-setting.lua
+
+x, path = ls(qq(iswindows(), 'c:\\cygwin\\cudatext\\*.txt', '/usr/sharecudatext/*.txt'))
+disp(x)
+path
+</code></pre>
+
 
 <h4>&bull; &nbsp; <a name=lu href=#m><code>lu(A)</code></a></h4>
 <p>Return <code>L</code> and <code>U</code> of LU factorization <code>A = LU</code>, where <code>L</code> and <code>U</code> are lower and upper triangular matrices, respectively.</p>

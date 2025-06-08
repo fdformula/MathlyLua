@@ -17,17 +17,19 @@ DESCRIPTION
 
 FUNCTIONS PROVIDED IN THIS MODULE
 
-    all, any, apply, cc, clc, clear, copy, cross, det, diag, dir, disp, display,
-    dot, expand, eye, findroot, flatten, fliplr, flipud, format, fstr2f, fzero,
-    hasindex, horzcat, inv, iseven, isinteger, ismatrix, ismember, isodd, iswindows,
-    lagrangepoly, length, linsolve, linspace, ls, lu, map, match, max, mean, merge, min,
-    namedargs, newtonpoly, norm, ones, polynomial, polyval, printf, prod, pwd, qq, qr,
-    rand, randi, range, remake, repmat, reshape, round, rr, rref, save, seq, size, sort,
-    sprintf, std, strcat, submatrix, subtable, sum, tblcat, text, tic, toc, transpose,
-    tt, unique, var, vertcat, who, zeros
+    all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display, dot,
+    expand, eye, findroot, flatten, fliplr, flipud, format, fstr2f, fzero, hasindex,
+    horzcat, inv, iseven, isinteger, ismatrix, ismember, isodd, lagrangepoly, length,
+    linsolve, linspace, lu, map, match, max, mean, merge, min, namedargs, newtonpoly,
+    norm, ones, polynomial, polyval, printf, prod, qq, qr, rand, randi, range, remake,
+    repmat, reshape, round, rr, rref, save, seq, size, sort, sprintf, std, strcat,
+    submatrix, subtable, sum, tblcat, text, tic, toc, transpose, tt, unique, var,
+    vertcat, who, zeros
 
     dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
     oct2hex, hex2bin, hex2dec, hex2oct
+
+    cat, cd, dir, isdir, isfile, iswindows, ls, mv, pwd, rm
 
     arc, circle, contourplot, directionfield, line, parametriccurve2d, point, polarcurve2d,
     polygon, scatter, text, wedge; boxplot, freqpolygon, hist, hist1, histfreqpolygon,
@@ -1038,20 +1040,44 @@ function qq(c, t, f) return (c and t) or f end -- if c then return t else return
 local __is_windows = package.config:sub(1,1) == '\\'
 function iswindows() return __is_windows end
 
--- current working directory
+--↓↓↓↓↓↓↓↓↓↓↓↓ basic file system commands ↓↓↓↓↓↓↓↓↓↓↓↓--
 function pwd() return os.getenv("PWD") or io.popen("cd"):read() end -- read'*l'
 
+-- allow characters ? and * in file names
 function ls(path, printq)
   local fs = {}
   path = path or pwd()
   if printq == nil then printq = true end
+
+  local fname = ""
+  local path1 = ""
+  local sep = qq(iswindows(), '\\', '/')
+  for x in path:gmatch('([^' .. sep..']+)') do
+    if path1 == "" then
+      path1 = fname
+    else
+      path1 = path1 .. sep .. fname
+    end
+    fname = x
+  end
+  local re = fname:match('[%?|%*]') ~= nil
+  if re then
+    re = fname:gsub('%.', '%%.')
+    re = re:gsub('%?', '.')
+    re = re:gsub('%*', '.*')
+    re = '^' .. re
+    path = path1
+  end
+
   for f in io.popen(qq(__is_windows, "dir /b ", "ls -pa ") .. '"'.. path .. '"'):lines() do
-    if string.match(f, '^%.+/$') == nil then -- linux, ./, ../
-      if printq then print(f) end
-      fs[#fs + 1] = f
+    if f:match('^%.+/$') == nil then  -- linux, skip ./ and ../
+      if re == false or f:match(re) ~= nil then
+        if printq then print(f) end
+        fs[#fs + 1] = f
+      end
     end
   end
-  return fs
+  return fs, path
 end
 function dir(path) return ls(path) end
 
@@ -1083,6 +1109,18 @@ function cat(file)
     print("File doesn't exist.")
   end
 end
+
+function cd(path) os.execute('cd "' .. fname .. '"') end
+
+function mv(fname1, fname2)
+  os.execute(qq(__is_windows, 'ren "', 'mv "') .. fname1 .. '" "' .. fname2 .. '"')
+end
+
+-- e.g., linux: rm(fname, '-fr'); windows: rm(fname, '/F /S')
+function rm(fname, opt)
+  os.execute(qq(__is_windows, 'del ', 'rm ') .. opt .. ' "'.. fname .. '"')
+end
+--↑↑↑↑↑↑↑↑↑↑↑↑ basic file system commands ↑↑↑↑↑↑↑↑↑↑↑↑--
 
 -- clear all user-defined variables in current running environment
 function clear()
