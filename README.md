@@ -73,7 +73,7 @@ package.path = "./?.luac;;"
 
 ## Functions provided in mathly
 
-`..` (or `horzcat`), `all`, `any`, `apply`, `cc`, `clc`, `clear`, `copy`, `cross`, `demathly`, `det`, `diag`, `dir`, `disp`, `display`, `div`, `dot`, `eval`, `expand`,
+`..` (or `horzcat`), `all`, `any`, `apply`, `cat`, `cc`, `clc`, `clear`, `copy`, `cross`, `demathly`, `det`, `diag`, `dir`, `disp`, `display`, `div`, `dot`, `eval`, `expand`,
 `eye`, `findroot`, `flatten`,  `fliplr`, `flipud`, `format`, `fstr2f`, `fzero`, `gcd`, `hasindex`, `input`, `inv`, `isinteger`, `iseven`, `isodd`, `ismatrix`, `ismember`,
 `iswindows`, `lagrangepoly`, `length`, `linsolve`, `linspace`, `ls`, `lu`, `map`, `match`, `mathly`, `max`, `mean`, `merge`, `min`, `mod`, `namedargs`, `newtonpoly`, `norm`,
 `ones`, `polynomial`, `polyval`, `powermod`, `printf`, `prod`, `pwd`, `qq`, `qr`, `rand`, `randi`, `randn`, `range`, `remake`, `repmat`, `reshape`, `reverse`, `round`, `rr`,
