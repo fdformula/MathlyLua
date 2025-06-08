@@ -277,6 +277,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#arc><code>arc(r, center, angles, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot an arc of a circle.</td></tr>
 <tr><td> </td><td><a href=#bin2dec><code>bin2dec, hex2oct, oct2hex...</code></a></td><td> </td><td>Convert numbers from, say, binary to hexadecimal.</td></tr>
 <tr><td> </td><td><a href=#boxplot><code>boxplot(x, names)</code></a></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a box plot (or box-and-whisker plot), where <code>x</code> is a table or a matrix of numbers. <code>names = {'name1', 'name2', ...}</code> is optional.</td></tr>
+<tr><td> </td><td><a href=#cat><code>cat(filename)</code></a></td><td> </td><td>Print the content of text file <code>filename</code> in Lua REPL.</td></tr>
 <tr><td> </td><td><a href=#cc><code>cc(x, I, irange)</code></a></td><td> </td><td>Convert table <code>x</code> into a column vector or return specified column(s) of a mathly matrix...</td></tr>
 <tr><td> </td><td><a href=#circle><code>circle(r, center, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a circle.</td></tr>
 <tr><td> </td><td><code>clc()</code></td><td> </td><td>Clear Lua console.</td></tr>
@@ -287,6 +288,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#demathly><code>demathly(x)</code></a></td><td> </td><td>Force <code>x</code> not to be a mathly matrix.</td></tr>
 <tr><td> </td><td><code>det(A)</code></td><td> </td><td>Calculate the determinant of square matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a href=#diag><code>diag(A, ...)</code></a></td><td> </td><td>Return a column vector consisting of specified diagonal entries of mathly matrix <code>A</code> or create a mathly matrix with vector <code>A</code> as its diagonal entries.</td></tr>
+<tr><td> </td><td><a href=#dir><code>dir(path, printq)</code></a></td><td> </td><td>List files in the folder <code>path</code> (the current directory by default).</td></tr>
 <tr><td> </td><td><a href=#directionfield><code>directionfield(f, xrange, yrange, scale)</code></a></td><td> </td><td>Exactly the same as <code>slopefield</code>.</td></tr>
 <tr><td> </td><td><a href=#disp><code>disp(x)</code></a></td><td> </td><td>Print a mathly matrix.</td></tr>
 <tr><td> </td><td><a href=#display><code>display(x)</code></a></td><td> </td><td>Print a table of any type, including mathly matrices, with structure.</td></tr>
@@ -310,16 +312,20 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#horzcat><code>horzcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
 <tr><td> </td><td><a href=#input><code>input(prompt, s)</code></a></td><td> </td><td>Input from keyboard, return a string (if <code>s = 's'</code>); otherwise, evaluate the input expression, and return the result.</td></tr>
 <tr><td> </td><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of square mathly matrix <code>A</code>.</td></tr>
+<tr><td> </td><td><a href=#isdir><code>isdir(filename)</code></a></td><td> </td><td>Check if <code>filename</code> is a directory/folder.</td></tr>
+<tr><td> </td><td><a href=#isfile><code>isfile(filename)</code></a></td><td> </td><td>Check if <code>filename</code> is a file.</td></tr>
 <tr><td> </td><td><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
-<tr><td> </td><td><code>iseven(x)</code></a></td><td> </td><td>Check if <code>x</code> is even.</td></tr>
-<tr><td> </td><td><code>isodd(x)</code></a></td><td> </td><td>Check if <code>x</code> is odd.</td></tr>
-<tr><td> </td><td><code>ismatrix(x)</code></a></td><td> </td><td>Check if <code>x</code> is a mxn matrix.</td></tr>
+<tr><td> </td><td><code>iseven(x)</code></td><td> </td><td>Check if <code>x</code> is even.</td></tr>
+<tr><td> </td><td><code>isodd(x)</code></td><td> </td><td>Check if <code>x</code> is odd.</td></tr>
+<tr><td> </td><td><code>ismatrix(x)</code></td><td> </td><td>Check if <code>x</code> is a mxn matrix.</td></tr>
 <tr><td> </td><td><a href=#ismember><code>ismember(x, table)</code></a></td><td> </td><td>Check if <code>x</code> is a member of <code>table</code>.</td></tr>
+<tr><td> </td><td><a href=#iswindows><code>iswindows()</code></a></td><td> </td><td>Check if the operationg system is Microsoft Windows.</td></tr>
 <tr><td> </td><td><a href=#lagrangepoly><code>lagrangepoly(...)</code></a></td><td> </td><td>Return the Lagrange interpolating polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
 <tr><td> </td><td><code>length(x)</code></td><td> </td><td>Return the length of a table or string.</td></tr>
 <tr><td> </td><td><a href=#line><code>line(point1, point2, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a straight line.</td></tr>
 <tr><td> </td><td><a href=#linsolve><code>linsolve(A, b, opt)</code></a></td><td> </td><td>Solve a linear system <code>Ax = b</code> and return the solution.</td></tr>
 <tr><td> </td><td><a href=#linspace><code>linspace(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</td></tr>
+<tr><td> </td><td><a href=#ls><code>ls(path, printq)</code></a></td><td> </td><td>List files in the folder <code>path</code> (the current directory by default).</td></tr>
 <tr><td> </td><td><a href=#lu><code>lu(A)</code></a></td><td> </td><td>Return <code>L</code> and <code>U</code> of LU factorization <code>A = LU</code>.</td></tr>
 <tr><td> </td><td><a href=#map><code>map(f, tbl1, tbl2, ...)</code></a></td><td> </td><td>Apply function <code>f</code> to each corresponding atomic element in tables, <code>tbl1, tbl2, ...</code>, and return the result.</td></tr>
 <tr><td> </td><td><a href=#match><code>match(tbl, f)</code></a></td><td> </td><td>Return elements of table <code>tbl</code> that satisfy specified conditions.</td></tr>
@@ -348,6 +354,8 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#powermod><code>powermod(b, n, m)</code></a></td><td> </td><td>Return <code>b<sup>n</sup> mod m</code>, i.e., the remainder of <code>b<sup>n</sup></code> divided by <code>m</code>.</td></tr>
 <tr><td> </td><td><a href=#printf><code>printf(...)</code></a></td><td> </td><td>Print formatted text like <code>printf</code> in C/C++.</td></tr>
 <tr><td> </td><td><a href=#prod><code>prod(A)</code></a></td><td> </td><td>If <code>A</code> is a table or mathly row/column vector, return the product of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
+<tr><td> </td><td><a href=#pwd><code>pwd()</code></a></td><td> </td><td>Return present working directory.</td></tr>
+<tr><td> </td><td><a href=#qq><code>qq(c, t, f)</code></a></td><td> </td><td>If <code>c</code> is true, return <code>t</code>; otherwise, return <code>f</code>.</td></tr>
 <tr><td> </td><td><a href=#qr><code>qr(A)</code></a></td><td> </td><td>Return <code>Q</code> and <code>R</code> of QR factorization <code>A = QR</code>.</td></tr>
 <tr><td> </td><td><a href=#rand><code>rand(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> matrix of which each element is a random number in [0, 1]. If <code>m = 1</code>, return a table.</td></tr>
 <tr><td> </td><td><a href=#randi><code>randi(...)</code></a></td><td> </td><td>Return a matrix of which each element is a random integer in a specified range.</td></tr>
@@ -568,6 +576,10 @@ disp(oct2hex(dec2oct(a)))
 disp(dec2hex(a))
 -- {{'4b', '1c'}, {'5a', '6'}}
 </code></pre>
+
+<h4>&bull; &nbsp; <a name=cat><code>cat(filename)</code></a></h4>
+<p>Print the content of text file <code>filename</code> in Lua REPL. If no path is specified, the file must be in present working directory.</p>
+<p>See also: <a href=#pwd><code>pwd</code></a>.</p>
 
 <h4>&bull; &nbsp; <a name=cc></a><a name=rr></a><a name=tt href=#m><code>cc, rr, tt</code></a></h4>
 <p>A matrix operation may be applied to an ordinary table. It takes the table as a row or column vector according to the very context.
@@ -1433,6 +1445,50 @@ A = mathly{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
 inv(A) * A - I
 </code></pre>
 
+<h4>&bull; &nbsp; <a name=isdir href=#m><code>isdir(fname)</code></a></h4>
+<p>Return true if <code>fname</code> is a directory/folder.</p>
+
+
+<h4>&bull; &nbsp; <a name=isfile href=#m><code>isfile(fname)</code></a></h4>
+<p>Return true if <code>fname</code> is a file.</p>
+<pre><code>mathly = require('mathly')
+
+-- explore a folder
+function explore(path)
+  local sep = qq(iswindows(), '\\', '/')
+  local fcount, dcount = 0, 0
+  local function _explore(path)
+    local flist = ls(path, false)
+    print(path)
+    for i = 1, #flist do
+      local fname = path .. qq(path:sub(-1) == sep, '', sep) .. flist[i]
+      if flist[i]:sub(-1) == sep or isdir(fname) then -- the former is for performance with Linux
+        -- process each folder here
+        print()
+
+        dcount = dcount + 1
+        _explore(fname)
+      else -- is a file
+        -- process each file here
+        print('    ' .. flist[i])
+
+        fcount = fcount + 1
+      end
+    end
+  end
+
+  _explore(path)
+  printf("\n%d folders, %d files\n", dcount, fcount)
+  return dcount, fcount
+end
+
+if iswindows() then
+  explore('C:\\cygwin\\cudatext')
+else
+  explore('/usr/share/cudatext')
+end
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=ismember href=#m><code>ismember(x, table)</code></a></h4>
 <p>Check if <code>x</code> is a member of <code>table</code>.</p>
 <pre><code>mathly = require('mathly')
@@ -1443,6 +1499,10 @@ print(ismember(3, x))
 print(ismember(4, x))
 -- false
 </code></pre>
+
+
+<h4>&bull; &nbsp; <a name=iswindows href=#m><code>iswindows()</code></a></h4>
+<p>Return true if the operationg system is Microsoft Windows.</p>
 
 <h4>&bull; &nbsp; <a name=lagrangepoly href=#m><code>lagrangepoly({x1, x2, ...}, {y1, y2, ...}, xx), lagrangepoly({{x1, y1}, {x2, y2}, ...}, xx)</code></a></h4>
 <p>Return the Lagrange interpolating polynomial, defined by data <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>, or the value(s) of the polynomial at <code>xx</code>.</p>
@@ -1512,6 +1572,10 @@ x = linspace(0, 2*pi, 500)
 y = cos(x)
 plot(x, y, '-or')
 </code></pre>
+
+<h4>&bull; &nbsp; <a name=dir></a><a name=ls href=#m><code>ls(path, printq)</code> or <code>dir(path, printq)</code></a></h4>
+<p>Return a list of files and subfolders in the folder <code>path</code> (the current directory by default). If <code>printq = false</code>, it doesn't print the list in Lua REPL.</p>
+<p>See also: <a href=#isfile><code>isfile</code></a></p>
 
 <h4>&bull; &nbsp; <a name=lu href=#m><code>lu(A)</code></a></h4>
 <p>Return <code>L</code> and <code>U</code> of LU factorization <code>A = LU</code>, where <code>L</code> and <code>U</code> are lower and upper triangular matrices, respectively.</p>
@@ -2146,6 +2210,27 @@ disp(sum(a))
 -- {6, 9, 12}
 disp(prod(a))
 -- {6, 24, 60}
+</code></pre>
+
+
+<h4>&bull; &nbsp; <a name=pwd href=#m><code>pwd()</code></a></h4>
+<p>Return present working directory.</p>
+
+
+<h4>&bull; &nbsp; <a name=qq href=#m><code>qq(c, t, f)</code></a></h4>
+<p>If <code>c</code> is true, return <code>t</code>; otherwise, return <code>f</code>.</p>
+<p>It is like the ternary operator in C/C++: <code>c? t : f</code>. It allows complicated logic in the <a href=#easyf>shortcut for defining an anonymous function</a>.</p>
+<pre><code>mathly = require('mathly')
+x = 10
+-- the following two statements are equivalent.
+
+if isodd(x) then
+  y = 'odd'
+else
+  y = 'even'
+end
+
+y = qq(isodd(x), 'odd', 'even')
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=qr href=#m><code>qr(A)</code></a></h4>

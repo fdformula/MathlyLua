@@ -17,12 +17,12 @@ DESCRIPTION
 
 FUNCTIONS PROVIDED IN THIS MODULE
 
-    all, any, apply, cc, clc, clear, copy, cross, det, diag, disp,
-    display, dot, expand, eye, findroot, flatten, fliplr, flipud, format, fstr2f,
-    fzero, hasindex, horzcat, inv, iseven, isinteger, ismatrix, ismember, isodd,
-    lagrangepoly, length, linsolve, linspace, lu, map, match, max, mean, merge, min,
-    namedargs, newtonpoly, norm, ones, polynomial, polyval, printf, prod, qr, rand,
-    randi, range, remake, repmat, reshape, round, rr, rref, save, seq, size, sort,
+    all, any, apply, cc, clc, clear, copy, cross, det, diag, dir, disp, display,
+    dot, expand, eye, findroot, flatten, fliplr, flipud, format, fstr2f, fzero,
+    hasindex, horzcat, inv, iseven, isinteger, ismatrix, ismember, isodd, iswindows,
+    lagrangepoly, length, linsolve, linspace, ls, lu, map, match, max, mean, merge, min,
+    namedargs, newtonpoly, norm, ones, polynomial, polyval, printf, prod, pwd, qq, qr,
+    rand, randi, range, remake, repmat, reshape, round, rr, rref, save, seq, size, sort,
     sprintf, std, strcat, submatrix, subtable, sum, tblcat, text, tic, toc, transpose,
     tt, unique, var, vertcat, who, zeros
 
@@ -1030,6 +1030,58 @@ end -- save
 -- clear LUA console
 function clc()
   local x = os.execute("cls") or os.execute('clear')
+end
+
+-- Ternary "operator" ~ C/C++ ? :
+function qq(c, t, f) return (c and t) or f end -- if c then return t else return f end
+
+local __is_windows = package.config:sub(1,1) == '\\'
+function iswindows() return __is_windows end
+
+-- current working directory
+function pwd() return os.getenv("PWD") or io.popen("cd"):read() end -- read'*l'
+
+function ls(path, printq)
+  local fs = {}
+  path = path or pwd()
+  if printq == nil then printq = true end
+  for f in io.popen(qq(__is_windows, "dir /b ", "ls -pa ") .. '"'.. path .. '"'):lines() do
+    if string.match(f, '^%.+/$') == nil then -- linux, ./, ../
+      if printq then print(f) end
+      fs[#fs + 1] = f
+    end
+  end
+  return fs
+end
+function dir(path) return ls(path) end
+
+function isfile(fname)
+  if __is_windows then
+    local cmd1 = 'dir "' .. fname .. '" > nul 2>&1'
+    local cmd2 = 'dir /A:D "' .. fname .. '" > nul 2>&1'
+    return os.execute(cmd1) ~= nil and os.execute(cmd2) == nil
+  else
+    return os.execute('test -f "' .. fname .. '" > /dev/null') ~= nil
+  end
+end
+
+function isdir(fname)
+  local cmd = qq(__is_windows,
+                 'dir /A:D "' .. fname .. '" > nul 2>&1',
+                 'test -d "' .. fname .. '" > /dev/null 2>/dev/null')
+  return os.execute(cmd) ~= nil
+end
+
+function cat(file)
+  local f = io.open(file, "r")
+  if f ~= nil then
+    io.close(f)
+    for x in io.lines(file) do
+      print(x)
+    end
+  else
+    print("File doesn't exist.")
+  end
 end
 
 -- clear all user-defined variables in current running environment
@@ -4110,7 +4162,7 @@ local _writehtml_failedq = false -- dwang
 local _open_cmd -- this needs to stay outside the function, or it'll re-sniff every time...
 local function _open_url(url)
   if not _open_cmd then
-    if package.config:sub(1,1) == '\\' then -- windows
+    if __is_windows then
       _open_cmd = function(url)
         -- Should work on anything since (and including) win'95
         --- os.execute(string.format('start "%s"', url)) -- dwang
