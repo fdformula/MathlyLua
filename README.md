@@ -80,7 +80,7 @@ package.path = "./?.luac;;"
 `rref`, `save`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`,
 `who`, `zeros`; `bin2dec`, `oct2hex`, ...
 
-`cat`, `dir`, `isdir`, `isfile`, `iswindows`, `ls`, `pwd`
+`cat`, `cd`, `dir`, `isdir`, `isfile`, `iswindows`, `ls`, `mv`, `pwd`, `rm`
 
 `arc`, `circle`, `contourplot`, `line`, `parametriccurve2d`, `point`, `polarcurve2d`, `polygon`, `scatter`, `text`, `wedge`; `boxplot`, `freqpolygon`, `hist`, `hist1`,
 `histfreqpolygon`, `pareto`, `pie`; `directionfield` (or `slopefield`), `vectorfield2d` (All are graphics objects passed to `plot`.)
