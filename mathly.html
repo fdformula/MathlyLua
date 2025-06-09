@@ -1466,39 +1466,48 @@ end
 <p>Return true if <code>fname</code> is a file.</p>
 <pre><code>mathly = require('mathly')
 
--- explore a folder
-function explore(path)
+-- explore a folder and all subfolders for files specified in 'patterns'
+--
+-- e.g., explore('/usr/share/', '*.lua'), explore('/', {'*.lua', 'fd*.jl'})
+function explore(path, patterns)
   local sep = qq(iswindows(), '\\', '/')
+  if type(patterns) == 'string' then
+    patterns = { patterns }
+  elseif patterns == nil then
+    patterns = { '*' }
+  end
   local fcount, dcount = 0, 0
   local function _explore(path)
-    local flist = ls(path, false)
-    print(path)
-    for i = 1, #flist do
-      local fname = path .. qq(path:sub(-1) == sep, '', sep) .. flist[i]
-      if flist[i]:sub(-1) == sep or isdir(fname) then -- the former is for performance with Linux
-        -- process each folder here
-        print()
-
-        dcount = dcount + 1
-        _explore(fname)
-      else -- is a file
-        -- process each file here
-        print('    ' .. flist[i])
-
-        fcount = fcount + 1
-      end
+    local files, folders = {}, {}
+    for i = 1, #patterns do
+      local x, p, f = ls(path, patterns[i], false)
+      files = tblcat(files, x)
+      if i == 1 then folders = f end
+    end
+    for i = 1, #files do
+      if i == 1 then print(path) end
+      fcount = fcount + 1
+      local fname = path .. qq(path:sub(-1) == sep, '', sep) .. files[i]
+      --↓↓↓↓↓↓ process each file with filename stored in fname ↓↓↓↓↓↓--
+      print('    ' .. files[i])
+      --↑↑↑↑↑↑ process each file with filename stored in fname ↑↑↑↑↑↑--
+    end
+    files = nil
+    for i = 1, #folders do
+      local fname = path .. qq(path:sub(-1) == sep, '', sep) .. folders[i]
+      dcount = dcount + 1
+      _explore(fname)
     end
   end
-
   _explore(path)
-  printf("\n%d folders, %d files\n", dcount, fcount)
-  return dcount, fcount
+  printf("\n%d files in %d subfolders processed\n", fcount, dcount)
+  return fcount, dcount
 end
 
 if iswindows() then
-  explore('C:\\cygwin\\cudatext')
+  explore('C:\\cygwin', {'*.lua', '*.cs*', 'so*'})
 else
-  explore('/usr/share/cudatext')
+  explore('/usr/share/cudatext', 'ins*.*')
 end
 </code></pre>
 
@@ -1593,13 +1602,19 @@ If <code>printq = true</code> (default), it prints the list in Lua REPL.</p>
 <p>See also: <a href=#isfile><code>isfile</code></a></p>
 <pre><code>
 x = dir('*.lua') -- a list of all Lua code files in curecnt folder
-
-y = ls('b?o*g.lua') -- a list of all Lua code files in currect folder of which file names start with 'b', their 3rd letter is 'o', and all end with 'g.lua'.
--- e.g., browser-setting.lua
-
-x, path = ls(qq(iswindows(), 'c:\\cygwin\\cudatext\\*.txt', '/usr/sharecudatext/*.txt'))
 disp(x)
+
+x = ls('b?o*g.lua') -- a list of all Lua code files in currect folder of which file names start with 'b', their 3rd letter is 'o', and all end with 'g.lua'.
+disp(x)
+
+folder = qq(iswindows(), 'c:\\cygwin\\cudatext', '/usr/share/cudatext/')
+x = ls(folder, '*.txt', false)
+disp(x)
+
+files, path, subfolders = ls(qq(iswindows(), 'c:\\cygwin\\cudatext\\*.txt', '/usr/share/cudatext/*.txt'))
+disp(files)
 path
+disp(subfolders)
 </code></pre>
 
 

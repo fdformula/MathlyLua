@@ -1040,46 +1040,8 @@ function qq(c, t, f) return (c and t) or f end -- if c then return t else return
 local __is_windows = package.config:sub(1,1) == '\\'
 function iswindows() return __is_windows end
 
---↓↓↓↓↓↓↓↓↓↓↓↓ basic file system commands ↓↓↓↓↓↓↓↓↓↓↓↓--
-function pwd() return os.getenv("PWD") or io.popen("cd"):read() end -- read'*l'
-
--- allow characters ? and * in file names
-function ls(path, printq)
-  local fs = {}
-  path = path or pwd()
-  if printq == nil then printq = true end
-
-  local fname = ""
-  local path1 = ""
-  local sep = qq(iswindows(), '\\', '/')
-  for x in path:gmatch('([^' .. sep..']+)') do
-    if path1 == "" then
-      path1 = fname
-    else
-      path1 = path1 .. sep .. fname
-    end
-    fname = x
-  end
-  local re = fname:match('[%?|%*]') ~= nil
-  if re then
-    re = fname:gsub('%.', '%%.')
-    re = re:gsub('%?', '.')
-    re = re:gsub('%*', '.*')
-    re = '^' .. re
-    if path1 == '' then path = pwd() end
-  end
-
-  for f in io.popen(qq(__is_windows, "dir /b ", "ls -pa ") .. '"'.. path .. '"'):lines() do
-    if f:match('^%.+/$') == nil then  -- linux, skip ./ and ../
-      if re == false or f:match(re) ~= nil then
-        if printq then print(f) end
-        fs[#fs + 1] = f
-      end
-    end
-  end
-  return fs, path
-end
-function dir(path) return ls(path) end
+--↓↓↓↓↓↓ basic file system commands ↓↓↓↓↓↓--
+function pwd() return os.getenv("PWD") or io.popen("cd"):read() end
 
 function isfile(fname)
   if __is_windows then
@@ -1092,21 +1054,64 @@ function isfile(fname)
 end
 
 function isdir(fname)
-  local cmd = qq(__is_windows,
-                 'dir /A:D "' .. fname .. '" > nul 2>&1',
-                 'test -d "' .. fname .. '" > /dev/null 2>/dev/null')
+  local cmd = qq(__is_windows, 'dir /A:D "' .. fname .. '" > nul 2>&1', 'test -d "' .. fname .. '" > /dev/null 2>/dev/null')
   return os.execute(cmd) ~= nil
 end
+
+-- allow characters ? and * in file names
+function ls(path, re, printq)
+  local files, folders = {}, {}
+  if path == nil then
+    path = pwd()
+    if re == nil then re = '*' end
+  elseif path:match('[%?|%*]') == nil and isdir(path) then
+    if re == nil then re = '*' end
+  end
+  if printq == nil then printq = true end
+  local sep = qq(iswindows(), '\\', '/')
+  local rootq = path:sub(1, 1) == sep
+
+  if re == nil then
+    re = ''
+    local path1 = ''
+    for x in path:gmatch('([^' .. sep .. ']+)') do
+      if path1 == '' then
+        path1 = re
+      else
+        path1 = path1 .. sep .. re
+      end
+      re = x
+    end
+    path = qq(path1 == '', pwd(), path1)
+    if rootq and not __is_windows then path = sep .. path end
+  end
+  re = re:gsub('%.', '%%.')
+  re = re:gsub('%?', '.')
+  re = re:gsub('%*', '.*')
+  re = '^' .. re
+
+  for f in io.popen(qq(__is_windows, "dir /b ", "ls -pa ") .. '"'.. path .. '"'):lines() do
+    if f == './' or f == '../' then -- linux
+    elseif isdir(path .. sep .. f) then
+      folders[#folders + 1] = f
+    elseif f:match('^%.+/$') == nil and f:match(re) ~= nil then
+      files[#files + 1] = f
+    end
+  end
+  if printq then
+    for i = 1, #files   do print('   ' ..  files[i]) end
+  end
+  return files, path, folders
+end
+function dir(path) return ls(path) end
 
 function cat(file)
   local f = io.open(file, "r")
   if f ~= nil then
     io.close(f)
-    for x in io.lines(file) do
-      print(x)
-    end
+    for x in io.lines(file) do print(x) end
   else
-    print("File doesn't exist.")
+    print("File not found.")
   end
 end
 
@@ -1121,9 +1126,9 @@ function rm(fname, opt)
   if opt == nil then opt = '' end
   os.execute(qq(__is_windows, 'del ', 'rm ') .. opt .. ' "'.. fname .. '"')
 end
---↑↑↑↑↑↑↑↑↑↑↑↑ basic file system commands ↑↑↑↑↑↑↑↑↑↑↑↑--
+--↑↑↑↑↑↑ basic file system commands ↑↑↑↑↑↑--
 
--- clear all user-defined variables in current running environment
+-- clear user-defined variables
 function clear()
   local vars = who(false)
   for i = 1, #vars do
