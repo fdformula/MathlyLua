@@ -33,8 +33,7 @@ FUNCTIONS PROVIDED IN THIS MODULE
 
     arc, circle, contourplot, directionfield, line, parametriccurve2d, point, polarcurve2d,
     polygon, scatter, text, wedge; boxplot, freqpolygon, hist, hist1, histfreqpolygon,
-    pareto, pie, slopefield, vectorfield2d
-    (All are graphics objects passed to function 'plot'.)
+    pareto, pie, slopefield, vectorfield2d ← Graphics objects passed to 'plot'.
 
     plot; plot3d, plotparametriccurve3d, plotparametricsurface3d, plotsphericalsurface3d
 
@@ -63,7 +62,7 @@ LICENSE
 
 require 'browser-setting'
 
-local mathly = {_TYPE='module', _NAME='mathly', _VERSION='12.25.2024.5'}
+local mathly = {_TYPE='module', _NAME='mathly', _VERSION='06.09.2025.1'}
 
 local mathly_meta = {}
 
@@ -107,7 +106,7 @@ function eval(str)
   end
 end
 
--- s = 's' --> return input as a string; otherwise, evaluate the input expression and return the result
+-- if s = 's', return input as a string; otherwise, evaluate the input expression and return the result
 function input(prompt, s)
   local ans
   io.write(prompt)
@@ -239,7 +238,7 @@ function cc(x, I, irange)
   end
 end
 
--- convert x to a table (columnwisely if its a mathly matrix) or flatten it first
+-- convert x to a table (columnwisely if it's a mathly matrix) or flatten it first
 -- and return a slice of it
 -- want row wise? see flatten(tbl)
 --
@@ -253,8 +252,7 @@ function tt(x, irange) -- make x an ordinary table
       local k = 1
       for j = 1, #x[1] do
         for i = 1, #x do
-          y[k] = x[i][j]
-          k = k + 1
+          y[k] = x[i][j]; k = k + 1
         end
       end
     end
@@ -268,8 +266,7 @@ function tt(x, irange) -- make x an ordinary table
   local z = {}
   local k = 1
   for i = irange[1], irange[2], irange[3] do
-    z[k] = y[i]
-    k = k + 1
+    z[k] = y[i]; k = k + 1
   end
   return z
 end
