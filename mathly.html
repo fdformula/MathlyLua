@@ -22,18 +22,18 @@ pre {color: green}
 <li><a href=#where>Where to place the downloaded files of this module?</a></li>
 <li><a href=#twothings>Two important things you need to know</a></li>
 <li><a href=#math>Basic mathematical functions and elementwise operations</a></li>
-<li><a href=#m>Table of other functions</a></li>
+<li><a href=#m><u>Table of Mathly functions</u></a></li>
 <li><a href=#easyf>Shortcut for defining an anonymous function</a></li>
 <li><a href=#namedargs0>Named arguments</a></li>
 <li><a href=#layout>Plotly JavaScript Figure Reference: <code>layout</code></a></li>
 </ol>
 <h2><a name=intro></a>Introduction</h2>
-<p>Mathly for <a href=https://www.lua.org>Lua</a> is a Lua module which turns Lua into a tiny but powerful MATLAB. It provides a group of commonly used MATLAB functions and features,
+<p><a href=https://github.com/fdformula/MathlyLua>Mathly</a> for <a href=https://www.lua.org>Lua</a> is a Lua module which turns Lua into a tiny but powerful MATLAB. It provides a group of commonly used MATLAB functions and features,
 for example, <code>linspace</code>, <code>zeros</code>, <code>rand</code>, <code>save</code>, convenient matrix operations, and even
 <code>plot</code>. They make coding and testing a thought/algorithm much easier and faster than working in most other
 programming languages. If there is anything many love the most about MATLAB, these tools are.</p>
 
-<p>Mathly uses Plotly JavaScript graphing library (see <a href="https://plotly.com/javascript/">https://plotly.com/javascript/</a>)
+<p><a href=https://github.com/fdformula/MathlyLua>Mathly</a> uses Plotly JavaScript graphing library (see <a href="https://plotly.com/javascript/">https://plotly.com/javascript/</a>)
 to plot graphs of single-variable functions. Therefore, graphs are shown in an internet browser.</p>
 
 <p>The entire mathly tool together with Lua interpreter is less than 5 MB, while providing enough features for instructors and college students to implement
@@ -42,13 +42,13 @@ i5-6300U with 8 GB RAM). In contrast to it, MATLAB needs a few GB of storage spa
 seconds to start MATLAB R2024b on a brand new high-end Intel Core i9-14900HX laptop with 56 GB RAM. Thus, it can hardly be installed on slow or
 pretty old computers and run smoothly.</p>
 
-<p>Mathly is especially a good choice for instructors of linear algebra and numerical computing for teaching. It takes
+<p><a href=https://github.com/fdformula/MathlyLua>Mathly</a> is especially a good choice for instructors of linear algebra and numerical computing for teaching. It takes
 no time to start Lua with mathly loaded. While developing code and doing computation in a lecture, they can simply focus
 on delivery of course contents and never need to worry if their computers work too slowly. Moreover,
 Lua is so simple and so natural a language that students without programming skills can understand most of Lua code.</p>
 
 <h2><a name=version href=#top>Which version of Lua is needed?</a></h2>
-<p>Mathly is developed in Lua 5.4.6. It works with the present newest version 5.4.7. It might work with previous versions.</p>
+<p><a href=https://github.com/fdformula/MathlyLua>Mathly</a> is developed in Lua 5.4.6. It works with the present newest version 5.4.7. It might work with previous versions.</p>
 <p>You may download Lua source code in <a href="https://lua.org/">https://lua.org/</a> and compile it yourself or simply
 download prebuilt binary commands for Microsoft Windows in, say,
 <a href="https://www.nuget.org/packages/lua/">https://www.nuget.org/packages/lua/</a>. Another way to get prebuilt Lua is to
@@ -250,6 +250,8 @@ D = map(function(x, y, z)
         end, A, B, C)
 -- or
 D = map('@(x, y, z) (iseven(x) and x - y + 3 * z) or x + y * y', A, B, C)
+-- or
+D = map('@(x, y, z) qq(iseven(x), x - y + 3 * z, x + y * y)', A, B, C)
 disp(D)
 </code></pre>
 
@@ -1609,6 +1611,7 @@ b = mathly{{89, 6, 4}, {21, 1, 6}}^T
 --  6  1
 --  4  6
 x = linsolve(a, b)
+disp(x)
 -- -2.1499  -0.5706
 -- -1.3064  -0.2483
 --  2.6955   0.6655
@@ -1834,7 +1837,7 @@ x = {1, -10, 2, 31, 4, 7}
 print(min(x), max(x))
 -- -10  31
 
-a = randi({-50, 50}, 3, 5)
+a = mathly{{-12, -19, -15,  6, -11}, {3,  43,  36, 29, -26}, {-38,  -9, -16, 20,  16}}
 disp(a)
 -- -12  -19   -15    6  -11
 --   3   43    36   29  -26

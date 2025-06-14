@@ -311,8 +311,8 @@ function fstr2f(str)
   end
 end
 
--- applys a function to each atomic entry in a table and keeps the structure of the table
-local function _map(func, ...) -- Mathematica
+-- apply a function to each atomic entry in a table and keep the structure of the table
+local function _map(func, ...)
   local args = {}
   for _, v in pairs{...} do
     args[#args + 1] = v
@@ -330,7 +330,6 @@ local function _map(func, ...) -- Mathematica
           arg[#arg + 1] = args[j][k]
         end
       end
-
       if type(v) ~= 'table' then
         y[k] = func(table.unpack(arg))
       else
@@ -350,7 +349,6 @@ function map(func, ...)
       break
     end
   end
-
   local result = _map(func, ...)
   if metaq then
     return setmetatable(result, mathly_meta)
@@ -359,7 +357,7 @@ function map(func, ...)
   end
 end
 
--- calls a function with arguments
+-- call a function with arguments
 function apply(func, args)
   if type(func) == 'string' then func = fstr2f(func) end
   return func(table.unpack(args))
@@ -3211,14 +3209,8 @@ function rref(a, b) -- gauss-jordan elimination
 
     if largest > 1e-15 then -- none-zero
       if i ~= idx then -- interchange the two rows
-        for j = i, columns do
-          A[i][j], A[idx][j] = A[idx][j], A[i][j]
-        end
-        if bq then
-          for j = 1, bcolumns do
-            B[i][j], B[idx][j] = B[idx][j], B[i][j]
-          end
-        end
+        A[i], A[idx] = A[idx], A[i]
+        if bq then B[i], B[idx] = B[idx], B[i] end
       end
 
       largest = A[i][i]  -- 'normalize' the row: 0 ... 0 1 x x x
