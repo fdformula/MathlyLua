@@ -2268,7 +2268,8 @@ function merge(t1, t2)
       else
         return {t1}
       end
-    end  else
+    end
+  else
     if type(t2) ~= 'table' then t1, t2 = t2, t1 end
   end
   if type(t1) ~= 'table' then -- t2 is a table
