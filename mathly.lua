@@ -4052,7 +4052,8 @@ mathly_meta.__div = function(m1, m2)
       else
         error(err)
       end
-    elseif type(m2[1]) ~= 'table' then
+    end
+    if type(m2[1]) ~= 'table' then
       local m, n = size(m1)
       if m == 1 then
         m2 = rr(m2)
