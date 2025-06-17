@@ -3873,7 +3873,11 @@ end
 function mathly.add_sub_shared(m1, m2, op)
   local msg = 'x ' .. op .. ' y: both x and y must be numbers.'
   if type(m1) == 'number' and type(m2) == 'table' then
-    return setmetatable(mathly.numtableadd(m2, m1, op), mathly_meta)
+    if op == '-' then -- 6/17/25
+      return setmetatable(mathly.numtableadd(-m2, m1, '+'), mathly_meta)
+    else
+      return setmetatable(mathly.numtableadd(m2, m1, '+'), mathly_meta)
+    end
   elseif type(m2) == 'number' and type(m1) == 'table' then
     return setmetatable(mathly.numtableadd(m1, m2, op), mathly_meta)
   end
