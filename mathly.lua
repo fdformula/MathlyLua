@@ -631,7 +631,7 @@ local function _dec2bho(x, title, f)
     local metaq = getmetatable(x) == mathly_meta
     if metaq then demathly(x) end
     local y = map(f, x)
-    if metaq then setmetatable(x, mathly_meta) end
+    if metaq then setmetatable(y, mathly_meta) end
     return y
   else
     error(title .. '(x): x must be an integer or a table of integers.')
