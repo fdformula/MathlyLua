@@ -3871,7 +3871,6 @@ end
 -- Special case: if m1 is a row/column mathly matrix, m2 can be a Lua table of any type.
 -- This case saves the trouble of accessing b as b[i] rathern than b[i][1] while doing Ax - b or Ax + b
 function mathly.add_sub_shared(m1, m2, op)
-  local msg = 'x ' .. op .. ' y: both x and y must be numbers.'
   if type(m1) == 'number' and type(m2) == 'table' then
     if op == '-' then -- 6/17/25
       return setmetatable(mathly.numtableadd(-m2, m1, '+'), mathly_meta)
@@ -3882,7 +3881,7 @@ function mathly.add_sub_shared(m1, m2, op)
     return setmetatable(mathly.numtableadd(m1, m2, op), mathly_meta)
   end
 
-  msg = 'm1 ' .. op .. ' m2: dimensions do not match.'
+  local msg = 'm1 ' .. op .. ' m2: dimensions do not match.'
 	local mtx = {}
   local M1 = m1
 	local M2 = m2
