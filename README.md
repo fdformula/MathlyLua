@@ -144,12 +144,13 @@ plot(x, y, '-r', x, -3 * y ^ 2 + 2 * y + 3)
 ```
 ### Some examples
 ```Lua
-require 'mathly';
+mathly = require('mathly')
 
 x = linspace(0, pi, 100)
 y1 = sin(x)
-y2 = map(cos, x)
-y3 = map('@(x) x^2*sin(x)', x)
+y2 = cos(x)
+y3 = x^2 * sin(x)
+
 specs1 = {layout={width=700, height=900, grid={rows=4, columns=1}, title='Example'}}
 specs2 = {color='blue', name='f2', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
 specs3 = {width=5, name='f3', style=':', color='cyan', symbol='circle-open', size=8}
@@ -183,9 +184,9 @@ do -- https://plotly.com/python/3d-surface-plots/
 end
 
 x = linspace(-3, 2.7, 100)
-y1 = map('@(x) x^2 - 2*x + 2 - exp(-x)', x)
-y2 = map('@(x) x^2 - 2*x + 2 - 2*exp(-x -1)', x)
-y3 = map('@(x) x^2 - 2*x + 2 - 8*exp(-x -2)', x)
+y1 = x^2 - 2*x + 2 - exp(-x)
+y2 = x^2 - 2*x + 2 - 2*exp(-x -1)
+y3 = x^2 - 2*x + 2 - 8*exp(-x -2)
 axissquare()
 plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
      x, y1, '-r', point(0, 1, {symbol='x', size=7, color='red'}),
