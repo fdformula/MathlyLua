@@ -132,7 +132,7 @@ A = mathly{{1, 2}, {3, 4}}
 {{2, 3}, {4, 5}} / A
 
 -- elementary row operations
-A = mathly{{1, 2, 3, 4, 5}, {2, 3, 4, 5, 6}, {3, 4, 5, 6, 7}}
+A = randi({-100, 100}, 5, 5)
 A[3] = A[3] * 2         -- rowi := rowi * scaler; rr or cc
 A[2] = A[2] - A[1] * 2  -- rowj := rowj - rowi * scaler; rr or cc
 A[1], A[3] = A[3], A[1] -- interchange 2 rows
