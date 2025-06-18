@@ -152,8 +152,8 @@ To allow matrix operations on ordinary tables, conversion is needed. For example
 ```Lua
 mathly = require('mathly')
 x = linspace(0, pi, 100)   -- x and y are mathly vectors
-y = 0.2 * x * cos(x^2) - 1
-plot(x, y, '-r', x, -3 * y^2 + 2 * y + 3)
+y = 0.2 * x * cos(x ^ 2) - 1
+plot(x, y, '-r', x, -3 * y ^ 2 + 2 * y + 3)
 ```
 
 ### 2. A mathly row/column vector is a matrix.
