@@ -103,7 +103,6 @@ a = mathly{{1, 2, 3}, {2, 3, 4}}
 b = mathly{{1}, {2}, {3}} -- or simply b = cc{1, 2, 3}
 A = mathly(10, 10)        -- or rand(10, 10)
 B = mathly(1, 10)         -- or rand(1, 10), a mathly table
-C = randi(100, 10, 1)     -- a column vector of random integer numbers (from 1 to 100)
 
 inv(A) * B                -- B is interpreted as a 10x1 matrix
 inv(A) * B^T              -- B^T can be cc(B). We control the conversion
