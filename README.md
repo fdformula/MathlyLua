@@ -75,7 +75,7 @@ package.path = "./?.luac;;"
 
 `..` (or `horzcat`), `all`, `any`, `apply`, `cc`, `clc`, `clear`, `copy`, `cross`, `demathly`, `det`, `diag`, `disp`, `display`, `div`, `dot`, `eval`, `expand`,
 `eye`, `findroot`, `flatten`,  `fliplr`, `flipud`, `format`, `fstr2f`, `fzero`, `gcd`, `hasindex`, `input`, `inv`, `isinteger`, `iseven`, `isodd`, `ismatrix`, `ismember`,
-`lagrangepoly`, `length`, `linsolve`, `linspace`, `lu`, `map`, `match`, `mathly`, `max`, `mean`, `merge`, `min`, `mod`, `namedargs`, `newtonpoly`, `norm`,
+`isvector`, `lagrangepoly`, `length`, `linsolve`, `linspace`, `lu`, `map`, `match`, `mathly`, `max`, `mean`, `merge`, `min`, `mod`, `namedargs`, `newtonpoly`, `norm`,
 `ones`, `polynomial`, `polyval`, `powermod`, `printf`, `prod`, `qq`, `qr`, `rand`, `randi`, `randn`, `range`, `remake`, `repmat`, `reshape`, `reverse`, `round`, `rr`,
 `rref`, `save`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`,
 `who`, `zeros`; `bin2dec`, `oct2hex`, ...
@@ -238,8 +238,6 @@ anything wrong in both the algorithm and the code. I had to wonder if there were
 cases, it is easier to start a small project from scratch than using and debugging others' code. In
 addition, matrix.lua addresses a column vector like a[i][1] and a row vector a[1][i], rather than a[i]
 in both cases, which is quite ugly and unnatural. Furthermore, no basic graphics capabilities are provided in
-matrix.lua. Therefore, this mathly module was developed. But anyway, I appreciate the work in matrix.lua.
-Actually, you may find some similarities in the code of matrix.lua and mathly.lua, e.g., m1, m2 are used
-to name arguments of some functions.
+matrix.lua. Therefore, this mathly module was developed. But anyway, the work in matrix.lua is highly appreciated.
 
 &nbsp; &nbsp; &nbsp; &nbsp;December 25, 2024
