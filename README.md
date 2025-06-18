@@ -89,11 +89,13 @@ package.path = "./?.luac;;"
 
 See mathly.html.
 
-## Two important things you need to know
+## A few important things you need to know
 
-### 1. A mathly matrix is a table (of tables), but a table may not be a mathly matrix.
+### 1. A mathly table is a simple Lua table registered as a mathly object. E.g., <code>x = tt{1, 2, 3}</code> is such a table. It has exactly the same stucture as an ordinary Lua table y = {1, 2, 3}. The difference is that we can apply "vectorization" operations on x instead of y. For instance, 2 * x - 1 gives a new mathly table, {1, 3, 5}. x[i] gives us the i-th element in the table.
 
-#### a. Mathly 'constructor', `diag`, `expand`, `flipfr`, `flipud`, `horzcat`, `lu`, `ones`, `zeros`, `rand`, `randi`, `randn`, `remake`, `reshape`, `submatrix`, `vertcat`, `cc`, `rr`, and matrix operations can generate mathly matrices.
+### 2. A mathly row vector is actually a 1xn matrix. E.g., x = rr{1, 2, 3} is a mathly row vector. It is actually stored as {{1, 2, 3}}. To access 2, we must use x[1][2]. Similarly, a column vector y = cc{1, 2, 3} is a 1x3 matrix stored in the format of {{1}, {2}, {3}}. We use u[2][1] to access 2. x[1][2] or y[2][1] is quite strange, which is why the results of most operations on these row/column vectors and matrices and many mathly functions are mathly tables.
+
+#### a. Operations on mathly tables and matrices and almost all functions dealing with tables and matrices generate mathly objects.
 ```Lua
 mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d, A, B, C, D, and E are all mathly matrices
