@@ -113,33 +113,36 @@ matrix operations like <code>A^T</code>, <code>inv(A)</code>, <code>rref(B)</cod
 
 <p>Simply speaking, a mathly matrix is a table (of tables), but a table may not be a mathly matrix.</p>
 
-<p><B>2. We can only apply matrix operations on mathly matrices; if an operation involves two objects, at least one must be a mathly matrix.</b>
-To apply matrix operations on ordinary Lua tables, conversion is needed and done first through mathly 'constructor',
-<code>cc</code>, <code>rr</code>, or <code>reshape</code>. For example,</p>
+<p><B>2. We can only apply matrix/vector operations on mathly objects; if an operation involves two objects, at least one must be a mathly object.</b>
+To apply matrix operations on ordinary Lua tables, conversion is needed and done through mathly 'constructor' <code>mathly</code>, <code>cc</code>, <code>rr</code>, <code>tt</code>, and almost all functions/operations dealing with matrices and vectors, such as <code>inv</code>, <code>linspace</code>, <code>linsolve</code>, <code>rref</code>, <code>copy</code>, and <code>tblcat</code>. If the result is a row vector, all return a mathly table so that elements can be accessed by, say, <code>x[i]</code>. For example,</p>
 <pre><code>mathly = require('mathly')
 
 a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d, A, B, C, D, and E are all mathly matrices
 b = {{1}, {2}, {3}}; b = mathly(b) -- or b = cc{1, 2, 3}
 c = mathly(1, 10, 5)
-d = mathly(1, 10, 0)      --  same as f = mathly(zeros(1, 10))
-A = mathly(10, 10)
-B = mathly(1, 10)
+d = mathly(1, 10, 0)      -- same as zeros(1, 10)
+A = mathly(10, 10)        -- same as rand(10, 10)
+B = mathly(1, 10)         -- same as rand(1, 10)
 C = randi(100, 10, 1)     -- a column vector of random integer numbers (from 1 to 100)
 D = rand(10, 2)           -- a 10x2 matrix of random numbers (from 0 to 1)
 E = reshape(C, 3)         -- a 3x4 matrix; 4 is determined by mathly
 
 3*a - 10
 2*c + 5 * d - 3
--- inv(A) * B             -- not allowed as in math
-inv(A) * B^T
-inv(A) * randi(50, 1, 10) -- mathly knows how to handle a Lua table
-randi(50, 1, 10) * inv(A) -- randi(50, 1, 10) here in its context
+inv(A) * B                -- not allowed in math, but mathly automatically convert B as 10x1 vector ...
+inv(A) * B^T              -- you can control it explicitly
+randi(50, 1, 10) * inv(A)
 
 A = randi(100, 10, 5)
 B = randi(100, 5, 3)
 C = rand(3, 1)
+
+A[2] = 3*A[2]             -- elementary row operations
+A[5] = -3*A[5] + 4*A[1]
+A[3], A[5] = A[5], A[3]
+
 A - 2
-A * B
+3 * A * B
 A * B * C
 B * C
 C^T * B^T
@@ -149,48 +152,43 @@ B = randi(50, 4)
 C = 3 * A - 4 * B + 5
 A^2
 
-x = linspace(0, pi, 10)   -- x, y, and z are not mathly matrices/vectors.
+x = linspace(0, pi, 10)   -- x, y, and z are mathly arrays/vectors.
 y = cos(x)
 z = sin(x)
+3 * y
+3*x^2 - 5 * x + 4
 
--- 3 * y                  -- not allowed/defined
--- y + z                  -- not allowed/defined
-mathly(y) + z             -- y + mathly(z), or mathly(y) + mathly(z) -- at least one must be a mathly matrix
-2*rr(y) - 3 * rr(z)       -- both y and z must be converted to mathly matrices
+x = {1, 2, 3}             -- x, y are both Lua tables of the same structure
+y = mathly{1, 2, 3}       -- x is an ordinary Lua table while y is a mathly table/array/object
+y + 1                     -- no such operations on x are allowed
+y * 3
+3 / y                     -- matrix/table "division" is elementwise, provided for convenience only
+y * y
+y^3
+2 * y - {2, 3, 4} + 5
+2 * mathly{2, 3, 4}^T - y -- the first mathly object determines the structure of the result
 
-x = {1, 2, 3}
-rr(x)^2
-rr(x) * x                 -- x * cc(x) -- or rr(x) * cc(x) -- mathly tries to convert a table to a row/column
-cc(x) * x                 -- vector according to the context
+rr(x) * x                 -- cc and rr convert Lua tables to mathly column and row vectors, respectively
+cc(x) * x                 -- x * cc(x) or rr(x) * cc(x) -- mathly automatically convert
+cc(x) * rr(x)             -- a table to a row/column vector according to the context
 
-rr(x) * rr(x)             -- the product of two row (or column) vectors is like x .* y in MATLAB
-cc(x) * cc(x)             --
+rr(x)^2                   -- the product of two row (or column) vectors is like x .* y in MATLAB
+rr(x) * rr(x)
+cc(x) * cc(x)
 
 Y = mathly(y)
-display(y)
 display(Y)                -- print a table of any type, including a mathly matrix, with structure
-disp(Y)                   -- print a mathly matrix
+disp(Y)                   -- print a mathly matrix/vector
 
 A = randi({-10,10}, 4)
 rref(A)
-inv(A)
-inv(copy(A, {1, 3}, {1, 3}))
+inv(A)[2] * 5 - 10
+inv(copy(A, {1, 3}, {2, 4}))
 
--- matrix/table "division" is elementwise, provided for convenience only
-x = {1, 2, 3, 4, 5}
-rr(x) / 10
---  0.1000  0.2000  0.3000  0.4000  0.5000
-1 / (2 * rr(x) + 1)
---  0.3333  0.2000  0.1429  0.1111  0.0909
-
-y = 2 * cc(x) + 1
-disp(y^T)
---  3   5   7   9  11
 (x / y)^T
---  0.3333  0.4000  0.4286  0.4444  0.4545
 A = mathly{{1, 2}, {3, 4}}
---  1  2
---  3  4
+-- 1  2
+-- 3  4
 {{2, 3}, {4, 5}} / A
 -- 2.0000  1.5000
 -- 1.3333  1.2500
@@ -351,6 +349,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a name=isodd></a><code>isodd(x)</code></td><td> </td><td>Check if <code>x</code> is odd.</td></tr>
 <tr><td> </td><td><a name=ismatrix></a><code>ismatrix(x)</code></td><td> </td><td>Check if <code>x</code> is a mxn matrix.</td></tr>
 <tr><td> </td><td><a href=#ismember><code>ismember(x, table)</code></a></td><td> </td><td>Check if <code>x</code> is a member of <code>table</code>.</td></tr>
+<tr><td> </td><td><a name=isvector></a><code>isvector(x)</code></td><td> </td><td>Check if <code>x</code> is a 1xn vector.</td></tr>
 <tr><td> </td><td><a href=#iswindows><code>iswindows()</code></a></td><td> </td><td>Check if the operationg system is Microsoft Windows.</td></tr>
 <tr><td> </td><td><a href=#lagrangepoly><code>lagrangepoly(...)</code></a></td><td> </td><td>Return the Lagrange interpolating polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
 <tr><td> </td><td><a name=length></a><code>length(x)</code></td><td> </td><td>Return the length of a table or string.</td></tr>
@@ -454,6 +453,7 @@ if there is any element of the corresponding column of the matrix which makes <c
 A = mathly{{1, 2, 3}, {2, 3, 4}}
 all(A, isinteger)
 -- 1  1  1
+sum(all(A, isinteger)) == #A[1] -- test if all entries of A are integer
 any(A)
 -- 1  1  1
 any(A, '@(x) x > 2')
@@ -506,7 +506,7 @@ each take also a last argument, <code>orientationq</code> (default: false). If i
 clear()
 plot(sin, point({{-2, 1.5}, {2, -1}, {2.5, 2}}), point(-1, sin(-1), {symbol='circle-open', size=18, color='red'}))
 
-x = tt((0.5 - rr(rand(1, 100))) * 10)
+x = 0.5 - rand(1, 100) * 10
 axisnotsquare()
 plot(scatter(x, cos(x)))
 plot(scatter(randi(99, 1, 200), randi(1000, 1, 200)))
@@ -524,7 +524,7 @@ plot(polygon({{1, 2}, {2, 3}, {5, -1}}),
      point(3, 2, {symbol='circle', size=36, color='red'}),
      circle(1, {1,1}, '-bfn'))
 
-plot(math.sin, '-rfa')
+plot(sin, '-rfa')
 
 x = linspace(-2.337, 0.779, 100)
 X = linspace(-5, 5, 200)
@@ -534,9 +534,9 @@ plot(x, cos(x), x, sin(x), '-rff', X, cos(X), X, sin(X)) -- shade part of  ...
 axissquare()
 plot(
   polarcurve2d(1.5),
-  polarcurve2d('@(t) math.sqrt(t) * math.cos(t)', {0, 4*pi}, '-b'),
-  polarcurve2d('@(t) math.cos(4*t)', {0, 2*pi}, '-rfs'),
-  parametriccurve2d({math.cos, math.sin}, {3/4*pi, 5/4*pi}, '-gfs')
+  polarcurve2d('@(t) sqrt(t) * cos(t)', {0, 4*pi}, '-b'),
+  polarcurve2d('@(t) cos(4*t)', {0, 2*pi}, '-rfs'),
+  parametriccurve2d({cos, sin}, {3/4*pi, 5/4*pi}, '-gfs')
 )
 
 do -- https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)
@@ -547,13 +547,13 @@ do -- https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)
 end
 
 axisnotsquare()
-r = function(t) return math.sin(1.6 * t^2) + math.cos(4 * t)^5 end
+r = function(t) return sin(1.6 * t^2) + cos(4 * t)^5 end
 plot(polarcurve2d(r, {0, 8*pi}, '-sfn'), {layout={width=800, height=800}})
 plot(polarcurve2d(r, {0, 8*pi}, '-sfn', 10000), {layout={width=800, height=800}}) -- increase resolution to improve smoothness
 
 gobjs = {}
 for i = 1, 6 do
-  gobjs[i] = polarcurve2d(function(t) return math.sin(1.6 * t^2) + math.cos(i * t)^5 end, {0, 8*pi}, '-sfn', 10000)
+  gobjs[i] = polarcurve2d(function(t) return sin(1.6 * t^2) + cos(i * t)^5 end, {0, 8*pi}, '-sfn', 10000)
 end
 plot({layout={width=1900, height=1300, grid={rows=2, columns=3}, title='Example'},
       names={'i=1', 'i=2', 'i=3', 'i=4', 'i=5', 'i=6'}}, table.unpack(gobjs))
@@ -604,7 +604,7 @@ disp(hex2dec(dec2hex({123, 124, 125, {126, {127, 128}}})))
 -- {123, 124, 125, {126, {127, 128}}}
 
 a = mathly{{75, 28}, {90, 6}}
-disp(dec2bin(a))
+display(dec2bin(a))
 -- {{'1001011', '11100'}, {'1011010', '110'}}
 disp(oct2hex(dec2oct(a)))
 disp(dec2hex(a))
@@ -662,7 +662,7 @@ a * {2, 3, 4}   -- or a * rr{2, 3, 4} -- (3x1 matrix) * (1x3 matrix) --> 3x3 mat
 -- 4  6  8
 -- 6  9  12
 a * cc{2, 3, 4} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) in MATLAB
-cc{2, 3, 4} * a --
+cc{2, 3, 4} * a
 -- 2
 -- 6
 -- 12
@@ -672,9 +672,7 @@ cc{2, 3, 4} * a --
 a = mathly({1, 2, 3})
 disp(a)
 -- 1  2  3
-a * {2, 3, 4}   -- or a * cc{2, 3, 4}, (1x3 matrix) * (3x1 matrix) --> 1x1 matrix
--- 20
-a * rr{2, 3, 4} -- (1x3 matrix) * (1x3 matrix) --> (1x3 matrix) .* (1x3 matrix) in MATLAB
+a * {2, 3, 4}   -- elementwise product --> (1x3 matrix) .* (1x3 matrix) in MATLAB
 -- 2  6  12
 
 -- another basic usage of cc and rr, taking rr as the example
@@ -684,15 +682,13 @@ disp(A)
 -- 1  2  3  4
 -- 2  3  4  5
 -- 3  4  5  6
-rr({1, 2, 3})   -- or rr(cc(A, 1)) -- return a row vector
--- 1  2  3
-rr(A)           -- return a row vector with elements of a matrix flattened rowwisely
---  1  2  3  4  2  3  4  5  3  4  5  6
-rr(A, 2)        -- return the 2nd row of A
--- 2  3  4  5
-rr(A, -1)       -- return the last row of A
--- 3  4  5  6
-rr(A, {1, -2, 1, -1}) -- rows can be rearranged in certain order with repetitions allowed
+display(rr({1, 2, 3})) -- or rr(cc(A, 1))  -- return a row vector
+-- {{1, 2, 3}}
+display(rr(A))         -- return a row vector with elements of a matrix flattened rowwisely
+--  {{1, 2, 3, 4, 2, 3, 4, 5, 3, 4, 5, 6}}
+display(rr(A[2]))      -- or rr(A, 2); return the 2nd row of A
+display(rr(A, -1))     -- return the last row of A
+rr(A, {1, -2, 1, -1})  -- rows can be rearranged in certain order with repetitions allowed
 -- 1  2  3  4
 -- 2  3  4  5
 -- 1  2  3  4
@@ -700,7 +696,7 @@ rr(A, {1, -2, 1, -1}) -- rows can be rearranged in certain order with repetition
 
 -- complicated usage that is not needed usually
 
-rr(A, 3, {2, -1})     -- return the 3rd row of A starting from the 2nd column to the last
+rr(A, 3, {2, -1}) -- return the 3rd row of A starting from the 2nd column to the last
 -- 4  5  6
 rr(A, 3, {2, 3})  -- return the 3rd row of A starting from the 2nd column to the 3rd one
 -- 4  5
@@ -719,6 +715,31 @@ rr(A, {1, -2, 1, -1}, {-1, 2}) -- from the last to the second
 -- 5  4  3
 -- 4  3  2
 -- 6  5  4
+
+---------- 3 elementary row operations ----------
+A = mathly{{1, 2, 3, 4, 5}, {2, 3, 4, 5, 6}, {3, 4, 5, 6, 7}}
+disp(A)
+-- 1  2  3  4  5
+-- 2  3  4  5  6
+-- 3  4  5  6  7
+
+A[3] = A[3] * 2         -- rowi := rowi * scaler; rr or cc
+disp(A)
+-- 1   2   3   4   5
+-- 2   3   4   5   6
+-- 6   8  10  12  14
+
+A[2] = A[2] - A[1] * 2  -- rowj := rowj - rowi * scaler; rr or cc
+disp(A)
+-- 1   2   3   4   5
+-- 0  -1  -2  -3  -4
+-- 6   8  10  12  14
+
+A[1], A[3] = A[3], A[1] -- interchange 2 rows
+disp(A)
+-- 6   8  10  12  14
+-- 0  -1  -2  -3  -4
+-- 1   2   3   4   5
 </code></pre>
 <p>&#x2713; &nbsp; <code>tt(x, irange)</code> may be used to replace <a href=#subtable><code>subtable</code></a>. If <code>x</code> is a mathly matrix, it is converted to a table columnwisely first;
 if it is any other table, it is flattened first. Comparatively, <code>subtable</code> doesn't carry out any conversion.
@@ -792,7 +813,7 @@ plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, {style = style}), x, sin(x), 
 
 style = {colorscale = 'Viridis', contours = { coloring = 'lines'}, showscale = false}
 x = linspace(-5, 1.2, 100)
-y = map('@(x) 1.3*(x + 1.73) + 1.4', x)
+y = 1.3*(x + 1.73) + 1.4
 plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, {style = style}), x, y, '-r', cos)
 </code></pre>
 
@@ -870,13 +891,13 @@ disp(a)
 -- 20  85  90  37  92
 -- 16  67   9  56  33
 
-copy(a, 2) -- MATLAB: a(2, :)
+display(copy(a, 2)) -- or rr(a, 2); MATLAB: a(2, :)
 -- 43  58  96  64   5
 
 copy(a, 2, {1, 3}) -- MATLAB: a(2, 1:3)
 -- 43  58  96
 
-copy(a, '*', 2) -- MATLAB: a(:, 2)
+copy(a, '*', 2) -- or cc(a, 2); MATLAB: a(:, 2)
 -- 15
 -- 58
 -- 85
@@ -893,7 +914,7 @@ copy(a, '*', {1, 3}) -- or copy(a, nil, {1, 3}) -- MATLAB: a(:, 1:3)
 -- 20  85  90
 -- 16  67   9
 
-copy(a, {2, -2}) -- or copy(a, {1, -2}, '*') -- MATLAB: a(2:end-1, :)
+copy(a, {2, -2}) -- or copy(a, {2, -2}, '*') -- MATLAB: a(2:end-1, :)
 -- 43  58  96  64   5
 -- 20  85  90  37  92
 
@@ -989,6 +1010,11 @@ disp(a)
 -- 22   1   2   3   4   5
 -- 43  58  96  64   5  12
 
+copy(a, '*', {2, 4}, {{0, 1, 2}, {0, -1, -2}})
+disp(a)
+-- 22   0   1   2   4   5
+-- 43   0  -1  -2   5  12
+
 a = {1, 2, 3, 4, 5, 6, 7, 8, 9}
 b = copy(a)
 copy(b, {2, -1, 2}, {-1, -2, -3, -4, -5, -6, -7, -8})
@@ -1072,8 +1098,8 @@ matrix is damaged (on purpose), you had better call it.</p>
 A = mathly{{1, 2}, {3, 4}}
 A[1][2] = {5, 6, 7}
 A[3] = 10
-demathly(A) -- A is no longer an ordinary matrix
--- det(A) -- now allowed
+demathly(A) -- A is no longer a mathly matrix
+-- A^T, A*A, 3*A, det(A), inv(A), ... -- not allowed
 disp(A)
 disp(map('@(x) 2*x', A)) -- map is still a great tool
 </code></pre>
@@ -1175,9 +1201,9 @@ disp(x) -- or display(x)
 <P>Return the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ...}</code>
 and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ...}</code>.</P>
 <pre><code>mathly = require('mathly')
-display(dot({1, 2, 3}, {3, 4, 5}))
+disp(dot({1, 2, 3}, {3, 4, 5}))
 -- 26
-display(dot({1, 2}, {3, 4}))
+dot({1, 2}, {3, 4})
 -- 11
 </code></pre>
 
@@ -1348,11 +1374,11 @@ x = flatten(randn(1, 5000, mu, sigma))
 
 function n(x, mu, sigma)
   local z = (x - mu) / sigma
-  return math.exp(-0.5 * z^2) / (math.sqrt(2 * pi) * sigma)
+  return exp(-0.5 * z^2) / (sqrt(2 * pi) * sigma)
 end
 
 X = linspace(mu - 4 * sigma, mu + 4 * sigma, 5000)
-Y = map(function(x) return n(x, mu, sigma) * 7.8 end, X)
+Y = n(X, mu, sigma) * 7.8
 
 gobj = hist1(x, 12)
 axisnotsquare(); shownotlegend()
@@ -1564,6 +1590,7 @@ otherwise, return the string of the polynomial.</p>
 <p>See also: <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polynomial><code>polynomial</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
 <pre><code>mathly = require('mathly')
 
+clear()
 x, y = {0, 1, 2}, {3, 1, 4}
 disp(lagrangepoly(x, y)) -- or: lagrangepoly({{0, 3}, {1, 1}, {2, 4}})
 -- '1.5*(x - 1)*(x - 2) - x*(x - 2) + 2.0*x*(x - 1)'
@@ -1602,11 +1629,10 @@ a = mathly{{58, 18, 88}, {68, 30, 71}, {14, 75, 49}}
 b = mathly({89, 6, 4}, 3, 1)
 x = linsolve(a, b) -- or x = linsolve(a, {89, 6, 4})
 disp(x)
--- -2.1499
--- -1.3064
---  2.6955
+-- -2.1499  -1.3064   2.6955
 
 b = mathly{{89, 6, 4}, {21, 1, 6}}^T
+disp(b)
 -- 89 21
 --  6  1
 --  4  6
@@ -1624,7 +1650,7 @@ disp(x)
 clear()
 x = linspace(0, 2*pi, 500)
 y = cos(x)
-plot(x, y, '-or')
+plot(x, y, '-r')
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=dir></a><a name=ls href=#m><code>ls(path, printq)</code> or <code>dir(path, printq)</code></a></h4>
@@ -1679,12 +1705,12 @@ If, say, <code>tbl2</code> is not a table, it is treated as a table of the same 
 
 a = range(1, 10) -- seq(1, 10) or seq(10)
 -- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-function f(x) return x * x end
-b = map(f, a)
+function f(x) return x * x end  -- or b = a * a
+b = map(f, a)                   --
 display(b)
 -- {1, 4, 9, 16, 25, 36, 49, 64, 81, 100}
 
-display(map('@(x, y) x + y', a, b)) -- x and y are taken from a and b, respectively
+display(map('@(x, y) x + y', a, b)) -- or a + b; x and y are taken from a and b, respectively
 -- {2, 6, 12, 20, 30, 42, 56, 72, 90, 110}
 
 x = {1, 2, {3, 4, {5, 6, {7}}}}
@@ -1846,6 +1872,8 @@ display(min(a))
 -- {-38, -19, -16, 6, -26}
 disp(max(a))
 -- {3, 43, 36, 29, 16}
+sum(max(a))
+-- 127
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=mean href=#m><code>mean(x)</code></a></h4>
@@ -1999,10 +2027,9 @@ disp(A * B)
 -- 10 10 10
 -- 10 10 10
 
-C = zeros(1, 5)  -- return a table rather than a mathly matrix
--- C + 10 -- not allowed because C is not a mathly vector/matrix
-display(C)
--- {0, 0, 0, 0, 0}
+C = zeros(1, 5)  -- return a mathly table
+display(C + 10)
+-- {10, 10, 10, 10, 10}
 
 D = zeros(3, 1)  -- a mathly column vector
 disp(D)
@@ -2078,14 +2105,14 @@ clear()
 x = linspace(0, pi, 100)
 y1 = sin(x)
 y2 = cos(x)
-y3 = map('@(x) x^2 * sin(x)', x)
+y3 = x^2 * sin(x)
 
 specs1 = {layout={width=600, height=600, grid={rows=2, columns=2}, title='Example'}}
 specs2 = {color='blue', name='cos <i>x</i>', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
 specs3 = {width=3, name='x<sup>2</sup>', style=':', color='cyan', symbol='circle-open', size=4}
 
 plot(sin)
-plot(function(x) return x^2 end)
+plot('@(x) x^2', {range={-6, 6}})
 plot(sin, '-r',
      '@(x) x^2', {color='blue'},
      {range = {-0.5, 1}},
@@ -2126,6 +2153,7 @@ Z = {{z11,  ...,  z1n}, {z21,  ...,  z2n}, ..., {zn1,  ...,  zn2}}
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
 <pre><code>mathly = require('mathly')
 
+clear()
 plot3d('@(x, y) x^2 - y^2')
 
 n = 100
@@ -2133,10 +2161,10 @@ x = linspace(0, 2*pi, n)
 y = linspace(-pi, pi, n)
 X, Y = {}, {}
 for i = 1, n do
-  X[i] = tt(mathly(1, n, x[i]))
+  X[i] = mathly(1, n, x[i])
   Y[i] = y
 end
-function f(x, y) return math.sin(x) * math.cos(y) end
+function f(x, y) return sin(x) * cos(y) end
 Z = map(f, X, Y)
 plot3d(X, Y, Z, 'Demo 2')
 </code></pre>
@@ -2146,8 +2174,8 @@ plot3d(X, Y, Z, 'Demo 2')
 <p><code>resolution</code> and <code>orientationq</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
 <pre><code>mathly = require('mathly')
-plotparametriccurve3d({math.cos, math.sin, '@(t) t'}, {0,6*pi}, "Helix")
-plotparametriccurve3d({'@(t) t*math.cos(t)', '@(t) t*math.sin(t)', '@(t) t'}, {0, 8*pi})
+plotparametriccurve3d({cos, sin, '@(t) t'}, {0,6*pi}, "Helix")
+plotparametriccurve3d({'@(t) t*cos(t)', '@(t) t*sin(t)', '@(t) t'}, {0, 8*pi})
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=plotparametricsurface3d href=#m><code>plotparametricsurface3d({x(u, v), y(u, v), z(u,v)}, urange, vrange, title, resolution, orientationq)</a></code></h4>
@@ -2156,11 +2184,11 @@ plotparametriccurve3d({'@(t) t*math.cos(t)', '@(t) t*math.sin(t)', '@(t) t'}, {0
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
 <pre><code>mathly = require('mathly')
 
-plotparametricsurface3d({'@(u,v) u', '@(u,v) v', '@(u,v) math.sqrt(u^2 + v^2)'}, {-3, 3}, {-3, 3}, 'Demo')
+plotparametricsurface3d({'@(u,v) u', '@(u,v) v', '@(u,v) sqrt(u^2 + v^2)'}, {-3, 3}, {-3, 3}, 'Demo')
 plotparametricsurface3d({
-  '@(u, v) 2*math.sin(u)*math.cos(v)',
-  '@(u, v) 2*math.sin(u)*math.sin(v)',
-  '@(u, v) 2*math.cos(v)'}, {0, pi}, {0, 2*pi})
+  '@(u, v) 2*sin(u)*cos(v)',
+  '@(u, v) 2*sin(u)*sin(v)',
+  '@(u, v) 2*cos(v)'}, {0, pi}, {0, 2*pi})
 
 do -- https://plotly.com/python/3d-surface-plots/
   local a, b, d = 1.32, 1, 0.8
@@ -2219,13 +2247,13 @@ disp(polynomial({{1, 3}, {2, 1}, {3, 4}}, {10, 1, -5}))
 -- note: higher-order polynomials may deviate significantly over small intervals and thus are not reliable
 n = 15 -- n - 1 is the degree of the polynomials to be generated; how about n = 20, 30, 40, ...?
 x = linspace(-10, 10, n)
-y = tt(rr(rand(1, n)) * 100 - 50)
+y = rand(1, n) * 100 - 50
 xs = linspace(-10, 10, 50)
 ys1 =   polynomial(x, y, xs)
 ys2 = lagrangepoly(x, y, xs)
 ys3 =   newtonpoly(x, y, xs)
-norm(rr(ys1) - ys2)
-norm(rr(ys1) - ys3)
+norm(ys1 - ys2)
+norm(ys1 - ys3)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=polyval href=#m><code>polyval(coefs, x)</code></a></h4>
@@ -2237,9 +2265,9 @@ a<sub>1</sub>x + a<sub>0</sub></code>,
 For example, <code>p(x) = -2x<sup>4</sup> + 4x<sup>2</sup> - 5x</code>, <code>coef = {-2, 0, 4, -5, 0}.</code></p>
 <p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polynomial><code>polynomial</code></a>.</p>
 <pre><code>mathly = require('mathly')
-disp(polyval({1, 2, 1}, 0)) -- evaluate x<sup>2</sup> + 2x + 1 at x = 0
+polyval({1, 2, 1}, 0) -- evaluate x<sup>2</sup> + 2x + 1 at x = 0
 -- 1.0
-disp(polyval({1, 2, 1}, {0, 5, 9, 100})) -- evaluate at x = 0, 5, 9, 100
+display(polyval({1, 2, 1}, {0, 5, 9, 100})) -- evaluate at x = 0, 5, 9, 100
 -- {1.0, 36.0, 100.0, 10201.0}
 </code></pre>
 
@@ -2461,7 +2489,7 @@ disp(c)
 a = seq(10)
 disp(a)
 -- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-disp(reverse(a)) -- same as tt(a, {-1, 1})
+disp(reverse(a)) -- or tt(a, {-1, 1})
 -- {10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
 </code></pre>
 
@@ -2673,10 +2701,10 @@ print(strcat(34,'Hello, ', {'the ', 'world', '!'}, 34)) -- 34? ascii code for "
 x = {1, 2}
 y = {3, 4, {5}}
 disp(tblcat(0, x, y, 10))
--- {0, 1, 2, 3, 4, {5}, 10}
+-- 0   1   2   3   4   5  10
 
 z = mathly{{6}, {7}, {8}, {9}}
-disp(tblcat(x, z, 11)) -- a column vector is automatically converted into a row vector
+display(tblcat(x, z, 11)) -- a column vector is automatically converted into a row vector
 -- {1, 2, 6, 7, 8, 9, 11}
 
 disp(tblcat(1, {c = 2, a = {3, 4}}, true, {ab = {5, 6, 'OK'}, aa = 7}))
@@ -2690,7 +2718,7 @@ disp(tblcat(1, {c = 2, a = {3, 4}}, true, {ab = {5, 6, 'OK'}, aa = 7}))
 
 clear()
 x = linspace(-pi, pi, 200)
-plot(x, cos(x), point(-pi/3, math.cos(-pi/3)), text(-pi/3, math.cos(-pi/3) - 0.2, 'Point A'), point(pi/3, math.cos(pi/3)), text(pi/3, math.cos(pi/3) - 0.2, 'Point B'))
+plot(x, cos(x), point(-pi/3, cos(-pi/3)), text(-pi/3+0.3, cos(-pi/3) - 0.1, 'Point A'), point(pi/3, cos(pi/3)), text(1.6, cos(pi/3) - 0.1, 'Point B'))
 plot(x, cos(x), text(0, -0.2, 'Demo', {family = 'Sans Serif', size = 28, color = '#00aaff'}))
 </code></pre>
 
@@ -2703,8 +2731,8 @@ plot(x, cos(x), text(0, -0.2, 'Demo', {family = 'Sans Serif', size = 28, color =
 mathly = require('mathly')
 
 tic() -- start recording the time
-for i = 1, 10000000 do
-  x = math.cos(i) * math.sin(i)
+for i = 1, 1000000 do
+  x = cos(i) * sin(i)
 end
 toc()
 
@@ -2753,14 +2781,14 @@ plot(vectorfield2d('@(x,y) {3*cos(3*x), 2*cos(2*y)}', {-1, 1, 1/10}, {-1.5, 1.5,
 <a href=#submatrix><code>submatrix</code></a>; <code><a href=#match>match</a></code>.</p>
 <pre><code>mathly = require('mathly')
 
-A = mathly{{1, 2, 3}}
-disp(A)
--- 1 2 3
+A = rr{1, 2, 3}
+display(A)
+-- {{1, 2, 3}}
 B = mathly{{4, 5, 6}, {7, 8, 9}}
 disp(B)
 -- 4 5 6
 -- 7 8 9
-C = mathly{{10, 11, 12}}
+C = rr{10, 11, 12}
 disp(C)
 -- 10 11 12
 D = vertcat(A, B)
@@ -2802,13 +2830,16 @@ disp(sort({2, 5, 1, -3}, '@(x, y) x > y'))
 
 x = {1, 2, 3, 4, 5}
 disp(map('@(x) (iseven(x) and 2*x) or 0', x))
--- or: disp(map(function(x) if iseven(x) then return 2*x else return 0 end end, x))
+-- or
+disp(map('@(x) qq(iseven(x), 2*x, 0)', x))
+disp(map(function(x) if iseven(x) then return 2*x else return 0 end end, x))
 -- {0, 4, 0, 8, 0}
 
 -- to pass a function to another function not defined in mathly
 a = {2, 5, 1, -3}
-table.sort(a, fstr2f('@(x, y) x > y')) -- or table.sort(a, function(x, y) return x > y end)
-disp(a)
+x = sort(a, fstr2f('@(x, y) x > y')) -- or table.sort(a, function(x, y) return x > y end)
+disp(x)
+disp(x * 5 - 10)
 </code></pre>
 <p>The shortcut for defining a function here might not work if <code>local</code> objects are accessed. For example,</p>
 <pre><code>mathly = require('mathly')
@@ -2862,7 +2893,7 @@ vectorfield2d{scale=3, xrange={-5, 5}, f='@(x, y) {-y, x}'}
 It can take two or more "named" arguments which can occur before an unnamed argument. For instance,</p>
 <pre><code>mathly = require('mathly')
 clear()
-plot({layout={width=600, height=400}}, sin, {range={0,2*pi}})
+plot({layout={width=600, height=400}}, sin, {range={0, 2*pi}})
 </code></pre>
 
 <h2><a name=layout href=#top>Plotly JavaScript Figure Reference: <code>layout</code></a></h2>
