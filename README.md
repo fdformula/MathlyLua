@@ -91,11 +91,12 @@ See mathly.html.
 
 ## A few important things you need to know
 
-### 1. A mathly table is a simple Lua table registered as a mathly object. E.g., <code>x = tt{1, 2, 3}</code> is such a table. It has exactly the same stucture as an ordinary Lua table y = {1, 2, 3}. The difference is that we can apply "vectorization" operations on x instead of y. For instance, 2 * x - 1 gives a new mathly table, {1, 3, 5}. x[i] gives us the i-th element in the table.
+1. A mathly table is a simple Lua table registered as a mathly object. E.g., x = tt{1, 2, 3} is such a table. It has exactly the same structure as an ordinary Lua table y = {1, 2, 3}. The difference is that we can apply "vectorization" operations on x instead of y. For instance, 2 * x - 1 gives a new mathly table, {1, 3, 5}. Besides, x[i] gives us the i-th element in the table.
 
-### 2. A mathly row vector is actually a 1xn matrix. E.g., x = rr{1, 2, 3} is a mathly row vector. It is actually stored as {{1, 2, 3}}. To access 2, we must use x[1][2]. Similarly, a column vector y = cc{1, 2, 3} is a 1x3 matrix stored in the format of {{1}, {2}, {3}}. We use u[2][1] to access 2. x[1][2] or y[2][1] is quite strange, which is why the results of most operations on these row/column vectors and matrices and many mathly functions are mathly tables.
+2. A mathly row vector is actually a 1xn matrix. E.g., x = rr{1, 2, 3} is a mathly row vector. It is stored as {{1, 2, 3}}. To access 2, we must use x[1][2]. Similarly, a column vector y = cc{1, 2, 3} is a 1x3 matrix stored in the format {{1}, {2}, {3}}. We use u[2][1] to access 2. Indeed, x[1][2] or y[2][1] is quite strange and inconvenient, which is why the results of most operations on these row/column vectors and matrices and many mathly functions are mathly tables.
 
-#### a. Operations on mathly tables and matrices and almost all functions dealing with tables and matrices generate mathly objects.
+3. Mathly tables and matrices may simply be called mathly objects. They and Lua tables can appear in same math expressions, where mathly converts Lua tables and mathly tables into mathly matrices of proper dimensions to complete the evaluation of the expressions. We may use `mathly`, `cc`, `rr`, and `tt` to replace the conversion by mathly.
+
 ```Lua
 mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d, A, B, C, D, and E are all mathly matrices
@@ -144,13 +145,6 @@ A[3] = A[3] * 2         -- rowi := rowi * scaler; rr or cc
 A[2] = A[2] - A[1] * 2  -- rowj := rowj - rowi * scaler; rr or cc
 A[1], A[3] = A[3], A[1] -- interchange 2 rows
 ```
-#### b. `ones`, `zeros`, `rand`, `randi`, and `randn` generate each an ordinary table rather than a mathly matrix if used this way, say, `ones(1, 100)`.
-This allows us to generate a table of specified length and address it conveniently like `x[i]` instead of `x[1][i]`.
-
-#### c. Mathly matrix operations can only be applied on mathly matrices; if a matrix operation involves two objects, one must be a mathly matrix.
-
-To allow matrix operations on ordinary tables, conversion is needed. For example,
-
 ```Lua
 mathly = require('mathly')
 x = linspace(0, pi, 100)   -- x and y are mathly vectors
