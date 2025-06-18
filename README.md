@@ -89,42 +89,34 @@ package.path = "./?.luac;;"
 
 See mathly.html.
 
-## A few important things you need to know
+## Mathly Objects and Lua Tables
 
 1. A mathly table is a simple Lua table registered as a mathly object. E.g., x = tt{1, 2, 3} is such a table. It has exactly the same structure as an ordinary Lua table y = {1, 2, 3}. The difference is that we can apply "vectorization" operations on x instead of y. For instance, 2 * x - 1 gives a new mathly table, {1, 3, 5}. Besides, x[i] gives us the i-th element in the table.
 
 2. A mathly row vector is actually a 1xn matrix. E.g., x = rr{1, 2, 3} is a mathly row vector. It is stored as {{1, 2, 3}}. To access 2, we must use x[1][2]. Similarly, a column vector y = cc{1, 2, 3} is a 1x3 matrix stored in the format {{1}, {2}, {3}}. We use u[2][1] to access 2. Indeed, x[1][2] or y[2][1] is quite strange and inconvenient, which is why the results of most operations on these row/column vectors and matrices and many mathly functions are mathly tables.
 
-3. Mathly tables and matrices may simply be called mathly objects. They and Lua tables can appear in same math expressions, where mathly converts Lua tables and mathly tables into mathly matrices of proper dimensions to complete the evaluation of the expressions. We may use `mathly`, `cc`, `rr`, and `tt` to replace the conversion by mathly.
+3. Mathly tables and matrices may simply be called mathly objects. Mathly objects and Lua tables can appear in same math expressions. Mathly converts Lua tables and mathly tables into mathly matrices of proper dimensions to complete the evaluation of the expressions. We may use `mathly`, `cc`, `rr`, and `tt` to replace the conversion by mathly.
 
 ```Lua
 mathly = require('mathly')
-a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d, A, B, C, D, and E are all mathly matrices
-b = {{1}, {2}, {3}}; b = mathly(b) -- or simply b = cc{1, 2, 3}
-c = mathly(1, 10, 5)
-d = mathly(1, 10, 0)      --  same as f = mathly(zeros(1, 10)) or rr(zeros(1, 10))
-A = mathly(10, 10)
-B = mathly(1, 10)
+a = mathly{{1, 2, 3}, {2, 3, 4}}
+b = mathly{{1}, {2}, {3}} -- or simply b = cc{1, 2, 3}
+A = mathly(10, 10)        -- or rand(10, 10)
+B = mathly(1, 10)         -- or rand(1, 10), a mathly table
 C = randi(100, 10, 1)     -- a column vector of random integer numbers (from 1 to 100)
-D = rand(10, 2)           -- a 10x2 matrix of random numbers (from 0 to 1)
-E = reshape(C, 3)         -- a 3x4 matrix; 4 is determined by mathly
 
--- inv(A) * B             -- not allowed as in math
-inv(A) * B^T
-inv(A) * seq(1, 10)       -- mathly knows how to handle a Lua table seq(1, 10)
-seq(1, 10) * inv(A)       -- here in its context
-rr(seq(1, 10)) * inv(A)   -- or you can have full control by using rr or cc
+inv(A) * B                -- B is interpreted as a 10x1 matrix
+inv(A) * B^T              -- B^T can be cc(B). We control the conversion
+a * {5, 6, 7}             -- Lua table {5, 6, 7} can be cc{5, 6, 7}
+{5, 6} * a                -- Lua table {5, 6} can be rr{5, 6, 7}
 
-A = randi(100, 10, 5)
-B = randi(100, 5, 3)
-C = rand(3, 1)
-A * B * C
-C^T * B^T
+x = tt{2, 3, 4} + {5, 6, 7}
+x ^ 3 - 5 * x ^ 2 + 4 *x - 1
 
 A = randi({50, 100}, 3)
 B = randi({0, 10}, 3)
 C = 3 * A - 4 * B + 5
-D = A .. B .. C           -- concatenate matrices A, B, and C horizontally, same as horzcat(A, B, C)
+D = A .. B .. C           -- concatenate matrices A, B, and C horizontally
 disp(D)
 E = A .. cc{1, 2, 3}
 disp(E)
@@ -144,31 +136,12 @@ A = mathly{{1, 2, 3, 4, 5}, {2, 3, 4, 5, 6}, {3, 4, 5, 6, 7}}
 A[3] = A[3] * 2         -- rowi := rowi * scaler; rr or cc
 A[2] = A[2] - A[1] * 2  -- rowj := rowj - rowi * scaler; rr or cc
 A[1], A[3] = A[3], A[1] -- interchange 2 rows
-```
-```Lua
+
 mathly = require('mathly')
 x = linspace(0, pi, 100)   -- x and y are mathly vectors
 y = 0.2 * x * cos(x ^ 2) - 1
 plot(x, y, '-r', x, -3 * y ^ 2 + 2 * y + 3)
 ```
-
-### 2. A mathly row/column vector is a matrix.
-
-Its ith element must be addressed by either `x[i][1]` (a column vector) or `x[1][i]`
-(a row vector), while the ith element of an ordinary/raw Lua table is addressed by `x[i]`, the way we human beings do math.
-
-**Mathly tries its best to allow us to write math expressions as we usually write.** If you want full control, you can use
-`cc` or `rr` to convert an ordinary Lua table to a column or row vector as in the following example.
-```Lua
-a = randi({-10, 10}, 3, 1) * {1, 2, 3}  -- (3x1 matrix) * (1x3 matrix) --> 3x3 matrix
-disp(a)
-b = randi({-10,10}, 3, 1) * cc{1, 2, 3} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) = 3x1 matrix in MATLAB
-disp(b)
-```
-By the way, `tt` converts a mathly matrix to a table columnwisely or flattens any other table first and returns a specified slice of the resulted table.
-
-## 2D and 3D graphs
-
 ### Some examples
 ```Lua
 require 'mathly';
