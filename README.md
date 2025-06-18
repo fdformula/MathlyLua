@@ -135,6 +135,12 @@ x / cc(cos(x))
 A = mathly{{1, 2}, {3, 4}}
 1 / A
 {{2, 3}, {4, 5}} / A
+
+-- elementary row operations
+A = mathly{{1, 2, 3, 4, 5}, {2, 3, 4, 5, 6}, {3, 4, 5, 6, 7}}
+A[3] = A[3] * 2         -- rowi := rowi * scaler; rr or cc
+A[2] = A[2] - A[1] * 2  -- rowj := rowj - rowi * scaler; rr or cc
+A[1], A[3] = A[3], A[1] -- interchange 2 rows
 ```
 #### b. `ones`, `zeros`, `rand`, `randi`, and `randn` generate each an ordinary table rather than a mathly matrix if used this way, say, `ones(1, 100)`.
 This allows us to generate a table of specified length and address it conveniently like `x[i]` instead of `x[1][i]`.
