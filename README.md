@@ -136,11 +136,6 @@ A = mathly{{1, 2, 3, 4, 5}, {2, 3, 4, 5, 6}, {3, 4, 5, 6, 7}}
 A[3] = A[3] * 2         -- rowi := rowi * scaler; rr or cc
 A[2] = A[2] - A[1] * 2  -- rowj := rowj - rowi * scaler; rr or cc
 A[1], A[3] = A[3], A[1] -- interchange 2 rows
-
-mathly = require('mathly')
-x = linspace(0, pi, 100)   -- x and y are mathly vectors
-y = 0.2 * x * cos(x ^ 2) - 1
-plot(x, y, '-r', x, -3 * y ^ 2 + 2 * y + 3)
 ```
 ### Some examples
 ```Lua
