@@ -20,7 +20,7 @@ pre {color: green}
 <li><a href=#intro>Introduction</a></li>
 <li><a href=#version>Which version of Lua is needed?</a></li>
 <li><a href=#where>Where to place the downloaded files of this module?</a></li>
-<li><a href=#twothings>Two important things you need to know</a></li>
+<li><a href=#mobjs>Mathly objects and Lua tables</a></li>
 <li><a href=#math>Basic mathematical functions and elementwise operations</a></li>
 <li><a href=#m><u>Table of Mathly functions</u></a></li>
 <li><a href=#easyf>Shortcut for defining an anonymous function</a></li>
@@ -97,115 +97,70 @@ plotly-2.9.0.min.js
 <code>package.path</code> first as follows:</p>
 <p><code>package.path = "./?.luac;;"</code></p>
 
-<h2><a name=twothings href=#top>Two important things you need to know</a></h2>
+<h2><a name=mobjs href=#top>Mathly objects and Lua tables</a></h2>
+<ol>
+<li>A mathly table is a simple Lua table registered as a mathly object. E.g., <code>x = tt{1, 2, 3}</code> is such a table.
+It has exactly the same structure as an ordinary Lua table <code>y = {1, 2, 3}</code>. The difference is that we can apply
+"vectorization" operations and matrix operations on <code>x</code> instead of <code>y</code>. For instance, <code>2 * x - 1</code>
+gives a new mathly table, <code>{1, 3, 5}</code>. Besides, <code>x[i]</code> gives the i-th element in the table.</li>
 
-<p><B>1. The difference between Lua tables and mathly matrices</B></p>
-<p>Tables are the only data structure Lua offers. However, we may use it as arrays, vectors, matrices, dictionaries, and
-so on. For example, <code>{}</code>, <code>{'ab'}</code>, <code>{1, 2, 3}</code>, <code>{{1, 2, 3}, {1, 2, 3, 4}}</code>,
-<code>{1, 'ab', { 2, 3, {4}}}</code>, <code>{layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}</code>
-are all tables.</p>
+<li>A mathly row vector is actually a <code>1xn</code> matrix. E.g., <code>x = rr{1, 2, 3}</code> is a mathly row vector.
+It is stored as <code>{{1, 2, 3}}</code>. To access 2, we must use <code>x[1][2]</code>. Similarly, a column vector
+<code>y = cc{1, 2, 3}</code> is a <code>3x1</code> matrix stored in the format <code>{{1}, {2}, {3}}</code>. We use
+<code>u[2][1]</code> to access 2. Indeed, <code>x[1][2]</code> or <code>y[2][1]</code> is quite strange and inconvenient,
+which is why the results of most operations on these row/column vectors and matrices and many mathly functions are mathly
+tables.</li>
 
-<p><b>A mathly matrix is obtained/generated</b> by mathly 'constructor', functions like <code>zeros</code>, <code>ones</code>,
-<code>rand</code>, <code>randi</code>, <code>reshape</code>, <code>submatrix</code>, <code>cc</code>, <code>rr</code>, or
-matrix operations like <code>A^T</code>, <code>inv(A)</code>, <code>rref(B)</code>, and
-<code>2 * A  - 3 * B + 4</code>, given that <code>A</code> and <code>B</code> are <code>nxn</code> mathly matrices. An element in the
-<code>i</code>th row and <code>j</code>th column is addressed as <code>A[i][j]</code>.</p>
-
-<p>Simply speaking, a mathly matrix is a table (of tables), but a table may not be a mathly matrix.</p>
-
-<p><B>2. We can only apply matrix/vector operations on mathly objects; if an operation involves two objects, at least one must be a mathly object.</b>
-To apply matrix operations on ordinary Lua tables, conversion is needed and done through mathly 'constructor' <code>mathly</code>, <code>cc</code>, <code>rr</code>, <code>tt</code>, and almost all functions/operations dealing with matrices and vectors, such as <code>inv</code>, <code>linspace</code>, <code>linsolve</code>, <code>rref</code>, <code>copy</code>, and <code>tblcat</code>. If the result is a row vector, all return a mathly table so that elements can be accessed by, say, <code>x[i]</code>. For example,</p>
+<li>Mathly tables and matrices may simply be called mathly objects. Mathly objects and Lua tables can appear in same math
+expressions. Mathly converts Lua tables and mathly tables into mathly matrices of proper dimensions to complete the
+evaluation of the expressions. We may use mathly, <code>cc</code>, <code>rr</code>, and <code>tt</code> to replace the
+conversion by mathly. For example,</li>
+</ol>
 <pre><code>mathly = require('mathly')
 
-a = mathly{{1, 2, 3}, {2, 3, 4}}   -- a, b, c, d, A, B, C, D, and E are all mathly matrices
-b = {{1}, {2}, {3}}; b = mathly(b) -- or b = cc{1, 2, 3}
-c = mathly(1, 10, 5)
-d = mathly(1, 10, 0)      -- same as zeros(1, 10)
-A = mathly(10, 10)        -- same as rand(10, 10)
-B = mathly(1, 10)         -- same as rand(1, 10)
-C = randi(100, 10, 1)     -- a column vector of random integer numbers (from 1 to 100)
-D = rand(10, 2)           -- a 10x2 matrix of random numbers (from 0 to 1)
-E = reshape(C, 3)         -- a 3x4 matrix; 4 is determined by mathly
+mathly = require('mathly')
+a = mathly{{1, 2, 3}, {2, 3, 4}}
+b = mathly{{1}, {2}, {3}} -- or simply b = cc{1, 2, 3}
+A = mathly(10, 10)        -- or rand(10, 10)
+B = mathly(1, 10)         -- or rand(1, 10), a mathly table
 
-3*a - 10
-2*c + 5 * d - 3
-inv(A) * B                -- not allowed in math, but mathly automatically convert B as 10x1 vector ...
-inv(A) * B^T              -- you can control it explicitly
-randi(50, 1, 10) * inv(A)
+inv(A) * B                -- B is interpreted as a 10x1 matrix
+inv(A) * B^T              -- B^T can be cc(B). We control the conversion
+a * {5, 6, 7}             -- Lua table {5, 6, 7} can be cc{5, 6, 7}
+{5, 6} * a                -- Lua table {5, 6} can be rr{5, 6}
 
-A = randi(100, 10, 5)
-B = randi(100, 5, 3)
-C = rand(3, 1)
+x = tt{2, 3, 4} + {5, 6, 7}
+x ^ 3 - 5 * x ^ 2 + 4 *x - 1
 
-A[2] = 3*A[2]             -- elementary row operations
-A[5] = -3*A[5] + 4*A[1]
-A[3], A[5] = A[5], A[3]
-
-A - 2
-3 * A * B
-A * B * C
-B * C
-C^T * B^T
-
-A = randi(100, 4)
-B = randi(50, 4)
+A = randi({50, 100}, 3)
+B = randi({0, 10}, 3)
 C = 3 * A - 4 * B + 5
-A^2
+D = A .. B .. C           -- concatenate matrices A, B, and C horizontally
+disp(D)
+E = A .. cc{1, 2, 3}
+disp(E)
 
-x = linspace(0, pi, 10)   -- x, y, and z are mathly arrays/vectors.
-y = cos(x)
-z = sin(x)
-3 * y
-3*x^2 - 5 * x + 4
+-- matrix/table "division" is elementwise, provided for convenience only
+x = {1, 2, 3, 4, 5}
+rr(x) / 10
+1 / (2 * rr(x) + 1)
+x / cc(cos(x))
 
-x = {1, 2, 3}             -- x, y are both Lua tables of the same structure
-y = mathly{1, 2, 3}       -- x is an ordinary Lua table while y is a mathly table/array/object
-y + 1                     -- no such operations on x are allowed
-y * 3
-3 / y                     -- matrix/table "division" is elementwise, provided for convenience only
-y * y
-y^3
-2 * y - {2, 3, 4} + 5
-2 * mathly{2, 3, 4}^T - y -- the first mathly object determines the structure of the result
-
-rr(x) * x                 -- cc and rr convert Lua tables to mathly column and row vectors, respectively
-cc(x) * x                 -- x * cc(x) or rr(x) * cc(x) -- mathly automatically convert
-cc(x) * rr(x)             -- a table to a row/column vector according to the context
-
-rr(x)^2                   -- the product of two row (or column) vectors is like x .* y in MATLAB
-rr(x) * rr(x)
-cc(x) * cc(x)
-
-Y = mathly(y)
-display(Y)                -- print a table of any type, including a mathly matrix, with structure
-disp(Y)                   -- print a mathly matrix/vector
-
-A = randi({-10,10}, 4)
-rref(A)
-inv(A)[2] * 5 - 10
-inv(copy(A, {1, 3}, {2, 4}))
-
-(x / y)^T
 A = mathly{{1, 2}, {3, 4}}
--- 1  2
--- 3  4
+1 / A
 {{2, 3}, {4, 5}} / A
--- 2.0000  1.5000
--- 1.3333  1.2500
+
+-- elementary row operations
+A = randi({-100, 100}, 5, 5)
+A[3] = A[3] * 2         -- rowi := rowi * scaler; rr or cc
+A[2] = A[2] - A[1] * 2  -- rowj := rowj - rowi * scaler; rr or cc
+A[1], A[3] = A[3], A[1] -- interchange 2 rows
+
+-- plot multiple functions on a single figure
+x = linspace(0, pi, 100)
+y = 5 * x * cos(x ^ 2) - 1
+plot(x, y, '-r', x, -3 * x ^ 2 + 2 * x + 3, '--b')
 </code></pre>
-
-<p>A mathly row vector is a <code>1xn</code> mathly matrix, and a mathly column vector is a <code>nx1</code> mathly matrix.
-They are all matrices and, thus, an element must be addressed like <code>A[1][i]</code> (for a row vector) or <code>A[i][1]</code>
-(for a column vector), which is inconvenient and ugly because we human beings never write this way!</p>
-
-<p><i>Mathly tries its best to allow us to write math expressions as we do on paper.</i> Therefore, <code>ones</code>,
-<code>zeros</code>, <code>rand</code> and <code>randi</code> generate each a table rather than a mathly matrix if
-used this way, say, <code>ones(1, 100)</code>. This allows us to generate a table of specified length and
-address it conveniently like <code>x[i]</code> instead of <code>x[1][i]</code>. This is also why functions like
-<code>linspace</code>, <code>seq</code>, and <code>range</code> all generate a table rather than a mathly row/column vector.
-
-<p>If you want full control, you can use <code>cc</code> or <code>rr</code> to convert an ordinary table to a column
-or row vector. (See <a href=#cc><code>cc, rr, tt</code></a>)</p>
 
 <h2><a name=math href=#top>Basic mathematical functions and elementwise operations</a></h2>
 <p>&#x2713; &nbsp; Basic mathematical functions</p>
@@ -349,7 +304,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a name=isodd></a><code>isodd(x)</code></td><td> </td><td>Check if <code>x</code> is odd.</td></tr>
 <tr><td> </td><td><a name=ismatrix></a><code>ismatrix(x)</code></td><td> </td><td>Check if <code>x</code> is a mxn matrix.</td></tr>
 <tr><td> </td><td><a href=#ismember><code>ismember(x, table)</code></a></td><td> </td><td>Check if <code>x</code> is a member of <code>table</code>.</td></tr>
-<tr><td> </td><td><a name=isvector></a><code>isvector(x)</code></td><td> </td><td>Check if <code>x</code> is a 1xn vector.</td></tr>
+<tr><td> </td><td><a name=isvector></a><code>isvector(x)</code></td><td> </td><td>Check if <code>x</code> can be a mathly table/vector.</td></tr>
 <tr><td> </td><td><a href=#iswindows><code>iswindows()</code></a></td><td> </td><td>Check if the operationg system is Microsoft Windows.</td></tr>
 <tr><td> </td><td><a href=#lagrangepoly><code>lagrangepoly(...)</code></a></td><td> </td><td>Return the Lagrange interpolating polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
 <tr><td> </td><td><a name=length></a><code>length(x)</code></td><td> </td><td>Return the length of a table or string.</td></tr>
