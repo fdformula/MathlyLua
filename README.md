@@ -108,7 +108,7 @@ C = randi(100, 10, 1)     -- a column vector of random integer numbers (from 1 t
 inv(A) * B                -- B is interpreted as a 10x1 matrix
 inv(A) * B^T              -- B^T can be cc(B). We control the conversion
 a * {5, 6, 7}             -- Lua table {5, 6, 7} can be cc{5, 6, 7}
-{5, 6} * a                -- Lua table {5, 6} can be rr{5, 6, 7}
+{5, 6} * a                -- Lua table {5, 6} can be rr{5, 6}
 
 x = tt{2, 3, 4} + {5, 6, 7}
 x ^ 3 - 5 * x ^ 2 + 4 *x - 1
