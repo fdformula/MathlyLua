@@ -1,4 +1,4 @@
-require 'mathly';
+mathly = require('mathly')
 
 clear()
 axissquare()
@@ -6,11 +6,11 @@ plot(slopefield('@(x, y) x + y', {-3, 3, 0.2}),
      {layout={width=700, height=700}}) -- sfield1.png
 
 x = linspace(-3, 2.7, 100)
-y1 = map('@(x) x^2 - 2*x + 2 - exp(-x)', x)
-y2 = map('@(x) x^2 - 2*x + 2 - 2*exp(-x -1)', x)
-y3 = map('@(x) x^2 - 2*x + 2 - 8*exp(-x -2)', x)
+y1 = x^2 - 2*x + 2 - exp(-x)
+y2 = x^2 - 2*x + 2 - 2*exp(-x -1)
+y3 = x^2 - 2*x + 2 - 8*exp(-x -2)
 xa = linspace(-2.77, 2.7, 90)
-ya = map('@(x) x^2 - 2*x + 2 - 1.2607*exp(-x)', xa)
+ya = xa^2 - 2*xa + 2 - 1.2607*exp(-xa)
 axissquare()
 plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2), -- sfield2.png
      x, y1, '-r', point(0, 1, {symbol='x', size=7, color='red'}),
