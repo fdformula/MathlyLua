@@ -89,7 +89,7 @@ package.path = "./?.luac;;"
 
 See mathly.html.
 
-## Mathly Objects and Lua Tables
+## Mathly objects and Lua tables
 
 1. A mathly table is a simple Lua table registered as a mathly object. E.g., `x = tt{1, 2, 3}` is such a table. It has exactly the same structure as an ordinary Lua table `y = {1, 2, 3}`. The difference is that we can apply "vectorization" operations and matrix operations on `x` instead of `y`. For instance, `2 * x - 1` gives a new mathly table, {1, 3, 5}. Besides, `x[i]` gives the i-th element in the table.
 
