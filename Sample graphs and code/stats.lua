@@ -1,5 +1,4 @@
-require 'mathly';
-clear()
+mathly = require('mathly')
 
 --stats1.png
 plot(pie({bins={5, 6, 1, 10, 7, 6}}, {style = {pull = {0, 0.1, 0, 0, 0, 0}}, names={'A', 'B', 'C', 'D', 'E', 'F'}, title='Demo'}))
@@ -18,7 +17,7 @@ function n(x, mu, sigma)
 end
 
 X = linspace(mu - 4 * sigma, mu + 4 * sigma, 5000)
-Y = map('@(x) n(x, mu, sigma) * 7.8', X)
+Y = n(X, mu, sigma) * 7.8
 
 axisnotsquare(); showaxes(); shownotlegend()
 plot(hist1(x, 12), X, Y, '--r')
