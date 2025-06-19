@@ -1,4 +1,4 @@
-require 'mathly';
+mathly = require('mathly')
 
 clear()
 axissquare()
