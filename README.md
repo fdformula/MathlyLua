@@ -1,7 +1,7 @@
 # Mathly Turns Lua into a Tiny, Free but Powerful MATLAB
 
 Mathly for [Lua](https://www.lua.org) is a Lua module which turns Lua into a tiny, free but powerful MATLAB. It provides a group of commonly
-used MATLAB functions and features, for example,  `linspace`, `zeros`, `rand`, `save`, `plot`, `plot3d`, and convenient matrix operations
+used MATLAB functions and features, including `linspace`, `zeros`, `rand`, `save`, `plot`, `plot3d`, and convenient matrix operations
 as well. If there are things many love the most about MATLAB, these tools are. They make coding and testing a thought much
 easier and faster than working in most other programming languages.
 
