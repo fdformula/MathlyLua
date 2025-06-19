@@ -1,5 +1,5 @@
 mathly = require('mathly')
-
+clear()
 --stats1.png
 plot(pie({bins={5, 6, 1, 10, 7, 6}}, {style = {pull = {0, 0.1, 0, 0, 0, 0}}, names={'A', 'B', 'C', 'D', 'E', 'F'}, title='Demo'}))
 
