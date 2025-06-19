@@ -67,12 +67,12 @@ function linear_regression(x, y)
          (Sxx * Sy - Sxy * Sx) / (n * Sxx - Sx ^ 2) -- a0
 end
 
-xExp = mathly(range(2, 30, 2))
+xExp = range(2, 30, 2)
 yExp = mathly({9.7, 8.1, 6.6, 5.1, 4.4, 3.7, 2.8, 2.4, 2.0, 1.6, 1.4, 1.1, 0.85, 0.69, 0.6})
 a1, a0 = linear_regression(xExp, log(yExp))
 b, m = exp(a0), a1
 
-x = mathly(linspace(0, 30, 100))
+x = linspace(0, 30, 100)
 y = b * exp(m * x)
 
 axissquare()
