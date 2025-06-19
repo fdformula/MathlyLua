@@ -20,7 +20,7 @@ pre {color: green}
 <li><a href=#intro>Introduction</a></li>
 <li><a href=#version>Which version of Lua is needed?</a></li>
 <li><a href=#where>Where to place the downloaded files of this module?</a></li>
-<li><a href=#mobjs>Mathly objects and Lua tables</a></li>
+<li><a href=#mobjs><u>Mathly objects and Lua tables</u></a></li>
 <li><a href=#math>Basic mathematical functions and elementwise operations</a></li>
 <li><a href=#m><u>Table of Mathly functions</u></a></li>
 <li><a href=#easyf>Shortcut for defining an anonymous function</a></li>
@@ -28,13 +28,13 @@ pre {color: green}
 <li><a href=#layout>Plotly JavaScript Figure Reference: <code>layout</code></a></li>
 </ol>
 <h2><a name=intro></a>Introduction</h2>
-<p><a href=https://github.com/fdformula/MathlyLua>Mathly</a> for <a href=https://www.lua.org>Lua</a> is a Lua module which turns Lua into a tiny but powerful MATLAB. It provides a group of commonly used MATLAB functions and features,
-for example, <code>linspace</code>, <code>zeros</code>, <code>rand</code>, <code>save</code>, convenient matrix operations, and even
-<code>plot</code>. They make coding and testing a thought/algorithm much easier and faster than working in most other
-programming languages. If there is anything many love the most about MATLAB, these tools are.</p>
+<p><a href=https://github.com/fdformula/MathlyLua>Mathly</a> for <a href=https://www.lua.org>Lua</a> is a Lua module which turns Lua into a tiny, free, but powerful MATLAB.
+It provides a group of commonly used MATLAB functions and features, including <code>linspace</code>, <code>zeros</code>, <code>rand</code>, <code>save</code>,
+<code>plot</code>, <code>plot3d</code>, and convenient matrix operations as well. If there is anything many love the most about MATLAB, these tools are. They make
+coding and testing a thought/algorithm much easier and faster than working in most other programming languages.</p>
 
 <p><a href=https://github.com/fdformula/MathlyLua>Mathly</a> uses Plotly JavaScript graphing library (see <a href="https://plotly.com/javascript/">https://plotly.com/javascript/</a>)
-to plot graphs of single-variable functions. Therefore, graphs are shown in an internet browser.</p>
+to plot graphs. Therefore, graphs are shown in an internet browser.</p>
 
 <p>The entire mathly tool together with Lua interpreter is less than 5 MB, while providing enough features for instructors and college students to implement
 numerical algorithms. Because it is super lightweight and fast as well, it can run fast even on old and slow devices like Microsoft Surface Pro 4 (Intel Core
@@ -102,23 +102,22 @@ plotly-2.9.0.min.js
 <li>A mathly table is a simple Lua table registered as a mathly object. E.g., <code>x = tt{1, 2, 3}</code> is such a table.
 It has exactly the same structure as an ordinary Lua table <code>y = {1, 2, 3}</code>. The difference is that we can apply
 "vectorization" operations and matrix operations on <code>x</code> instead of <code>y</code>. For instance, <code>2 * x - 1</code>
-gives a new mathly table, <code>{1, 3, 5}</code>. Besides, <code>x[i]</code> gives the i-th element in the table.</li>
-
+gives a new mathly table, <code>{1, 3, 5}</code>. Here, <code>x[i]</code> gives the i-th element in the table.</li>
+<p></p>
 <li>A mathly row vector is actually a <code>1xn</code> matrix. E.g., <code>x = rr{1, 2, 3}</code> is a mathly row vector.
 It is stored as <code>{{1, 2, 3}}</code>. To access 2, we must use <code>x[1][2]</code>. Similarly, a column vector
 <code>y = cc{1, 2, 3}</code> is a <code>3x1</code> matrix stored in the format <code>{{1}, {2}, {3}}</code>. We use
-<code>u[2][1]</code> to access 2. Indeed, <code>x[1][2]</code> or <code>y[2][1]</code> is quite strange and inconvenient,
+<code>y[2][1]</code> to access 2. Indeed, <code>x[1][2]</code> or <code>y[2][1]</code> is quite strange and inconvenient,
 which is why the results of most operations on these row/column vectors and matrices and many mathly functions are mathly
 tables.</li>
-
+<p></p>
 <li>Mathly tables and matrices may simply be called mathly objects. Mathly objects and Lua tables can appear in same math
 expressions. Mathly converts Lua tables and mathly tables into mathly matrices of proper dimensions to complete the
-evaluation of the expressions. We may use mathly, <code>cc</code>, <code>rr</code>, and <code>tt</code> to replace the
+evaluation of the expressions. We may use mathly functions such as <code>cc</code>, <code>rr</code>, <code>tt</code>, and <code>T</code> to replace the
 conversion by mathly. For example,</li>
 </ol>
 <pre><code>mathly = require('mathly')
 
-mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}}
 b = mathly{{1}, {2}, {3}} -- or simply b = cc{1, 2, 3}
 A = mathly(10, 10)        -- or rand(10, 10)
@@ -164,7 +163,7 @@ plot(x, y, '-r', x, -3 * x ^ 2 + 2 * x + 3, '--b')
 
 <h2><a name=math href=#top>Basic mathematical functions and elementwise operations</a></h2>
 <p>&#x2713; &nbsp; Basic mathematical functions</p>
-<p>Basic math functions are each now able to work <em>elementwisely</em> on Lua tables, including mathly matrices. They are
+<p>Basic math functions are each now able to work <em>elementwisely</em> on Lua tables, including mathly objects. They are
 <code>abs</code>, <code>acos</code>, <code>asin</code>, <code>atan</code>, <code>ceil</code>, <code>cos</code>,
 <code>deg</code>, <code>exp</code>, <code>floor</code>, <code>log</code>, <code>rad</code>, <code>random</code>,
 <code>sin</code>, <code>sqrt</code>, and <code>tan</code>. They evaluate a function at every number in a
@@ -184,28 +183,26 @@ disp(log(abs(x)))
 <B>You can always use <code>sin(x)</code>. However, if you know <code>x</code> is a number, you may call
 <code>math.sin(x)</code> to get a little improvement in performance.</p></B>
 
-<p>&#x2713; &nbsp; Other elementwise operations
-<p>Let <code>x</code> and <code>y</code> be two tables of the same size. Then, <a href=#cc><code>cc(x) * cc(y)</code></a> or
-<a href=#cc><code>rr(x) * rr(y)</code></a> functions like <code>x .* y</code> in MATLAB. As per other cases or actually all cases, we
-can do elementwise operations, simple or complicated, through <a href=#map><code>map</code></a>.
+<p>&#x2713; &nbsp; Elementwise operations through <code>map</code>
+<p>We can do elementwise operations, simple or complicated, through <a href=#map><code>map</code></a>.
 <pre><code>mathly = require('mathly')
 
-A = randi(100, 5, 7)  -- A, B can be any tables of numbers
+A = randi(100, 5, 7)
 B = randi(100, 5, 7)
-C = map('@(x, y) x * y', A, B) -- A .* B
+C = map('@(x, y) x * y', A, B) -- A .* B; -- A, B can be any type of tables with the same structure
 disp(C)
 C = map('@(x, y) x / y', A, B) -- A ./ B
 disp(C)
 disp(map('@(x) x ^ 2', A))     -- A .^ 2
 
-D = map(function(x, y, z)
-          if iseven(x) then return x - y + 3 * z else return x + y * y end
-        end, A, B, C)
--- or
-D = map('@(x, y, z) (iseven(x) and x - y + 3 * z) or x + y * y', A, B, C)
--- or
 D = map('@(x, y, z) qq(iseven(x), x - y + 3 * z, x + y * y)', A, B, C)
 disp(D)
+
+E = map('@(x, y) {x, y}', {1, 2, {3, {4}, 5}}, {'a', 'b', {'c', {'d'}, 'e'}})
+display(E)
+-- {{1, 'a'}, {2, 'b'}, {{3, 'c'}, {{4, 'd'}}, {5, 'e'}}}
+
+display(sin{1, 2, {3, {4}, 5}})
 </code></pre>
 
 <p>&#x2713; &nbsp; <a name=eps></a><a name=div></a><a name=mod></a>Functions <code>div</code> and <code>mod</code> are simply the names of <a href=manual.html#3.4.1>Lua operators <code>//</code> and <code>%</code></a>, respectively.
@@ -230,7 +227,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <a href=#eye>eye</a>, <a href=#findroot>findroot</a>, <a href=#flatten>flatten</a>, <a href=#fliplr>fliplr</a>, <a href=#flipud>flipud</a>,
 <a href=#format>format</a>, <a href=#fstr2f>fstr2f</a>, <a href=#fzero>fzero</a>, <a href=#gcd>gcd</a>, <a href=#hasindex>hasindex</a>, <a href=#input>input</a>,
 <a href=#inv>inv</a>, <a href=#isinteger>isinteger</a>, <a href=#iseven>iseven</a>, <a href=#isodd>isodd</a>, <a href=#ismatrix>ismatrix</a>,
-<a href=#ismember>ismember</a>, <a href=#lagrangepoly>lagrangepoly</a>, <a href=#length>length</a>, <a href=#linsolve>linsolve</a>, <a href=#linspace>linspace</a>,
+<a href=#ismember>ismember</a>, <a href=#isvector>isvector</a>, <a href=#lagrangepoly>lagrangepoly</a>, <a href=#length>length</a>, <a href=#linsolve>linsolve</a>, <a href=#linspace>linspace</a>,
 <a href=#lu>lu</a>, <a href=#map>map</a>, <a href=#match>match</a>, <a href=#mathly>mathly</a>, <a href=#max>max</a>, <a href=#mean>mean</a>,
 <a href=#merge>merge</a>, <a href=#min>min</a>, <a href=#mod>mod</a>, <a href=#namedargs>namedargs</a>, <a href=#newtonpoly>newtonpoly</a>, <a href=#norm>norm</a>,
 <a href=#ones>ones</a>, <a href=#polynomial>polynomial</a>, <a href=#polyval>polyval</a>, <a href=#powermod>powermod</a>, <a href=#printf>printf</a>,
@@ -302,7 +299,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a name=isinteger></a><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
 <tr><td> </td><td><a name=iseven></a><code>iseven(x)</code></td><td> </td><td>Check if <code>x</code> is even.</td></tr>
 <tr><td> </td><td><a name=isodd></a><code>isodd(x)</code></td><td> </td><td>Check if <code>x</code> is odd.</td></tr>
-<tr><td> </td><td><a name=ismatrix></a><code>ismatrix(x)</code></td><td> </td><td>Check if <code>x</code> is a mxn matrix.</td></tr>
+<tr><td> </td><td><a name=ismatrix></a><code>ismatrix(x)</code></td><td> </td><td>Check if <code>x</code> can be a mathly matrix.</td></tr>
 <tr><td> </td><td><a href=#ismember><code>ismember(x, table)</code></a></td><td> </td><td>Check if <code>x</code> is a member of <code>table</code>.</td></tr>
 <tr><td> </td><td><a name=isvector></a><code>isvector(x)</code></td><td> </td><td>Check if <code>x</code> can be a mathly table/vector.</td></tr>
 <tr><td> </td><td><a href=#iswindows><code>iswindows()</code></a></td><td> </td><td>Check if the operationg system is Microsoft Windows.</td></tr>
@@ -1936,7 +1933,7 @@ y = {52.0, 5, -50, -40, 10, 9, 22, 23, 65}
 str = newtonpoly(x, y)
 f = fstr2f('@(x) ' .. str) -- or load('function f(x) return ' .. str .. ' end')()
 xs = linspace(x[1], x[length(x)], 100)
-ys = map(f, xs)
+ys = f(xs)
 axisnotsquare()
 plot(x, y, "*", xs, ys, "-")
 </code></pre>
@@ -2119,8 +2116,7 @@ for i = 1, n do
   X[i] = mathly(1, n, x[i])
   Y[i] = y
 end
-function f(x, y) return sin(x) * cos(y) end
-Z = map(f, X, Y)
+Z = sin(X) * cos(Y)
 plot3d(X, Y, Z, 'Demo 2')
 </code></pre>
 
@@ -2491,7 +2487,7 @@ b1 = mathly{{1},{2},{3}}
 b2 = mathly{{1},{0},{5}}
 b3 = mathly{{-2},{1},{2}}
 
-B = mathly(horzcat(b1, b2, b3))
+B = horzcat(b1, b2, b3)
 a, b = rref(A, B)
 disp(b)
 --  1.7500  -1.2500   7.2500
@@ -2570,11 +2566,11 @@ plot(slopefield(function(x, y) return x + y end, {-3, 3, 0.2}), {layout={width=6
 plot(directionfield('@(x, y) x^2 - y', {-3.5, 3.5, 0.5}, {-3.5, 3.5, 0.5}, 2), {layout={width=600, height=600}})
 
 x = linspace(-3, 2.7, 100)
-y1 = map('@(x) x^2 - 2*x + 2 - exp(-x)', x)
-y2 = map('@(x) x^2 - 2*x + 2 - 2*exp(-x -1)', x)
-y3 = map('@(x) x^2 - 2*x + 2 - 8*exp(-x -2)', x)
+y1 = x^2 - 2*x + 2 - exp(-x)
+y2 = x^2 - 2*x + 2 - 2*exp(-x -1)
+y3 = x^2 - 2*x + 2 - 8*exp(-x -2)
 xa = linspace(-2.77, 2.7, 90)
-ya = map('@(x) x^2 - 2*x + 2 - 1.2607*exp(-x)', xa)
+ya = xa^2 - 2*xa + 2 - 1.2607*exp(-xa)
 axissquare()
 plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
      x, y1, '-r', point(0, 1, {symbol='x', size=7, color='red'}),
@@ -2787,7 +2783,6 @@ x = {1, 2, 3, 4, 5}
 disp(map('@(x) (iseven(x) and 2*x) or 0', x))
 -- or
 disp(map('@(x) qq(iseven(x), 2*x, 0)', x))
-disp(map(function(x) if iseven(x) then return 2*x else return 0 end end, x))
 -- {0, 4, 0, 8, 0}
 
 -- to pass a function to another function not defined in mathly

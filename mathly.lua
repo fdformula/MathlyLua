@@ -4663,7 +4663,6 @@ end -- json.encode
      Names are changed to _dk_ and some functions or so have been removed.
      All credit belongs to the original auther. --]]
 
-
 return mathly
 
 --[[
@@ -4682,7 +4681,7 @@ in https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua, to see if Lu
 numerical computing. However, it failed to solve numerically a boundary value problem. The solution
 was obviously wrong because the boundary condition at one endpoint is not satisfied, but I could not find
 anything wrong in both the algorithm and the code. I had to wonder if there were bugs in the module. In many
-cases, it is easier to start a small project from scratch than using and debugging others' code. In
+cases, it is easier to start a small project from scratch than debugging and using others' code. In
 addition, matrix.lua addresses a column vector like a[i][1] and a row vector a[1][i], rather than a[i]
 in both cases, which is quite ugly and unnatural. Furthermore, basic plotting utility is not provided in
 matrix.lua. Therefore, this mathly module was developed. But anyway, the work in matrix.lua is highly
