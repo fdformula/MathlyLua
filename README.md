@@ -95,7 +95,7 @@ See mathly.html.
 
 2. A mathly row vector is actually a `1xn` matrix. E.g., `x = rr{1, 2, 3}` is a mathly row vector. It is stored as {{1, 2, 3}}. To access 2, we must use `x[1][2]`. Similarly, a column vector `y = cc{1, 2, 3}` is a `3x1` matrix stored in the format {{1}, {2}, {3}}. We use `y[2][1]` to access 2. Indeed, `x[1][2]` or `y[2][1]` is quite strange and inconvenient, which is why the results of most operations on these row/column vectors and matrices and many mathly functions are mathly tables.
 
-3. Mathly tables and matrices may simply be called mathly objects. Mathly objects and Lua tables can appear in same math expressions. Mathly converts Lua tables and mathly tables into mathly matrices of proper dimensions to complete the evaluation of the expressions. We may use mathly functions such as `mathly`, `cc`, `rr`, `tt`, and `T` to replace the conversion by mathly.
+3. Mathly tables and matrices may simply be called mathly objects. Mathly objects and Lua tables can appear in same math expressions. Mathly converts Lua tables and mathly tables into mathly matrices of proper dimensions to complete the evaluation of the expressions. We may use mathly functions such as `mathly`, `cc`, `rr`, `tt`, and `T` to replace the automatic conversion by mathly.
 
 4. In a vector/matrix operation involving Lua tables which are not mathly objects, there must be at least one mathly object to activate the operation. For example, `tt{1, 2} + {3, 4}`, `{1, 2} + tt{3, 4}`, `({1, 2} * tt{3, 4} + {5, 6})*7 - {8, 9}`, and `tt{1, 2} * {3, 4} + ({5, 6} - tt{8, 9}) * 7` all work.
 
