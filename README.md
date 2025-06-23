@@ -97,6 +97,8 @@ See mathly.html.
 
 3. Mathly tables and matrices may simply be called mathly objects. Mathly objects and Lua tables can appear in same math expressions. Mathly converts Lua tables and mathly tables into mathly matrices of proper dimensions to complete the evaluation of the expressions. We may use mathly functions such as `mathly`, `cc`, `rr`, `tt`, and `T` to replace the conversion by mathly.
 
+4. In a vector/matrix operation involving Lua tables which are not mathly objects, there must be at least one mathly object to activate the operation. For example, `tt{1, 2} + {3, 4}`, `{1, 2} + tt{3, 4}`, `({1, 2} * tt{3, 4} + {5, 6})*7 - {8, 9}`, and `tt{1, 2} * {3, 4} + ({5, 6} - tt{8, 9}) * 7` all work.
+
 ```Lua
 mathly = require('mathly')
 a = mathly{{1, 2, 3}, {2, 3, 4}}
