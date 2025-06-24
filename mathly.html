@@ -114,7 +114,11 @@ tables.</li>
 <li>Mathly tables and matrices may simply be called mathly objects. Mathly objects and Lua tables can appear in same math
 expressions. Mathly converts Lua tables and mathly tables into mathly matrices of proper dimensions to complete the
 evaluation of the expressions. We may use mathly functions such as <code>cc</code>, <code>rr</code>, <code>tt</code>, and <code>T</code> to replace the
-conversion by mathly. For example,</li>
+automatic conversion by mathly.</li>
+<p></p>
+<li>In a vector/matrix operation involving Lua tables which are not mathly objects, there must be at least one mathly object
+to activate the operation. For example, <code>tt{1, 2} + {3, 4}</code>, <code>{1, 2} + tt{3, 4}</code>, <code>({1, 2} * tt{3, 4} + {5, 6}) * 7 - {8, 9}</code>,
+and <code>tt{1, 2} * {3, 4} + ({5, 6} - tt{8, 9}) * 7</code> all work.</li>
 </ol>
 <pre><code>mathly = require('mathly')
 
@@ -150,7 +154,7 @@ A = mathly{{1, 2}, {3, 4}}
 {{2, 3}, {4, 5}} / A
 
 -- elementary row operations
-A = randi({-100, 100}, 5, 5)
+A = randi({-100, 100}, 5, 7)
 A[3] = A[3] * 2         -- rowi := rowi * scaler; rr or cc
 A[2] = A[2] - A[1] * 2  -- rowj := rowj - rowi * scaler; rr or cc
 A[1], A[3] = A[3], A[1] -- interchange 2 rows
