@@ -138,7 +138,7 @@ A[3] = A[3] * 2         -- rowi := rowi * scaler; rr or cc
 A[2] = A[2] - A[1] * 2  -- rowj := rowj - rowi * scaler; rr or cc
 A[1], A[3] = A[3], A[1] -- interchange 2 rows
 ```
-### Some examples
+### More examples
 ```Lua
 mathly = require('mathly')
 
