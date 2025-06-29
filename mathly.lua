@@ -4154,11 +4154,11 @@ end
 local json = { version = "dkjson 2.8" }
 
 -- https://cdn.plot.ly/plotly-latest.min.js
-plotly.cdn_main = "<script src='" .. plotly_engine .. "'></script>" -- dwang
+plotly.cdn_main = "<script src='" .. plotly_engine .. "'></script>"
 plotly.id_count = 1
-plotly.layout = {} -- dwang
+plotly.layout = {}
 
-local _writehtml_failedq = false -- dwang
+local _writehtml_failedq = false
 
 -- From: https://stackoverflow.com/questions/11163748/open-web-browser-using-lua-in-a-vlc-extension#18864453
 -- Attempts to open a given URL in the system default browser, regardless of Operating System.
@@ -4168,14 +4168,14 @@ local function _open_url(url)
     if __is_windows then
       _open_cmd = function(url)
         -- Should work on anything since (and including) win'95
-        --- os.execute(string.format('start "%s"', url)) -- dwang
-        os.execute(string.format('"%s" %s', win_browser, url)) -- dwang
+        --- os.execute(string.format('start "%s"', url))
+        os.execute(string.format('"%s" %s', win_browser, url))
       end
     -- the only systems left should understand uname...
     elseif (io.popen("uname -s"):read'*a'):sub(1, 6) == "Darwin" then
       _open_cmd = function(url)
         -- I cannot test, but this should work on modern Macs.
-        -- os.execute(string.format('open "%s"', url)) -- dwang
+        -- os.execute(string.format('open "%s"', url))
         os.execute(string.format('%s "%s"', mac_browser, url))
       end
     else -- that ought to only leave Linux
@@ -4323,7 +4323,7 @@ function figure.toplotstring(self)
   -- Converting input
   local data_str = json.encode (self["data"])
   local layout_str = json.encode (self["layout"])
-  local div_id -- dwang
+  local div_id
   if not self.div_id then div_id = "plot" .. plotly.id_count end
   plotly.id_count = plotly.id_count+1
   local plot = [[<div id='%s'>
@@ -4333,7 +4333,7 @@ function figure.toplotstring(self)
   Plotly.newPlot(%s, data, layout);
 </script>
 </div>
-]] -- dwang, simplified
+]] -- simplified
   return string.format(plot, div_id, data_str, layout_str, div_id)
 end -- figure.toplotstring
 
@@ -4347,7 +4347,7 @@ function figure.tofile(self, filename)
   _writehtml_failedq = false
   local html_str = self:tohtmlstring()
   local file = io.open(filename, "w")
-  if file ~= nil then -- dwang
+  if file ~= nil then
     file:write(html_str)
     file:close()
   else
@@ -4372,7 +4372,7 @@ function plotly.figure()
   return fig
 end
 
--- dwang, plot multiple functions/traces on a single figure
+-- plot multiple functions/traces on a single figure
 function plotly.plots(traces)
   local fig = plotly.figure()
   for i = 1, #traces do
