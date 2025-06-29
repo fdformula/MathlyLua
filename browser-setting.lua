@@ -2,7 +2,7 @@
 -- ms edge doesn't work well
 win_browser = 'C:/Program Files/Mozilla Firefox/firefox.exe'
 linux_browser = 'firefox'
-mac_browser = 'firefox'
+mac_browser = '/Applications/Firefox.app/Contents/MacOS/firefox'
 
 plotly_engine = 'plotly-2.9.0.min.js'
 do
