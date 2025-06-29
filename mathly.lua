@@ -4172,7 +4172,7 @@ local function _open_url(url)
         os.execute(string.format('"%s" %s', win_browser, url)) -- dwang
       end
     -- the only systems left should understand uname...
-    elseif (io.popen("uname -s"):read'*a') == "Darwin" then -- OSX/Darwin ? (I can not test.)
+    elseif (io.popen("uname -s"):read'*a'):sub(1, 6) == "Darwin" then -- MacOS
       _open_cmd = function(url)
         -- I cannot test, but this should work on modern Macs.
         -- os.execute(string.format('open "%s"', url)) -- dwang
