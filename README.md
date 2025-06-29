@@ -49,6 +49,10 @@ lines of the file, `C:\cygwin\cudatext\py\cuda_ex_terminal\__init__.py`.
 
 Other hotkeys? Refer to `C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt`.
 
+Linux users? For most Linux distributions, download, say, cudatext-for-mathly-linux-1.224.0.0.tar.gz. For other distributions like Fedora, download cudatext-for-mathly-linux-1.224.0.0-RARE.tar.gz. Expand the file and refer to the included file, note.txt.
+
+MacOS users? Download, say, cudatext-for-mathly-macosx-2.223.6.0.tar.gz, and copy the expanded files with the folder structure to the very folders.
+
 ## Where to place the downloaded files?
 
 The files may be placed in either
