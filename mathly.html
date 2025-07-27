@@ -155,8 +155,8 @@ A = mathly{{1, 2}, {3, 4}}
 
 -- elementary row operations
 A = randi({-100, 100}, 5, 7)
-A[3] = A[3] * 2         -- rowi := rowi * scaler; rr or cc
-A[2] = A[2] - A[1] * 2  -- rowj := rowj - rowi * scaler; rr or cc
+A[3] = A[3] * 2         -- rowi := rowi * scaler
+A[2] = A[2] - A[1] * 2  -- rowj := rowj - rowi * scaler
 A[1], A[3] = A[3], A[1] -- interchange 2 rows
 
 -- plot multiple functions on a single figure
@@ -679,13 +679,13 @@ disp(A)
 -- 2  3  4  5  6
 -- 3  4  5  6  7
 
-A[3] = A[3] * 2         -- rowi := rowi * scaler; rr or cc
+A[3] = A[3] * 2         -- rowi := rowi * scaler
 disp(A)
 -- 1   2   3   4   5
 -- 2   3   4   5   6
 -- 6   8  10  12  14
 
-A[2] = A[2] - A[1] * 2  -- rowj := rowj - rowi * scaler; rr or cc
+A[2] = A[2] - A[1] * 2  -- rowj := rowj - rowi * scaler
 disp(A)
 -- 1   2   3   4   5
 -- 0  -1  -2  -3  -4
@@ -848,10 +848,10 @@ disp(a)
 -- 16  67   9  56  33
 
 display(copy(a, 2)) -- or rr(a, 2); MATLAB: a(2, :)
--- 43  58  96  64   5
+-- {{43, 58, 96, 64, 5}}
 
-copy(a, 2, {1, 3}) -- MATLAB: a(2, 1:3)
--- 43  58  96
+display(copy(a, 2, {1, 3})) -- MATLAB: a(2, 1:3)
+-- {{43, 58, 96}}
 
 copy(a, '*', 2) -- or cc(a, 2); MATLAB: a(:, 2)
 -- 15
@@ -975,17 +975,17 @@ a = {1, 2, 3, 4, 5, 6, 7, 8, 9}
 b = copy(a)
 copy(b, {2, -1, 2}, {-1, -2, -3, -4, -5, -6, -7, -8})
 disp(b)
--- {1, -1, 3, -2, 5, -3, 7, -4, 9}
+-- 1  -1   3  -2   5  -3   7  -4   9
 
 b = copy(a)
 copy(b, {2, -1, 2}, {-1, -2, -3, -4, -5, -6, -7, -8, -9}, {2, -1, 2})
 disp(b)
--- {1, -2, 3, -4, 5, -6, 7, -8, 9}
+-- 1  -2   3  -4   5  -6   7  -8   9
 
 b = copy(a)
 copy(b, {3, -3}, 100)
 disp(b)
--- {1, 2, 100, 100, 100, 100, 100, 8, 9}
+-- 1    2  100  100  100  100  100    8    9
 </code></pre>
 <p>For MATLAB users, the following comparison may be helpful.</p>
 <pre><code>-- copy or set a submatrix
@@ -1107,7 +1107,7 @@ diag({1, 2, 3})
 -- 1  0  0
 -- 0  2  0
 -- 0  0  3
-diag(cc{1, 2, 3, 4}, 3, 2)
+diag({1, 2, 3, 4}, 3, 2)
 -- 1  0
 -- 0  2
 -- 0  0
@@ -1177,7 +1177,7 @@ print(x * 2)
 
 x = eval('cos{0, pi/6, pi/4, pi/3, pi/2, pi}')
 disp(x)
--- {1.0000, 0.8660, 0.7071, 0.5000, 0.0000, -1.0000}
+-- 1.0000   0.8660   0.7071   0.5000   0.0000  -1.0000
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=expand href=#m><code>expand(A, m, n, v)</code></a></h4>
@@ -1553,7 +1553,7 @@ disp(lagrangepoly(x, y)) -- or: lagrangepoly({{0, 3}, {1, 1}, {2, 4}})
 disp(lagrangepoly(x, y, 5)) -- or: lagrangepoly({{0, 3}, {1, 1}, {2, 4}}, 5)
 -- 43.0
 disp(lagrangepoly(x, y, {5, -6, 100}))
--- {43.0, 120.0, 24553.0}
+-- 43.0000    120.0000  24553.0000
 
 s = lagrangepoly({1, 0, 2}, {-4, -2, -3})
 disp(s)
@@ -1683,9 +1683,11 @@ A = {{1, 2, 3}, {2, 3, 4}}
 B = {{3, 4, 5}, {5, 6, 7}}
 C = map('@(x, y) x * y', A, B) -- MATHLAB: A .* B
 disp(C)
--- {{3, 8, 15}, {10, 18, 28}}
+--  3   8  15
+-- 10  18  28
 disp(map('@(x, y, z) x + y - z', A, B, C)) -- x, y, and z are taken from A, B, and C, respectively
--- {{1, -2, -7}, {-3, -9, -17}}
+--  1   -2   -7
+-- -3   -9  -17
 
 x1 = {1, 2, 3, 4, A = 5, 6, {0, 1, 2, B = 3}}
 disp(x1)
@@ -1697,13 +1699,13 @@ disp(map('@(x, y) x + y', x1, x2))
 -- {2, 6, 12, 20, 42, {0, 2, 6, B = 12}, A = 30}
 
 disp(map('@(x, y) x + y', {1, 2, 3}, 10)) -- 10 is treated as {10, 10, 10}
--- {11, 12, 13}
+-- 11, 12, 13
 
 disp(map('@(x, y, z) x + y + z', {1, 2, 3}, 10, 100)) -- 10 is treated as {10, 10, 10}, and 100 as {100, 100, 100}
--- {111, 112, 113}
+-- 111, 112, 113
 
 disp(map('@(x, y, z) x + y + z', {1, 2, 3}, 10, {100, 200, 300}))
--- {111, 212, 313}
+-- 111, 212, 313
 
 disp(map('@(x, y) x .. y', {'1', '2', '3'}, '10')) -- '10' is treated as {'10', '10', '10'}
 -- {'110', '210', '310'}
@@ -1789,7 +1791,7 @@ disp(mathly(2, 5, -1))
 -- -1  -1  -1  -1  -1
 
 mathly(1, 5, 0)
---  0  0  0  0  0
+-- 0  0  0  0  0
 
 mathly({1, 2, 3, 4, 5, 6, 7}, 2)
 -- 1  3  5  7
@@ -1863,9 +1865,9 @@ If both are tables, they are merged into one.</p>
 <pre><code>mathly = require('mathly')
 
 -- 1) no argument is a table
-disp(merge(1, 1))
+display(merge(1, 1))
 -- {1}
-disp(merge(1, 2))
+display(merge(1, 2))
 -- {1, 2}
 
 -- 2) one argument is a table, and the other one is not
@@ -1878,7 +1880,7 @@ disp(merge({2, 3, 4, p = {10, 9}}, 2))
 
 -- 3) both arguments are tables
 disp(merge({5, 2, 3, 4}, {2, 4, 5, 6, 7}))
--- {5, 2, 3, 4, 6, 7}
+-- 5 2 3 4 6 7
 disp(merge({1, 2, 3, x={3, 1, 5, w=180}}, {2, 3, 5, y=8, x={5, 1, 'abc', w=100, z={4, 5, 6}}}))
 -- {1, 2, 3, 5, x = {3, 1, 5, 'abc', z = {4, 5, 6}, w = 100}, y = 8} -- named item w is overwritten
 </code></pre>
@@ -2189,14 +2191,14 @@ polyval(coefs, 10)
 -- 165.0
 
 disp(polynomial({1, 2, 3}, {3, 1, 4}, {10, 1, -5}))
--- {165.0, 3.0, 120.0}
+-- 165.0000    3.0000  120.0000
 
 s, coefs = polynomial({{1, 3}, {2, 1}, {3, 4}})
 disp(s)
 disp(polyval(coefs, {10, 1, -5}))
--- {165.0, 3.0, 120.0}
+-- 165.0000    3.0000  120.0000
 disp(polynomial({{1, 3}, {2, 1}, {3, 4}}, {10, 1, -5}))
--- {165.0, 3.0, 120.0}
+-- 165.0000    3.0000  120.0000
 
 -- test of polynomials generated in various ways
 -- note: higher-order polynomials may deviate significantly over small intervals and thus are not reliable
@@ -2221,7 +2223,7 @@ For example, <code>p(x) = -2x<sup>4</sup> + 4x<sup>2</sup> - 5x</code>, <code>co
 <p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polynomial><code>polynomial</code></a>.</p>
 <pre><code>mathly = require('mathly')
 polyval({1, 2, 1}, 0) -- evaluate x<sup>2</sup> + 2x + 1 at x = 0
--- 1.0
+-- 1.0000
 display(polyval({1, 2, 1}, {0, 5, 9, 100})) -- evaluate at x = 0, 5, 9, 100
 -- {1.0, 36.0, 100.0, 10201.0}
 </code></pre>
@@ -2263,9 +2265,9 @@ disp(a)
 --  2  3  4
 --  3  4  5
 disp(sum(a))
--- {6, 9, 12}
+-- 6   9  12
 disp(prod(a))
--- {6, 24, 60}
+-- 6  24  60
 </code></pre>
 
 
@@ -2318,16 +2320,16 @@ disp(Q * R - A)
 
 x = range(1, 10) -- or range(10)
 disp(x)
--- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+-- 1   2   3   4   5   6   7   8   9  10
 
 x = range(-1, -10) -- or range(-10)
-disp(x)
+display(x)
 -- {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10}
 
 display(range(10, 1))
 -- {10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
 
-disp(range(0, 6, 0.5))
+display(range(0, 6, 0.5))
 -- {0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0}
 </code></pre>
 
@@ -2443,9 +2445,9 @@ disp(c)
 
 a = seq(10)
 disp(a)
--- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+-- 1   2   3   4   5   6   7   8   9  10
 disp(reverse(a)) -- or tt(a, {-1, 1})
--- {10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
+-- 10   9   8   7   6   5   4   3   2   1
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=round href=#m><code>round(x, n)</code></a></h4>
@@ -2499,11 +2501,11 @@ disp(b)
 --  0.7500   1.7500  -0.7500
 -- the solutions are
 disp((b^T)[1]) -- solution for Ax = b<sub>1</sub>
--- {1.75, -1.5, 0.75}
+-- 1.7500  -1.5000   0.7500
 disp((b^T)[2]) -- solution for Ax = b<sub>2</sub>
--- {-1.25, -1.50, 1.75}
+-- -1.2500  -1.5000   1.7500
 disp((b^T)[3]) -- solution for Ax = b<sub>3</sub>
--- {7.25, -3.5, -0.75}
+-- 7.2500  -3.5000  -0.7500
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=save href=#m><code>save(datafile, ...)</code></a></h4>
@@ -2515,9 +2517,6 @@ scripts. Note: Data like <code>x = {1, true, 'abc', c = {2, {3}, d = 'bcd'}}</co
 
 a = randi(100, 3, 2)
 disp(a)
---  48  43 -- it varies
---  71  72
---  66   5
 b = {1, 2, {3, {4, {5, 6, {7}}}}}
 c = 100
 save('data_1.lua')            -- save all user-defined variables and their values to a file,
@@ -2535,13 +2534,9 @@ print(a, b, c)
 
 dofile('data_2.lua') -- load/recover the data
 disp(a)
---  48  43
---  71  72
---  66   5
 disp(b)
--- {1, 2, {3, {4, {5, 6, {7}}}}}
-print(c)
--- nil
+
+print(c) -- nil
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=seq href=#m><code>seq(x, y, n)</code></a></h4>
@@ -2551,7 +2546,7 @@ print(c)
 
 x = seq(1, 10) -- same as range(1, 10)
 disp(x)
--- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+-- 1   2   3   4   5   6   7   8   9  10
 
 x = seq(0, 1, 10) -- same as linspace(0, 1, 10)
 display(x)
@@ -2593,14 +2588,14 @@ plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
 
 a = seq(10)
 disp(a)
--- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+-- 1   2   3   4   5   6   7   8   9  10
 sort(a, '@(x, y) x > y')
 disp(a)
--- {10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
+-- 10   9   8   7   6   5   4   3   2   1
 disp(sort(a, function(x, y) return x < y end)) -- same as sort(a)
--- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+-- 1   2   3   4   5   6   7   8   9  10
 disp(sort({2, 0, 2, 4}))
--- {0, 2, 2, 4}
+-- 0  2  2  4
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=var></a><a name=std href=#m><code>std(x, opt)</code>, <code>var(x, opt)</code></a></h4>

@@ -119,10 +119,10 @@ function iseven(x) return x % 2 == 0 end
 function isodd(x)  return x % 2 == 1 end
 
 local function _set_matrix_meta(A, vecq)
-  if vecq == nil then vecq = true end
   if type(A) ~= 'table' then return A end
+  if vecq == nil then vecq = true end
   if #A == 1 then
-    if vecq then A = A[1] end
+    if vecq and type(A[1]) == 'table' then A = A[1] end
   elseif type(A[1]) == 'table' then
     for i = 1, #A do setmetatable(A[i], mathly_meta) end
   end
