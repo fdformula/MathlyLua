@@ -671,31 +671,6 @@ rr(A, {1, -2, 1, -1}, {-1, 2}) -- from the last to the second
 -- 5  4  3
 -- 4  3  2
 -- 6  5  4
-
----------- 3 elementary row operations ----------
-A = mathly{{1, 2, 3, 4, 5}, {2, 3, 4, 5, 6}, {3, 4, 5, 6, 7}}
-disp(A)
--- 1  2  3  4  5
--- 2  3  4  5  6
--- 3  4  5  6  7
-
-A[3] = A[3] * 2         -- rowi := rowi * scaler
-disp(A)
--- 1   2   3   4   5
--- 2   3   4   5   6
--- 6   8  10  12  14
-
-A[2] = A[2] - A[1] * 2  -- rowj := rowj - rowi * scaler
-disp(A)
--- 1   2   3   4   5
--- 0  -1  -2  -3  -4
--- 6   8  10  12  14
-
-A[1], A[3] = A[3], A[1] -- interchange 2 rows
-disp(A)
--- 6   8  10  12  14
--- 0  -1  -2  -3  -4
--- 1   2   3   4   5
 </code></pre>
 <p>&#x2713; &nbsp; <code>tt(x, irange)</code> may be used to replace <a href=#subtable><code>subtable</code></a>. If <code>x</code> is a mathly matrix, it is converted to a table columnwisely first;
 if it is any other table, it is flattened first. Comparatively, <code>subtable</code> doesn't carry out any conversion.
