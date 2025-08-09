@@ -2117,10 +2117,13 @@ plotparametriccurve3d({'@(t) t*cos(t)', '@(t) t*sin(t)', '@(t) t'}, {0, 8*pi})
 <pre><code>mathly = require('mathly')
 
 plotparametricsurface3d({'@(u,v) u', '@(u,v) v', '@(u,v) sqrt(u^2 + v^2)'}, {-3, 3}, {-3, 3}, 'Demo')
-plotparametricsurface3d({
-  '@(u, v) 2*sin(u)*cos(v)',
-  '@(u, v) 2*sin(u)*sin(v)',
-  '@(u, v) 2*cos(v)'}, {0, pi}, {0, 2*pi})
+
+R = 5
+r = 2
+plotparametricsurface3d({ -- torus
+  '@(s,t) (R + r * cos(t)) * cos(s)',
+  '@(s,t) (R + r * cos(t)) * sin(s)',
+  '@(s,t) r * sin(t)'})
 
 do -- https://plotly.com/python/3d-surface-plots/
   local a, b, d = 1.32, 1, 0.8
