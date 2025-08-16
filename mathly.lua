@@ -3830,7 +3830,6 @@ end
 
 -----------[[ Set behaviours of +, -, *, and ^ -----------]]
 
--- type(m1) == 'table', type(m2) == 'number'
 function mathly.numtableadd(t, n, op)
   local function do_it(t)
     local v = {}
