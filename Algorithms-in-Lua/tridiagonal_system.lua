@@ -17,7 +17,7 @@
 
 require 'mathly';
 
-function tridiagonal_system(a, d, b, B)
+function solve_tridiagonal_system(a, d, b, B)
   local n = length(d)
   if length(a) ~= n - 1 or length(b) ~= n or length(B) ~= n then
     error("Error: vectors a, d, b, and B are not conformant.\n")
@@ -43,25 +43,13 @@ end
 
 --------- Test ---------
 function test()
-  -- size of matrix A
   local n = 10
 
   -- randomly generate A and B
   local A = randi({0, 100}, n, n)
   local B = randi({0, 100}, 1, n)
 
-  A = remake(A, {-1, 0, 1}) -- make A tridiagonal
-  -- this line can be the following code if translated to other language
-  --[[
-  for i = 1, n do
-    for j = 1, i - 2 do
-      A[i][j] = 0
-    end
-    for j = i + 2, n do
-      A[i][j] = 0
-    end
-  end
-  --]]
+  A = remake(A, {-1, 0, 1}) -- make a tridiagonal matrix from A
   print('The coefficient matrix:')
   disp(A)
 
@@ -72,26 +60,8 @@ function test()
   local a = tt(diag(A, 1))
   local d = tt(diag(A, 0))
   local b = tblcat(0, diag(A, -1)) -- b[1] = 0, a space holder
-  -- these three lines can be the following code if translated to other language
---[[
-  local a = zeros(1, n-1)
-  local b = zeros(1, n)
-  local d = zeros(1, n)
 
-  b[1] = 0
-  d[1] = A[1][1]
-  a[1] = A[1][2]
-  for i = 2, n - 1 do
-    b[i] = A[i][i - 1]
-    d[i] = A[i][i]
-    a[i] = A[i][i + 1]
-  end
-  b[n] = A[n][n - 1]
-  d[n] = A[n][n]
---]]
-
-  -- call user-defined function 'tridiagonal_system' to solve the tridiagonal system
-  local x = tridiagonal_system(a, d, b, copy(B))    -- MATLAB: B rather than copy(B)
+  local x = solve_tridiagonal_system(a, d, b, copy(B))
   print('The solution is as follows:')
   disp(x)
   -- verify if implementation is correct or not
@@ -100,4 +70,3 @@ function test()
 end
 
 test()
-
