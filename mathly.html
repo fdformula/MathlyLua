@@ -112,13 +112,13 @@ which is why the results of most operations on these row/column vectors and matr
 tables.</li>
 <p></p>
 <li>Mathly tables and matrices may simply be called mathly objects. Mathly objects and Lua tables can appear in same math
-expressions. Mathly converts Lua tables and mathly tables into mathly matrices of proper dimensions to complete the
-evaluation of the expressions. We may use mathly functions such as <code>cc</code>, <code>rr</code>, <code>tt</code>, and <code>T</code> to replace the
+expressions. Mathly automatically converts Lua tables and mathly tables into mathly matrices of proper dimensions to complete the
+evaluation of the expressions. We may use mathly functions such as <code>cc</code>, <code>rr</code>, <code>tt</code>, and <code>^T</code> to replace the
 automatic conversion by mathly.</li>
 <p></p>
 <li>In a vector/matrix operation involving Lua tables which are not mathly objects, there must be at least one mathly object
 to activate the operation. For example, <code>tt{1, 2} + {3, 4}</code>, <code>{1, 2} + tt{3, 4}</code>, <code>({1, 2} * tt{3, 4} + {5, 6}) * 7 - {8, 9}</code>,
-and <code>tt{1, 2} * {3, 4} + ({5, 6} - tt{8, 9}) * 7</code> all work.</li>
+and <code>tt{1, 2} * {3, 4} + ({5, 6} - tt{8, 9}) * 7</code>.</li>
 </ol>
 <pre><code>mathly = require('mathly')
 
