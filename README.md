@@ -81,8 +81,8 @@ package.path = "./?.luac;;"
 `eye`, `findroot`, `flatten`,  `fliplr`, `flipud`, `format`, `fstr2f`, `fzero`, `gcd`, `hasindex`, `input`, `inv`, `isinteger`, `iseven`, `isodd`, `ismatrix`, `ismember`,
 `isvector`, `lagrangepoly`, `length`, `linsolve`, `linspace`, `lu`, `map`, `match`, `mathly`, `max`, `mean`, `merge`, `min`, `mod`, `namedargs`, `newtonpoly`, `norm`,
 `ones`, `polynomial`, `polyval`, `powermod`, `printf`, `prod`, `qq`, `qr`, `rand`, `randi`, `randn`, `range`, `remake`, `repmat`, `reshape`, `reverse`, `round`, `rr`,
-`rref`, `save`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vertcat`,
-`who`, `zeros`; `bin2dec`, `oct2hex`, ...
+`rref`, `save`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vectorangle`,
+`vertcat`, `who`, `zeros`; `bin2dec`, `oct2hex`, ...
 
 `cat`, `cd`, `dir`, `isdir`, `isfile`, `iswindows`, `ls`, `mv`, `pwd`, `rm`
 
