@@ -239,8 +239,8 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <a href=#remake>remake</a>, <a href=#repmat>repmat</a>, <a href=#reshape>reshape</a>, <a href=#reverse>reverse</a>, <a href=#round>round</a>, <a href=#rr>rr</a>,
 <a href=#rref>rref</a>, <a href=#save>save</a>, <a href=#seq>seq</a>, <a href=#size>size</a>, <a href=#sort>sort</a>, <a href=#sprintf>sprintf</a>, <a href=#std>std</a>,
 <a href=#strcat>strcat</a>, <a href=#submatrix>submatrix</a>, <a href=#subtable>subtable</a>, <a href=#sum>sum</a>, <a href=#tblcat>tblcat</a>, <a href=#tic>tic</a>,
-<a href=#toc>toc</a>, <a href=#transpose>transpose</a>, <a href=#tt>tt</a>, <a href=#unique>unique</a>, <a href=#var>var</a>, <a href=#vertcat>vertcat</a>,
-<a href=#who>who</a>, <a href=#zeros>zeros</a>; <a href=#bin2dec>bin2dec</a>, <a href=#oct2hex>oct2hex, ...</a></p>
+<a href=#toc>toc</a>, <a href=#transpose>transpose</a>, <a href=#tt>tt</a>, <a href=#unique>unique</a>, <a href=#var>var</a>, <a href=#vectorangle>vectorangle</a>,
+<a href=#vertcat>vertcat</a>, <a href=#who>who</a>, <a href=#zeros>zeros</a>; <a href=#bin2dec>bin2dec</a>, <a href=#oct2hex>oct2hex, ...</a></p>
 
 <p><a href=#cat>cat</a>, <a href=#cd>cd</a>, <a href=#dir>dir</a>, <a href=#isdir>isdir</a>, <a href=#isfile>isfile</a>, <a href=#iswindows>iswindows</a>,
 <a href=#ls>ls</a>, <a href=#mv>mv</a>, <a href=#pwd>pwd</a>, <a href=#rm>rm</a></p>
@@ -377,6 +377,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#unique><code>unique(tbl)</code></a></td><td> </td><td>Return the same data as in table <code>tbl</code> but with no repetitions.</td></tr>
 <tr><td> </td><td><a href=#var><code>var(x, opt)</code></a></td><td> </td><td>Return the variance of numbers in <code>x</code>.</td></tr>
 <tr><td> </td><td><a href=#vectorfield2d><code>vectorfield2d(f, xrange, yrange, scale)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot the vector field of vector function <code>f(x, y)</code>.</td></tr>
+<tr><td> </td><td><a href=#vectorangle><code>vectorangle(a, b)</code></a></td><td> </td><td>Return the angle in radians between two vectors.</td></tr>
 <tr><td> </td><td><a href=#vertcat><code>vertcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order vertically. Matrices must have the same number of columns.</td></tr>
 <tr><td> </td><td><a href=#wedge><code>wedge(r, center, angles, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a wedge of a disk.</td></tr>
 <tr><td> </td><td><a name=who></a><code>who()</code></td><td> </td><td>List all user-defined variables in the memory.</td></tr>
@@ -2650,10 +2651,10 @@ plot(x, cos(x), point(-pi/3, cos(-pi/3)), text(-pi/3+0.3, cos(-pi/3) - 0.1, 'Poi
 plot(x, cos(x), text(0, -0.2, 'Demo', {family = 'Sans Serif', size = 28, color = '#00aaff'}))
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=toc></a><a name=tic href=#m><code>tic()</code>, <code>toc(...)</code></a></h4>
+<h4>&bull; &nbsp; <a name=toc></a><a name=tic href=#m><code>tic()</code>, <code>toc()</code></a></h4>
 <table><tbody>
 <tr><td width=20></td><td><code>tic()</code></td><td> </td><td width=10> </td><td>Start a wall-clock timer.</td></tr>
-<tr><td width=20></td><td><code>toc(...)</code></td><td> </td><td width=10> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
+<tr><td width=20></td><td><code>toc()</code></td><td> </td><td width=10> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
 </tbody></table>
 <pre><code>
 mathly = require('mathly')
@@ -2664,7 +2665,7 @@ for i = 1, 1000000 do
 end
 toc()
 
-x = toc(1) -- pass any non-nil value to toc to get the elapsed time; otherwise, print the elapsed time
+x = toc()
 printf("The loop took %.2f seconds.", x)
 </code></pre>
 
@@ -2699,6 +2700,21 @@ plot(vectorfield2d('@(x,y) {-y, -x}', {scale=10}), {layout={width=800, height=60
 
 plot(vectorfield2d('@(x,y) {y, sin(x)}', {xrange={-2*pi, 2*pi, pi/8}, scale=7}))
 plot(vectorfield2d('@(x,y) {3*cos(3*x), 2*cos(2*y)}', {-1, 1, 1/10}, {-1.5, 1.5, 1/10}, 15), {layout={width=600, height=700}})
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=vectorangle href=#m><code>vectorangle(a, b)</code></a></h4>
+<p>Return the angle in radians between two vectors.</p>
+<pre><code>mathly = require('mathly')
+
+vectorangle({1, 3}, {-3, 1})
+-- 1.5707963267949 (90.0 degree)
+
+x = vectorangle({1, 3}, {-3, 1})
+disp(x + 1)
+-- 2.5707963267949
+
+vectorangle({1, 0, 1}, {0, 1, 1})
+-- 1.0471975511966 (60.0 degree)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=vertcat href=#m><code>vertcat(A, B, ...)</code></a></h4>

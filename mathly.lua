@@ -24,7 +24,7 @@ FUNCTIONS PROVIDED IN THIS MODULE
     newtonpoly, norm, ones, polynomial, polyval, printf, prod, qq, qr, rand, randi,
     range, remake, repmat, reshape, round, rr, rref, save, seq, size, sort, sprintf,
     std, strcat, submatrix, subtable, sum, tblcat, text, tic, toc, transpose, tt,
-    unique, var, vertcat, who, zeros
+    unique, var, vectorangle, vertcat, who, zeros
 
     dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
     oct2hex, hex2bin, hex2dec, hex2oct
@@ -1342,23 +1342,26 @@ end -- _stdvar
 function std(x, opt) return _stdvar(x, opt, true) end
 function var(x, opt) return _stdvar(x, opt, false) end
 
--- calculates the dot/inner product if two vectors
+-- calculate the dot/inner product of two vectors
 function dot(a, b)
-  local t1 = flatten(a)
-  local t2 = flatten(b)
-  local v = 0
-  for i = 1, math.min(#t1, #t2) do
-    v = v + t1[i] * t2[i]
-  end
-  return v
+  local t1, t2 = flatten(a), flatten(b)
+  assert(#t1 == #t2, 'dot(a, b): a and b must be vectors of same size.')
+  return sum(t1 * t2)
 end
 
--- calculates the dot/inner product if two vectors
+-- calculate the cross product of two vectors
 function cross(a, b)
-  local t1 = flatten(a)
-  local t2 = flatten(b)
-  if #t1 ~= 3 or #t2 ~=3 then error('cross(a, b): a and b must be 3D vectors.') end
+  local t1, t2 = flatten(a), flatten(b)
+  assert(#t1 == 3 and #t2 ==3, 'cross(a, b): a and b must be 3D vectors.')
   return setmetatable({a[2] * b[3] - a[3] * b[2], a[3] * b[1] - a[1] * b[3], a[1] * b[2] - a[2] * b[1]}, mathly_meta)
+end
+
+-- calculate the angle between two vectors
+function vectorangle(a, b)
+  local t1, t2 = flatten(a), flatten(b)
+  assert(#t1 == #t2, 'vectorangle(a, b): a and b must be vectors of same size.')
+  local x = acos(dot(t1, t2) / (norm(t1) * norm(t2)))
+  return x, '(' .. tostring(deg(x)) .. ' degree)'
 end
 
 -- generates a evenly spaced sequence/table of numbers starting at 'start' and likely ending at 'stop' by 'step'.
@@ -1789,19 +1792,13 @@ end
 local elapsed_time = nil
 function tic() elapsed_time = os.clock() end
 
--- print elapsed time from last calling tic() if no values are passed to it;
--- return elapsed time from last calling tic() if any none-nil value is passed to it.
-function toc(print_not)
+-- return elapsed time from last calling tic()
+function toc()
   if elapsed_time == nil then
     print("Please call tic() first.")
-    if print_not ~= nil then return 0 end
+    return 0, ''
   end
-  local tmp = os.clock() - elapsed_time
-  if print_not == nil then
-    print(string.format("%.3f secs.", tmp))
-  else
-    return tmp
-  end
+  return os.clock() - elapsed_time, 'secs.'
 end
 
 -- remove the structure of a table and returns the resulted table.
