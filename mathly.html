@@ -2255,8 +2255,10 @@ disp(prod(a))
 
 
 <h4>&bull; &nbsp; <a name=qq href=#m><code>qq(c, t, f)</code></a></h4>
-<p>If <code>c</code> is true, return <code>t</code>; otherwise, return <code>f</code>.</p>
-<p>It is like the ternary operator in C/C++: <code>c? t : f</code>. It allows complicated logic in the <a href=#easyf>shortcut for defining an anonymous function</a>.</p>
+<p>It is like the ternary operator in C/C++: <code>c? t : f</code>. If <code>c</code> is true, return <code>t</code>; otherwise, return <code>f</code>.</p>
+<p>Its existence is simply for implementing complicated logic in the <a href=#easyf>shortcut for defining an anonymous function</a>.</p>
+<p>Note: <code>x = qq(c, expr1, expr2)</code> might be a worse choice than <code>if c then x = expr1 else x = expr2 end</code> when the evaluation of <code>expr1</code>
+and/or <code>expr2</code> is time-consuming because both <code>expr1</code> and <code>expr2</code> must be evaluated before passed to <code>qq(...)</code>.</p>
 <pre><code>mathly = require('mathly')
 x = 10
 -- the following two statements are equivalent.
@@ -2654,7 +2656,7 @@ plot(x, cos(x), text(0, -0.2, 'Demo', {family = 'Sans Serif', size = 28, color =
 <h4>&bull; &nbsp; <a name=toc></a><a name=tic href=#m><code>tic()</code>, <code>toc()</code></a></h4>
 <table><tbody>
 <tr><td width=20></td><td><code>tic()</code></td><td> </td><td width=10> </td><td>Start a wall-clock timer.</td></tr>
-<tr><td width=20></td><td><code>toc()</code></td><td> </td><td width=10> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
+<tr><td width=20></td><td><code>toc()</code></td><td> </td><td width=10> </td><td>Print or return elapsed time on a wall-clock timer. Note: The measurement on Linux can't be in milliseconds.</td></tr>
 </tbody></table>
 <pre><code>
 mathly = require('mathly')

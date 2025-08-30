@@ -1068,7 +1068,12 @@ function isfile(fname)
 end
 
 function isdir(fname)
-  local cmd = qq(__is_windows, 'dir /A:D "' .. fname .. '" > nul 2>&1', 'test -d "' .. fname .. '" > /dev/null 2>/dev/null')
+  local cmd
+  if __is_windows then
+    cmd = 'dir /A:D "' .. fname .. '" > nul 2>&1'
+  else
+    cmd = 'test -d "' .. fname .. '" > /dev/null 2>/dev/null'
+  end
   return os.execute(cmd) ~= nil
 end
 
@@ -1096,7 +1101,7 @@ function ls(path, re, printq)
       end
       re = x
     end
-    path = qq(path1 == '', pwd(), path1)
+    if path1 == '' then path = pwd() else path = path1 end
     if rootq and not __is_windows then path = sep .. path end
   end
   re = re:gsub('%.', '%%.')
@@ -1790,7 +1795,11 @@ end
 --// tic()
 -- start a time stamp to measure elapsed time
 local elapsed_time = nil
-function tic() elapsed_time = os.clock() end
+-- os.clock() behaves differently in various platforms!!!
+function _elapsed_time()
+  if __is_windows then return os.clock() else return os.time() end
+end
+function tic() elapsed_time = _elapsed_time() end
 
 -- return elapsed time from last calling tic()
 function toc()
@@ -1798,7 +1807,7 @@ function toc()
     print("Please call tic() first.")
     return 0, ''
   end
-  return os.clock() - elapsed_time, 'secs.'
+  return _elapsed_time() - elapsed_time, 'secs.'
 end
 
 -- remove the structure of a table and returns the resulted table.
@@ -3868,7 +3877,15 @@ function mathly.add_sub_shared(m1, m2, op)
 
   local msg = 'm1 ' .. op .. ' m2: dimensions do not match.'
 	local t = {}
-  local M1, M2 = qq(rc == 0, m1, qq(rc == 1, rr(m1), cc(m1))), qq(rc == 0, m2, qq(rc == 1, rr(m2), cc(m2)))
+  local M1, M2 -- removed qq(..(qq(..)))
+  if rc == 0 then
+    M1, M2 = m1, m2
+  elseif rc == 1 then
+    M1, M2 = rr(m1), rr(m2)
+  else
+    M1, M2 = cc(m1), cc(m2)
+  end
+
 	local d11, d12 = size(M1)
 	local d21, d22 = size(M2)
 	if d11 ~= d21 or d12 ~= d22 then error(msg) end
