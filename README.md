@@ -128,12 +128,11 @@ disp(E)
 
 -- matrix/table "division" is elementwise, provided for convenience only
 x = {1, 2, 3, 4, 5}
-rr(x) / 10
-1 / (2 * rr(x) + 1)
-x / cc(cos(x))
+2 * tt(x) + x - 1
+x / (2 * cos(x) + 3)
 
 A = mathly{{1, 2}, {3, 4}}
-1 / A
+1 / (2 * A - 1)
 {{2, 3}, {4, 5}} / A
 
 -- elementary row operations
