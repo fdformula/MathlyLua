@@ -21,7 +21,7 @@ simple and so natural a language that students without programming skills can un
 
 ## Which version of Lua is needed?
 
-Mathly is developed in Lua 5.4.6. It works with the present newest version 5.4.7. It might work with previous versions.
+Mathly is developed in Lua 5.4.6. It works with the present newest version 5.4.8. It might work with previous versions.
 
 You may download Lua source code in https://lua.org/ and compile it yourself or simply download prebuilt binary commands
 for Microsoft Windows in, say, https://joedf.github.io/LuaBuilds/ and https://www.nuget.org/packages/lua/. Another way to get prebuilt Lua is to download
