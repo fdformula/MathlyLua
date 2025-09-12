@@ -245,7 +245,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <p><a href=#cat>cat</a>, <a href=#cd>cd</a>, <a href=#dir>dir</a>, <a href=#isdir>isdir</a>, <a href=#isfile>isfile</a>, <a href=#iswindows>iswindows</a>,
 <a href=#ls>ls</a>, <a href=#mv>mv</a>, <a href=#pwd>pwd</a>, <a href=#rm>rm</a></p>
 
-<p><a href=#plot>plot</a>; <a href=#plot3d>plot3d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>,
+<p><a href=#manipulate>manipulate</a>, <a href=#plot>plot</a>; <a href=#plot3d>plot3d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>,
 <a href=#plotparametricsurface3d>plotparametricsurface3d</a>, <a href=#plotsphericalsurface3d>plotsphericalsurface3d</a></p>
 
 <p><a href=#arc>arc</a>, <a href=#circle>circle</a>, <a href=#contourplot>contourplot</a>, <a href=#line>line</a>, <a href=#parametriccurve2d>parametriccurve2d</a>,
@@ -314,6 +314,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#linspace><code>linspace(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</td></tr>
 <tr><td> </td><td><a href=#ls><code>ls(path, printq)</code></a></td><td> </td><td>List files in the folder <code>path</code> (the current directory by default).</td></tr>
 <tr><td> </td><td><a href=#lu><code>lu(A)</code></a></td><td> </td><td>Return <code>L</code> and <code>U</code> of LU factorization <code>A = LU</code>.</td></tr>
+<tr><td> </td><td><a href=#manipulate><code>manipulate(f, opts)</code></a></td><td> </td><td>Animate the graph of function <code>f</code> with controls.</td></tr>
 <tr><td> </td><td><a href=#map><code>map(f, tbl1, tbl2, ...)</code></a></td><td> </td><td>Apply function <code>f</code> to each corresponding atomic element in tables, <code>tbl1, tbl2, ...</code>, and return the result.</td></tr>
 <tr><td> </td><td><a href=#match><code>match(tbl, f)</code></a></td><td> </td><td>Return elements of table <code>tbl</code> that satisfy specified conditions.</td></tr>
 <tr><td> </td><td><a href=#mathly><code>mathly(...)</code></a></td><td> </td><td>Constructor of mathly matrices.</td></tr>
@@ -1626,6 +1627,26 @@ disp(L * U - A)
 --      0  0.0000  0.0000
 -- 0.0000  0.0000  0.0000
 -- 0.0000  0.0000  0.0000
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=manipulate href=#m><code>manipulate(f, ...)</code></a></h4>
+<p>Animate the graph of a single-variable function <code>f(x)</code> with controls. Each control is a single letter, <code>a, b, ..., z</code>, except <code>x, y</code>, and <code>t</code>.</p>
+<p>For example, the following code shows how to call the function to view the effect of controls, <code>a, h</code>, and <code>k</code>, in <code>f(x) = a(x - h)^2 + k</code>.</p>
+<p>Note: Show no title? Add title = ''; Want square aspect ratio? Do not include the range for <code>y</code>.</p>
+<pre><code>mathly = require('mathly')
+
+fstr = '@(x) a * (x - h)^2 + k'
+opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}, y = {-100, 100}, title = ''} -- show no title
+manipulate(fstr, opts)
+
+opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}, y = {-100, 100},  title = 'Manipulation'}
+manipulate(fstr, opts)
+
+opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}, y = {-100, 100}} -- the function is the title
+manipulate(fstr, opts)
+
+opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}} -- no yrange is provided? use square aspect ratio
+manipulate(fstr, opts)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=map href=#m><code>map(f, tbl1, tbl2, ...)</code></a></h4>

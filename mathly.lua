@@ -2490,6 +2490,211 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
   _3d_plotq = false
 end -- plotparametriccurve3d
 
+local function __parse_animate_args(fstr, opts)
+  local cs = {} -- controls[i], ith control
+  local rs = {} -- ranges[i], ranges of the ith control
+
+  -- controls are each a single symbol such as a, h, and k in a*(x-h)^2+k
+  local xr = opts.x or {-5, 5}
+  local _, expr = string.match(fstr, '^%s*@%s*(%(%s*[%w,%s]*%))%s*(.+)%s*$')
+  local x = string.gmatch(fstr, "[^(%@%s|%(|%)|%{|%}|%[|%]|%+|%-|%*|%^|%/)]+")
+  for c in x do
+    if #c == 1 then
+      if c == 'x' or c == 'y' or c == 't' or (c >= '0' and c <= '9') then
+      else
+        cs[#cs + 1] = c
+        if opts[c] ~= nil then
+          rs[#rs + 1] = opts[c]
+        else
+          error("Range of control '" .. c .. "' is not specified.")
+        end
+      end
+    end
+  end
+  for i = 1, #rs do
+    if type(rs[i]) ~= 'table' then error('Range of ' .. cs[i] .. ' is invalid.') end
+  end
+  if type(xr) ~= 'table' or xr[1] >= xr[2] then error('Range of x is invalid.') end
+  for i = 1, #rs do rs[i] = _plot_interval(rs[i]) end
+
+  local jexpr = string.gsub(expr, "%^", "**")
+  jexpr = string.gsub(jexpr, "sin", "Math.sin")
+  jexpr = string.gsub(jexpr, "cos", "Math.cos")
+  jexpr = string.gsub(jexpr, "tan", "Math.tan")
+  jexpr = string.gsub(jexpr, "exp", "Math.exp")
+  jexpr = string.gsub(jexpr, "log", "Math.log")
+  jexpr = string.gsub(jexpr, "sqrt", "Math.sqrt")
+
+  return cs, rs, xr, opts.y, opts.title, expr, jexpr
+end -- __parse_animate_args
+
+local function _write_manipulate_html(fname, cs, rs, xr, yr, title, expr, jexpr)
+  local file = io.open(fname, "w")
+  if file == nil then
+    print(string.format("Failed to create %s. The very device might not be writable.", fname))
+    return
+  end
+  local s = [[<!DOCTYPE html>
+<html>
+<head>
+ <title>Mathly Function Animation</title>
+ <script src="%s"></script>
+<style>
+label {
+ display: inline-block;
+ width: 10px;
+ left: 50px;
+ text-align: left;
+ vertical-align: middle;
+ position: absolute;
+}
+input {
+ display: inline-block;
+ width: 200px;
+ left: 65px;
+ vertical-align: middle;
+ position: absolute;
+}
+input:focus {outline: none;}
+</style>
+</head>
+<body>
+<input type='text' id='title' style="width:600px;left:0px;text-align:center;border:none;"></input>
+<div id="mathlyDiv" style="width:600px;height:600px;display:inline-block;top:%dpx;position:absolute;"></div>
+<!-- controls -->
+]]
+  file:write(string.format(s, plotly_engine, 50 + 30 * (#cs - 2)))
+
+  local top = 60 -- sliders
+  for i = 1, #cs do
+    s = [[<label for="slider%d" style='top:%dpx;'>%s:</label>
+<input type="range" id="slider%d" min="%f" max="%f" value="%f" style='top:%dpx;' step="%f"></input><span id="slider%dvalue" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>
+]]
+    if (rs[i][2] - rs[i][1]) / rs[i][3] < 5 then rs[i][3] = (rs[i][2] - rs[i][1]) / 5 end
+    s = string.format(s, i, top, cs[i], i, rs[i][1], rs[i][2], rs[i][1], top, rs[i][3], i, 275, top)
+    top = top + 30
+    file:write(s)
+  end
+  file:write('\n<script type="text/javascript">\nconst x = [];\n')
+
+  local h = (xr[2] - xr[1]) / 1000
+  s = string.format("for (let i = %f; i <= %f; i += %f) { x.push(i); }\n", xr[1], xr[2], h)
+  file:write(s)
+
+  s = [[
+
+const layout = {
+ xaxis: { range: [%f, %f] }, // plot with fixed axes
+]]
+  file:write(string.format(s, xr[1], xr[2]))
+  if yr == nil then
+    file:write(string.format(" yaxis: { range: [%f, %f], scaleanchor: 'x', scaleratio: 1 }", xr[1], xr[2])) -- no yrange is provided? square aspect ratio
+  else
+    if type(yr) ~= 'table' or yr[1] >= yr[2] then error('Range of y is invalid.') end
+    file:write(string.format(" yaxis: { range: [%f, %f] }", yr[1], yr[2]))
+  end
+
+  if title == nil then title = 'y = ' .. expr end
+  s = [[
+
+};
+
+var title = document.getElementById('title');
+title.value = "%s";
+]]
+  file:write(string.format(s, title))
+  for i = 1, #cs do
+    file:write(string.format("var slider%d = document.getElementById('slider%d');\n", i, i))
+  end
+
+  for i = 1, #cs do -- values of control sliders
+    file:write(string.format("var %s = Number(slider%d.value);\n", cs[i], i))
+  end -- why Number(...)? Values of sliders in JavaScript are STRINGS!
+
+  s = [[
+
+const initialData = [{
+  x: x,
+  y: x.map(x => %s),
+  mode: 'lines',
+  line: { simplify: false }
+}];
+
+function animatePlot() {
+]]
+  file:write(string.format(s, jexpr))
+
+  for i = 1, #cs do -- values of control sliders
+    file:write(string.format("  %s = Number(slider%d.value);\n", cs[i], i))
+  end
+
+  s = [[
+  Plotly.animate('mathlyDiv', {
+    data: [{ x: x, y: x.map(x => %s) }]
+  }, {
+    transition: { duration: 0 },
+    frame: { duration: 0 }
+  });
+}
+
+]]
+  file:write(string.format(s, jexpr))
+
+  for i = 1, #cs do -- slider event handlers
+    s = [[
+document.getElementById("slider%dvalue").innerHTML = slider%d.value;
+slider%d.addEventListener("input", function() { document.getElementById("slider%dvalue").innerHTML = slider%d.value; animatePlot() });
+]]
+    file:write(string.format(s, i, i, i, i, i))
+  end
+
+  file:write([[
+
+Plotly.newPlot('mathlyDiv', initialData, layout);
+animatePlot();
+setInterval(animatePlot, 1500); // animate every 1.5 seconds
+</script>
+</body>
+</html>
+]])
+  file:close()
+end -- _write_manipulate_html
+
+-- vvvvvvvvvvv from dkjson 2.8 (at the end of this source file) vvvvvvvvvvv --
+local _open_cmd -- this needs to stay outside the function, or it'll re-sniff every time...
+local function _open_url(url)
+  if not _open_cmd then
+    if __is_windows then
+      _open_cmd = function(url)
+        -- os.execute(string.format('start "%s"', url))
+        os.execute(string.format('"%s" %s', win_browser, url))
+      end
+    elseif (io.popen("uname -s"):read'*a'):sub(1, 6) == "Darwin" then
+      _open_cmd = function(url)
+        -- I cannot test, but this should work on modern Macs.
+        -- os.execute(string.format('open "%s"', url))
+        os.execute(string.format('%s "%s"', mac_browser, url))
+      end
+    else -- that ought to only leave Linux
+      _open_cmd = function(url)
+        -- should work on X-based distros.
+        -- os.execute(string.format('xdg-open "%s"', url))
+        os.execute(string.format('%s "%s"', linux_browser, url))
+      end
+    end
+  end
+  _open_cmd(url)
+end
+-- ^^^^^^^^^^^ from dkjson 2.8 (at the end of this source file) ^^^^^^^^^^^ --
+
+-- manipulate interactively the graph of f(x) with 'controls'
+function manipulate(fstr, opts) -- Mathematica
+  local cs, rs, xr, yr, title, expr, jexpr = __parse_animate_args(fstr, opts)
+  _write_manipulate_html(tmp_plot_html_file, cs, rs, xr, yr, title, expr, jexpr)
+  _open_url(tmp_plot_html_file)
+  print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
+end
+
 local function _freq_distro(x, nbins, xmin, xmax, width)
   nbins = nbins or 10
   x = sort(x)
@@ -4175,34 +4380,6 @@ local _writehtml_failedq = false
 
 -- From: https://stackoverflow.com/questions/11163748/open-web-browser-using-lua-in-a-vlc-extension#18864453
 -- Attempts to open a given URL in the system default browser, regardless of Operating System.
-local _open_cmd -- this needs to stay outside the function, or it'll re-sniff every time...
-local function _open_url(url)
-  if not _open_cmd then
-    if __is_windows then
-      _open_cmd = function(url)
-        -- Should work on anything since (and including) win'95
-        --- os.execute(string.format('start "%s"', url))
-        os.execute(string.format('"%s" %s', win_browser, url))
-      end
-    -- the only systems left should understand uname...
-    elseif (io.popen("uname -s"):read'*a'):sub(1, 6) == "Darwin" then
-      _open_cmd = function(url)
-        -- I cannot test, but this should work on modern Macs.
-        -- os.execute(string.format('open "%s"', url))
-        os.execute(string.format('%s "%s"', mac_browser, url))
-      end
-    else -- that ought to only leave Linux
-      _open_cmd = function(url)
-        -- should work on X-based distros.
-        -- os.execute(string.format('xdg-open "%s"', url))
-        os.execute(string.format('%s "%s"', linux_browser, url))
-      end
-    end
-  end
-
-  _open_cmd(url)
-end -- _open_url
-
 -- Figure metatable
 local figure = {}
 
