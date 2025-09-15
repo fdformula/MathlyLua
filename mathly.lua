@@ -2490,33 +2490,7 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
   _3d_plotq = false
 end -- plotparametriccurve3d
 
-local function __parse_animate_args(fstr, opts)
-  local cs = {} -- controls[i], ith control
-  local rs = {} -- ranges[i], ranges of the ith control
-
-  -- controls are each a single symbol such as a, h, and k in a*(x-h)^2+k
-  local xr = opts.x or {-5, 5}
-  local _, expr = string.match(fstr, '^%s*@%s*(%(%s*[%w,%s]*%))%s*(.+)%s*$')
-  local x = string.gmatch(fstr, "[^(%@%s|%(|%)|%{|%}|%[|%]|%+|%-|%*|%^|%/)]+")
-  for c in x do
-    if #c == 1 then
-      if c == 'x' or c == 'y' or c == 't' or (c >= '0' and c <= '9') then
-      else
-        cs[#cs + 1] = c
-        if opts[c] ~= nil then
-          rs[#rs + 1] = opts[c]
-        else
-          error("Range of control '" .. c .. "' is not specified.")
-        end
-      end
-    end
-  end
-  for i = 1, #rs do
-    if type(rs[i]) ~= 'table' then error('Range of ' .. cs[i] .. ' is invalid.') end
-  end
-  if type(xr) ~= 'table' or xr[1] >= xr[2] then error('Range of x is invalid.') end
-  for i = 1, #rs do rs[i] = _plot_interval(rs[i]) end
-
+local function _to_jscript_functions(expr)
   local jexpr = string.gsub(expr, "%^", "**")
   jexpr = string.gsub(jexpr, "sin", "Math.sin")
   jexpr = string.gsub(jexpr, "cos", "Math.cos")
@@ -2524,14 +2498,131 @@ local function __parse_animate_args(fstr, opts)
   jexpr = string.gsub(jexpr, "exp", "Math.exp")
   jexpr = string.gsub(jexpr, "log", "Math.log")
   jexpr = string.gsub(jexpr, "sqrt", "Math.sqrt")
+  return jexpr
+end
 
-  return cs, rs, xr, opts.y, opts.title, expr, jexpr
+local function __parse_animate_args(fstr, opts, animateq)
+  local cs = {} -- controls[i], ith control; a control is a single symbol such as a, h, and k in a*(x-h)^2+k
+  local rs = {} -- ranges[i], ranges of the ith control
+  if animateq then cs[1] = 'p'; rs[1] = {0, 1, 1/1000} end -- 'p' (play) is reserved for animation
+
+  local xr = opts.x or {-5, 5}
+  if type(xr) ~= 'table' or xr[1] >= xr[2] then error('Range of x is invalid.') end
+
+  local fregex = '^%s*@%s*(%(%s*[%w,%s]*%))%s*(.+)%s*$' -- catch expression of a function
+  local xexpr, yexpr, s
+  if type(fstr) == 'string' then
+    s = fstr
+    xexpr = nil
+    _, yexpr = string.match(fstr, fregex)
+  elseif type(fstr) == 'table' and #fstr == 2 and type(fstr[1]) == 'string' and type(fstr[2]) == 'string' then
+    _, xexpr = string.match(fstr[1], fregex)
+    _, yexpr = string.match(fstr[2], fregex)
+    s = fstr[1] .. ' ' .. yexpr
+  else
+    error("manipulate({xfstr, yfstr}, ...): xfstr and yfstr must be paramatric equations of x(t) and y(t) in strings.")
+  end
+  for c in string.gmatch(s, "[^(%@%s|%(|%)|%{|%}|%[|%]|%+|%-|%*|%^|%/)]+") do
+    if #c == 1 and not (c == 'p' or c == 'x' or c == 'y' or c == 't' or (c >= '0' and c <= '9') or ismember(c , cs)) then -- a new control?
+      if opts[c] ~= nil then
+        if type(opts[c]) ~= 'table' then error('Range of ' .. c .. ' is invalid.') end
+      else
+        error("Range of control '" .. c .. "' is not specified.")
+      end
+      cs[#cs + 1] = c
+      rs[#rs + 1] = opts[c]
+    end
+  end
+  for i = 1, #rs do rs[i] = _plot_interval(rs[i]) end
+  local jyexpr = _to_jscript_functions(yexpr)
+  local jxexpr, tr = nil, nil
+  if xexpr ~= nil then
+    jxexpr = _to_jscript_functions(xexpr)
+    if opts.t == nil or type(opts.t) ~= 'table' or opts.t[1] >= opts.t[2] then
+      error('Range of parameter t is not specified, or it is invalid.')
+    end
+    tr = opts.t
+  end
+
+  local enhancements = copy(opts.enhancements)
+  if enhancements ~= nil then -- point, line, parametriceqs
+    if type(enhancements) ~= 'table' or type(enhancements[1]) ~= 'table' then
+      error('manipulate: opts.enhancements must be a list of lists.')
+    end
+    for i = 1, #enhancements do
+      if enhancements[i].line then -- { x = {-4, 2}, y = {3, 4}, color = 'blue', width = 2, line = true}
+      elseif enhancements[i].point then -- { x = 5.1, y = 9.2, color = 'blue', size = 3, point = true}
+      elseif enhancements[i].parametriceqs or (type(enhancements[i].x) == 'string' and type(enhancements[i].y) == 'string') then
+        if xexpr ~= nil then
+          _, s = string.match(enhancements[i].x, fregex) -- {x = '@(t) ...', y = @(t) ...', color = 'red', width = 5, parametriceqs = true}
+          enhancements[i].x = _to_jscript_functions(s)
+          _, s = string.match(enhancements[i].y, fregex)
+          enhancements[i].y = _to_jscript_functions(s)
+          enhancements[i].parametriceqs = true
+        else
+          error("manipulate: enhancements can't take parametric equations because the main graph is not of parametric equations.")
+        end
+      end
+    end
+  end
+  return cs, rs, xr, opts.y, tr, opts.title, xexpr, yexpr, jxexpr, jyexpr, enhancements
 end -- __parse_animate_args
 
-local function _write_manipulate_html(fname, cs, rs, xr, yr, title, expr, jexpr)
+local function _jscript_animate_traces(varq, tr, file, xexpr, jxexpr, jyexpr, enhancements, animateq)
+  local head, vstr = "", "var "
+  local format = string.format
+  local function fmtio(v, s)
+    if type(v) == 'string' then
+      v = _to_jscript_functions(v); file:write(format("%s = eval('%s');\n", s, v))
+    else
+      file:write(format("%s = %f;\n", s, v))
+    end
+  end
+  if not varq then head, vstr = "  ", "" end
+  file:write(format('%s%strace0 = { ', head, vstr))
+  if xexpr == nil then
+    if animateq then s = format("x = []; for (let i = %f; i <= slider1.value * %f; i += %f) { x.push(i); }\n", xr[1], xr[2], (xr[2] - xr[1]) / 500) end
+    file:write(format("x: x, y: x.map(x => %s),", jyexpr))
+  else -- parametric eqs
+    if animateq then s = format("t = []; for (let i = %f; i <= slider1.value * %f; i += %f) { t.push(i); }\n", tr[1], tr[2], (tr[2] - tr[1]) / 500) end
+    file:write(format("x: t.map(t => %s), y: t.map(t => %s),", jxexpr, jyexpr))
+  end
+  file:write(" mode: 'lines', line: { simplify: false } };\n") -- false, color: 'red'}
+
+  local j = 1
+  if enhancements ~= nil then
+     for i = 1, #enhancements do
+       if enhancements[i].line then
+         fmtio(enhancements[i].x[1], 'x1'); fmtio(enhancements[i].x[2], 'x2')
+         fmtio(enhancements[i].y[1], 'y1'); fmtio(enhancements[i].y[2], 'y2')
+         file:write(format("%s%strace%d = { x: [x1, x2], y: [y1, y2], mode: 'lines', line: { color: '%s', width: %d } };\n",
+                    head, vstr, j, enhancements[i].color or 'black', enhancements[i].width or 3))
+         j = j + 1
+       elseif enhancements[i].point then
+         fmtio(enhancements[i].x, 'x1'); fmtio(enhancements[i].y, 'y1')
+         file:write(format("%s%strace%d = { x: [x1], y: [y1], mode: 'markers', marker: { color: '%s', size: %d } };\n",
+                    head, vstr, j, enhancements[i].color or 'black', enhancements[i].size or 8))
+         j = j + 1
+       elseif enhancements[i].parametriceqs then
+         local tr1 = enhancements[i].t
+         if tr1 == nil then tr1 = tr end
+         if varq then file:write(format("var trace%d;\n", j)) end
+         file:write(format("%sif (true) {\n  %sconst t = [];\n", head, head))
+         file:write(format("  %sfor (let i = %f; i <= %f; i += %f) { t.push(i); }\n", head, tr1[1], tr1[2], (tr1[2] - tr1[1]) / 500))
+         file:write(format("  %strace%d = { x: t.map(t => %s), y: t.map(t => %s), mode: 'lines', line: { simplify: false, color: '%s', width: %d } };\n%s};\n",
+                    head, j, enhancements[i].x, enhancements[i].y, enhancements[i].color or 'black', enhancements[i].width or 3, head))
+         j = j + 1
+       end
+     end
+  end
+  return j - 1
+end
+
+local function _write_manipulate_html(fname, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, animateq)
   local file = io.open(fname, "w")
+  local format = string.format
   if file == nil then
-    print(string.format("Failed to create %s. The very device might not be writable.", fname))
+    print(format("Failed to create %s. The very device might not be writable.", fname))
     return
   end
   local s = [[<!DOCTYPE html>
@@ -2563,7 +2654,7 @@ input:focus {outline: none;}
 <div id="mathlyDiv" style="width:600px;height:600px;display:inline-block;top:%dpx;position:absolute;"></div>
 <!-- controls -->
 ]]
-  file:write(string.format(s, plotly_engine, 50 + 30 * (#cs - 2)))
+  file:write(format(s, plotly_engine, 50 + 30 * (#cs - 2)))
 
   local top = 60 -- sliders
   for i = 1, #cs do
@@ -2571,88 +2662,96 @@ input:focus {outline: none;}
 <input type="range" id="slider%d" min="%f" max="%f" value="%f" style='top:%dpx;' step="%f"></input><span id="slider%dvalue" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>
 ]]
     if (rs[i][2] - rs[i][1]) / rs[i][3] < 5 then rs[i][3] = (rs[i][2] - rs[i][1]) / 5 end
-    s = string.format(s, i, top, cs[i], i, rs[i][1], rs[i][2], rs[i][1], top, rs[i][3], i, 275, top)
+    s = format(s, i, top, cs[i], i, rs[i][1], rs[i][2], rs[i][1], top, rs[i][3], i, 275, top)
     top = top + 30
     file:write(s)
   end
-  file:write('\n<script type="text/javascript">\nconst x = [];\n')
+  file:write('\n<script type="text/javascript">\nvar x = [];\nvar t = [];\nvar x1, x2, y1, y2;\n')
 
-  local h = (xr[2] - xr[1]) / 1000
-  s = string.format("for (let i = %f; i <= %f; i += %f) { x.push(i); }\n", xr[1], xr[2], h)
-  file:write(s)
-
-  s = [[
-
-const layout = {
- xaxis: { range: [%f, %f] }, // plot with fixed axes
-]]
-  file:write(string.format(s, xr[1], xr[2]))
+  file:write(format("\nconst layout = {\n  xaxis: { range: [%f, %f] }, // plot with fixed axes\n", xr[1], xr[2]))
   if yr == nil then
-    file:write(string.format(" yaxis: { range: [%f, %f], scaleanchor: 'x', scaleratio: 1 }", xr[1], xr[2])) -- no yrange is provided? square aspect ratio
+    file:write(format("  yaxis: { range: [%f, %f], scaleanchor: 'x', scaleratio: 1 }", xr[1], xr[2])) -- no yrange is provided? square aspect ratio
   else
     if type(yr) ~= 'table' or yr[1] >= yr[2] then error('Range of y is invalid.') end
-    file:write(string.format(" yaxis: { range: [%f, %f] }", yr[1], yr[2]))
+    file:write(format("  yaxis: { range: [%f, %f] }", yr[1], yr[2]))
   end
+  file:write(",\n  showlegend: false\n};\n\n")
+  if title == nil then
+    if xexpr == nil then
+      title = 'y = ' .. yexpr
+    else
+      title = 'x(t) = ' .. xexpr .. ', y(t) = ' .. yexpr
+    end
+  end
+  file:write("var title = document.getElementById('title');\ntitle.value = '" .. title .. "';\n")
 
-  if title == nil then title = 'y = ' .. expr end
-  s = [[
-
-};
-
-var title = document.getElementById('title');
-title.value = "%s";
-]]
-  file:write(string.format(s, title))
   for i = 1, #cs do
-    file:write(string.format("var slider%d = document.getElementById('slider%d');\n", i, i))
+    file:write(format("var slider%d = document.getElementById('slider%d');\n", i, i))
   end
 
   for i = 1, #cs do -- values of control sliders
-    file:write(string.format("var %s = Number(slider%d.value);\n", cs[i], i))
+    file:write(format("var %s = Number(slider%d.value);\n", cs[i], i))
   end -- why Number(...)? Values of sliders in JavaScript are STRINGS!
 
-  s = [[
+  if not animateq then file:write("p = 1;\n") end
+  if xexpr ~= nil then -- parametric eqs
+    s = format("for (let i = %f; i <= p * (%f - %f) + %f; i += %f) { t.push(i); }\n", tr[1], tr[2], tr[1], tr[1], (tr[2] - tr[1]) / 500)
+  else
+    s = format("for (let i = %f; i <= p * (%f - %f) + %f; i += %f) { x.push(i); }\n", xr[1], xr[2], xr[1], xr[1], (xr[2] - xr[1]) / 500)
+  end
+  file:write(s)
 
-const initialData = [{
-  x: x,
-  y: x.map(x => %s),
-  mode: 'lines',
-  line: { simplify: false }
-}];
+  local j = _jscript_animate_traces(true, tr, file, xexpr, jxexpr, jyexpr, enhancements)
 
-function animatePlot() {
-]]
-  file:write(string.format(s, jexpr))
-
-  for i = 1, #cs do -- values of control sliders
-    file:write(string.format("  %s = Number(slider%d.value);\n", cs[i], i))
+  file:write("\nconst initialData = [trace0")
+  for k = 1, j do file:write(format(", trace%d", k)) end
+  file:write("]\n\n")
+  -- X, Y, T - values at the last/present point of a curve
+  if animateq then
+    if xexpr ~= nil then
+      file:write(format("let tmp = t[t.length - 1];\nvar X, Y, T;\nif (true) { const t = tmp; X = %s; Y = %s; T = tmp; };\n\n", jxexpr, jyexpr))
+    else
+      file:write(format("let tmp = x[x.length - 1];\nvar X, Y;\nif (true) { var x = tmp; X = tmp; Y = %s; }\n\n", jyexpr))
+    end
   end
 
-  s = [[
-  Plotly.animate('mathlyDiv', {
-    data: [{ x: x, y: x.map(x => %s) }]
-  }, {
-    transition: { duration: 0 },
-    frame: { duration: 0 }
-  });
-}
+  file:write("function animatePlot() {\n")
+  for i = 1, #cs do -- values of control sliders
+    file:write(format("  %s = Number(slider%d.value);\n", cs[i], i))
+  end
 
-]]
-  file:write(string.format(s, jexpr))
+  if animateq then
+    if xexpr ~= nil then -- parametric eqs
+      file:write(format("  t = []; for (let i = %f; i <= p * (%f - %f) + %f; i += %f) { t.push(i); };\n  T = t[t.length - 1];\n", tr[1], tr[2], tr[1], tr[1], (tr[2] - tr[1]) / 500))
+      file:write(format("  if (true) { const t = T; X = %s; Y = %s; };\n", jxexpr, jyexpr))
+    else
+      file:write(format("  x = []; for (let i = %f; i <= p * (%f - %f) + %f; i += %f) { x.push(i); };\n  X = x[x.length - 1];", xr[1], xr[2], xr[1], xr[1], (xr[2] - xr[1]) / 500))
+      file:write(format("  if (true) { const x = X; Y = %s; T = x; };\n", jyexpr))
+    end
+  end
+
+  j = _jscript_animate_traces(false, tr, file, xexpr, jxexpr, jyexpr, enhancements)
+
+  file:write("  Plotly.animate('mathlyDiv', {\n")
+  file:write("    data: [trace0")
+  for k = 1, j do file:write(format(", trace%d", k)) end
+  file:write("],\n    traces: [0")
+  for k = 1, j do file:write(format(", %d", k)) end
+  file:write("] // update all traces\n  }, {\n    transition: { duration: 0 },\n    frame: { duration: 0 }\n  });\n}\n\n")
 
   for i = 1, #cs do -- slider event handlers
     s = [[
 document.getElementById("slider%dvalue").innerHTML = slider%d.value;
 slider%d.addEventListener("input", function() { document.getElementById("slider%dvalue").innerHTML = slider%d.value; animatePlot() });
 ]]
-    file:write(string.format(s, i, i, i, i, i))
+    file:write(format(s, i, i, i, i, i))
   end
 
   file:write([[
 
 Plotly.newPlot('mathlyDiv', initialData, layout);
 animatePlot();
-setInterval(animatePlot, 1500); // animate every 1.5 seconds
+setInterval(animatePlot, 100); // animate every 0.1 seconds
 </script>
 </body>
 </html>
@@ -2663,23 +2762,24 @@ end -- _write_manipulate_html
 -- vvvvvvvvvvv from dkjson 2.8 (at the end of this source file) vvvvvvvvvvv --
 local _open_cmd -- this needs to stay outside the function, or it'll re-sniff every time...
 local function _open_url(url)
+  local format = string.format
   if not _open_cmd then
     if __is_windows then
       _open_cmd = function(url)
-        -- os.execute(string.format('start "%s"', url))
-        os.execute(string.format('"%s" %s', win_browser, url))
+        -- os.execute(format('start "%s"', url))
+        os.execute(format('"%s" %s', win_browser, url))
       end
     elseif (io.popen("uname -s"):read'*a'):sub(1, 6) == "Darwin" then
       _open_cmd = function(url)
         -- I cannot test, but this should work on modern Macs.
-        -- os.execute(string.format('open "%s"', url))
-        os.execute(string.format('%s "%s"', mac_browser, url))
+        -- os.execute(format('open "%s"', url))
+        os.execute(format('%s "%s"', mac_browser, url))
       end
     else -- that ought to only leave Linux
       _open_cmd = function(url)
         -- should work on X-based distros.
-        -- os.execute(string.format('xdg-open "%s"', url))
-        os.execute(string.format('%s "%s"', linux_browser, url))
+        -- os.execute(format('xdg-open "%s"', url))
+        os.execute(format('%s "%s"', linux_browser, url))
       end
     end
   end
@@ -2687,10 +2787,17 @@ local function _open_url(url)
 end
 -- ^^^^^^^^^^^ from dkjson 2.8 (at the end of this source file) ^^^^^^^^^^^ --
 
--- manipulate interactively the graph of f(x) with 'controls'
+-- manipulate/animate interactively the graph of f(x) with 'controls' and enhancements
 function manipulate(fstr, opts) -- Mathematica
-  local cs, rs, xr, yr, title, expr, jexpr = __parse_animate_args(fstr, opts)
-  _write_manipulate_html(tmp_plot_html_file, cs, rs, xr, yr, title, expr, jexpr)
+  local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements = __parse_animate_args(fstr, opts, false)
+  _write_manipulate_html(tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, false)
+  _open_url(tmp_plot_html_file)
+  print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
+end
+
+function animate(fstr, opts) -- Mathematica
+  local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements = __parse_animate_args(fstr, opts, true)
+  _write_manipulate_html(tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, true)
   _open_url(tmp_plot_html_file)
   print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
 end
