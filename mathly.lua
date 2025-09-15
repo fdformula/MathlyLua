@@ -2504,7 +2504,7 @@ end
 local function __parse_animate_args(fstr, opts, animateq)
   local cs = {} -- controls[i], ith control; a control is a single symbol such as a, h, and k in a*(x-h)^2+k
   local rs = {} -- ranges[i], ranges of the ith control
-  if animateq then cs[1] = 'p'; rs[1] = {0, 1, 1/1000} end -- 'p' (play) is reserved for animation
+  if animateq then cs[1] = 'p'; rs[1] = {0, 1, 1/100} end -- 'p' (play) is reserved for animation
 
   local xr = opts.x or {-5, 5}
   if type(xr) ~= 'table' or xr[1] >= xr[2] then error('Range of x is invalid.') end
@@ -2576,9 +2576,9 @@ local function _jscript_animate_traces(varq, tr, file, xexpr, jxexpr, jyexpr, en
   local format = string.format
   local function fmtio(v, s)
     if type(v) == 'string' then
-      v = _to_jscript_functions(v); file:write(format("%s = eval('%s');\n", s, v))
+      v = _to_jscript_functions(v); file:write(format("%s%s = eval('%s');\n", head, s, v))
     else
-      file:write(format("%s = %f;\n", s, v))
+      file:write(format("%s%s = %f;\n", head, s, v))
     end
   end
   if not varq then head, vstr = "  ", "" end
@@ -2653,12 +2653,11 @@ input:focus {outline: none;}
 </style>
 </head>
 <body>
-<input type='text' id='title' style="width:600px;left:0px;text-align:center;border:none;"></input>
-<div id="mathlyDiv" style="width:600px;height:600px;display:inline-block;top:%dpx;position:absolute;"></div>
+<input type='text' id='title' style="width:800px;left:0px;text-align:center;border:none;"></input>
+<div id="mathlyDiv" style="width:800px;height:600px;display:inline-block;top:%dpx;position:absolute;"></div>
 <!-- controls -->
 ]]
   file:write(format(s, plotly_engine, 50 + 30 * (#cs - 2)))
-
   local top = 60 -- sliders
   for i = 1, #cs do
     s = [[<label for="slider%d" style='top:%dpx;'>%s:</label>
@@ -2666,10 +2665,24 @@ input:focus {outline: none;}
 ]]
     if (rs[i][2] - rs[i][1]) / rs[i][3] < 5 then rs[i][3] = (rs[i][2] - rs[i][1]) / 5 end
     s = format(s, i, top, cs[i], i, rs[i][1], rs[i][2], rs[i][1], top, rs[i][3], i, 275, top)
+    if i == 1 and animateq then
+      file:write(format('<button type="button" onclick="play()" style="left:325px;top:%dpx;position:absolute">Play</button> <button type="button" onclick="stop()" style="left:370px;top:%dpx;position:absolute">Stop</button>\n', top, top))
+    end
     top = top + 30
     file:write(s)
   end
   file:write('\n<script type="text/javascript">\nvar x = [];\nvar t = [];\nvar x1, x2, y1, y2;\n')
+
+  if animateq then
+    s = [[
+var autoplayq = true;
+function play() { autoplayq = true; }
+function stop() { autoplayq = false; }
+var slider1step = %f;
+var xmax = %f;
+]]
+    file:write(format(s, rs[1][3], xr[2]))
+  end
 
   file:write(format("\nconst layout = {\n  xaxis: { range: [%f, %f] }, // plot with fixed axes\n", xr[1], xr[2]))
   if yr == nil then
@@ -2723,6 +2736,18 @@ input:focus {outline: none;}
   end
 
   file:write("function animatePlot() {\n")
+  if animateq then
+    s = [[
+  if (autoplayq) {
+    let x = String(Number(slider1.value) + slider1step);
+    slider1.value = String(x);
+    if (X > xmax || x > 1) { slider1.value = '0'; }
+    document.getElementById("slider1value").innerHTML = slider1.value;
+  }
+]]
+    file:write(s)
+  end
+
   for i = 1, #cs do -- values of control sliders
     file:write(format("  %s = Number(slider%d.value);\n", cs[i], i))
   end
@@ -2749,16 +2774,16 @@ input:focus {outline: none;}
   for i = 1, #cs do -- slider event handlers
     s = [[
 document.getElementById("slider%dvalue").innerHTML = slider%d.value;
-slider%d.addEventListener("input", function() { document.getElementById("slider%dvalue").innerHTML = slider%d.value; animatePlot() });
+slider%d.addEventListener("input", function() { document.getElementById("slider%dvalue").innerHTML = slider%d.value; %sanimatePlot() });
 ]]
-    file:write(format(s, i, i, i, i, i))
+    file:write(format(s, i, i, i, i, i, qq(animateq, 'autoplayq = false; ', '')))
   end
 
   file:write([[
 
 Plotly.newPlot('mathlyDiv', initialData, layout);
 animatePlot();
-setInterval(animatePlot, 100); // animate every 0.1 seconds
+setInterval(animatePlot, 200); // animate every 0.2 seconds
 </script>
 </body>
 </html>
