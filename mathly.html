@@ -422,12 +422,12 @@ animate(fstr, opts)
 -- See: https://github.com/fdformula/CalculusLabs/blob/main/text/Unit%2008%20-%20Antiderivatives%20and%20Differential%20Equations%20-%20SlopeFieldPlot.nb
 -- 1) without enhancements
 fstr = {'@(t) r * (t - sin(t))', '@(t) r * (1 - cos(t))'}
-opts = {t = {0, 20 * pi, 0.01}, r  = {0.2, 5, 0.1}, x = {-1, 20}}
+opts = {t = {0, 20 * pi, 0.01}, r  = {0.2, 5, 0.1, default = 0.9}, x = {-1, 20}}
 animate(fstr, opts)
 
 -- 2) with enhancements which enhances the effect of animation
 fstr = {'@(t) r * (t - sin(t))', '@(t) r * (1 - cos(t))'}
-opts = {t = {0, 20 * pi, 0.01}, r  = {0.2, 5, 0.1}, x = {-1, 20},
+opts = {t = {0, 20 * pi, 0.01}, r  = {0.2, 5, 0.1, default = 1}, x = {-1, 20},
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
                         {x = '@(t) r * T + r * cos(t)', y = '@(t) r + r * sin(t)', t = {0, 2 * pi}, color = 'orange'},
                         {x = {'X', 'r * T'}, y = {'Y', 'r'}, line = true, color = 'orange'}
@@ -438,7 +438,7 @@ animate(fstr, opts)
 -- slipping on the inside of a circle with center O and radius a, where b < a.
 -- See: https://github.com/fdformula/CalculusLabs/blob/main/text/Unit%2008%20-%20Antiderivatives%20and%20Differential%20Equations%20-%20SlopeFieldPlot.nb
 fstr = {'@(t) (a - b) * cos(t) + b * cos((a - b) / b * t)', '@(t) (a - b) * sin(t) - b * sin((a - b) / b * t)'}
-opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1}, b = {0.2, 9, 0.1}, x = {-10, 10},
+opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 7.8}, b = {0.2, 9, 0.1, default = 1.6}, x = {-10, 10},
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
                         {x = '@(t) a * cos(t)', y = '@(t) a * sin(t)', t = {0, 2 * pi}, color = 'orange'},
                         {x = '@(t) (a - b) * cos(T) + b * cos(t)', y = '@(t) (a - b) * sin(T) + b * sin(t)', t = {0, 2 * pi}, color = 'green'},
@@ -450,7 +450,7 @@ animate(fstr, opts)
 -- slipping on the outside of a circle with center O and radius a, where b < a.
 -- See: https://github.com/fdformula/CalculusLabs/blob/main/text/Unit%2008%20-%20Antiderivatives%20and%20Differential%20Equations%20-%20SlopeFieldPlot.nb
 fstr = {'@(t) (a + b) * cos(t) - b * cos((a + b) / b * t)', '@(t) (a + b) * sin(t) - b * sin((a + b) / b * t)'}
-opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1}, b = {0.2, 9, 0.1}, x = {-10, 10},
+opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 6.8}, b = {0.2, 9, 0.1, default = 1.5}, x = {-10, 10},
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
                         -- {x = '@(t) (a + 2*b) * cos(t)', y = '@(t) (a + 2*b) * sin(t)' , t = {0, 2*pi}, width = 1, color = 'black'},
                         {x = '@(t) a * cos(t)', y = '@(t) a * sin(t)', t = {0, 2 * pi}, color = 'orange'},
