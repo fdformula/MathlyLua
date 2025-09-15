@@ -2533,7 +2533,10 @@ local function __parse_animate_args(fstr, opts, animateq)
       rs[#rs + 1] = opts[c]
     end
   end
-  for i = 1, #rs do rs[i] = _plot_interval(rs[i]) end
+  for i = 1, #rs do
+    if rs[i][1] > rs[i][2] then rs[i][1], rs[i][2] = rs[i][2], rs[i][1] end
+    if rs[i][3] == nil then rs[i][3] = 1 end
+  end
   local jyexpr = _to_jscript_functions(yexpr)
   local jxexpr, tr = nil, nil
   if xexpr ~= nil then
@@ -2690,7 +2693,11 @@ input:focus {outline: none;}
   end
 
   for i = 1, #cs do -- values of control sliders
-    file:write(format("var %s = Number(slider%d.value);\n", cs[i], i))
+    disp(rs[i])
+    local v = rs[i].default;
+    if v == nil then v = rs[i][1] end
+    file:write(format("slider%d.value = %f;\n", i, v))
+    file:write(format("var %s = %f;\n", cs[i], v)) -- Number(slider%d.value);\n", cs[i], i))
   end -- why Number(...)? Values of sliders in JavaScript are STRINGS!
 
   if not animateq then file:write("p = 1;\n") end
