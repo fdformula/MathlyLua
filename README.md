@@ -184,6 +184,15 @@ plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
      x, y3, '-g', point(-2, 2, {symbol='square', size=7, color='green'}),
      {layout={autosize=false, width=380, height=600, title="y' = x<sup>2</sup> - y",
               margin={l=40, r=20, t=45, b=40, pad=10}}})
+
+-- animating a cycloid
+fstr = {'@(t) r * (t - sin(t))', '@(t) r * (1 - cos(t))'}
+opts = {t = {0, 20 * pi, 0.01}, r  = {0.2, 5, 0.1}, x = {-1, 20},
+        enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
+                        {x = '@(t) r * T + r * cos(t)', y = '@(t) r + r * sin(t)', t = {0, 2 * pi}, color = 'orange'},
+                        {x = {'X', 'r * T'}, y = {'Y', 'r'}, line = true, color = 'orange'}
+                       }}
+animate(fstr, opts)
 ```
 
 ### Note
