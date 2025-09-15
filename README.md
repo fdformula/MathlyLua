@@ -186,7 +186,7 @@ plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
               margin={l=40, r=20, t=45, b=40, pad=10}}})
 
 fstr = '@(x) a * (x - h)^2 + k'
-opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}, y = {-100, 100}, title = ''}
+opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}, y = {-100, 100}}
 manipulate(fstr, opts)
 
 -- animating a cycloid
