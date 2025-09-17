@@ -2664,9 +2664,9 @@ input:focus {outline: none;}
 <input type="range" id="slider%d" min="%f" max="%f" value="%f" style='top:%dpx;' step="%f"></input><span id="slider%dvalue" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>
 ]]
     if (rs[i][2] - rs[i][1]) / rs[i][3] < 5 then rs[i][3] = (rs[i][2] - rs[i][1]) / 5 end
-    s = format(s, i, top, cs[i], i, rs[i][1], rs[i][2], rs[i][1], top, rs[i][3], i, 275, top)
+    s = format(s, i, top, cs[i], i, rs[i][1], rs[i][2], rs[i][1], top, rs[i][3], i, 290, top)
     if i == 1 and animateq then
-      file:write(format('<button type="button" onclick="play()" style="left:325px;top:%dpx;position:absolute">Play</button> <button type="button" onclick="stop()" style="left:370px;top:%dpx;position:absolute">Stop</button>\n', top, top))
+      file:write(format('<button type="button" onclick="play()" style="left:345px;top:%dpx;position:absolute">Play</button> <button type="button" onclick="stop()" style="left:395px;top:%dpx;position:absolute">Stop</button>\n', top, top))
     end
     top = top + 30
     file:write(s)

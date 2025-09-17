@@ -401,9 +401,11 @@ For example, <code>a, h</code>, and <code>k</code> are controls in <code>f(x) = 
 and <code>y(t)</code> in <a href=#easyf>shortcut string format</a>), etc. You may include <code>enhancements</code> to improve the effect of an animation. An enhancement is actually a simple graphics
 object here, a line, a point, or a parametric curve.</p>
 <p><code>(X, Y)</code> are the coordinates of the current plotted point on the animated curve define by <code>fstr</code>. If the curve is defined by parametric equations, <code>T</code> refers to the
-value of the parameter <code>t</code> for the current plotted point.</p> They and controls as well can be used in enhancements, and expressions containing them must be in a string, such as
+value of the parameter <code>t</code> for the current plotted point. They and controls as well can be used in enhancements, and expressions containing them must be in a string, such as
 <code>'2*X - a * Y + k'</code>.
 <p>Note: Show no title? Add title = ''; Want square aspect ratio? Do not include the range for <code>y</code>.</p>
+<p>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>. With a control, a 'default' field indicates the initial value of the control. If
+not provided, it defaults to <code>start</code>.</p>
 <p>See also: <a href=#manipulate>manipulate</a>.</p>
 <pre><code>mathly = require('mathly')
 
