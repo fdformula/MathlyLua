@@ -400,13 +400,16 @@ For example, <code>a, h</code>, and <code>k</code> are controls in <code>f(x) = 
 <p>The <code>opts</code> is a table of tables, used to define the ranges of <code>x, y</code>, and <code>t</code> (if <code>fstr</code> is the parametric equations of <code>x(t)</code>
 and <code>y(t)</code> in <a href=#easyf>shortcut string format</a>), etc. You may include <code>enhancements</code> to improve the effect of an animation. An enhancement is actually a simple graphics
 object here, a line, a point, or a parametric curve.</p>
-<p><code>(X, Y)</code> are the coordinates of the current plotted point on the animated curve define by <code>fstr</code>. If the curve is defined by parametric equations, <code>T</code> refers to the
-value of the parameter <code>t</code> for the current plotted point. They and controls as well can be used in enhancements, and expressions containing them must be in a string, such as
-<code>'2*X - a * Y + k'</code>.
-<p>Note: Show no title? Add title = ''; Want square aspect ratio? Do not include the range for <code>y</code>.</p>
-<p>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>. With a control, a 'default' field indicates the initial value of the control. If
-not provided, it defaults to <code>start</code>.</p>
-<p>See also: <a href=#manipulate>manipulate</a>.</p>
+<p><ol>
+<li><code>(X, Y)</code> are the coordinates of the current plotted point on the animated curve defined in <code>fstr</code>. If the curve is defined by parametric equations, <code>T</code> refers to the
+value of the parameter <code>t</code> for the current plotted point. They and controls as well can be used in <code>enhancements</code>, and expressions containing them must be in a string, such as
+<code>'2*X - a * Y + k'</code>.</li>
+<li>Show no title? Add <code>title = ''</code>; Want square aspect ratio? Do not include the range of <code>y</code>.</li>
+<li>The parameter of a parametric curve, specified in <code>fstr</code>, must be <code>t</code>.</li>
+<li>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>. With a control, field <code>default</code> defines the initial value of the control. If
+not provided, it defaults to <code>start</code>.</li>
+</ol>
+<p>See also: <code><a href=#manipulate>manipulate</a></code>.</p>
 <pre><code>mathly = require('mathly')
 
 fstr = '@(x) x^2'
@@ -1705,8 +1708,7 @@ disp(L * U - A)
 <h4>&bull; &nbsp; <a name=manipulate href=#m><code>manipulate(f, ...)</code></a></h4>
 <p>Manipulate the graph of a single-variable function <code>f(x)</code> with controls. Each control is a single letter, <code>a, b, ..., z</code>, except <code>p, t, x</code>, and <code> y</code>.</p>
 <p>For example, the following code shows how to call the function to view the effect of controls, <code>a, h</code>, and <code>k</code>, in <code>f(x) = a(x - h)^2 + k</code>.</p>
-<p>Note: Show no title? Add title = ''; Want square aspect ratio? Do not include the range for <code>y</code>.</p>
-<p>See also: <a href=#animate>animate</a>.</p>
+<p>See <code><a href=#animate>animate</a></code> for more information.</p>
 <pre><code>mathly = require('mathly')
 
 fstr = '@(x) a * (x - h)^2 + k'
