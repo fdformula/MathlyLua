@@ -2504,7 +2504,8 @@ end
 local function __parse_animate_args(fstr, opts, animateq)
   local cs = {} -- controls[i], ith control; a control is a single symbol such as a, h, and k in a*(x-h)^2+k
   local rs = {} -- ranges[i], ranges of the ith control
-  if animateq then cs[1] = 'p'; rs[1] = {0, 1, 1/100} end -- 'p' (play) is reserved for animation
+  if animateq == true then cs[1] = 'p'; rs[1] = {0, 1, 1/100} end -- 'p' (play), reserved for animation
+  if opts == nil then opts = {} end
 
   local xr = opts.x or {-5, 5}
   if type(xr) ~= 'table' or xr[1] >= xr[2] then error('Range of x is invalid.') end
@@ -2523,7 +2524,7 @@ local function __parse_animate_args(fstr, opts, animateq)
     error("manipulate({xfstr, yfstr}, ...): xfstr and yfstr must be paramatric equations of x(t) and y(t) in strings.")
   end
   for c in string.gmatch(s, "[^(%@%s|%(|%)|%{|%}|%[|%]|%+|%-|%*|%^|%/)]+") do
-    if #c == 1 and not (c == 'p' or c == 'x' or c == 'y' or c == 't' or (c >= '0' and c <= '9') or ismember(c , cs)) then -- a new control?
+    if #c == 1 and not (c == 'p' or c == 'x' or c == 'y' or c == 't' or (c >= '0' and c <= '9') or ismember(c , cs)) then -- new control?
       if opts[c] ~= nil then
         if type(opts[c]) ~= 'table' then error('Range of ' .. c .. ' is invalid.') end
       else
@@ -2542,12 +2543,15 @@ local function __parse_animate_args(fstr, opts, animateq)
   if xexpr ~= nil then
     jxexpr = _to_jscript_functions(xexpr)
     if opts.t == nil or type(opts.t) ~= 'table' or opts.t[1] >= opts.t[2] then
-      error('Range of parameter t is not specified, or it is invalid.')
+      print("Range of parameter 't' is not specified, or it is invalid. Default: { -6, 6, 0.1 }.")
+      tr = {-6, 6, 0.1}
+    else
+      tr = opts.t
     end
-    tr = opts.t
   end
 
-  local enhancements = copy(opts.enhancements)
+  local enhancements = nil
+  if opts ~= {} then enhancements = opts.enhancements end
   if enhancements ~= nil then -- point, line, parametriceqs
     if type(enhancements) ~= 'table' or type(enhancements[1]) ~= 'table' then
       error('manipulate: opts.enhancements must be a list of lists.')
@@ -2657,7 +2661,7 @@ input:focus {outline: none;}
 <div id="mathlyDiv" style="width:800px;height:600px;display:inline-block;top:%dpx;position:absolute;"></div>
 <!-- controls -->
 ]]
-  file:write(format(s, plotly_engine, 50 + 30 * (#cs - 2)))
+  file:write(format(s, plotly_engine, 50 + 30 * qq(#cs > 1, #cs - 2, 0)))
   local top = 60 -- sliders
   for i = 1, #cs do
     s = [[<label for="slider%d" style='top:%dpx;'>%s:</label>
@@ -2706,7 +2710,6 @@ var xmax = %f;
   end
 
   for i = 1, #cs do -- values of control sliders
-    disp(rs[i])
     local v = rs[i].default;
     if v == nil then v = rs[i][1] end
     file:write(format("slider%d.value = %f;\n", i, v))
