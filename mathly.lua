@@ -2550,8 +2550,11 @@ local function __parse_animate_args(fstr, opts, animateq)
     end
   end
 
-  local enhancements = nil
-  if opts ~= {} then enhancements = opts.enhancements end
+  local jscode, enhancements = '', nil
+  if opts ~= {} then
+    enhancements = opts.enhancements
+    if opts.javascript ~= nil and opts.javascript ~= '' then jscode = opts.javascript end
+  end
   if enhancements ~= nil then -- point, line, parametriceqs
     if type(enhancements) ~= 'table' or type(enhancements[1]) ~= 'table' then
       error('manipulate: opts.enhancements must be a list of lists.')
@@ -2572,7 +2575,7 @@ local function __parse_animate_args(fstr, opts, animateq)
       end
     end
   end
-  return cs, rs, xr, opts.y, tr, opts.title, xexpr, yexpr, jxexpr, jyexpr, enhancements
+  return cs, rs, xr, opts.y, tr, opts.title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode
 end -- __parse_animate_args
 
 local function _jscript_animate_traces(varq, tr, file, xexpr, jxexpr, jyexpr, enhancements, animateq)
@@ -2588,44 +2591,44 @@ local function _jscript_animate_traces(varq, tr, file, xexpr, jxexpr, jyexpr, en
   if not varq then head, vstr = "  ", "" end
   file:write(format('%s%strace0 = { ', head, vstr))
   if xexpr == nil then
-    if animateq then s = format("x = []; for (let i = %f; i <= slider1.value * %f; i += %f) { x.push(i); }\n", xr[1], xr[2], (xr[2] - xr[1]) / 500) end
+    if animateq then s = format("x = []; for (let i = %f; i <= mthlySldr1.value * %f; i += %f) { x.push(i); }\n", xr[1], xr[2], (xr[2] - xr[1]) / 500) end
     file:write(format("x: x, y: x.map(x => %s),", jyexpr))
   else -- parametric eqs
-    if animateq then s = format("t = []; for (let i = %f; i <= slider1.value * %f; i += %f) { t.push(i); }\n", tr[1], tr[2], (tr[2] - tr[1]) / 500) end
+    if animateq then s = format("t = []; for (let i = %f; i <= mthlySldr1.value * %f; i += %f) { t.push(i); }\n", tr[1], tr[2], (tr[2] - tr[1]) / 500) end
     file:write(format("x: t.map(t => %s), y: t.map(t => %s),", jxexpr, jyexpr))
   end
   file:write(" mode: 'lines', line: { simplify: false } };\n") -- false, color: 'red'}
 
   local j = 1
-  if enhancements ~= nil then
-     for i = 1, #enhancements do
-       if enhancements[i].line then
-         fmtio(enhancements[i].x[1], 'x1'); fmtio(enhancements[i].x[2], 'x2')
-         fmtio(enhancements[i].y[1], 'y1'); fmtio(enhancements[i].y[2], 'y2')
-         file:write(format("%s%strace%d = { x: [x1, x2], y: [y1, y2], mode: 'lines', line: { color: '%s', width: %d } };\n",
-                    head, vstr, j, enhancements[i].color or 'black', enhancements[i].width or 3))
-         j = j + 1
-       elseif enhancements[i].point then
-         fmtio(enhancements[i].x, 'x1'); fmtio(enhancements[i].y, 'y1')
-         file:write(format("%s%strace%d = { x: [x1], y: [y1], mode: 'markers', marker: { color: '%s', size: %d } };\n",
-                    head, vstr, j, enhancements[i].color or 'black', enhancements[i].size or 8))
-         j = j + 1
-       elseif enhancements[i].parametriceqs then
-         local tr1 = enhancements[i].t
-         if tr1 == nil then tr1 = tr end
-         if varq then file:write(format("var trace%d;\n", j)) end
-         file:write(format("%sif (true) {\n  %sconst t = [];\n", head, head))
-         file:write(format("  %sfor (let i = %f; i <= %f; i += %f) { t.push(i); }\n", head, tr1[1], tr1[2], (tr1[2] - tr1[1]) / 500))
-         file:write(format("  %strace%d = { x: t.map(t => %s), y: t.map(t => %s), mode: 'lines', line: { simplify: false, color: '%s', width: %d } };\n%s};\n",
-                    head, j, enhancements[i].x, enhancements[i].y, enhancements[i].color or 'black', enhancements[i].width or 3, head))
-         j = j + 1
-       end
-     end
+  if type(enhancements) == 'table' then
+    for i = 1, #enhancements do
+      if enhancements[i].line then
+        fmtio(enhancements[i].x[1], 'mthlyX1'); fmtio(enhancements[i].x[2], 'mthlyX2')
+        fmtio(enhancements[i].y[1], 'mthlyY1'); fmtio(enhancements[i].y[2], 'mthlyY2')
+        file:write(format("%s%strace%d = { x: [mthlyX1, mthlyX2], y: [mthlyY1, mthlyY2], mode: 'lines', line: { color: '%s', width: %d } };\n",
+                   head, vstr, j, enhancements[i].color or 'black', enhancements[i].width or 3))
+        j = j + 1
+      elseif enhancements[i].point then
+        fmtio(enhancements[i].x, 'mthlyX1'); fmtio(enhancements[i].y, 'mthlyY1')
+        file:write(format("%s%strace%d = { x: [mthlyX1], y: [mthlyY1], mode: 'markers', marker: { color: '%s', size: %d } };\n",
+                   head, vstr, j, enhancements[i].color or 'black', enhancements[i].size or 8))
+        j = j + 1
+      elseif enhancements[i].parametriceqs then
+        local tr1 = enhancements[i].t
+        if tr1 == nil then tr1 = tr end
+        if varq then file:write(format("var trace%d;\n", j)) end
+        file:write(format("%sif (true) {\n  %sconst t = [];\n", head, head))
+        file:write(format("  %sfor (let i = %f; i <= %f; i += %f) { t.push(i); }\n", head, tr1[1], tr1[2], (tr1[2] - tr1[1]) / 500))
+        file:write(format("  %strace%d = { x: t.map(t => %s), y: t.map(t => %s), mode: 'lines', line: { simplify: false, color: '%s', width: %d } };\n%s};\n",
+                   head, j, enhancements[i].x, enhancements[i].y, enhancements[i].color or 'black', enhancements[i].width or 3, head))
+        j = j + 1
+      end
+    end
   end
   return j - 1
 end
 
-local function _write_manipulate_html(fname, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, animateq)
+local function _write_manipulate_html(fname, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, animateq, jscode)
   local file = io.open(fname, "w")
   local format = string.format
   if file == nil then
@@ -2664,26 +2667,25 @@ input:focus {outline: none;}
   file:write(format(s, plotly_engine, 50 + 30 * qq(#cs > 1, #cs - 2, 0)))
   local top = 60 -- sliders
   for i = 1, #cs do
-    s = [[<label for="slider%d" style='top:%dpx;'>%s:</label>
-<input type="range" id="slider%d" min="%f" max="%f" value="%f" style='top:%dpx;' step="%f"></input><span id="slider%dvalue" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>
+    s = [[<label for="mthlySldr%d" style='top:%dpx;'>%s:</label>
+<input type="range" id="mthlySldr%d" min="%f" max="%f" value="%f" style='top:%dpx;' step="%f"></input><span id="mthlySldr%dvalue" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>
 ]]
     if (rs[i][2] - rs[i][1]) / rs[i][3] < 5 then rs[i][3] = (rs[i][2] - rs[i][1]) / 5 end
     s = format(s, i, top, cs[i], i, rs[i][1], rs[i][2], rs[i][1], top, rs[i][3], i, 290, top)
     if i == 1 and animateq then
-      file:write(format('<button type="button" onclick="play()" style="left:345px;top:%dpx;position:absolute">Play</button> <button type="button" onclick="stop()" style="left:395px;top:%dpx;position:absolute">Stop</button>\n', top, top))
+      file:write(format('<button type="button" onclick="mthlyPlay()" style="left:345px;top:%dpx;position:absolute">Play</button> <button type="button" onclick="mthlyStop()" style="left:395px;top:%dpx;position:absolute">Stop</button>\n', top, top))
     end
     top = top + 30
     file:write(s)
   end
-  file:write('\n<script type="text/javascript">\nvar x = [];\nvar t = [];\nvar x1, x2, y1, y2;\n')
+  file:write('\n<script type="text/javascript">\nvar x = [];\nvar t = [];\nvar mthlyX1, mthlyX2, mthlyY1, mthlyY2, X, Y, T;\n')
 
   if animateq then
     s = [[
-var autoplayq = true;
-function play() { autoplayq = true; }
-function stop() { autoplayq = false; }
-var slider1step = %f;
-var xmax = %f;
+var mthlyAutoPlayq = true;
+function mthlyPlay() { mthlyAutoPlayq = true; }
+function mthlyStop() { mthlyAutoPlayq = false; }
+var mthlySldr1step = %f;
 ]]
     file:write(format(s, rs[1][3], xr[2]))
   end
@@ -2706,63 +2708,72 @@ var xmax = %f;
   file:write("var title = document.getElementById('title');\ntitle.value = '" .. title .. "';\n")
 
   for i = 1, #cs do
-    file:write(format("var slider%d = document.getElementById('slider%d');\n", i, i))
+    file:write(format("var mthlySldr%d = document.getElementById('mthlySldr%d');\n", i, i))
   end
 
   for i = 1, #cs do -- values of control sliders
     local v = rs[i].default;
     if v == nil then v = rs[i][1] end
-    file:write(format("slider%d.value = %f;\n", i, v))
-    file:write(format("var %s = %f;\n", cs[i], v)) -- Number(slider%d.value);\n", cs[i], i))
+    file:write(format("mthlySldr%d.value = %f;\n", i, v))
+    file:write(format("var %s = %f;\n", cs[i], v))
   end -- why Number(...)? Values of sliders in JavaScript are STRINGS!
 
   if not animateq then file:write("p = 1;\n") end
   if xexpr ~= nil then -- parametric eqs
-    s = format("for (let i = %f; i <= p * (%f - %f) + %f; i += %f) { t.push(i); }\n", tr[1], tr[2], tr[1], tr[1], (tr[2] - tr[1]) / 500)
+    s = format("for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { t.push(i); }\n",
+               tr[1], tr[2], qq(tr[1] > 0, '-', '+'), abs(tr[1]), qq(tr[1] > 0, '+', '-'), abs(tr[1]), (tr[2] - tr[1]) / 500)
   else
-    s = format("for (let i = %f; i <= p * (%f - %f) + %f; i += %f) { x.push(i); }\n", xr[1], xr[2], xr[1], xr[1], (xr[2] - xr[1]) / 500)
+    s = format("for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { x.push(i); }\n",
+               xr[1], xr[2], qq(xr[1] > 0, '-', '+'), abs(xr[1]), qq(xr[1] > 0, '+', '-'), abs(xr[1]), (xr[2] - xr[1]) / 500)
   end
   file:write(s)
+
+  -- X, Y, T - values at the last/present point of a curve
+  if animateq then
+    if xexpr ~= nil then
+      file:write(format("let mthlyTmp = t[t.length - 1];\nif (true) { const t = mthlyTmp; X = %s; Y = %s; T = mthlyTmp; };\n\n", jxexpr, jyexpr))
+    else
+      file:write(format("let mthlyTmp = x[x.length - 1];\nif (true) { const x = mthlyTmp; X = mthlyTmp; Y = %s; }\n\n", jyexpr))
+    end
+  end
+  if jscode ~= '' then file:write(format("%s\n", jscode)) end
 
   local j = _jscript_animate_traces(true, tr, file, xexpr, jxexpr, jyexpr, enhancements)
 
   file:write("\nconst initialData = [trace0")
   for k = 1, j do file:write(format(", trace%d", k)) end
   file:write("]\n\n")
-  -- X, Y, T - values at the last/present point of a curve
-  if animateq then
-    if xexpr ~= nil then
-      file:write(format("let tmp = t[t.length - 1];\nvar X, Y, T;\nif (true) { const t = tmp; X = %s; Y = %s; T = tmp; };\n\n", jxexpr, jyexpr))
-    else
-      file:write(format("let tmp = x[x.length - 1];\nvar X, Y;\nif (true) { var x = tmp; X = tmp; Y = %s; }\n\n", jyexpr))
-    end
-  end
 
   file:write("function animatePlot() {\n")
   if animateq then
     s = [[
-  if (autoplayq) {
-    let x = String(Number(slider1.value) + slider1step);
-    slider1.value = String(x);
-    if (X > xmax || x > 1) { slider1.value = '0'; }
-    document.getElementById("slider1value").innerHTML = slider1.value;
+  if (mthlyAutoPlayq) {
+    let x = String(Number(mthlySldr1.value) + mthlySldr1step);
+    mthlySldr1.value = String(x);
+    if (x > 1) { mthlySldr1.value = '0'; }
+    document.getElementById("mthlySldr1value").innerHTML = mthlySldr1.value;
   }
 ]]
     file:write(s)
   end
 
   for i = 1, #cs do -- values of control sliders
-    file:write(format("  %s = Number(slider%d.value);\n", cs[i], i))
+    file:write(format("  %s = Number(mthlySldr%d.value);\n", cs[i], i))
   end
 
   if animateq then
     if xexpr ~= nil then -- parametric eqs
-      file:write(format("  t = []; for (let i = %f; i <= p * (%f - %f) + %f; i += %f) { t.push(i); };\n  T = t[t.length - 1];\n", tr[1], tr[2], tr[1], tr[1], (tr[2] - tr[1]) / 500))
+      file:write(format("  t = []; for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { t.push(i); };\n  T = t[t.length - 1];\n",
+                        tr[1], tr[2], qq(tr[1] > 0, '-', '+'), abs(tr[1]), qq(tr[1] > 0, '+', '-'), abs(tr[1]), (tr[2] - tr[1]) / 500))
       file:write(format("  if (true) { const t = T; X = %s; Y = %s; };\n", jxexpr, jyexpr))
     else
-      file:write(format("  x = []; for (let i = %f; i <= p * (%f - %f) + %f; i += %f) { x.push(i); };\n  X = x[x.length - 1];", xr[1], xr[2], xr[1], xr[1], (xr[2] - xr[1]) / 500))
+      file:write(format("  x = []; for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { x.push(i); };\n  X = x[x.length - 1];",
+                        xr[1], xr[2], qq(xr[1] > 0, '-', '+'), abs(xr[1]), qq(xr[1] > 0, '+', '-'), abs(xr[1]), (xr[2] - xr[1]) / 500))
       file:write(format("  if (true) { const x = X; Y = %s; T = x; };\n", jyexpr))
     end
+  end
+  if jscode ~= '' then
+    file:write(format("  %s\n", jscode))
   end
 
   j = _jscript_animate_traces(false, tr, file, xexpr, jxexpr, jyexpr, enhancements)
@@ -2776,10 +2787,10 @@ var xmax = %f;
 
   for i = 1, #cs do -- slider event handlers
     s = [[
-document.getElementById("slider%dvalue").innerHTML = slider%d.value;
-slider%d.addEventListener("input", function() { document.getElementById("slider%dvalue").innerHTML = slider%d.value; %sanimatePlot() });
+document.getElementById("mthlySldr%dvalue").innerHTML = mthlySldr%d.value;
+mthlySldr%d.addEventListener("input", function() { document.getElementById("mthlySldr%dvalue").innerHTML = mthlySldr%d.value; %sanimatePlot() });
 ]]
-    file:write(format(s, i, i, i, i, i, qq(animateq, 'autoplayq = false; ', '')))
+    file:write(format(s, i, i, i, i, i, qq(animateq, 'mthlyAutoPlayq = false; ', '')))
   end
 
   file:write([[
@@ -2831,8 +2842,8 @@ function manipulate(fstr, opts) -- Mathematica
 end
 
 function animate(fstr, opts) -- Mathematica
-  local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements = __parse_animate_args(fstr, opts, true)
-  _write_manipulate_html(tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, true)
+  local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode = __parse_animate_args(fstr, opts, true)
+  _write_manipulate_html(tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, true, jscode)
   _open_url(tmp_plot_html_file)
   print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
 end
