@@ -2504,7 +2504,10 @@ end
 local function __parse_animate_args(fstr, opts, animateq)
   local cs = {} -- controls[i], ith control; a control is a single symbol such as a, h, and k in a*(x-h)^2+k
   local rs = {} -- ranges[i], ranges of the ith control
-  if animateq == true then cs[1] = 'p'; rs[1] = {0, 1, 1/100} end -- 'p' (play), reserved for animation
+  if animateq == true then
+    cs[1] = 'p'; rs[1] = {0, 1, 1/100} -- 'p' (play), reserved for animation
+    if opts ~= nil and type(opts.p) == 'table' and opts.p.default ~= nil then rs[1].default = opts.p.default end
+  end
   if opts == nil then opts = {} end
 
   local xr = opts.x or {-5, 5}
@@ -2736,7 +2739,7 @@ var mthlySldr1step = %f;
       file:write(format("let mthlyTmp = x[x.length - 1];\nif (true) { const x = mthlyTmp; X = mthlyTmp; Y = %s; }\n\n", jyexpr))
     end
   end
-  if jscode ~= '' then file:write(format("%s\n", jscode)) end
+  if type(jscode) == 'string' and jscode ~= '' then file:write(format("%s\n", jscode)) end
 
   local j = _jscript_animate_traces(true, tr, file, xexpr, jxexpr, jyexpr, enhancements)
 
@@ -2772,9 +2775,7 @@ var mthlySldr1step = %f;
       file:write(format("  if (true) { const x = X; Y = %s; T = x; };\n", jyexpr))
     end
   end
-  if jscode ~= '' then
-    file:write(format("  %s\n", jscode))
-  end
+  if type(jscode) == 'string' and jscode ~= '' then file:write(format("  %s\n", jscode)) end
 
   j = _jscript_animate_traces(false, tr, file, xexpr, jxexpr, jyexpr, enhancements)
 

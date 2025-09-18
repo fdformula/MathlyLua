@@ -525,8 +525,7 @@ jscode = [[
 ]]
 
 fstr = {'@(t) t', '@(t) sin(t)'}
-opts = {t = {-2*pi, 2*pi, 0.01},
-        x = {-2*pi, 2*pi}, title = 'y = sin(x)',
+opts = {t = {-2*pi, 2*pi, 0.01}, x = {-2*pi, 2*pi}, title = 'y = sin(x)',
         javascript = jscode,
         enhancements = {{x = fstr[1], y = fstr[2], t = {-2*pi, 2*pi}, color = 'blue'},
                         {x = '@(t) cx + cos(t) / k(X)', y = '@(t) cy + sin(t) / k(X)', t = {0, 2*pi}, color = 'orange'},
@@ -549,8 +548,7 @@ jscode = [[
 ]]
 
 fstr = {'@(t) t', '@(t) t*t'}
-opts = {t = {-5, 5, 0.01},
-        x = {-5, 5}, title = 'y = x^2',
+opts = {t = {-5, 5, 0.01}, x = {-5, 5}, title = 'y = x^2', p = { default = 0.43 }, -- control p starts at p = 0.43
         javascript = jscode,
         enhancements = {{x = fstr[1], y = fstr[2], t = {-2*pi, 2*pi}, color = 'blue'},
                         {x = '@(t) cx + cos(t) / k(X)', y = '@(t) cy + sin(t) / k(X)', t = {0, 2*pi}, color = 'orange'},
@@ -1812,6 +1810,10 @@ opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}, y = {-1
 manipulate(fstr, opts)
 
 opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}} -- no yrange is provided? use square aspect ratio
+manipulate(fstr, opts)
+
+fstr = {'@(t) sin(k * t) * cos(t)', '@(t) sin(k * t) * sin(t)'} -- polar function r(θ) = sin(kθ)
+opts = {t = {0, 2*pi, 0.01}, x = {-2, 2}, k = {1, 18, 1}}
 manipulate(fstr, opts)
 </code></pre>
 
