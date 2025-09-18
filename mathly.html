@@ -472,6 +472,8 @@ animate(fstr, opts)
 <p>JavaScript code can be added as follows for animations which involve more complicated computing. The <code>enhancements</code> may access
 variables and functions defined in the JavaScript code.</p>
 <p>&#x2713; &nbsp; Names of users' variables and functions can't be <code>x, y, t, X, Y, T</code>, and controls of which <code>p</code> is reserved for 'play'.</p>
+<p>A stick of length L can smoothly slide through a point (b, 0). Given that one end of the stick moves along a circle
+with its center at the origin and a radius of R, animate the path of the other end of the stick.</p>
 <pre><code>-- See: https://github.com/fdformula/CalculusLabs/blob/main/text/Unit%2008%20-%20Antiderivatives%20and%20Differential%20Equations%20-%20SlopeFieldPlot.nb
 jscode = [[
   // JavaScript code can use X, Y, T, and controls that are here R, b, and L.
@@ -481,11 +483,11 @@ jscode = [[
   var Xb = X - b;
   var z = Xb / Y;
   var xx, yy = Y + Xb*z;
-  var sqr = Math.sqrt(L*L - b*b - (Xb - b)*X + 2*Y*Xb*z + (L*L - Y*Y)*z*z);
+  var s = Math.sqrt(L*L - b*b - (Xb - b)*X + 2*Y*Xb*z + (L*L - Y*Y)*z*z);
   if (Y > 0) {
-    yy = yy - sqr;
+    yy = yy - s;
   } else {
-    yy = yy + sqr;
+    yy = yy + s;
   }
   yy = yy / (1 + z*z);
   xx = b + z * yy;
@@ -505,6 +507,54 @@ opts = {t = {0, 2 * pi, 0.01},
                         {x = 'X', y = 'Y', color = 'red', size = 10, point = true},
                         {x = 'b', y = 0, color = 'grey', size = 10, point = true},
                         {x = 'xx', y = 'yy', color = 'red', size = 10, point = true}
+                       }}
+animate(fstr, opts)
+
+-- osculating circle: y = sin(x)
+jscode = [[
+ // see https://www.desmos.com/calculator/lbjisuikaf
+ function f(x) { return Math.sin(x); }      // setup: f(x) = sin(x)
+ function fp(x) { return Math.cos(x); }     // setup: f'(x) = cos(x)
+ function fpp(x) { return 0-Math.sin(x); }  // setup: f''(x) = - sin(x)
+ function m(x) { return Math.sqrt(1 + fp(x)**2); }
+ function mp(x) { return -0.5 * Math.sin(2*x) / Math.sqrt(1 + Math.cos(x)**2); } // setup: m'(x) = - sin(2x)/sqrt(1 + cos(x)^2)
+ function k(x) { const z = 1 + fp(x)**2; return Math.abs(fpp(x)) / (z * Math.sqrt(z)); }
+ function q(x) { return fpp(x)*m(x) - fp(x) * mp(x); }  // do NOT use p which is reserved for 'play'
+ const cx = X - mp(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));   // (cx, cy), center of osculation circle at (X, Y)
+ const cy = f(X) + q(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));
+]]
+
+fstr = {'@(t) t', '@(t) sin(t)'}
+opts = {t = {-2*pi, 2*pi, 0.01},
+        x = {-2*pi, 2*pi}, title = 'y = sin(x)',
+        javascript = jscode,
+        enhancements = {{x = fstr[1], y = fstr[2], t = {-2*pi, 2*pi}, color = 'blue'},
+                        {x = '@(t) cx + cos(t) / k(X)', y = '@(t) cy + sin(t) / k(X)', t = {0, 2*pi}, color = 'orange'},
+                        {x = 'X', y = 'Y', color = 'red', size = 10, point = true}
+                       }}
+animate(fstr, opts)
+
+-- osculating circle: y = x^2
+jscode = [[
+ // see https://www.desmos.com/calculator/lbjisuikaf
+ function f(x) { return x*x; }  // setup: f(x) = x^2
+ function fp(x) { return 2*x; } // setup: f'(x) = 2x
+ function fpp(x) { return 2; }  // setup: f''(x) = 2
+ function m(x) { return Math.sqrt(1 + fp(x)**2); }
+ function mp(x) { return 4*x / Math.sqrt(1 + 4*x*x); } // setup: m'(x) = 4x / sqrt(1 + 4x^2)
+ function k(x) { const z = 1 + fp(x)**2; return Math.abs(fpp(x)) / (z * Math.sqrt(z)); }
+ function q(x) { return fpp(x)*m(x) - fp(x) * mp(x); }  // do NOT use p which is reserved for 'play'
+ const cx = X - mp(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));   // (cx, cy), center of osculation circle at (X, Y)
+ const cy = f(X) + q(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));
+]]
+
+fstr = {'@(t) t', '@(t) t*t'}
+opts = {t = {-5, 5, 0.01},
+        x = {-5, 5}, title = 'y = x^2',
+        javascript = jscode,
+        enhancements = {{x = fstr[1], y = fstr[2], t = {-2*pi, 2*pi}, color = 'blue'},
+                        {x = '@(t) cx + cos(t) / k(X)', y = '@(t) cy + sin(t) / k(X)', t = {0, 2*pi}, color = 'orange'},
+                        {x = 'X', y = 'Y', color = 'red', size = 10, point = true}
                        }}
 animate(fstr, opts)
 </code></pre>
