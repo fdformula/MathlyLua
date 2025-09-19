@@ -395,16 +395,16 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 </table>
 
 <h4>&bull; &nbsp; <a name=animate href=#m><code>animate(fstr, opts)</code></a></h4>
-<p>Animate the graph of a single-variable function <code>y = f(x)</code> with controls. Each control is a single letter, <code>a, b, ..., z</code>, except <code>p, t, x</code>, and <code> y</code>.
-For example, <code>a, h</code>, and <code>k</code> are controls in <code>f(x) = a (x - h)^2 + k</code> for viewing the variation of the parabola as they change.</p>
+<p>Animate a parametric curve or the graph of a single-variable function <code>y = f(x)</code> with controls. Each control is a single letter, <code>a, b, ..., z</code>, except <code>p, t, x</code>, and <code> y</code>.
+For example, <code>a, h</code>, and <code>k</code> are controls in <code>f(x) = a (x - h)^2 + k</code> for exploring the variation of the parabola as they change.</p>
 <p>The <code>opts</code> is a table of tables, used to define the ranges of <code>x, y</code>, and <code>t</code> (if <code>fstr</code> is the parametric equations of <code>x(t)</code>
 and <code>y(t)</code> in <a href=#easyf>shortcut string format</a>), etc. You may include <code>enhancements</code> to improve the effect of an animation. An enhancement is actually a simple graphics
 object here, a line, a point, or a parametric curve.</p>
 <p><ol>
-<li><code>(X, Y)</code> are the coordinates of the current plotted point on the animated curve defined in <code>fstr</code>. If the curve is defined by parametric equations, <code>T</code> refers to the
-value of the parameter <code>t</code> for the current plotted point. They and controls as well can be used in <code>enhancements</code>, and expressions containing them must be in a string, such as
+<li><code>(X, Y)</code> are the coordinates of the currently plotted point on the animated curve defined in <code>fstr</code>. If the curve is defined by parametric equations, <code>T</code> refers to the
+value of the parameter <code>t</code> for the currently plotted point. They and controls as well can be used in <code>enhancements</code>, and expressions containing them must be in a string, such as
 <code>'2*X - a * Y + k'</code>.</li>
-<li>Show no title? Add <code>layout = { title = '' }</code>; No square aspect ratio? Add <code>layout = { square = false }.</li>
+<li>Show no title? Add <code>layout = { title = '' }</code>; No square aspect ratio? Add <code>layout = { square = false }.</code></li>
 <li>The parameter of a parametric curve, specified in <code>fstr</code>, must be <code>t</code>.</li>
 <li>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>. With a control, field <code>default</code> defines the initial value of the control. If
 not provided, it defaults to <code>start</code>.</li>
@@ -430,9 +430,9 @@ opts = {t = {0, 2*pi}, x = {-6.4, 6.4}, y = { -4.3, 4.3 },
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
 animate(fstr, opts)
 
--- Animating a cycloid, a plane curve traced out by a point P on the circumference of a circle of radius r as the circle
--- rolls along a horizontal straight line.
--- See: https://github.com/fdformula/CalculusLabs/blob/main/text/Unit%2008%20-%20Antiderivatives%20and%20Differential%20Equations%20-%20SlopeFieldPlot.nb
+-- Animating a cycloid, a plane curve traced out by a point P on the circumference of a circle of
+-- radius r as the circle rolls along a horizontal straight line.
+-- See: https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf
 -- 1) without enhancements
 fstr = {'@(t) r * (t - sin(t))', '@(t) r * (1 - cos(t))'}
 opts = {t = {0, 8 * pi, 0.01}, r  = {0.2, 5, 0.1, default = 1.5},
@@ -451,9 +451,9 @@ opts = {t = {0, 8 * pi, 0.01}, r  = {0.2, 5, 0.1, default = 1.5},
                        }}
 animate(fstr, opts)
 
--- Animating hypocycloid, a plane curve traced out by a fixed point P on a circle C of radius b as C rolls without
--- slipping on the inside of a circle with center O and radius a, where b < a.
--- See: https://github.com/fdformula/CalculusLabs/blob/main/text/Unit%2008%20-%20Antiderivatives%20and%20Differential%20Equations%20-%20SlopeFieldPlot.nb
+-- Animating hypocycloid, a plane curve traced out by a fixed point P on a circle C of radius b
+-- as C rolls without slipping on the inside of a circle with center O and radius a, where b < a.
+-- See: https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf
 fstr = {'@(t) (a - b) * cos(t) + b * cos((a - b) / b * t)', '@(t) (a - b) * sin(t) - b * sin((a - b) / b * t)'}
 opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 7.8}, b = {0.2, 9, 0.1, default = 1.6}, x = {-10, 10},
         layout = { width = 500, height = 500 },
@@ -464,9 +464,9 @@ opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 7.8}, b = {0.2, 9, 
                        }}
 animate(fstr, opts)
 
--- Animating epicycloid, a plane curve traced out by a fixed point P on a circle C of radius b as C rolls without
--- slipping on the outside of a circle with center O and radius a, where b < a.
--- See: https://github.com/fdformula/CalculusLabs/blob/main/text/Unit%2008%20-%20Antiderivatives%20and%20Differential%20Equations%20-%20SlopeFieldPlot.nb
+-- Animating epicycloid, a plane curve traced out by a fixed point P on a circle C of radius b as C
+-- rolls without slipping on the outside of a circle with center O and radius a, where b < a.
+-- See: https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf
 fstr = {'@(t) (a + b) * cos(t) - b * cos((a + b) / b * t)', '@(t) (a + b) * sin(t) - b * sin((a + b) / b * t)'}
 opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 6.0}, b = {0.2, 9, 0.1, default = 1.5}, x = {-10, 10},
         layout = { width = 640, height = 640 },
@@ -482,9 +482,12 @@ animate(fstr, opts)
 <p>JavaScript code can be added as follows for animations which involve more complicated computing. The <code>enhancements</code> may access
 variables and functions defined in the JavaScript code.</p>
 <p>&#x2713; &nbsp; Names of users' variables and functions can't be <code>x, y, t, X, Y, T</code>, and controls of which <code>p</code> is reserved for 'play'.</p>
-<p>A stick of length L can smoothly slide through a point (b, 0). Given that one end of the stick moves along a circle
-with its center at the origin and a radius of R, animate the path of the other end of the stick.</p>
-<pre><code>-- See: https://github.com/fdformula/CalculusLabs/blob/main/text/Unit%2008%20-%20Antiderivatives%20and%20Differential%20Equations%20-%20SlopeFieldPlot.nb
+<pre><code>-- A stick of length L can smoothly slide through a point (b, 0). Given that one end
+-- of the stick moves along a circle with its center at the origin and a radius of R,
+-- animate the path of the other end of the stick.
+-- See: https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf
+mathly = require('mathly')
+
 jscode = [[
   // JavaScript code can use X, Y, T, and controls that are here R, b, and L.
   //
@@ -520,12 +523,12 @@ opts = {t = {0, 2 * pi, 0.01},
                        }}
 animate(fstr, opts) -- 'animate' can be replaced with 'manipulate'
 
--- osculating circle: y = sin(x)
+-- osculating circle of y = sin(x)
 jscode = [[
  // see https://www.desmos.com/calculator/lbjisuikaf
- function f(x) { return Math.sin(x); }      // setup: f(x) = sin(x)
- function fp(x) { return Math.cos(x); }     // setup: f'(x) = cos(x)
- function fpp(x) { return 0-Math.sin(x); }  // setup: f''(x) = - sin(x)
+ function f(x) { return Math.sin(x); }     // setup: f(x) = sin(x)
+ function fp(x) { return Math.cos(x); }    // setup: f'(x) = cos(x)
+ function fpp(x) { return 0-Math.sin(x); } // setup: f''(x) = - sin(x)
  function m(x) { return Math.sqrt(1 + fp(x)**2); }
  function mp(x) { return -0.5 * Math.sin(2*x) / Math.sqrt(1 + Math.cos(x)**2); } // setup: m'(x) = - sin(2x)/sqrt(1 + cos(x)^2)
  function k(x) { const z = 1 + fp(x)**2; return Math.abs(fpp(x)) / (z * Math.sqrt(z)); }
@@ -544,9 +547,8 @@ opts = {t = {-2*pi, 2*pi, 0.01}, x = {-2*pi, 2*pi},
                        }}
 animate(fstr, opts)
 
--- osculating circle: y = x^2
+-- osculating circle of y = x^2
 jscode = [[
- // see https://www.desmos.com/calculator/lbjisuikaf
  function f(x) { return x*x; }  // setup: f(x) = x^2
  function fp(x) { return 2*x; } // setup: f'(x) = 2x
  function fpp(x) { return 2; }  // setup: f''(x) = 2
@@ -1807,21 +1809,23 @@ disp(L * U - A)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=manipulate href=#m><code>manipulate(f, ...)</code></a></h4>
-<p>Manipulate the graph of a single-variable function <code>f(x)</code> with controls. Each control is a single letter, <code>a, b, ..., z</code>, except <code>p, t, x</code>, and <code> y</code>.</p>
-<p>For example, the following code shows how to call the function to view the effect of controls, <code>a, h</code>, and <code>k</code>, in <code>f(x) = a(x - h)^2 + k</code>.</p>
+<p>Manipulate a parametric curve or the graph of a single-variable function <code>f(x)</code> with controls. Each control is a single letter, <code>a, b, ..., z</code>, except <code>p, t, x</code>, and <code> y</code>.</p>
 <p>See <code><a href=#animate>animate</a></code> for more information.</p>
 <pre><code>mathly = require('mathly')
 
-fstr = '@(x) a * (x - h)^2 + k'
-opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}, y = {-100, 100},
+fstr = '@(x) a * (x - h)^2 + k' -- a, h, and k are each a control here
+opts = {a = {-3, 3, 0.02, default = 3}, h = {-10, 10, 0.5, default = 0}, k = {-90, 90, default = 0},
+        x = {-10, 10}, y = {-100, 100},
         layout = { square = false, title = '' }} -- no title
 manipulate(fstr, opts)
 
-opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}, y = {-100, 100},
+opts = {a = {-3, 3, 0.02, default = 3}, h = {-10, 10, 0.5, default = 0}, k = {-90, 90, default = 0},
+        x = {-10, 10}, y = {-100, 100},
         layout = { square = false, title = 'Manipulation' }}
 manipulate(fstr, opts)
 
-opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}, y = {-100, 100},
+opts = {a = {-3, 3, 0.02, default = 3}, h = {-10, 10, 0.5, default = 0}, k = {-90, 90, default = 0},
+        x = {-10, 10}, y = {-100, 100},
         layout = { width = 600, height = 400, square = false }} -- the function is the title
 manipulate(fstr, opts)
 
@@ -1831,7 +1835,7 @@ opts = {t = {0, 2*pi, 0.01}, x = {-1.2, 1.2}, n = {1, 24, 1},
 manipulate(fstr, opts)
 
 fstr = {'@(t) (sin(1.6 * t)^2 + cos(n*t)^5) * cos(t)', '@(t) (sin(1.6 * t)^2 + cos(n*t)^5) * sin(t)'} -- polar function sin(1.6t)^2 + cos(nt)^5
-opts = {t = {0, 10*pi, 0.01}, x = {-2, 2}, n = {1, 6, 1, default = 2},
+opts = {t = {0, 10*pi, 0.01}, x = {-2, 2}, n = {1, 6, 1},
         layout = { width = 640, height = 540 }}
 manipulate(fstr, opts)
 
