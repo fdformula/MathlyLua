@@ -192,7 +192,9 @@ manipulate(fstr, opts)
 
 -- animating a cycloid
 fstr = {'@(t) r * (t - sin(t))', '@(t) r * (1 - cos(t))'}
-opts = {t = {0, 20 * pi, 0.01}, r  = {0.2, 5, 0.1, default = 1.4}, x = {-1, 20},
+opts = {t = {0, 8 * pi, 0.01}, r  = {0.2, 5, 0.1, default = 1.5},
+        x = {-2, 20}, y = {0, 10.5},
+        layout = {width = 600, height = 400},
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
                         {x = '@(t) r * T + r * cos(t)', y = '@(t) r + r * sin(t)', t = {0, 2 * pi}, color = 'orange'},
                         {x = {'X', 'r * T'}, y = {'Y', 'r'}, line = true, color = 'orange'}
