@@ -404,7 +404,7 @@ object here, a line, a point, or a parametric curve.</p>
 <li><code>(X, Y)</code> are the coordinates of the current plotted point on the animated curve defined in <code>fstr</code>. If the curve is defined by parametric equations, <code>T</code> refers to the
 value of the parameter <code>t</code> for the current plotted point. They and controls as well can be used in <code>enhancements</code>, and expressions containing them must be in a string, such as
 <code>'2*X - a * Y + k'</code>.</li>
-<li>Show no title? Add <code>title = ''</code>; Want square aspect ratio? Do not include the range of <code>y</code>.</li>
+<li>Show no title? Add <code>layout = { title = '' }</code>; No square aspect ratio? Add <code>layout = { square = false }.</li>
 <li>The parameter of a parametric curve, specified in <code>fstr</code>, must be <code>t</code>.</li>
 <li>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>. With a control, field <code>default</code> defines the initial value of the control. If
 not provided, it defaults to <code>start</code>.</li>
@@ -413,16 +413,20 @@ not provided, it defaults to <code>start</code>.</li>
 <pre><code>mathly = require('mathly')
 
 fstr = '@(x) x^2'
-opts = {x = {-6, 6}, y = {0, 40}, enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
+opts = {x = {-6, 6}, y = {0, 40},
+        layout = {width = 500, height = 350, square = false}, -- square aspect ratio, square = true, by default
+        enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
 animate(fstr, opts)
 
 fstr = {'@(t) 4*sin(t)', '@(t) 4*cos(t)'}
 opts = {t = {-2*pi, 2*pi},
+        layout = { width = 500, height = 500 },
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
 animate(fstr, opts)
 
 fstr = {'@(t) 6*cos(t)', '@(t) 4*sin(t)'}
-opts = {t = {0, 2*pi},
+opts = {t = {0, 2*pi}, x = {-6.4, 6.4}, y = { -4.3, 4.3 },
+        layout = { width = 600, height = 400 },
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
 animate(fstr, opts)
 
@@ -431,12 +435,16 @@ animate(fstr, opts)
 -- See: https://github.com/fdformula/CalculusLabs/blob/main/text/Unit%2008%20-%20Antiderivatives%20and%20Differential%20Equations%20-%20SlopeFieldPlot.nb
 -- 1) without enhancements
 fstr = {'@(t) r * (t - sin(t))', '@(t) r * (1 - cos(t))'}
-opts = {t = {0, 20 * pi, 0.01}, r  = {0.2, 5, 0.1, default = 0.9}, x = {-1, 20}}
+opts = {t = {0, 8 * pi, 0.01}, r  = {0.2, 5, 0.1, default = 1.5},
+        x = {-2, 20}, y = {0, 10.5},
+        layout = {width = 600, height = 400}}
 animate(fstr, opts)
 
 -- 2) with enhancements which enhances the effect of animation
 fstr = {'@(t) r * (t - sin(t))', '@(t) r * (1 - cos(t))'}
-opts = {t = {0, 20 * pi, 0.01}, r  = {0.2, 5, 0.1, default = 1}, x = {-1, 20},
+opts = {t = {0, 8 * pi, 0.01}, r  = {0.2, 5, 0.1, default = 1.5},
+        x = {-2, 20}, y = {0, 10.5},
+        layout = {width = 600, height = 400},
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
                         {x = '@(t) r * T + r * cos(t)', y = '@(t) r + r * sin(t)', t = {0, 2 * pi}, color = 'orange'},
                         {x = {'X', 'r * T'}, y = {'Y', 'r'}, line = true, color = 'orange'}
@@ -448,6 +456,7 @@ animate(fstr, opts)
 -- See: https://github.com/fdformula/CalculusLabs/blob/main/text/Unit%2008%20-%20Antiderivatives%20and%20Differential%20Equations%20-%20SlopeFieldPlot.nb
 fstr = {'@(t) (a - b) * cos(t) + b * cos((a - b) / b * t)', '@(t) (a - b) * sin(t) - b * sin((a - b) / b * t)'}
 opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 7.8}, b = {0.2, 9, 0.1, default = 1.6}, x = {-10, 10},
+        layout = { width = 500, height = 500 },
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
                         {x = '@(t) a * cos(t)', y = '@(t) a * sin(t)', t = {0, 2 * pi}, color = 'orange'},
                         {x = '@(t) (a - b) * cos(T) + b * cos(t)', y = '@(t) (a - b) * sin(T) + b * sin(t)', t = {0, 2 * pi}, color = 'green'},
@@ -459,7 +468,8 @@ animate(fstr, opts)
 -- slipping on the outside of a circle with center O and radius a, where b < a.
 -- See: https://github.com/fdformula/CalculusLabs/blob/main/text/Unit%2008%20-%20Antiderivatives%20and%20Differential%20Equations%20-%20SlopeFieldPlot.nb
 fstr = {'@(t) (a + b) * cos(t) - b * cos((a + b) / b * t)', '@(t) (a + b) * sin(t) - b * sin((a + b) / b * t)'}
-opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 6.8}, b = {0.2, 9, 0.1, default = 1.5}, x = {-10, 10},
+opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 6.0}, b = {0.2, 9, 0.1, default = 1.5}, x = {-10, 10},
+        layout = { width = 640, height = 640 },
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
                         -- {x = '@(t) (a + 2*b) * cos(t)', y = '@(t) (a + 2*b) * sin(t)' , t = {0, 2*pi}, width = 1, color = 'black'},
                         {x = '@(t) a * cos(t)', y = '@(t) a * sin(t)', t = {0, 2 * pi}, color = 'orange'},
@@ -496,7 +506,7 @@ jscode = [[
 fstr = {'@(t) R * cos(t) + 0*b + 0*L', '@(t) R * sin(t)'} -- 0*b + 0*L, b and L are controls, too; X, Y, and T are about a point on this curve
 opts = {t = {0, 2 * pi, 0.01},
         b = {0.1, 5, 0.1, default = 2.7}, R = {0.1, 5, 0.1, default = 2}, L = { 0.1, 5, 0.1, default = 5},
-        x = {-4, 5}, title = '',
+        x = {-3, 5}, y = {-4, 4}, layout = { width = 640, height = 480, title = '' },
         javascript = jscode,
         enhancements = {{x = fstr[1], y = fstr[2], t = {0, 2*pi}, color = 'blue'},                           -- order of graphics objects matters, the latter
                         {x = '@(t) b + (L / sqrt(R**2 + b**2 - 2 * b * R * cos(t)) - 1) * (b - R * cos(t))', -- ones are plotted over the former ones
@@ -508,7 +518,7 @@ opts = {t = {0, 2 * pi, 0.01},
                         {x = 'b', y = 0, color = 'grey', size = 10, point = true},
                         {x = 'xx', y = 'yy', color = 'red', size = 10, point = true}
                        }}
-animate(fstr, opts)
+animate(fstr, opts) -- 'animate' can be replaced with 'manipulate'
 
 -- osculating circle: y = sin(x)
 jscode = [[
@@ -525,7 +535,8 @@ jscode = [[
 ]]
 
 fstr = {'@(t) t', '@(t) sin(t)'}
-opts = {t = {-2*pi, 2*pi, 0.01}, x = {-2*pi, 2*pi}, title = 'y = sin(x)',
+opts = {t = {-2*pi, 2*pi, 0.01}, x = {-2*pi, 2*pi},
+        layout = { title = 'y = sin(x)' },
         javascript = jscode,
         enhancements = {{x = fstr[1], y = fstr[2], t = {-2*pi, 2*pi}, color = 'blue'},
                         {x = '@(t) cx + cos(t) / k(X)', y = '@(t) cy + sin(t) / k(X)', t = {0, 2*pi}, color = 'orange'},
@@ -548,7 +559,9 @@ jscode = [[
 ]]
 
 fstr = {'@(t) t', '@(t) t*t'}
-opts = {t = {-5, 5, 0.01}, x = {-5, 5}, title = 'y = x^2', p = { default = 0.43 }, -- control p starts at p = 0.43
+opts = {t = {-5, 5, 0.01}, x = {-5, 5},
+        layout = { title = 'y = x^2' },
+        p = { default = 0.43 }, -- control p starts at p = 0.43
         javascript = jscode,
         enhancements = {{x = fstr[1], y = fstr[2], t = {-2*pi, 2*pi}, color = 'blue'},
                         {x = '@(t) cx + cos(t) / k(X)', y = '@(t) cy + sin(t) / k(X)', t = {0, 2*pi}, color = 'orange'},
@@ -1800,20 +1813,37 @@ disp(L * U - A)
 <pre><code>mathly = require('mathly')
 
 fstr = '@(x) a * (x - h)^2 + k'
-opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}, y = {-100, 100}, title = ''} -- show no title
+opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}, y = {-100, 100},
+        layout = { square = false, title = '' }} -- no title
 manipulate(fstr, opts)
 
-opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}, y = {-100, 100},  title = 'Manipulation'}
+opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}, y = {-100, 100},
+        layout = { square = false, title = 'Manipulation' }}
 manipulate(fstr, opts)
 
-opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}, y = {-100, 100}} -- the function is the title
+opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}, y = {-100, 100},
+        layout = { width = 600, height = 400, square = false }} -- the function is the title
 manipulate(fstr, opts)
 
-opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}} -- no yrange is provided? use square aspect ratio
+fstr = {'@(t) sin(n * t) * cos(t)', '@(t) sin(n * t) * sin(t)'} -- polar function r(θ) = sin(kθ)
+opts = {t = {0, 2*pi, 0.01}, x = {-1.2, 1.2}, n = {1, 24, 1},
+        layout = { width = 500, height = 500 }}
 manipulate(fstr, opts)
 
-fstr = {'@(t) sin(k * t) * cos(t)', '@(t) sin(k * t) * sin(t)'} -- polar function r(θ) = sin(kθ)
-opts = {t = {0, 2*pi, 0.01}, x = {-2, 2}, k = {1, 18, 1}}
+fstr = {'@(t) (sin(1.6 * t)^2 + cos(n*t)^5) * cos(t)', '@(t) (sin(1.6 * t)^2 + cos(n*t)^5) * sin(t)'} -- polar function sin(1.6t)^2 + cos(nt)^5
+opts = {t = {0, 10*pi, 0.01}, x = {-2, 2}, n = {1, 6, 1, default = 2},
+        layout = { width = 640, height = 540 }}
+manipulate(fstr, opts)
+
+-- 'enhancements' are allowed as with 'animate'
+fstr = {'@(t) (a - b) * cos(t) + b * cos((a - b) / b * t)', '@(t) (a - b) * sin(t) - b * sin((a - b) / b * t)'}
+opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 7.8}, b = {0.2, 9, 0.1, default = 1.6}, x = {-10, 10},
+        layout = { width = 640, height = 640 },
+        enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
+                        {x = '@(t) a * cos(t)', y = '@(t) a * sin(t)', t = {0, 2 * pi}, color = 'orange'},
+                        {x = '@(t) (a - b) * cos(T) + b * cos(t)', y = '@(t) (a - b) * sin(T) + b * sin(t)', t = {0, 2 * pi}, color = 'green'},
+                        {x = {'X', '(a - b) * cos(T)'}, y = {'Y', '(a - b) * sin(T)'}, line = true, color = 'green'}
+                       }}
 manipulate(fstr, opts)
 </code></pre>
 

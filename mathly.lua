@@ -2578,7 +2578,9 @@ local function __parse_animate_args(fstr, opts, animateq)
       end
     end
   end
-  return cs, rs, xr, opts.y, tr, opts.title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode
+  local title = nil
+  if type(opts.layout) == 'table' then title = opts.layout.title end
+  return cs, rs, xr, opts.y, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode
 end -- __parse_animate_args
 
 local function _jscript_animate_traces(varq, tr, file, xexpr, jxexpr, jyexpr, enhancements, animateq)
@@ -2631,7 +2633,7 @@ local function _jscript_animate_traces(varq, tr, file, xexpr, jxexpr, jyexpr, en
   return j - 1
 end
 
-local function _write_manipulate_html(fname, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, animateq, jscode)
+local function _write_manipulate_html(fname, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, animateq, jscode, opts)
   local file = io.open(fname, "w")
   local format = string.format
   if file == nil then
@@ -2663,11 +2665,17 @@ input:focus {outline: none;}
 </style>
 </head>
 <body>
-<input type='text' id='title' style="width:800px;left:0px;text-align:center;border:none;"></input>
-<div id="mathlyDiv" style="width:800px;height:600px;display:inline-block;top:%dpx;position:absolute;"></div>
+<input type='text' id='title' style="width:%dpx;left:0px;text-align:center;border:none;"></input>
+<div id="mathlyDiv" style="width:%dpx;height:%dpx;display:inline-block;top:%dpx;position:absolute;"></div>
 <!-- controls -->
 ]]
-  file:write(format(s, plotly_engine, 50 + 30 * qq(#cs > 1, #cs - 2, 0)))
+  local w, h, optsq, layout = 800, 600, type(opts) == 'table', nil
+  if optsq and type(opts.layout) == 'table' then
+    layout = opts.layout
+    if type(layout.width)  == 'number' and layout.width > 0 then  w = layout.width end
+    if type(layout.height) == 'number' and layout.height > 0 then h = layout.height end
+  end
+  file:write(format(s, plotly_engine, w, w, h, 50 + 30 * qq(#cs > 1, #cs - 2, 0)))
   local top = 60 -- sliders
   for i = 1, #cs do
     s = [[<label for="mthlySldr%d" style='top:%dpx;'>%s:</label>
@@ -2693,14 +2701,17 @@ var mthlySldr1step = %f;
     file:write(format(s, rs[1][3], xr[2]))
   end
 
+  local squareq = true
+  if layout ~= nil and layout.square == false then squareq = false end
   file:write(format("\nconst layout = {\n  xaxis: { range: [%f, %f] }, // plot with fixed axes\n", xr[1], xr[2]))
   if yr == nil then
-    file:write(format("  yaxis: { range: [%f, %f], scaleanchor: 'x', scaleratio: 1 }", xr[1], xr[2])) -- no yrange is provided? square aspect ratio
-  else
-    if type(yr) ~= 'table' or yr[1] >= yr[2] then error('Range of y is invalid.') end
-    file:write(format("  yaxis: { range: [%f, %f] }", yr[1], yr[2]))
+    yr = xr
+  elseif type(yr) ~= 'table' or yr[1] >= yr[2] then
+    error('Range of y is invalid.')
   end
-  file:write(",\n  showlegend: false\n};\n\n")
+  file:write(format("  yaxis: { range: [%f, %f]", yr[1], yr[2]))
+  if squareq then file:write(", scaleanchor: 'x', scaleratio: 1") end -- square aspect ratio
+  file:write(" },\n  showlegend: false\n};\n\n")
   if title == nil then
     if xexpr == nil then
       title = 'y = ' .. yexpr
@@ -2836,15 +2847,15 @@ end
 
 -- manipulate/animate interactively the graph of f(x) with 'controls' and enhancements
 function manipulate(fstr, opts) -- Mathematica
-  local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements = __parse_animate_args(fstr, opts, false)
-  _write_manipulate_html(tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, false)
+  local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode = __parse_animate_args(fstr, opts, false)
+  _write_manipulate_html(tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, false, jscode, opts)
   _open_url(tmp_plot_html_file)
   print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
 end
 
 function animate(fstr, opts) -- Mathematica
   local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode = __parse_animate_args(fstr, opts, true)
-  _write_manipulate_html(tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, true, jscode)
+  _write_manipulate_html(tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, true, jscode, opts)
   _open_url(tmp_plot_html_file)
   print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
 end
