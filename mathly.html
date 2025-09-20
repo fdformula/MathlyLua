@@ -491,7 +491,7 @@ mathly = require('mathly')
 jscode = [[
   // JavaScript code can use X, Y, T, and controls that are here R, b, and L.
   //
-  // The line passes thru (b,0) and (X,Y) is y = (Y/(X-b))(X-b). So, x = b + ((X-b)/Y)y. Solve
+  // The line passes thru (b,0) and (X,Y) is y = (Y/(X-b))(x-b). So, x = b + ((X-b)/Y)y. Solve
   // (x-X)^2 + (y-Y)^2 = L^2 for y and then obtain x.
   var Xb = X - b;
   var z = Xb / Y;
