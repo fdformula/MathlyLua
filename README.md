@@ -190,11 +190,11 @@ fstr = '@(x) a * (x - h)^2 + k'
 opts = {a = {-3, 3, 0.02}, h = {-5, 5, 0.5}, k = {-5, 5}, x = {-10, 10}, y = {-100, 100}}
 manipulate(fstr, opts)
 
--- animating a cycloid
-fstr = {'@(t) r * (t - sin(t))', '@(t) r * (1 - cos(t))'}
-opts = {t = {0, 8 * pi, 0.01}, r  = {0.2, 5, 0.1, default = 1.5},
-        x = {-2, 20}, y = {0, 10.5},
-        layout = {width = 600, height = 400},
+-- animating trochoids, including cycloids
+fstr = {'@(t) r * t - d*sin(t)', '@(t) r - d*cos(t)'}
+opts = {t = {0, 8 * pi, 0.01}, r = {0.1, 5, 0.1, default = 1.5}, d = {0.1, 5, 0.1, default = 1.5},
+        x = {-2, 40}, y = {-5, 10.5},
+        layout = {width = 800, height = 400},
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
                         {x = '@(t) r * T + r * cos(t)', y = '@(t) r + r * sin(t)', t = {0, 2 * pi}, color = 'orange'},
                         {x = {'X', 'r * T'}, y = {'Y', 'r'}, line = true, color = 'orange'}
