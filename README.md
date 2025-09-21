@@ -189,7 +189,7 @@ plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
 fstr = '@(x) a * (x - h)^2 + k'
 opts = {a = {-3, 3, 0.02, default = 3}, h = {-10, 10, 0.5, default = 0}, k = {-90, 90, default = 0},
         x = {-10, 10}, y = {-100, 100},
-        layout = { width = 600, height = 400, square = false }} -- the function is the title
+        layout = { width = 600, height = 400, square = false }}
 manipulate(fstr, opts)
 
 -- animating trochoids, including cycloids
