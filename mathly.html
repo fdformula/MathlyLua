@@ -406,8 +406,9 @@ value of the parameter <code>t</code> for the currently plotted point. They and 
 <code>'2*X - a * Y + k'</code>.</li>
 <li>Show no title? Add <code>layout = { title = '' }</code>; No square aspect ratio? Add <code>layout = { square = false }.</code></li>
 <li>The parameter of a parametric curve, specified in <code>fstr</code>, must be <code>t</code>.</li>
-<li>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>. With a control, field <code>default</code> defines the initial value of the control. If
-not provided, it defaults to <code>start</code>.</li>
+<li>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>.
+With a control, field <code>default</code> defines the initial value of the control. If not provided, it defaults
+to <code>start</code>.</li>
 </ol>
 <p>See also: <code><a href=#manipulate>manipulate</a></code>.</p>
 <pre><code>mathly = require('mathly')
@@ -430,21 +431,13 @@ opts = {t = {0, 2*pi}, x = {-6.4, 6.4}, y = { -4.3, 4.3 },
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
 animate(fstr, opts)
 
--- Animating a cycloid, a plane curve traced out by a point P on the circumference of a circle of
--- radius r as the circle rolls along a horizontal straight line.
--- See: https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf
--- 1) without enhancements
-fstr = {'@(t) r * (t - sin(t))', '@(t) r * (1 - cos(t))'}
-opts = {t = {0, 8 * pi, 0.01}, r  = {0.2, 5, 0.1, default = 1.5},
-        x = {-2, 20}, y = {0, 10.5},
-        layout = {width = 600, height = 400}}
-animate(fstr, opts)
-
--- 2) with enhancements which enhances the effect of animation
-fstr = {'@(t) r * (t - sin(t))', '@(t) r * (1 - cos(t))'}
-opts = {t = {0, 8 * pi, 0.01}, r  = {0.2, 5, 0.1, default = 1.5},
-        x = {-2, 20}, y = {0, 10.5},
-        layout = {width = 600, height = 400},
+-- Animating trochoid, a plane curve traced out by a point "on a wheel" of radius r as the wheel
+-- rolls without slipping along the x-axis. The point is d units from the center of the wheel.
+-- When r = d, the curve is called a cycloid.
+fstr = {'@(t) r * t - d*sin(t)', '@(t) r - d*cos(t)'}
+opts = {t = {0, 8 * pi, 0.01}, r = {0.1, 5, 0.1, default = 1.5}, d = {0.1, 5, 0.1, default = 1.5},
+        x = {-2, 40}, y = {-5, 10.5},
+        layout = {width = 800, height = 400},
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
                         {x = '@(t) r * T + r * cos(t)', y = '@(t) r + r * sin(t)', t = {0, 2 * pi}, color = 'orange'},
                         {x = {'X', 'r * T'}, y = {'Y', 'r'}, line = true, color = 'orange'}
@@ -1836,6 +1829,15 @@ manipulate(fstr, opts)
 
 fstr = {'@(t) (sin(1.6 * t)^2 + cos(n*t)^5) * cos(t)', '@(t) (sin(1.6 * t)^2 + cos(n*t)^5) * sin(t)'} -- polar function sin(1.6t)^2 + cos(nt)^5
 opts = {t = {0, 10*pi, 0.01}, x = {-2, 2}, n = {1, 6, 1},
+        layout = { width = 640, height = 540 }}
+manipulate(fstr, opts)
+
+-- Lissajous curves
+fstr = {'@(t) a*sin(m * t)', '@(t) b*sin(n * t)'}
+opts = {t = {0, 2*pi, 0.01},
+        a = {0.1, 5, 0.1, default = 1}, m = {1, 20, 1, default = 2},
+        b = {0.1, 5, 0.1, default = 2}, n = {1, 20, 1, default = 1},
+        x = {-5, 5},
         layout = { width = 640, height = 540 }}
 manipulate(fstr, opts)
 
