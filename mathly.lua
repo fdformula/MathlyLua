@@ -2504,11 +2504,11 @@ end
 local function __parse_animate_args(fstr, opts, animateq)
   local cs = {} -- controls[i], ith control; a control is a single symbol such as a, h, and k in a*(x-h)^2+k
   local rs = {} -- ranges[i], ranges of the ith control
+  if opts == nil then opts = {} end
   if animateq == true then
     cs[1] = 'p'; rs[1] = {0, 1, 1/100} -- 'p' (play), reserved for animation
     if opts ~= nil and type(opts.p) == 'table' and opts.p.default ~= nil then rs[1].default = opts.p.default end
   end
-  if opts == nil then opts = {} end
 
   local xr = opts.x or {-5, 5}
   if type(xr) ~= 'table' or xr[1] >= xr[2] then error('Range of x is invalid.') end
