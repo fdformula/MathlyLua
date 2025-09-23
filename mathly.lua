@@ -2567,7 +2567,7 @@ local function __parse_animate_args(fstr, opts, animateq)
       elseif enhancements[i].point then -- { x = 5.1, y = 9.2, color = 'blue', size = 3, point = true}
       elseif enhancements[i].parametriceqs or (type(enhancements[i].x) == 'string' and type(enhancements[i].y) == 'string') then
         if xexpr ~= nil then
-          _, s = string.match(enhancements[i].x, fregex) -- {x = '@(t) ...', y = @(t) ...', color = 'red', width = 5, parametriceqs = true}
+          _, s = string.match(enhancements[i].x, fregex)
           enhancements[i].x = _to_jscript_functions(s)
           _, s = string.match(enhancements[i].y, fregex)
           enhancements[i].y = _to_jscript_functions(s)
@@ -2583,7 +2583,7 @@ local function __parse_animate_args(fstr, opts, animateq)
   return cs, rs, xr, opts.y, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode
 end -- __parse_animate_args
 
-local function _jscript_animate_traces(varq, tr, file, xexpr, jxexpr, jyexpr, enhancements, animateq)
+local function _jscript_animate_traces(varq, xr, tr, file, xexpr, jxexpr, jyexpr, enhancements, animateq, resolution)
   local head, vstr = "", "var "
   local format = string.format
   local function fmtio(v, s)
@@ -2596,10 +2596,10 @@ local function _jscript_animate_traces(varq, tr, file, xexpr, jxexpr, jyexpr, en
   if not varq then head, vstr = "  ", "" end
   file:write(format('%s%strace0 = { ', head, vstr))
   if xexpr == nil then
-    if animateq then s = format("x = []; for (let i = %f; i <= mthlySldr1.value * %f; i += %f) { x.push(i); }\n", xr[1], xr[2], (xr[2] - xr[1]) / 500) end
+    if animateq then s = format("x = []; for (let i = %f; i <= mthlySldr1.value * %f; i += %f) { x.push(i); }\n", xr[1], xr[2], (xr[2] - xr[1]) / resolution) end
     file:write(format("x: x, y: x.map(x => %s),", jyexpr))
   else -- parametric eqs
-    if animateq then s = format("t = []; for (let i = %f; i <= mthlySldr1.value * %f; i += %f) { t.push(i); }\n", tr[1], tr[2], (tr[2] - tr[1]) / 500) end
+    if animateq then s = format("t = []; for (let i = %f; i <= mthlySldr1.value * %f; i += %f) { t.push(i); }\n", tr[1], tr[2], (tr[2] - tr[1]) / resolution) end
     file:write(format("x: t.map(t => %s), y: t.map(t => %s),", jxexpr, jyexpr))
   end
   file:write(" mode: 'lines', line: { simplify: false } };\n") -- false, color: 'red'}
@@ -2619,11 +2619,12 @@ local function _jscript_animate_traces(varq, tr, file, xexpr, jxexpr, jyexpr, en
                    head, vstr, j, enhancements[i].color or 'black', enhancements[i].size or 8))
         j = j + 1
       elseif enhancements[i].parametriceqs then
-        local tr1 = enhancements[i].t
+        local tr1, res = enhancements[i].t, 500
         if tr1 == nil then tr1 = tr end
+        if type(enhancements[i].resolution) == 'number' then res = min({500, enhancements[i].resolution}) end
         if varq then file:write(format("var trace%d;\n", j)) end
         file:write(format("%sif (true) {\n  %sconst t = [];\n", head, head))
-        file:write(format("  %sfor (let i = %f; i <= %f; i += %f) { t.push(i); }\n", head, tr1[1], tr1[2], (tr1[2] - tr1[1]) / 500))
+        file:write(format("  %sfor (let i = %f; i <= %f; i += %f) { t.push(i); }\n", head, tr1[1], tr1[2], (tr1[2] - tr1[1]) / res))
         file:write(format("  %strace%d = { x: t.map(t => %s), y: t.map(t => %s), mode: 'lines', line: { simplify: false, color: '%s', width: %d } };\n%s};\n",
                    head, j, enhancements[i].x, enhancements[i].y, enhancements[i].color or 'black', enhancements[i].width or 3, head))
         j = j + 1
@@ -2631,7 +2632,7 @@ local function _jscript_animate_traces(varq, tr, file, xexpr, jxexpr, jyexpr, en
     end
   end
   return j - 1
-end
+end -- _jscript_animate_traces
 
 local function _write_manipulate_html(fname, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, animateq, jscode, opts)
   local file = io.open(fname, "w")
@@ -2757,7 +2758,7 @@ var mthlySldr1step = %f;
   end
   if type(jscode) == 'string' and jscode ~= '' then file:write(format("%s\n", jscode)) end
 
-  local j = _jscript_animate_traces(true, tr, file, xexpr, jxexpr, jyexpr, enhancements)
+  local j = _jscript_animate_traces(true, xr, tr, file, xexpr, jxexpr, jyexpr, enhancements, animateq, resolution)
 
   file:write("\nconst initialData = [trace0")
   for k = 1, j do file:write(format(", trace%d", k)) end
@@ -2793,7 +2794,7 @@ var mthlySldr1step = %f;
   end
   if type(jscode) == 'string' and jscode ~= '' then file:write(format("  %s\n", jscode)) end
 
-  j = _jscript_animate_traces(false, tr, file, xexpr, jxexpr, jyexpr, enhancements)
+  j = _jscript_animate_traces(false, xr, tr, file, xexpr, jxexpr, jyexpr, enhancements, animateq, resolution)
 
   file:write("  Plotly.animate('mathlyDiv', {\n")
   file:write("    data: [trace0")
