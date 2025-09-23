@@ -2669,11 +2669,16 @@ input:focus {outline: none;}
 <div id="mathlyDiv" style="width:%dpx;height:%dpx;display:inline-block;top:%dpx;position:absolute;"></div>
 <!-- controls -->
 ]]
-  local w, h, optsq, layout = 800, 600, type(opts) == 'table', nil
-  if optsq and type(opts.layout) == 'table' then
-    layout = opts.layout
-    if type(layout.width)  == 'number' and layout.width > 0 then  w = layout.width end
-    if type(layout.height) == 'number' and layout.height > 0 then h = layout.height end
+  local w, h, optsq, layout, resolution = 800, 600, type(opts) == 'table', nil, 500
+  if optsq then
+    if opts.resolution ~= nil and type(opts.resolution) == 'number' then
+      resolution = max({500, abs(opts.resolution)})
+    end
+    if type(opts.layout) == 'table' then
+      layout = opts.layout
+      if type(layout.width)  == 'number' and layout.width > 0 then  w = layout.width end
+      if type(layout.height) == 'number' and layout.height > 0 then h = layout.height end
+    end
   end
   file:write(format(s, plotly_engine, w, w, h, 50 + 30 * qq(#cs > 1, #cs - 2, 0)))
   local top = 60 -- sliders
@@ -2735,10 +2740,10 @@ var mthlySldr1step = %f;
   if not animateq then file:write("p = 1;\n") end
   if xexpr ~= nil then -- parametric eqs
     s = format("for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { t.push(i); }\n",
-               tr[1], tr[2], qq(tr[1] > 0, '-', '+'), abs(tr[1]), qq(tr[1] > 0, '+', '-'), abs(tr[1]), (tr[2] - tr[1]) / 500)
+               tr[1], tr[2], qq(tr[1] > 0, '-', '+'), abs(tr[1]), qq(tr[1] > 0, '+', '-'), abs(tr[1]), (tr[2] - tr[1]) / resolution)
   else
     s = format("for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { x.push(i); }\n",
-               xr[1], xr[2], qq(xr[1] > 0, '-', '+'), abs(xr[1]), qq(xr[1] > 0, '+', '-'), abs(xr[1]), (xr[2] - xr[1]) / 500)
+               xr[1], xr[2], qq(xr[1] > 0, '-', '+'), abs(xr[1]), qq(xr[1] > 0, '+', '-'), abs(xr[1]), (xr[2] - xr[1]) / resolution)
   end
   file:write(s)
 
@@ -2778,11 +2783,11 @@ var mthlySldr1step = %f;
   if animateq then
     if xexpr ~= nil then -- parametric eqs
       file:write(format("  t = []; for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { t.push(i); };\n  T = t[t.length - 1];\n",
-                        tr[1], tr[2], qq(tr[1] > 0, '-', '+'), abs(tr[1]), qq(tr[1] > 0, '+', '-'), abs(tr[1]), (tr[2] - tr[1]) / 500))
+                        tr[1], tr[2], qq(tr[1] > 0, '-', '+'), abs(tr[1]), qq(tr[1] > 0, '+', '-'), abs(tr[1]), (tr[2] - tr[1]) / resolution))
       file:write(format("  if (true) { const t = T; X = %s; Y = %s; };\n", jxexpr, jyexpr))
     else
       file:write(format("  x = []; for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { x.push(i); };\n  X = x[x.length - 1];",
-                        xr[1], xr[2], qq(xr[1] > 0, '-', '+'), abs(xr[1]), qq(xr[1] > 0, '+', '-'), abs(xr[1]), (xr[2] - xr[1]) / 500))
+                        xr[1], xr[2], qq(xr[1] > 0, '-', '+'), abs(xr[1]), qq(xr[1] > 0, '+', '-'), abs(xr[1]), (xr[2] - xr[1]) / resolution))
       file:write(format("  if (true) { const x = X; Y = %s; T = x; };\n", jyexpr))
     end
   end

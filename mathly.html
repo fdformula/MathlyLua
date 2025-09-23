@@ -411,6 +411,7 @@ value of the parameter <code>t</code> for the currently plotted point. They and 
 <li>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>.
 With a control, field <code>default</code> defines the initial value of the control. If not provided, it defaults
 to <code>start</code>.</li>
+<li>Field <code>resolution</code> of <code>opts</code> may be needed for parametric curves to look smooth. It defaults to 500. The larger, the smoother, and more computing power is needed.</li>
 </ol>
 <p>See also: <code><a href=#manipulate>manipulate</a></code>.</p>
 <pre><code>mathly = require('mathly')
@@ -451,6 +452,7 @@ animate(fstr, opts)
 -- See: https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf
 fstr = {'@(t) (a - b) * cos(t) + b * cos((a - b) / b * t)', '@(t) (a - b) * sin(t) - b * sin((a - b) / b * t)'}
 opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 7.8}, b = {0.2, 9, 0.1, default = 1.6}, x = {-10, 10},
+        resolution = 1500,
         layout = { width = 500, height = 500 },
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
                         {x = '@(t) a * cos(t)', y = '@(t) a * sin(t)', t = {0, 2 * pi}, color = 'orange'},
@@ -464,6 +466,7 @@ animate(fstr, opts)
 -- See: https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf
 fstr = {'@(t) (a + b) * cos(t) - b * cos((a + b) / b * t)', '@(t) (a + b) * sin(t) - b * sin((a + b) / b * t)'}
 opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 6.0}, b = {0.2, 9, 0.1, default = 1.5}, x = {-10, 10},
+        resolution = 1500,
         layout = { width = 640, height = 640 },
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
                         -- {x = '@(t) (a + 2*b) * cos(t)', y = '@(t) (a + 2*b) * sin(t)' , t = {0, 2*pi}, width = 1, color = 'black'},
