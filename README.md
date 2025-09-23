@@ -186,11 +186,10 @@ plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
      {layout={autosize=false, width=380, height=600, title="y' = x<sup>2</sup> - y",
               margin={l=40, r=20, t=45, b=40, pad=10}}})
 
-fstr = '@(x) a * (x - h)^2 + k'
-opts = {a = {-3, 3, 0.02, default = 3}, h = {-10, 10, 0.5, default = 0}, k = {-90, 90, default = 0},
-        x = {-10, 10}, y = {-100, 100},
-        layout = { width = 600, height = 400, square = false }}
-manipulate(fstr, opts)
+manipulate('@(x) a * (x - h)^2 + k',
+           {a = {-3, 3, 0.02, default = 3}, h = {-10, 10, 0.5, default = 0}, k = {-90, 90, default = 0},
+            x = {-10, 10}, y = {-100, 100},
+            layout = { width = 600, height = 400, square = false }})
 
 -- animating trochoids, including cycloids
 fstr = {'@(t) r * t - d*sin(t)', '@(t) r - d*cos(t)'}
