@@ -436,21 +436,18 @@ opts = {t = {0, 2*pi}, x = {-6.4, 6.4}, y = { -4.3, 4.3 },
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
 animate(fstr, opts)
 
--- polar curve, r(θ) = θ
-fstr = {'@(t) t * cos(t)', '@(t) t * sin(t)'}
-opts = {t = {0, 10 * pi, 0.01},
-        x = {-35, 35}, resolution = 1000,
-        layout = {width = 500, height = 500},
-        enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
-animate(fstr, opts)
-
--- butterfly curve, polar function r(θ) = e^sin(θ) - 2cos(4θ) + sin^5(θ/12)
-fstr = {'@(t) (exp(sin(t)) - 2*cos(4*t) + sin(t/12)^5) * cos(t)',
-        '@(t) (exp(sin(t)) - 2*cos(4*t) + sin(t/12)^5) * sin(t)'}
-opts = {t = {0, 10 * pi, 0.01},
-        x = {-4, 4}, resolution = 1000,
-        layout = {width = 500, height = 500},
-        enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
+-- polar curves: the code below may be used as a template
+-- butterfly curve: polar function r(θ) = e^sin(θ) - 2cos(4θ) + sin^5(θ/12)
+-------------------------------------------------------------------------
+r = 'exp(sin(t)) - 2*cos(4*t) + sin(t/12)^5'    -- r(t); change this only
+-------------------------------------------------------------------------
+fstr = {'@(t) (' .. r .. ') * cos(t)', '@(t) (' .. r .. ') * sin(t)'}
+opts = {t = {0, 10 * pi, 0.01},        ----- adjust options if needed
+        x = {-4, 4}, y = {-4, 4},
+        resolution = 1000,
+        layout = {width = 500, height = 500, square = true},
+        enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}
+       }
 animate(fstr, opts)
 
 -- Animating hypocycloid, a plane curve traced out by a fixed point P on a circle C of radius b
@@ -1836,15 +1833,22 @@ opts = {t = {0, 2*pi, 0.01},
         layout = { width = 640, height = 540 }}
 manipulate(fstr, opts)
 
--- polar curves, r(θ) = sin(nθ)
-fstr = {'@(t) sin(n * t) * cos(t)', '@(t) sin(n * t) * sin(t)'}
-opts = {t = {0, 2*pi, 0.01}, x = {-1.2, 1.2}, n = {1, 24, 1},
+-- polar curves: the code below may be used as a template
+---------------------------------------------------------
+r = 'sin(n*t)'        -- r(θ) = sin(nθ); change this only
+---------------------------------------------------------
+fstr = {'@(t) (' .. r .. ') * cos(t)', '@(t) (' .. r .. ') * sin(t)'}
+disp(fstr)
+opts = {t = {0, 2 * pi, 0.01},         ----- adjust options if needed
+        x = {-1.2, 1.2}, n = {1, 24, 1},
         resolution = 2000,
-        layout = { width = 500, height = 500 }}
+        layout = {width = 500, height = 500, square = true}
+       }
 manipulate(fstr, opts)
 
--- polar curves, r(θ) = sin(1.6θ)^2 + cos(nθ)^5
-fstr = {'@(t) (sin(1.6 * t)^2 + cos(n*t)^5) * cos(t)', '@(t) (sin(1.6 * t)^2 + cos(n*t)^5) * sin(t)'}
+-- polar curves: r(θ) = sin(1.6θ)^2 + cos(nθ)^5
+r = 'sin(1.6 * t)^2 + cos(n*t)^5'
+fstr = {'@(t) (' .. r .. ') * cos(t)', '@(t) (' .. r .. ') * sin(t)'}
 opts = {t = {0, 10*pi, 0.01}, x = {-2, 2}, n = {1, 12, 1},
         resolution = 6000,
         layout = { width = 640, height = 540 }}
