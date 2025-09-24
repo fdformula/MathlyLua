@@ -11,7 +11,7 @@ fstr = {'@(t) a*sin(m * t)', '@(t) b*sin(n * t)'}
 opts = {t = {0, 2*pi, 0.01},
         a = {0.1, 5, 0.1, default = 1}, m = {1, 20, 1, default = 2},
         b = {0.1, 5, 0.1, default = 2}, n = {1, 20, 1, default = 1},
-        x = {-5, 5},
+        x = {-5, 5}, resolution = 1500,
         layout = { width = 640, height = 540 }}
 manipulate(fstr, opts)
 
