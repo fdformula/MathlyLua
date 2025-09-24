@@ -1824,6 +1824,7 @@ manipulate(fstr, opts)
 
 fstr = {'@(t) sin(n * t) * cos(t)', '@(t) sin(n * t) * sin(t)'} -- polar function r(θ) = sin(kθ)
 opts = {t = {0, 2*pi, 0.01}, x = {-1.2, 1.2}, n = {1, 24, 1},
+        resolution = 2000,
         layout = { width = 500, height = 500 }}
 manipulate(fstr, opts)
 
