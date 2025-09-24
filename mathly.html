@@ -436,17 +436,21 @@ opts = {t = {0, 2*pi}, x = {-6.4, 6.4}, y = { -4.3, 4.3 },
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
 animate(fstr, opts)
 
--- Animating trochoid, a plane curve traced out by a point "on a wheel" of radius r as the wheel
--- rolls without slipping along the x-axis. The point is d units from the center of the wheel.
--- When r = d, the curve is called a cycloid.
-fstr = {'@(t) r * t - d*sin(t)', '@(t) r - d*cos(t)'}
-opts = {t = {0, 8 * pi, 0.01}, r = {0.1, 5, 0.1, default = 1.5}, d = {0.1, 5, 0.1, default = 1.5},
-        x = {-2, 40}, y = {-5, 10.5},
-        layout = {width = 800, height = 400},
-        enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
-                        {x = '@(t) r * T + r * cos(t)', y = '@(t) r + r * sin(t)', t = {0, 2 * pi}, color = 'orange'},
-                        {x = {'X', 'r * T'}, y = {'Y', 'r'}, line = true, color = 'orange'}
-                       }}
+-- polar curve, r(θ) = θ
+fstr = {'@(t) t * cos(t)', '@(t) t * sin(t)'}
+opts = {t = {0, 10 * pi, 0.01},
+        x = {-35, 35}, resolution = 1000,
+        layout = {width = 500, height = 500},
+        enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
+animate(fstr, opts)
+
+-- butterfly curve, polar function r(θ) = e^sin(θ) - 2cos(4θ) + sin^5(θ/12)
+fstr = {'@(t) (exp(sin(t)) - 2*cos(4*t) + sin(t/12)^5) * cos(t)',
+        '@(t) (exp(sin(t)) - 2*cos(4*t) + sin(t/12)^5) * sin(t)'}
+opts = {t = {0, 10 * pi, 0.01},
+        x = {-4, 4}, resolution = 1000,
+        layout = {width = 500, height = 500},
+        enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
 animate(fstr, opts)
 
 -- Animating hypocycloid, a plane curve traced out by a fixed point P on a circle C of radius b
@@ -1822,18 +1826,6 @@ opts = {a = {-3, 3, 0.02, default = 3}, h = {-10, 10, 0.5, default = 0}, k = {-9
         layout = { width = 600, height = 400, square = false, title = '' }} -- no title
 manipulate(fstr, opts)
 
-fstr = {'@(t) sin(n * t) * cos(t)', '@(t) sin(n * t) * sin(t)'} -- polar function r(θ) = sin(kθ)
-opts = {t = {0, 2*pi, 0.01}, x = {-1.2, 1.2}, n = {1, 24, 1},
-        resolution = 2000,
-        layout = { width = 500, height = 500 }}
-manipulate(fstr, opts)
-
-fstr = {'@(t) (sin(1.6 * t)^2 + cos(n*t)^5) * cos(t)', '@(t) (sin(1.6 * t)^2 + cos(n*t)^5) * sin(t)'} -- polar function sin(1.6t)^2 + cos(nt)^5
-opts = {t = {0, 10*pi, 0.01}, x = {-2, 2}, n = {1, 12, 1},
-        resolution = 6000,
-        layout = { width = 640, height = 540 }}
-manipulate(fstr, opts)
-
 -- Lissajous curves
 fstr = {'@(t) a*sin(m * t)', '@(t) b*sin(n * t)'}
 opts = {t = {0, 2*pi, 0.01},
@@ -1844,10 +1836,24 @@ opts = {t = {0, 2*pi, 0.01},
         layout = { width = 640, height = 540 }}
 manipulate(fstr, opts)
 
+-- polar curves, r(θ) = sin(nθ)
+fstr = {'@(t) sin(n * t) * cos(t)', '@(t) sin(n * t) * sin(t)'}
+opts = {t = {0, 2*pi, 0.01}, x = {-1.2, 1.2}, n = {1, 24, 1},
+        resolution = 2000,
+        layout = { width = 500, height = 500 }}
+manipulate(fstr, opts)
+
+-- polar curves, r(θ) = sin(1.6θ)^2 + cos(nθ)^5
+fstr = {'@(t) (sin(1.6 * t)^2 + cos(n*t)^5) * cos(t)', '@(t) (sin(1.6 * t)^2 + cos(n*t)^5) * sin(t)'}
+opts = {t = {0, 10*pi, 0.01}, x = {-2, 2}, n = {1, 12, 1},
+        resolution = 6000,
+        layout = { width = 640, height = 540 }}
+manipulate(fstr, opts)
+
 -- JavaScript and enhancements are allowed as with 'animate'
 fstr = {'@(t) (a - b) * cos(t) + b * cos((a - b) / b * t)', '@(t) (a - b) * sin(t) - b * sin((a - b) / b * t)'}
 opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 7.8}, b = {0.2, 9, 0.1, default = 1.6}, x = {-10, 10},
-    resolution = 1500,
+        resolution = 1500,
         layout = { width = 640, height = 640 },
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
                         {x = '@(t) a * cos(t)', y = '@(t) a * sin(t)', t = {0, 2 * pi}, color = 'orange'},
