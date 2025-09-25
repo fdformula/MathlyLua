@@ -412,8 +412,7 @@ value of the parameter <code>t</code> for the currently plotted point. They and 
 With a control, field <code>default</code> defines the initial value of the control. If not provided, it defaults
 to <code>start</code>.</li>
 <li>Field <code>resolution</code> of <code>opts</code> may be needed for smooth parametric curves. It defaults to 500. The larger, the smoother, but more computing power is needed.
-<br><br>Note: With each parametric curve in <code>enhancements</code>, field <code>resolution</code> can be defined separately, and its default and minimum value is 500.
-</li>
+<br><br>Note: With each parametric curve in <code>enhancements</code>, field <code>resolution</code> can be defined separately, and its default and minimum value is 500.</li>
 </ol>
 <p>See also: <code><a href=#manipulate>manipulate</a></code>.</p>
 <pre><code>mathly = require('mathly')
@@ -483,6 +482,7 @@ animate(fstr, opts)
 <p>JavaScript code can be added as follows for animations which involve more complicated computing. The <code>enhancements</code> may access
 variables and functions defined in the JavaScript code.</p>
 <p>&#x2713; &nbsp; Names of users' variables and functions can't be <code>x, y, t, X, Y, T</code>, and controls of which <code>p</code> is reserved for 'play'.</p>
+<p>&#x2713; &nbsp; If needed, an extra message can be displayed through an interface, <code>textoutput()</code>, a user-defined JavaScript function that returns a string, the message.</p>
 <pre><code>-- A stick of length L can smoothly slide through a point (b, 0). Given that one end
 -- of the stick moves along a circle with its center at the origin and a radius of R,
 -- animate the path of the other end of the stick.
@@ -505,6 +505,7 @@ jscode = [[
   }
   yy = yy / (1 + z*z);
   xx = b + z * yy;
+  // function textoutput() { return 'Hello! L = ' + L; }
 ]]
 
 fstr = {'@(t) R * cos(t) + 0*b + 0*L', '@(t) R * sin(t)'} -- 0*b + 0*L, b and L are controls, too; X, Y, and T are about a point on this curve
@@ -1833,6 +1834,37 @@ opts = {t = {0, 2*pi, 0.01},
         layout = { width = 640, height = 540 }}
 manipulate(fstr, opts)
 
+fstr = {'@(t) cos(t) + 1/m * cos(a*t) + 1/n * cos(b*t+3.1416/2)',
+        '@(t) sin(t) + 1/m * sin(a*t) + 1/n * sin(b*t+3.1416/2)'}
+opts = {t = {0, 2 * pi, 0.01},         ----- adjust options if needed
+        m = {1, 20, 1, default = 2}, n = {1, 20, 1, default = 2},
+        a = {-10, 10, 1, default = 8}, b = {-20, 20, 1, default = -13},
+        x = {-4, 4},
+        resolution = 2000,
+        layout = {width = 500, height = 500, square = true}
+       }
+manipulate(fstr, opts)
+-- m = 2, (n = 5 | 9), a = 9, b = -15
+-- m = 2, n = 2, a = 8, b = -6
+
+r = 'm + 1/n * sin(a*t)'
+s = 't + sin(b*t)/c'
+---------------------------------------------------------
+fstr = {'@(t) (' .. r .. ') * cos(' .. s .. ')',
+        '@(t) (' .. r .. ') * sin(' .. s .. ')'}
+opts = {t = {0, 2 * pi, 0.01},         ----- adjust options if needed
+        m = {-10, 10, 1, default = 3}, n = {1, 10, 1},
+        a = {-10, 10, 1, default = -9}, b = {-20, 20, 1, default = 9}, c = {1, 20, 1},
+        x = {-5, 5},
+        resolution = 2000,
+        layout = {width = 500, height = 500, square = true}
+       }
+manipulate(fstr, opts)
+-- m = n = c = 1, (a = -1, b = -10) | (a = +-10, b = 4)
+-- m = 3, n = 1, a = 8, b = 16, c = ...
+-- m = n = 3, a = 7, b = -14, c = 6
+-- m = 3, n = 1, a = -9, b = 15, c = 6
+
 -- polar curves: the code below may be used as a template
 ---------------------------------------------------------
 r = 'sin(n*t)'        -- r(θ) = sin(nθ); change this only
@@ -1855,14 +1887,29 @@ opts = {t = {0, 10*pi, 0.01}, x = {-2, 2}, n = {1, 12, 1},
 manipulate(fstr, opts)
 
 -- JavaScript and enhancements are allowed as with 'animate'
-fstr = {'@(t) (a - b) * cos(t) + b * cos((a - b) / b * t)', '@(t) (a - b) * sin(t) - b * sin((a - b) / b * t)'}
-opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 7.8}, b = {0.2, 9, 0.1, default = 1.6}, x = {-10, 10},
-        resolution = 1500,
-        layout = { width = 640, height = 640 },
-        enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
-                        {x = '@(t) a * cos(t)', y = '@(t) a * sin(t)', t = {0, 2 * pi}, color = 'orange'},
-                        {x = '@(t) (a - b) * cos(T) + b * cos(t)', y = '@(t) (a - b) * sin(T) + b * sin(t)', t = {0, 2 * pi}, color = 'green'},
-                        {x = {'X', '(a - b) * cos(T)'}, y = {'Y', '(a - b) * sin(T)'}, line = true, color = 'green'}
+--
+-- animating Newton's Method for solving f(x) = x^3 - 2x + 2 = 0
+jscode = [[
+function func(x)   { return x**3 - 2*x + 2; } // f(x)
+function fprime(x) { return 3*x**2 - 2; }     // f'(x))
+function nextx(x)  { return x - func(x) / fprime(x); }
+var xs = [];
+var I;
+xs.push(1.2);      // 1.1? repeat between 0 and 1
+for (let i = 0; i < 100; i += 1) { xs.push( nextx(xs[i]) ); }
+
+function textoutput() { return 'Iteration ' + I + ': x = ' + xs[I]; }
+]]
+
+fstr = {'@(t) t', '@(t) func(xs[I-1]) + fprime(xs[I-1]) * (t - xs[I-1])'}
+opts = {t = {-6.5, 6.5, 0.01}, I = {1, 100, 1}, x = {-6.5, 6.5}, y = {-60, 60},
+        layout = { width = 640, height = 640, square = false, title = "Newton\\'s method for x^3 - 2*x + 2 = 0 starting at x = 1.2" },
+        javascript = jscode,
+        enhancements = {{x = {'xs[I-1]', 'xs[I-1]'}, y = {'func(xs[I-1])', 0}, line = true, width = 1, color = 'grey'},
+                        {x = '@(t) t', y = '@(t) t^3 - 2*t + 2', t = {-6.5, 6.5}, color = 'orange'},
+                        {x = 'xs[I-1]', y = 0, color = 'grey', size = 8, point = true},
+                        {x = 'xs[I-1]', y = 'func(xs[I-1])', color = 'blue', size = 8, point = true},
+                        {x = 'xs[I]', y = 0, color = 'red', size = 10, point = true}
                        }}
 manipulate(fstr, opts)
 </code></pre>
@@ -2375,7 +2422,7 @@ do -- https://plotly.com/python/3d-surface-plots/
 end
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=plotsphericalsurface3d href=#m><code>plotsphericalsurface3d(ρ(θ,φ), θrange, φrange, title, resolution, orientationq)</code></a></h4>
+<h4>&bull; &nbsp; <a name=plotsphericalsurface3d href=#m><code>plotsphericalsurface3d(ρ(θ,φ), θrange, φrange, title, resolution)</code></a></h4>
 <p>Plot spherical function <code>ρ(θ, φ)</code>, where <code>θ</code> is in the range <code>θrange = {θ1, θ2}</code> (default: <code>{0, 2*pi}</code>)
 and <code>φ</code> in the range <code>φrange = {φ1, φ2}</code> (default: <code>{0, pi}</code>). If <code>ρ(θ, φ)</code> is a number, the radius of a sphere centered at the origin, plot the sphere.</p>
 <p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
