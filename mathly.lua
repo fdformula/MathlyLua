@@ -2621,7 +2621,7 @@ local function _jscript_animate_traces(xr, tr, file, xexpr, jxexpr, jyexpr, enha
         if type(enhancements[i].resolution) == 'number' then res = min({500, enhancements[i].resolution}) end
         file:write("  if (true) {\n    const t = [];\n")
         file:write(format("    for (let i = %f; i <= %f; i += %f) { t.push(i); }\n", tr1[1], tr1[2], (tr1[2] - tr1[1]) / res))
-        trace = format("{ x: t.map(t => %s),\n                  y: t.map(t => %s),\n                  mode: 'lines', line: { simplify: false, color: '%s', width: %d } }",
+        trace = format("{ x: t.map(t => %s), y: t.map(t => %s), mode: 'lines', line: { simplify: false, color: '%s', width: %d } }",
                        enhancements[i].x, enhancements[i].y, enhancements[i].color or 'black', enhancements[i].width or 3)
         file:write(format("    mthly_traces.push(%s);\n  }\n\n", trace))
       end
