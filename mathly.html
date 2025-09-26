@@ -481,7 +481,7 @@ animate(fstr, opts)
 
 <p>JavaScript code can be added as follows for animations which involve more complicated computing. The <code>enhancements</code> may access
 variables and functions defined in the JavaScript code.</p>
-<p>&#x2713; &nbsp; Names of users' variables and functions can't be <code>x, y, t, X, Y, T</code>, and controls of which <code>p</code> is reserved for 'play'.</p>
+<p>&#x2713; &nbsp; Names of users' variables and functions can NOT be <code>x, y, t, X, Y, T</code>, and controls of which <code>p</code> is reserved for 'play'.</p>
 <p>&#x2713; &nbsp; If needed, an extra message can be displayed through an interface, <code>displaytext()</code>, a user-defined JavaScript function that returns a string, the message.</p>
 <pre><code>-- A stick of length L can smoothly slide through a point (b, 0). Given that one end
 -- of the stick moves along a circle with its center at the origin and a radius of R,
@@ -525,16 +525,16 @@ animate(fstr, opts) -- 'animate' can be replaced with 'manipulate'
 
 -- osculating circle of y = sin(x)
 jscode = [[
- // see https://www.desmos.com/calculator/lbjisuikaf
- function f(x) { return Math.sin(x); }     // setup: f(x) = sin(x)
- function fp(x) { return Math.cos(x); }    // setup: f'(x) = cos(x)
- function fpp(x) { return 0-Math.sin(x); } // setup: f''(x) = - sin(x)
- function m(x) { return Math.sqrt(1 + fp(x)**2); }
- function mp(x) { return -0.5 * Math.sin(2*x) / Math.sqrt(1 + Math.cos(x)**2); } // setup: m'(x) = - sin(2x)/sqrt(1 + cos(x)^2)
- function k(x) { const z = 1 + fp(x)**2; return Math.abs(fpp(x)) / (z * Math.sqrt(z)); }
- function q(x) { return fpp(x)*m(x) - fp(x) * mp(x); }  // do NOT use p which is reserved for 'play'
- const cx = X - mp(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));   // (cx, cy), center of osculation circle at (X, Y)
- const cy = f(X) + q(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));
+  // see https://www.desmos.com/calculator/lbjisuikaf
+  function f(x) { return Math.sin(x); }     // setup: f(x) = sin(x)
+  function fp(x) { return Math.cos(x); }    // setup: f'(x) = cos(x)
+  function fpp(x) { return 0-Math.sin(x); } // setup: f''(x) = - sin(x)
+  function m(x) { return Math.sqrt(1 + fp(x)**2); }
+  function mp(x) { return -0.5 * Math.sin(2*x) / Math.sqrt(1 + Math.cos(x)**2); } // setup: m'(x) = - sin(2x)/sqrt(1 + cos(x)^2)
+  function k(x) { const z = 1 + fp(x)**2; return Math.abs(fpp(x)) / (z * Math.sqrt(z)); }
+  function q(x) { return fpp(x)*m(x) - fp(x) * mp(x); }  // do NOT use p which is reserved for 'play'
+  const cx = X - mp(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));   // (cx, cy), center of osculation circle at (X, Y)
+  const cy = f(X) + q(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));
 ]]
 
 fstr = {'@(t) t', '@(t) sin(t)'}
@@ -549,15 +549,15 @@ animate(fstr, opts)
 
 -- osculating circle of y = x^2
 jscode = [[
- function f(x) { return x*x; }  // setup: f(x) = x^2
- function fp(x) { return 2*x; } // setup: f'(x) = 2x
- function fpp(x) { return 2; }  // setup: f''(x) = 2
- function m(x) { return Math.sqrt(1 + fp(x)**2); }
- function mp(x) { return 4*x / Math.sqrt(1 + 4*x*x); } // setup: m'(x) = 4x / sqrt(1 + 4x^2)
- function k(x) { const z = 1 + fp(x)**2; return Math.abs(fpp(x)) / (z * Math.sqrt(z)); }
- function q(x) { return fpp(x)*m(x) - fp(x) * mp(x); }  // do NOT use p which is reserved for 'play'
- const cx = X - mp(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));   // (cx, cy), center of osculation circle at (X, Y)
- const cy = f(X) + q(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));
+  function f(x) { return x*x; }  // setup: f(x) = x^2
+  function fp(x) { return 2*x; } // setup: f'(x) = 2x
+  function fpp(x) { return 2; }  // setup: f''(x) = 2
+  function m(x) { return Math.sqrt(1 + fp(x)**2); }
+  function mp(x) { return 4*x / Math.sqrt(1 + 4*x*x); } // setup: m'(x) = 4x / sqrt(1 + 4x^2)
+  function k(x) { const z = 1 + fp(x)**2; return Math.abs(fpp(x)) / (z * Math.sqrt(z)); }
+  function q(x) { return fpp(x)*m(x) - fp(x) * mp(x); }  // do NOT use p which is reserved for 'play'
+  const cx = X - mp(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));   // (cx, cy), center of osculation circle at (X, Y)
+  const cy = f(X) + q(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));
 ]]
 
 fstr = {'@(t) t', '@(t) t*t'}
