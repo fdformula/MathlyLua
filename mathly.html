@@ -482,7 +482,7 @@ animate(fstr, opts)
 <p>JavaScript code can be added as follows for animations which involve more complicated computing. The <code>enhancements</code> may access
 variables and functions defined in the JavaScript code.</p>
 <p>&#x2713; &nbsp; Names of users' variables and functions can't be <code>x, y, t, X, Y, T</code>, and controls of which <code>p</code> is reserved for 'play'.</p>
-<p>&#x2713; &nbsp; If needed, an extra message can be displayed through an interface, <code>textoutput()</code>, a user-defined JavaScript function that returns a string, the message.</p>
+<p>&#x2713; &nbsp; If needed, an extra message can be displayed through an interface, <code>displaytext()</code>, a user-defined JavaScript function that returns a string, the message.</p>
 <pre><code>-- A stick of length L can smoothly slide through a point (b, 0). Given that one end
 -- of the stick moves along a circle with its center at the origin and a radius of R,
 -- animate the path of the other end of the stick.
@@ -505,7 +505,7 @@ jscode = [[
   }
   yy = yy / (1 + z*z);
   xx = b + z * yy;
-  // function textoutput() { return 'Hello! L = ' + L; }
+  // function displaytext() { return 'Hello! L = ' + L; }
 ]]
 
 fstr = {'@(t) R * cos(t) + 0*b + 0*L', '@(t) R * sin(t)'} -- 0*b + 0*L, b and L are controls, too; X, Y, and T are about a point on this curve
@@ -1898,7 +1898,7 @@ var I;
 xs.push(1.2);      // 1.1? repeat between 0 and 1
 for (let i = 0; i < 100; i += 1) { xs.push( nextx(xs[i]) ); }
 
-function textoutput() { return 'Iteration ' + I + ': x = ' + xs[I]; }
+function displaytext() { return 'Iteration ' + I + ': x = ' + xs[I]; }
 ]]
 
 fstr = {'@(t) t', '@(t) func(xs[I-1]) + fprime(xs[I-1]) * (t - xs[I-1])'}

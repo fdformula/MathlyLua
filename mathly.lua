@@ -2695,9 +2695,9 @@ input:focus {outline: none;}
     top = top + 30
     file:write(s)
   end
-  s = '<span id="textoutput" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>\n'
+  s = '<span id="displaytext" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>\n'
   file:write(format(s, 74, top))
-  file:write('\n<script type="text/javascript">\nfunction textoutput() { return ""; }\nvar x = [];\nvar t = [];\nvar mthlyX1, mthlyX2, mthlyY1, mthlyY2, X, Y, T;\n')
+  file:write('\n<script type="text/javascript">\nfunction displaytext() { return ""; }\nvar x = [];\nvar t = [];\nvar mthlyX1, mthlyX2, mthlyY1, mthlyY2, X, Y, T;\n')
   if animateq then
     s = [[
 var mthlyAutoPlayq = true;
@@ -2794,7 +2794,7 @@ var mthlySldr1step = %f;
     end
   end
   if type(jscode) == 'string' and jscode ~= '' then file:write(format("  %s\n", jscode)) end
-  file:write('document.getElementById("textoutput").innerHTML = textoutput();\n')
+  file:write('document.getElementById("displaytext").innerHTML = displaytext();\n')
 
   j = _jscript_animate_traces(false, xr, tr, file, xexpr, jxexpr, jyexpr, enhancements, animateq, resolution)
 
@@ -2808,7 +2808,7 @@ var mthlySldr1step = %f;
   for i = 1, #cs do -- slider event handlers
     s = [[
 document.getElementById("mthlySldr%dvalue").innerHTML = mthlySldr%d.value;
-mthlySldr%d.addEventListener("input", function() { document.getElementById("textoutput").innerHTML = textoutput(); document.getElementById("mthlySldr%dvalue").innerHTML = mthlySldr%d.value; %sanimatePlot() });
+mthlySldr%d.addEventListener("input", function() { document.getElementById("displaytext").innerHTML = displaytext(); document.getElementById("mthlySldr%dvalue").innerHTML = mthlySldr%d.value; %sanimatePlot() });
 ]]
     file:write(format(s, i, i, i, i, i, qq(animateq, 'mthlyAutoPlayq = false; ', '')))
   end
