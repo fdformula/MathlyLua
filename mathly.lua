@@ -35,7 +35,8 @@ FUNCTIONS PROVIDED IN THIS MODULE
     polygon, scatter, text, wedge; boxplot, freqpolygon, hist, hist1, histfreqpolygon,
     pareto, pie, slopefield, vectorfield2d ← Graphics objects passed to 'plot'.
 
-    plot; plot3d, plotparametriccurve3d, plotparametricsurface3d, plotsphericalsurface3d
+    animate, manipulate, plot; plot3d, plotparametriccurve3d, plotparametricsurface3d,
+    plotsphericalsurface3d
 
     axissquare, axisnotsquare; showaxes, shownotaxes; showxaxis, shownotxaxis;
     showyaxis, shownotyaxis; showgridlines, shownotgridlines;
@@ -2594,15 +2595,16 @@ local function _jscript_animate_traces(varq, xr, tr, file, xexpr, jxexpr, jyexpr
     end
   end
   if not varq then head, vstr = "  ", "" end
-  file:write(format('%s%strace0 = { ', head, vstr))
+  local trace = format('{ ')
   if xexpr == nil then
-    if animateq then s = format("x = []; for (let i = %f; i <= mthlySldr1.value * %f; i += %f) { x.push(i); }\n", xr[1], xr[2], (xr[2] - xr[1]) / resolution) end
-    file:write(format("x: x, y: x.map(x => %s),", jyexpr))
+    -- if animateq then s = format("x = []; for (let i = %f; i <= mthlySldr1.value * %f; i += %f) { x.push(i); }\n", xr[1], xr[2], (xr[2] - xr[1]) / resolution) end -- 9/26/25
+    trace = trace .. format("x: x, y: x.map(x => %s),", jyexpr)
   else -- parametric eqs
-    if animateq then s = format("t = []; for (let i = %f; i <= mthlySldr1.value * %f; i += %f) { t.push(i); }\n", tr[1], tr[2], (tr[2] - tr[1]) / resolution) end
-    file:write(format("x: t.map(t => %s), y: t.map(t => %s),", jxexpr, jyexpr))
+    -- if animateq then s = format("t = []; for (let i = %f; i <= mthlySldr1.value * %f; i += %f) { t.push(i); }\n", tr[1], tr[2], (tr[2] - tr[1]) / resolution) end -- 9/26/25
+    trace = trace .. format("x: t.map(t => %s), y: t.map(t => %s),", jxexpr, jyexpr)
   end
-  file:write(" mode: 'lines', line: { simplify: false } };\n") -- false, color: 'red'}
+  trace = trace .. " mode: 'lines', line: { simplify: false } }" -- false, color: 'red'}
+  file:write(format("%straces.push(%s);\n", head, trace)) -- trace0
 
   local j = 1
   if type(enhancements) == 'table' then
@@ -2610,23 +2612,26 @@ local function _jscript_animate_traces(varq, xr, tr, file, xexpr, jxexpr, jyexpr
       if enhancements[i].line then
         fmtio(enhancements[i].x[1], 'mthlyX1'); fmtio(enhancements[i].x[2], 'mthlyX2')
         fmtio(enhancements[i].y[1], 'mthlyY1'); fmtio(enhancements[i].y[2], 'mthlyY2')
-        file:write(format("%s%strace%d = { x: [mthlyX1, mthlyX2], y: [mthlyY1, mthlyY2], mode: 'lines', line: { color: '%s', width: %d } };\n",
-                   head, vstr, j, enhancements[i].color or 'black', enhancements[i].width or 3))
+        trace = format("{ x: [mthlyX1, mthlyX2], y: [mthlyY1, mthlyY2], mode: 'lines', line: { color: '%s', width: %d } }",
+                       enhancements[i].color or 'black', enhancements[i].width or 3)
+        file:write(format("%straces.push(%s);\n", head, trace))
         j = j + 1
       elseif enhancements[i].point then
         fmtio(enhancements[i].x, 'mthlyX1'); fmtio(enhancements[i].y, 'mthlyY1')
-        file:write(format("%s%strace%d = { x: [mthlyX1], y: [mthlyY1], mode: 'markers', marker: { color: '%s', size: %d } };\n",
-                   head, vstr, j, enhancements[i].color or 'black', enhancements[i].size or 8))
+        trace = format("{ x: [mthlyX1], y: [mthlyY1], mode: 'markers', marker: { color: '%s', size: %d } }",
+                       enhancements[i].color or 'black', enhancements[i].size or 8)
+        file:write(format("%straces.push(%s);\n", head, trace))
         j = j + 1
       elseif enhancements[i].parametriceqs then
         local tr1, res = enhancements[i].t, 500
         if tr1 == nil then tr1 = tr end
         if type(enhancements[i].resolution) == 'number' then res = min({500, enhancements[i].resolution}) end
-        if varq then file:write(format("var trace%d;\n", j)) end
+        -- if varq then trace = file:write(format("var trace%d;\n", j)) end
         file:write(format("%sif (true) {\n  %sconst t = [];\n", head, head))
         file:write(format("  %sfor (let i = %f; i <= %f; i += %f) { t.push(i); }\n", head, tr1[1], tr1[2], (tr1[2] - tr1[1]) / res))
-        file:write(format("  %strace%d = { x: t.map(t => %s), y: t.map(t => %s), mode: 'lines', line: { simplify: false, color: '%s', width: %d } };\n%s};\n",
-                   head, j, enhancements[i].x, enhancements[i].y, enhancements[i].color or 'black', enhancements[i].width or 3, head))
+        trace = format("{ x: t.map(t => %s),\n%s                y: t.map(t => %s),\n%s                mode: 'lines', line: { simplify: false, color: '%s', width: %d } }", --\n%s};\n",
+                       enhancements[i].x, head, enhancements[i].y, head, enhancements[i].color or 'black', enhancements[i].width or 3, head)
+        file:write(format("  %straces.push(%s);\n%s}\n", head, trace, head))
         j = j + 1
       end
     end
@@ -2697,7 +2702,14 @@ input:focus {outline: none;}
   end
   s = '<span id="displaytext" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>\n'
   file:write(format(s, 74, top))
-  file:write('\n<script type="text/javascript">\nfunction displaytext() { return ""; }\nvar x = [];\nvar t = [];\nvar mthlyX1, mthlyX2, mthlyY1, mthlyY2, X, Y, T;\n')
+  file:write([[
+<script type="text/javascript">
+function displaytext() { return ""; } // to be overwritten
+var traces = [];
+var x = [];
+var t = [];
+var mthlyX1, mthlyX2, mthlyY1, mthlyY2, X, Y, T;
+]])
   if animateq then
     s = [[
 var mthlyAutoPlayq = true;
@@ -2761,11 +2773,9 @@ var mthlySldr1step = %f;
 
   local j = _jscript_animate_traces(true, xr, tr, file, xexpr, jxexpr, jyexpr, enhancements, animateq, resolution)
 
-  file:write("\nconst initialData = [trace0")
-  for k = 1, j do file:write(format(", trace%d", k)) end
-  file:write("]\n\n")
+  file:write("\nconst initialData = traces;\n\n")
 
-  file:write("function animatePlot() {\n")
+  file:write("function animatePlot() {\n  traces = [];\n")
   if animateq then
     s = [[
   if (mthlyAutoPlayq) {
@@ -2793,22 +2803,26 @@ var mthlySldr1step = %f;
       file:write(format("  if (true) { const x = X; Y = %s; T = x; };\n", jyexpr))
     end
   end
-  if type(jscode) == 'string' and jscode ~= '' then file:write(format("  %s\n", jscode)) end
-  file:write('document.getElementById("displaytext").innerHTML = displaytext();\n')
+  if type(jscode) == 'string' and jscode ~= '' then file:write(format("%s\n", jscode)) end
+  file:write('  document.getElementById("displaytext").innerHTML = displaytext();\n')
 
   j = _jscript_animate_traces(false, xr, tr, file, xexpr, jxexpr, jyexpr, enhancements, animateq, resolution)
+  file:write([[
+  Plotly.animate('mathlyDiv', {
+    data: traces,
+    traces: traces.keys() // update all traces
+  }, {
+    transition: { duration: 0 },
+    frame: { duration: 0 }
+  });
+}
 
-  file:write("  Plotly.animate('mathlyDiv', {\n")
-  file:write("    data: [trace0")
-  for k = 1, j do file:write(format(", trace%d", k)) end
-  file:write("],\n    traces: [0")
-  for k = 1, j do file:write(format(", %d", k)) end
-  file:write("] // update all traces\n  }, {\n    transition: { duration: 0 },\n    frame: { duration: 0 }\n  });\n}\n\n")
+]])
 
   for i = 1, #cs do -- slider event handlers
     s = [[
 document.getElementById("mthlySldr%dvalue").innerHTML = mthlySldr%d.value;
-mthlySldr%d.addEventListener("input", function() { document.getElementById("displaytext").innerHTML = displaytext(); document.getElementById("mthlySldr%dvalue").innerHTML = mthlySldr%d.value; %sanimatePlot() });
+mthlySldr%d.addEventListener("input", function() { document.getElementById("mthlySldr%dvalue").innerHTML = mthlySldr%d.value; %sanimatePlot() });
 ]]
     file:write(format(s, i, i, i, i, i, qq(animateq, 'mthlyAutoPlayq = false; ', '')))
   end

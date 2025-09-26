@@ -490,8 +490,6 @@ variables and functions defined in the JavaScript code.</p>
 mathly = require('mathly')
 
 jscode = [[
-  // JavaScript code can use X, Y, T, and controls that are here R, b, and L.
-  //
   // The line passes thru (b,0) and (X,Y) is y = (Y/(X-b))(x-b). So, x = b + ((X-b)/Y)y. Solve
   // (x-X)^2 + (y-Y)^2 = L^2 for y and then obtain x.
   var Xb = X - b;
@@ -511,7 +509,7 @@ jscode = [[
 fstr = {'@(t) R * cos(t) + 0*b + 0*L', '@(t) R * sin(t)'} -- 0*b + 0*L, b and L are controls, too; X, Y, and T are about a point on this curve
 opts = {t = {0, 2 * pi, 0.01},
         b = {0.1, 5, 0.1, default = 2.7}, R = {0.1, 5, 0.1, default = 2}, L = { 0.1, 5, 0.1, default = 5},
-        x = {-3, 5}, y = {-4, 4}, layout = { width = 640, height = 480, title = '' },
+        x = {-3, 5}, y = {-5, 5}, layout = { width = 640, height = 480, title = '' },
         javascript = jscode,
         enhancements = {{x = fstr[1], y = fstr[2], t = {0, 2*pi}, color = 'blue'},                           -- order of graphics objects matters, the latter
                         {x = '@(t) b + (L / sqrt(R**2 + b**2 - 2 * b * R * cos(t)) - 1) * (b - R * cos(t))', -- ones are plotted over the former ones
@@ -519,7 +517,7 @@ opts = {t = {0, 2 * pi, 0.01},
                          t = {0, 2 * pi}, color = 'cyan'
                         },
                         {x = {'X', 'xx'}, y = {'Y', 'yy'}, line = true, color = 'orange'}, -- xx and yy are calculated in the JavaScript code
-                        {x = 'X', y = 'Y', color = 'red', size = 10, point = true},
+                        {x = 'X', y = 'Y', color = 'blue', size = 10, point = true},
                         {x = 'b', y = 0, color = 'grey', size = 10, point = true},
                         {x = 'xx', y = 'yy', color = 'red', size = 10, point = true}
                        }}
@@ -1890,15 +1888,14 @@ manipulate(fstr, opts)
 --
 -- animating Newton's Method for solving f(x) = x^3 - 2x + 2 = 0
 jscode = [[
-function func(x)   { return x**3 - 2*x + 2; } // f(x)
-function fprime(x) { return 3*x**2 - 2; }     // f'(x))
-function nextx(x)  { return x - func(x) / fprime(x); }
-var xs = [];
-var I;
-xs.push(1.2);      // 1 or 0? repeat between 0 and 1
-for (let i = 0; i < 100; i += 1) { xs.push( nextx(xs[i]) ); }
+  function func(x)   { return x**3 - 2*x + 2; } // f(x)
+  function fprime(x) { return 3*x**2 - 2; }     // f'(x))
+  function nextx(x)  { return x - func(x) / fprime(x); }
+  var xs = [];
+  xs.push(1.2);      // 1 or 0? repeat between 0 and 1
+  for (let i = 0; i < 100; i += 1) { xs.push( nextx(xs[i]) ); }
 
-function displaytext() { return 'Iteration ' + I + ': x = ' + xs[I]; }
+  function displaytext() { return 'Iteration ' + I + ': x = ' + xs[I]; }
 ]]
 
 fstr = {'@(t) t', '@(t) func(xs[I-1]) + fprime(xs[I-1]) * (t - xs[I-1])'}
