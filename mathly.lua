@@ -2606,58 +2606,95 @@ local function _anmt_parse_args(fstr, opts, animateq)
   return cs, rs, xr, opts.y, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode
 end -- _anmt_parse_args
 
-local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces = {{...}, {...}, ...}
+-- key: nil - no cumulative effect of the primary graphics objects in fstr; otherwise - cumulative effect, by default,
+-- and it has the info about the primary control
+local function _amnt_write_subtraces(traces, tr, file, resolution, key)   -- traces = {{...}, {...}, ...}
   if type(traces) ~= 'table' or #traces == 0 then return end
   local fmt = string.format
+  local head = ''
   local function fmtio(v, s)
     if type(v) == 'string' then
-      file:write(fmt("  %s = eval('%s');\n", s, _to_jscript_functions(v)))
+      --file:write(fmt("  %s%s = eval('%s');\n", head, s, _to_jscript_functions(v)))
+      file:write(fmt("  %s%s = %s;\n", head, s, _to_jscript_functions(v)))
     else
-      file:write(fmt("  %s = %f;\n", s, v))
+      file:write(fmt("  %s%s = %f;\n", head, s, v))
     end
   end
-  for i = 1, #traces do
-    local obj = traces[i]
-    if obj.line then
-      fmtio(obj.x[1], 'mthly_X1'); fmtio(obj.x[2], 'mthly_X2')
-      fmtio(obj.y[1], 'mthly_Y1'); fmtio(obj.y[2], 'mthly_Y2')
-      trace = fmt("{ x: [mthly_X1, mthly_X2], y: [mthly_Y1, mthly_Y2], mode: 'lines', line: { color: '%s', width: %d } }",
-                  obj.color or 'black', obj.width or 3)
-      file:write(fmt("  mthly_traces.push(%s);\n\n", trace))
-    elseif obj.point then
-      fmtio(obj.x, 'mthly_X1'); fmtio(obj.y, 'mthly_Y1')
-      trace = fmt("{ x: [mthly_X1], y: [mthly_Y1], mode: 'markers', marker: { color: '%s', size: %d } }",
-                  obj.color or 'black', obj.size or 8)
-      file:write(fmt("  mthly_traces.push(%s);\n\n", trace))
-    elseif obj.parametriceqs then
-      local tr1, res = obj.t, 500
-      if tr1 == nil then tr1 = tr or {-6, 6} end
-      if type(obj.resolution) == 'number' then res = min({500, obj.resolution}) end
-      file:write("  if (true) {\n    const t = [];\n")
-      file:write(fmt("    for (let i = %f; i <= %f; i += %f) { t.push(i); }\n", tr1[1], tr1[2], (tr1[2] - tr1[1]) / res))
-      trace = fmt("{ x: t.map(t => %s), y: t.map(t => %s), mode: 'lines', line: { simplify: false, color: '%s', width: %d } }",
-                  obj.x, obj.y, obj.color or 'black', obj.width or 3)
-      file:write(fmt("    mthly_traces.push(%s);\n  }\n\n", trace))
+
+  local function write_traces()
+    for i = 1, #traces do
+      local obj = traces[i]
+      if obj.line then
+        fmtio(obj.x[1], 'mthly_X1'); fmtio(obj.x[2], 'mthly_X2')
+        fmtio(obj.y[1], 'mthly_Y1'); fmtio(obj.y[2], 'mthly_Y2')
+        trace = fmt("{ 'x': [mthly_X1, mthly_X2], 'y': [mthly_Y1, mthly_Y2], 'mode': 'lines', 'line': { 'color': '%s', 'width': %d } }",
+                    obj.color or 'black', obj.width or 3)
+        file:write(fmt("  %smthly_traces.push(%s);\n\n", head, trace))
+      elseif obj.point then
+        fmtio(obj.x, 'mthly_X1'); fmtio(obj.y, 'mthly_Y1')
+        trace = fmt("{ 'x': [mthly_X1], 'y': [mthly_Y1], 'mode': 'markers', 'marker': { 'color': '%s', 'size': %d } }",
+                    obj.color or 'black', obj.size or 8)
+        file:write(fmt("  %smthly_traces.push(%s);\n\n", head, trace))
+      elseif obj.parametriceqs then
+        local tr1, res = obj.t, 500
+        if tr1 == nil then tr1 = tr or {-6, 6} end
+        if type(obj.resolution) == 'number' then res = min({500, obj.resolution}) end
+        file:write(head .. "  if (true) {\n    const t = [];\n")
+        file:write(fmt("    %sfor (let i = %f; i <= %f; i += %f) { t.push(i); }\n", head, tr1[1], tr1[2], (tr1[2] - tr1[1]) / res))
+        trace = fmt("{ 'x': t.map(t => %s), 'y': t.map(t => %s), 'mode': 'lines', 'line': { 'simplify': false, 'color': '%s', 'width': %d } }",
+                    obj.x, obj.y, obj.color or 'black', obj.width or 3)
+        file:write(fmt("    %smthly_traces.push(%s);\n%s  }\n", head, trace, head))
+      end
     end
+  end
+
+  if key == nil then
+    write_traces()
+  else -- cumulative
+    head = '  '
+    local k = key.keycontrol
+    file:write(fmt("  const mthlyTmp = %s;\n", k))
+    local step = 1
+    if #key[k] >= 3 then step = key[k][3] end
+    file:write(fmt("  for (let %s = %f; %s <= mthlyTmp; %s += %f) {\n",
+                   k, key[k][1], k, k, step))
+    write_traces()
+    file:write("  }\n")
   end
 end -- _amnt_write_subtraces
 
-local function _amnt_write_traces(fstr, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
+local function _amnt_write_traces(fstr, cs, opts, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
   local fmt, trace = string.format, '{ '
   if _anmt_multifstrsq then
-    _amnt_write_subtraces(fstr, tr, file, resolution)
+    local k, t = nil, nil
+    if not (opts.cumulative == false) then
+      if type(opts.keycontrol) == 'string' then
+        k = string.sub(opts.keycontrol, 1, 1)
+      elseif type(cs) == 'table' and #cs == 1 then
+        k = cs[1]
+      end
+      if type(opts[k]) == 'table' then
+        t = {}
+        t[k] = opts[k] -- range of the key control
+        t.keycontrol = k
+      end
+      if t == nil then
+        print('animate, manipulate: either opts.keycontrol or its range is not specified.')
+      end
+    end
+    _amnt_write_subtraces(fstr, tr, file, resolution, t)
     goto enhc
   elseif xexpr == nil then
-    trace = trace .. fmt("x: x, y: x.map(x => %s),", jyexpr)
+    trace = trace .. fmt("'x': x, 'y': x.map(x => %s),", jyexpr)
   else -- parametric eqs
-    trace = trace .. fmt("x: t.map(t => %s), y: t.map(t => %s),", jxexpr, jyexpr)
+    trace = trace .. fmt("'x': t.map(t => %s), 'y': t.map(t => %s),", jxexpr, jyexpr)
   end
-  trace = trace .. " mode: 'lines', line: { simplify: false } }" -- false, color: 'red'}
+  trace = trace .. " 'mode': 'lines', 'line': { 'simplify': false } }" -- false, color: 'red'}
   file:write(fmt("  mthly_traces.push(%s);\n\n", trace))
 
 ::enhc::
   if type(enhancements) == 'table' then
-    _amnt_write_subtraces(enhancements, tr, file, resolution)
+    _amnt_write_subtraces(enhancements, tr, file, resolution, nil)
   end
 end -- _amnt_write_traces
 
@@ -2743,15 +2780,15 @@ var mthly_sldr1step = %f;
 
   local squareq = true
   if layout ~= nil and layout.square == false then squareq = false end
-  file:write(fmt("\nconst mthly_layout = {\n  xaxis: { range: [%f, %f] }, // plot with fixed axes\n", xr[1], xr[2]))
+  file:write(fmt("\nconst mthly_layout = {\n  'xaxis': { 'range': [%f, %f] }, // plot with fixed axes\n", xr[1], xr[2]))
   if yr == nil then
     yr = xr
   elseif type(yr) ~= 'table' or yr[1] >= yr[2] then
     error('Range of y is invalid.')
   end
-  file:write(fmt("  yaxis: { range: [%f, %f]", yr[1], yr[2]))
-  if squareq then file:write(", scaleanchor: 'x', scaleratio: 1") end -- square aspect ratio
-  file:write(" },\n  showlegend: false\n};\n\n")
+  file:write(fmt("  'yaxis': { 'range': [%f, %f]", yr[1], yr[2]))
+  if squareq then file:write(", 'scaleanchor': 'x', 'scaleratio': 1") end -- square aspect ratio
+  file:write(" },\n  'showlegend': false\n};\n\n")
   if title == nil and not _anmt_multifstrsq then
     if xexpr == nil then
       title = 'y = ' .. yexpr
@@ -2793,12 +2830,19 @@ var mthly_sldr1step = %f;
     end
   end
 
-  file:write("\nvar mthly_traces = [];\nfunction mthly_update_traces() {\n  mthly_traces = [];\n")
+  file:write("\nvar mthly_traces = [];\nfunction mthly_update_traces() {\n  mthly_traces = []; // or .length = 0;\n")
   if type(jscode) == 'string' and jscode ~= '' then file:write("\n  // vvvvv user's javascript vvvvv\n" .. jscode .. "  // ^^^^^ user's javascript ^^^^^\n\n") end
-  _amnt_write_traces(fstr, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
+  _amnt_write_traces(fstr, cs, opts, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
   file:write('  document.getElementById("displaytext").innerHTML = displaytext();\n}\n')
 
   file:write("\nmthly_update_traces();\nconst mthly_initial_data = mthly_traces;\n\n")
+
+  file:write("var mthly_prev_cs = [") -- previous values of controls
+  for i = 1, #cs do
+    if i > 1 then file:write(",") end
+    file:write("99999999") -- assume each control is numerical
+  end
+  file:write("];\nvar mthly_new_cs = [];\n") -- new values of controls; need no initial values
 
   file:write("function mthly_animate_plot() {\n")
   if animateq then
@@ -2828,6 +2872,35 @@ var mthly_sldr1step = %f;
       file:write(fmt("  if (true) { const x = X; Y = %s; T = x; };\n", jyexpr))
     end
   end
+
+  file:write("  // has any controls changed?\n  mthly_new_cs = [") -- new values of controls
+  for i = 1, #cs do
+    if i > 1 then file:write(", ") end
+    file:write(cs[i])
+  end
+  file:write("];\n")
+
+  if #cs == 1 then
+    file:write("  if (Math.abs(mthly_prev_cs[0] - mthly_new_cs[0]) < 0.00001) { return; }\n")
+  else
+    file:write(fmt([[
+  var unchangedq = true;
+  for (let i = 0; i < %d; i++) {
+    if (Math.abs(mthly_prev_cs[i] - mthly_new_cs[i]) > 0.00001) {
+      unchangedq = false; break;
+    }
+  }
+  if (unchangedq) { return; }
+]], #cs))
+  end
+
+  file:write("  mthly_prev_cs = [") -- new values of controls
+  for i = 1, #cs do
+    if i > 1 then file:write(", ") end
+    file:write(cs[i])
+  end
+  file:write("]; // update values of controls\n\n")
+
   file:write('  mthly_update_traces();\n')
 
   file:write([[
@@ -2850,15 +2923,15 @@ mthly_sldr%d.addEventListener("input", function() { document.getElementById("mth
     file:write(fmt(s, i, i, i, i, i, qq(animateq, 'mthlyAutoPlayq = false; ', '')))
   end
 
-  file:write([[
+  file:write(fmt([[
 
 Plotly.newPlot('mathlyDiv', mthly_initial_data, mthly_layout);
 mthly_animate_plot();
-setInterval(mthly_animate_plot, 200); // animate every 0.2 seconds
+setInterval(mthly_animate_plot, %d); // animate every 0.2 seconds
 </script>
 </body>
 </html>
-]])
+]], qq(_anmt_multifstrsq, 1500, 200)))
   file:close()
 end -- _write_manipulate_html
 
