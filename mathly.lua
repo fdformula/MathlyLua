@@ -2492,17 +2492,38 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
 end -- plotparametriccurve3d
 
 local function _to_jscript_functions(expr)
-  local jexpr = string.gsub(expr, "%^", "**")
-  jexpr = string.gsub(jexpr, "sin", "Math.sin")
-  jexpr = string.gsub(jexpr, "cos", "Math.cos")
-  jexpr = string.gsub(jexpr, "tan", "Math.tan")
-  jexpr = string.gsub(jexpr, "exp", "Math.exp")
-  jexpr = string.gsub(jexpr, "log", "Math.log")
-  jexpr = string.gsub(jexpr, "sqrt", "Math.sqrt")
+  local gsub = string.gsub
+  local jexpr = gsub(expr, "%^", "**")
+  jexpr = gsub(jexpr, "sin", "Math.sin")
+  jexpr = gsub(jexpr, "cos", "Math.cos")
+  jexpr = gsub(jexpr, "tan", "Math.tan")
+  jexpr = gsub(jexpr, "exp", "Math.exp")
+  jexpr = gsub(jexpr, "log", "Math.log")
+  jexpr = gsub(jexpr, "sqrt", "Math.sqrt")
   return jexpr
 end
 
-local function __parse_animate_args(fstr, opts, animateq)
+local _anmt_multifstrsq = false
+local function _anmt_adjust_traces(traces, fregex)
+  if type(traces) ~= 'table' or type(traces[1]) ~= 'table' then
+    error('animate, manipulate: fstr can be and opts.enhancements must be a list of lists.')
+  end
+  for i = 1, #traces do
+    local obj = traces[i]
+    if obj.line then -- { x = {-4, 2}, y = {3, 4}, color = 'blue', width = 2, line = true}
+    elseif obj.point then -- { x = 5.1, y = 9.2, color = 'blue', size = 3, point = true}
+    elseif obj.parametriceqs or (type(obj.x) == 'string' and type(obj.y) == 'string') then
+      _, s = string.match(obj.x, fregex)
+      obj.x = _to_jscript_functions(s)
+      _, s = string.match(obj.y, fregex)
+      obj.y = _to_jscript_functions(s)
+      obj.parametriceqs = true
+    end
+  end
+end
+
+local function _anmt_parse_args(fstr, opts, animateq)
+  _anmt_multifstrsq = false
   local cs = {} -- controls[i], ith control; a control is a single symbol such as a, h, and k in a*(x-h)^2+k
   local rs = {} -- ranges[i], ranges of the ith control
   if opts == nil then opts = {} end
@@ -2520,10 +2541,24 @@ local function __parse_animate_args(fstr, opts, animateq)
     s = fstr
     xexpr = nil
     _, yexpr = string.match(fstr, fregex)
-  elseif type(fstr) == 'table' and #fstr == 2 and type(fstr[1]) == 'string' and type(fstr[2]) == 'string' then
-    _, xexpr = string.match(fstr[1], fregex)
-    _, yexpr = string.match(fstr[2], fregex)
-    s = fstr[1] .. ' ' .. yexpr
+  elseif type(fstr) == 'table' then
+    if #fstr == 2 and type(fstr[1]) == 'string' and type(fstr[2]) == 'string' then
+      _, xexpr = string.match(fstr[1], fregex)
+      _, yexpr = string.match(fstr[2], fregex)
+      s = fstr[1] .. ' ' .. yexpr
+    elseif type(fstr[1]) == 'table' then -- fstr = {{...}, {...}, ...}
+      _anmt_adjust_traces(fstr, fregex)
+      s = ''
+      if type(opts.controls) == 'string' then  -- to use controls, opts.controls 'a', 'b' can be defined like 'ab', 'a, b', 'a b', etc
+        s = {}
+        for i = 1, #opts.controls do
+          s[i] = string.sub(opts.controls, i, i)
+        end
+        s = table.concat(s, ' ')
+        opts.controls = s
+      end
+      _anmt_multifstrsq = true
+    end
   else
     error("manipulate({xfstr, yfstr}, ...): xfstr and yfstr must be paramatric equations of x(t) and y(t) in strings.")
   end
@@ -2542,98 +2577,95 @@ local function __parse_animate_args(fstr, opts, animateq)
     if rs[i][1] > rs[i][2] then rs[i][1], rs[i][2] = rs[i][2], rs[i][1] end
     if rs[i][3] == nil then rs[i][3] = 1 end
   end
-  local jyexpr = _to_jscript_functions(yexpr)
-  local jxexpr, tr = nil, nil
-  if xexpr ~= nil then
-    jxexpr = _to_jscript_functions(xexpr)
-    if opts.t == nil or type(opts.t) ~= 'table' or opts.t[1] >= opts.t[2] then
-      print("Range of parameter 't' is not specified, or it is invalid. Default: { -6, 6, 0.1 }.")
-      tr = {-6, 6, 0.1}
-    else
-      tr = opts.t
+
+  local jxexpr, jyexpr, tr = nil, nil, nil
+  if not _anmt_multifstrsq then
+    jyexpr = _to_jscript_functions(yexpr)
+    if xexpr ~= nil then
+      jxexpr = _to_jscript_functions(xexpr)
+      if opts.t == nil or type(opts.t) ~= 'table' or opts.t[1] >= opts.t[2] then
+        print("Range of parameter 't' is not specified, or it is invalid. Default: { -6, 6, 0.1 }.")
+        tr = {-6, 6, 0.1}
+      else
+        tr = opts.t
+      end
     end
   end
-
   local jscode, enhancements = '', nil
   if opts ~= {} then
     enhancements = opts.enhancements
     if opts.javascript ~= nil and opts.javascript ~= '' then jscode = opts.javascript end
   end
+
   if enhancements ~= nil then -- point, line, parametriceqs
-    if type(enhancements) ~= 'table' or type(enhancements[1]) ~= 'table' then
-      error('manipulate: opts.enhancements must be a list of lists.')
-    end
-    for i = 1, #enhancements do
-      if enhancements[i].line then -- { x = {-4, 2}, y = {3, 4}, color = 'blue', width = 2, line = true}
-      elseif enhancements[i].point then -- { x = 5.1, y = 9.2, color = 'blue', size = 3, point = true}
-      elseif enhancements[i].parametriceqs or (type(enhancements[i].x) == 'string' and type(enhancements[i].y) == 'string') then
-        if xexpr ~= nil then
-          _, s = string.match(enhancements[i].x, fregex)
-          enhancements[i].x = _to_jscript_functions(s)
-          _, s = string.match(enhancements[i].y, fregex)
-          enhancements[i].y = _to_jscript_functions(s)
-          enhancements[i].parametriceqs = true
-        else
-          error("manipulate: enhancements can't take parametric equations because the main graph is not of parametric equations.")
-        end
-      end
-    end
+    _anmt_adjust_traces(enhancements, fregex)
   end
+
   local title = nil
   if type(opts.layout) == 'table' then title = opts.layout.title end
   return cs, rs, xr, opts.y, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode
-end -- __parse_animate_args
+end -- _anmt_parse_args
 
-local function _jscript_animate_traces(xr, tr, file, xexpr, jxexpr, jyexpr, enhancements, animateq, resolution)
-  local format = string.format
+local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces = {{...}, {...}, ...}
+  if type(traces) ~= 'table' or #traces == 0 then return end
+  local fmt = string.format
   local function fmtio(v, s)
     if type(v) == 'string' then
-      file:write(format("  %s = eval('%s');\n", s, _to_jscript_functions(v)))
+      file:write(fmt("  %s = eval('%s');\n", s, _to_jscript_functions(v)))
     else
-      file:write(format("  %s = %f;\n", s, v))
+      file:write(fmt("  %s = %f;\n", s, v))
     end
   end
-  local trace = format('{ ')
-  if xexpr == nil then
-    trace = trace .. format("x: x, y: x.map(x => %s),", jyexpr)
+  for i = 1, #traces do
+    local obj = traces[i]
+    if obj.line then
+      fmtio(obj.x[1], 'mthly_X1'); fmtio(obj.x[2], 'mthly_X2')
+      fmtio(obj.y[1], 'mthly_Y1'); fmtio(obj.y[2], 'mthly_Y2')
+      trace = fmt("{ x: [mthly_X1, mthly_X2], y: [mthly_Y1, mthly_Y2], mode: 'lines', line: { color: '%s', width: %d } }",
+                  obj.color or 'black', obj.width or 3)
+      file:write(fmt("  mthly_traces.push(%s);\n\n", trace))
+    elseif obj.point then
+      fmtio(obj.x, 'mthly_X1'); fmtio(obj.y, 'mthly_Y1')
+      trace = fmt("{ x: [mthly_X1], y: [mthly_Y1], mode: 'markers', marker: { color: '%s', size: %d } }",
+                  obj.color or 'black', obj.size or 8)
+      file:write(fmt("  mthly_traces.push(%s);\n\n", trace))
+    elseif obj.parametriceqs then
+      local tr1, res = obj.t, 500
+      if tr1 == nil then tr1 = tr or {-6, 6} end
+      if type(obj.resolution) == 'number' then res = min({500, obj.resolution}) end
+      file:write("  if (true) {\n    const t = [];\n")
+      file:write(fmt("    for (let i = %f; i <= %f; i += %f) { t.push(i); }\n", tr1[1], tr1[2], (tr1[2] - tr1[1]) / res))
+      trace = fmt("{ x: t.map(t => %s), y: t.map(t => %s), mode: 'lines', line: { simplify: false, color: '%s', width: %d } }",
+                  obj.x, obj.y, obj.color or 'black', obj.width or 3)
+      file:write(fmt("    mthly_traces.push(%s);\n  }\n\n", trace))
+    end
+  end
+end -- _amnt_write_subtraces
+
+local function _amnt_write_traces(fstr, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
+  local fmt, trace = string.format, '{ '
+  if _anmt_multifstrsq then
+    _amnt_write_subtraces(fstr, tr, file, resolution)
+    goto enhc
+  elseif xexpr == nil then
+    trace = trace .. fmt("x: x, y: x.map(x => %s),", jyexpr)
   else -- parametric eqs
-    trace = trace .. format("x: t.map(t => %s), y: t.map(t => %s),", jxexpr, jyexpr)
+    trace = trace .. fmt("x: t.map(t => %s), y: t.map(t => %s),", jxexpr, jyexpr)
   end
   trace = trace .. " mode: 'lines', line: { simplify: false } }" -- false, color: 'red'}
-  file:write(format("  mthly_traces.push(%s);\n\n", trace))
+  file:write(fmt("  mthly_traces.push(%s);\n\n", trace))
 
+::enhc::
   if type(enhancements) == 'table' then
-    for i = 1, #enhancements do
-      if enhancements[i].line then
-        fmtio(enhancements[i].x[1], 'mthly_X1'); fmtio(enhancements[i].x[2], 'mthly_X2')
-        fmtio(enhancements[i].y[1], 'mthly_Y1'); fmtio(enhancements[i].y[2], 'mthly_Y2')
-        trace = format("{ x: [mthly_X1, mthly_X2], y: [mthly_Y1, mthly_Y2], mode: 'lines', line: { color: '%s', width: %d } }",
-                       enhancements[i].color or 'black', enhancements[i].width or 3)
-        file:write(format("  mthly_traces.push(%s);\n\n", trace))
-      elseif enhancements[i].point then
-        fmtio(enhancements[i].x, 'mthly_X1'); fmtio(enhancements[i].y, 'mthly_Y1')
-        trace = format("{ x: [mthly_X1], y: [mthly_Y1], mode: 'markers', marker: { color: '%s', size: %d } }",
-                       enhancements[i].color or 'black', enhancements[i].size or 8)
-        file:write(format("  mthly_traces.push(%s);\n\n", trace))
-      elseif enhancements[i].parametriceqs then
-        local tr1, res = enhancements[i].t, 500
-        if tr1 == nil then tr1 = tr end
-        if type(enhancements[i].resolution) == 'number' then res = min({500, enhancements[i].resolution}) end
-        file:write("  if (true) {\n    const t = [];\n")
-        file:write(format("    for (let i = %f; i <= %f; i += %f) { t.push(i); }\n", tr1[1], tr1[2], (tr1[2] - tr1[1]) / res))
-        trace = format("{ x: t.map(t => %s), y: t.map(t => %s), mode: 'lines', line: { simplify: false, color: '%s', width: %d } }",
-                       enhancements[i].x, enhancements[i].y, enhancements[i].color or 'black', enhancements[i].width or 3)
-        file:write(format("    mthly_traces.push(%s);\n  }\n\n", trace))
-      end
-    end
+    _amnt_write_subtraces(enhancements, tr, file, resolution)
   end
-end -- _jscript_animate_traces
+end -- _amnt_write_traces
 
-local function _write_manipulate_html(fname, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, animateq, jscode, opts)
+local function _write_manipulate_html(fstr, fname, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, animateq, jscode, opts)
   local file = io.open(fname, "w")
-  local format = string.format
+  local fmt = string.format
   if file == nil then
-    print(format("Failed to create %s. The very device might not be writable.", fname))
+    print(fmt("Failed to create %s. The very device might not be writable.", fname))
     return
   end
   local s = [[<!DOCTYPE html>
@@ -2676,22 +2708,22 @@ input:focus {outline: none;}
       if type(layout.height) == 'number' and layout.height > 0 then h = layout.height end
     end
   end
-  file:write(format(s, plotly_engine, w, w, h, 50 + 30 * qq(#cs > 1, #cs - 2, 0)))
+  file:write(fmt(s, plotly_engine, w, w, h, 50 + 30 * qq(#cs > 1, #cs - 2, 0)))
   local top = 60 -- sliders
   for i = 1, #cs do
     s = [[<label for="mthly_sldr%d" style='top:%dpx;'>%s:</label>
 <input type="range" id="mthly_sldr%d" min="%f" max="%f" value="%f" style='top:%dpx;' step="%f"></input><span id="mthly_sldr%dvalue" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>
 ]]
     if (rs[i][2] - rs[i][1]) / rs[i][3] < 5 then rs[i][3] = (rs[i][2] - rs[i][1]) / 5 end
-    s = format(s, i, top, cs[i], i, rs[i][1], rs[i][2], rs[i][1], top, rs[i][3], i, 290, top)
+    s = fmt(s, i, top, cs[i], i, rs[i][1], rs[i][2], rs[i][1], top, rs[i][3], i, 290, top)
     if i == 1 and animateq then
-      file:write(format('<button type="button" onclick="mthlyPlay()" style="left:345px;top:%dpx;position:absolute">Play</button> <button type="button" onclick="mthlyStop()" style="left:395px;top:%dpx;position:absolute">Stop</button>\n', top, top))
+      file:write(fmt('<button type="button" onclick="mthlyPlay()" style="left:345px;top:%dpx;position:absolute">Play</button> <button type="button" onclick="mthlyStop()" style="left:395px;top:%dpx;position:absolute">Stop</button>\n', top, top))
     end
     top = top + 30
     file:write(s)
   end
   s = '<span id="displaytext" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>\n'
-  file:write(format(s, 74, top))
+  file:write(fmt(s, 74, top))
   file:write([[
 <script type="text/javascript">
 function displaytext() { return ""; } // to be overwritten
@@ -2706,62 +2738,64 @@ function mthlyPlay() { mthlyAutoPlayq = true; }
 function mthlyStop() { mthlyAutoPlayq = false; }
 var mthly_sldr1step = %f;
 ]]
-    file:write(format(s, rs[1][3], xr[2]))
+    file:write(fmt(s, rs[1][3], xr[2]))
   end
 
   local squareq = true
   if layout ~= nil and layout.square == false then squareq = false end
-  file:write(format("\nconst mthly_layout = {\n  xaxis: { range: [%f, %f] }, // plot with fixed axes\n", xr[1], xr[2]))
+  file:write(fmt("\nconst mthly_layout = {\n  xaxis: { range: [%f, %f] }, // plot with fixed axes\n", xr[1], xr[2]))
   if yr == nil then
     yr = xr
   elseif type(yr) ~= 'table' or yr[1] >= yr[2] then
     error('Range of y is invalid.')
   end
-  file:write(format("  yaxis: { range: [%f, %f]", yr[1], yr[2]))
+  file:write(fmt("  yaxis: { range: [%f, %f]", yr[1], yr[2]))
   if squareq then file:write(", scaleanchor: 'x', scaleratio: 1") end -- square aspect ratio
   file:write(" },\n  showlegend: false\n};\n\n")
-  if title == nil then
+  if title == nil and not _anmt_multifstrsq then
     if xexpr == nil then
       title = 'y = ' .. yexpr
     else
       title = 'x(t) = ' .. xexpr .. ', y(t) = ' .. yexpr
     end
+  else
+    title = ''
   end
   file:write("var title = document.getElementById('title');\ntitle.value = '" .. title .. "';\n")
 
   for i = 1, #cs do
-    file:write(format("var mthly_sldr%d = document.getElementById('mthly_sldr%d');\n", i, i))
+    file:write(fmt("var mthly_sldr%d = document.getElementById('mthly_sldr%d');\n", i, i))
   end
 
   for i = 1, #cs do -- values of control sliders
     local v = rs[i].default;
     if v == nil then v = rs[i][1] end
-    file:write(format("mthly_sldr%d.value = %f;\n", i, v))
-    file:write(format("var %s = %f;\n", cs[i], v))
+    file:write(fmt("mthly_sldr%d.value = %f;\n", i, v))
+    file:write(fmt("var %s = %f;\n", cs[i], v))
   end -- why Number(...)? Values of sliders in JavaScript are STRINGS!
 
   if not animateq then file:write("p = 1;\n") end
   if xexpr ~= nil then -- parametric eqs
-    s = format("for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { t.push(i); }\n",
-               tr[1], tr[2], qq(tr[1] > 0, '-', '+'), abs(tr[1]), qq(tr[1] > 0, '+', '-'), abs(tr[1]), (tr[2] - tr[1]) / resolution)
+    s = fmt("for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { t.push(i); }\n",
+            tr[1], tr[2], qq(tr[1] > 0, '-', '+'), abs(tr[1]), qq(tr[1] > 0, '+', '-'), abs(tr[1]), (tr[2] - tr[1]) / resolution)
   else
-    s = format("for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { x.push(i); }\n",
-               xr[1], xr[2], qq(xr[1] > 0, '-', '+'), abs(xr[1]), qq(xr[1] > 0, '+', '-'), abs(xr[1]), (xr[2] - xr[1]) / resolution)
+    s = fmt("for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { x.push(i); }\n",
+            xr[1], xr[2], qq(xr[1] > 0, '-', '+'), abs(xr[1]), qq(xr[1] > 0, '+', '-'), abs(xr[1]), (xr[2] - xr[1]) / resolution)
   end
   file:write(s)
 
   -- X, Y, T - values at the last/present point of a curve
   if animateq then
     if xexpr ~= nil then
-      file:write(format("let mthlyTmp = t[t.length - 1];\nif (true) { const t = mthlyTmp; X = %s; Y = %s; T = mthlyTmp; }\n", jxexpr, jyexpr))
+      file:write(fmt("let mthlyTmp = t[t.length - 1];\nif (true) { const t = mthlyTmp; X = %s; Y = %s; T = mthlyTmp; }\n", jxexpr, jyexpr))
     else
-      file:write(format("let mthlyTmp = x[x.length - 1];\nif (true) { const x = mthlyTmp; X = mthlyTmp; Y = %s; }\n", jyexpr))
+      file:write(fmt("let mthlyTmp = x[x.length - 1];\nif (true) { const x = mthlyTmp; X = mthlyTmp; Y = %s; }\n", jyexpr))
     end
   end
 
   file:write("\nvar mthly_traces = [];\nfunction mthly_update_traces() {\n  mthly_traces = [];\n")
   if type(jscode) == 'string' and jscode ~= '' then file:write("\n  // vvvvv user's javascript vvvvv\n" .. jscode .. "  // ^^^^^ user's javascript ^^^^^\n\n") end
-  _jscript_animate_traces(xr, tr, file, xexpr, jxexpr, jyexpr, enhancements, animateq, resolution)
+  _amnt_write_traces(fstr, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
   file:write('  document.getElementById("displaytext").innerHTML = displaytext();\n}\n')
 
   file:write("\nmthly_update_traces();\nconst mthly_initial_data = mthly_traces;\n\n")
@@ -2780,18 +2814,18 @@ var mthly_sldr1step = %f;
   end
 
   for i = 1, #cs do -- values of control sliders
-    file:write(format("  %s = Number(mthly_sldr%d.value);\n", cs[i], i))
+    file:write(fmt("  %s = Number(mthly_sldr%d.value);\n", cs[i], i))
   end
 
   if animateq then
     if xexpr ~= nil then -- parametric eqs
-      file:write(format("  t = []; for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { t.push(i); };\n  T = t[t.length - 1];\n",
-                        tr[1], tr[2], qq(tr[1] > 0, '-', '+'), abs(tr[1]), qq(tr[1] > 0, '+', '-'), abs(tr[1]), (tr[2] - tr[1]) / resolution))
-      file:write(format("  if (true) { const t = T; X = %s; Y = %s; };\n", jxexpr, jyexpr))
+      file:write(fmt("  t = []; for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { t.push(i); };\n  T = t[t.length - 1];\n",
+                     tr[1], tr[2], qq(tr[1] > 0, '-', '+'), abs(tr[1]), qq(tr[1] > 0, '+', '-'), abs(tr[1]), (tr[2] - tr[1]) / resolution))
+      file:write(fmt("  if (true) { const t = T; X = %s; Y = %s; };\n", jxexpr, jyexpr))
     else
-      file:write(format("  x = []; for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { x.push(i); };\n  X = x[x.length - 1];",
-                        xr[1], xr[2], qq(xr[1] > 0, '-', '+'), abs(xr[1]), qq(xr[1] > 0, '+', '-'), abs(xr[1]), (xr[2] - xr[1]) / resolution))
-      file:write(format("  if (true) { const x = X; Y = %s; T = x; };\n", jyexpr))
+      file:write(fmt("  x = []; for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { x.push(i); };\n  X = x[x.length - 1];",
+                     xr[1], xr[2], qq(xr[1] > 0, '-', '+'), abs(xr[1]), qq(xr[1] > 0, '+', '-'), abs(xr[1]), (xr[2] - xr[1]) / resolution))
+      file:write(fmt("  if (true) { const x = X; Y = %s; T = x; };\n", jyexpr))
     end
   end
   file:write('  mthly_update_traces();\n')
@@ -2813,7 +2847,7 @@ var mthly_sldr1step = %f;
 document.getElementById("mthly_sldr%dvalue").innerHTML = mthly_sldr%d.value;
 mthly_sldr%d.addEventListener("input", function() { document.getElementById("mthly_sldr%dvalue").innerHTML = mthly_sldr%d.value; %smthly_animate_plot() });
 ]]
-    file:write(format(s, i, i, i, i, i, qq(animateq, 'mthlyAutoPlayq = false; ', '')))
+    file:write(fmt(s, i, i, i, i, i, qq(animateq, 'mthlyAutoPlayq = false; ', '')))
   end
 
   file:write([[
@@ -2831,24 +2865,24 @@ end -- _write_manipulate_html
 -- vvvvvvvvvvv from dkjson 2.8 (at the end of this source file) vvvvvvvvvvv --
 local _open_cmd -- this needs to stay outside the function, or it'll re-sniff every time...
 local function _open_url(url)
-  local format = string.format
+  local fmt = string.format
   if not _open_cmd then
     if __is_windows then
       _open_cmd = function(url)
-        -- os.execute(format('start "%s"', url))
-        os.execute(format('"%s" %s', win_browser, url))
+        -- os.execute(fmt('start "%s"', url))
+        os.execute(fmt('"%s" %s', win_browser, url))
       end
     elseif (io.popen("uname -s"):read'*a'):sub(1, 6) == "Darwin" then
       _open_cmd = function(url)
         -- I cannot test, but this should work on modern Macs.
-        -- os.execute(format('open "%s"', url))
-        os.execute(format('%s "%s"', mac_browser, url))
+        -- os.execute(fmt('open "%s"', url))
+        os.execute(fmt('%s "%s"', mac_browser, url))
       end
     else -- that ought to only leave Linux
       _open_cmd = function(url)
         -- should work on X-based distros.
-        -- os.execute(format('xdg-open "%s"', url))
-        os.execute(format('%s "%s"', linux_browser, url))
+        -- os.execute(fmt('xdg-open "%s"', url))
+        os.execute(fmt('%s "%s"', linux_browser, url))
       end
     end
   end
@@ -2858,15 +2892,15 @@ end
 
 -- manipulate/animate interactively the graph of f(x) with 'controls' and enhancements
 function manipulate(fstr, opts) -- Mathematica
-  local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode = __parse_animate_args(fstr, opts, false)
-  _write_manipulate_html(tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, false, jscode, opts)
+  local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode = _anmt_parse_args(fstr, opts, false)
+  _write_manipulate_html(fstr, tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, false, jscode, opts)
   _open_url(tmp_plot_html_file)
   print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
 end
 
 function animate(fstr, opts) -- Mathematica
-  local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode = __parse_animate_args(fstr, opts, true)
-  _write_manipulate_html(tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, true, jscode, opts)
+  local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode = _anmt_parse_args(fstr, opts, true)
+  _write_manipulate_html(fstr, tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, true, jscode, opts)
   _open_url(tmp_plot_html_file)
   print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
 end
