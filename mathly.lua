@@ -2522,6 +2522,30 @@ local function _anmt_adjust_traces(traces, fregex)
   end
 end
 
+local function _anmt_is_new_controlq(c, cs) -- each a-zA-Z but p, t, x, y, T, X, and Y is a control
+  local t = #c == 1 and ((c >= 'a' and c <= 'z') or (c >= 'A' and c <= 'Z')) and
+            not ismember(c, {'p', 't', 'x', 'y', 'T', 'X', 'Y'}) and
+            not ismember(c, cs)
+  if t then
+    if opts[c] ~= nil then
+      if type(opts[c]) ~= 'table' then error('Range of ' .. c .. ' is invalid.') end
+    else
+      error("Range of control '" .. c .. "' is not specified.")
+    end
+  end
+  return t
+end
+
+local function _anmt_opts_controls(opts, cs)
+  if type(opts.controls) == 'string' then
+    for i = 1, #opts.controls do
+      local c = string.sub(opts.controls, i, i)
+      if _anmt_is_new_controlq(c, cs) then cs[#cs + 1] = c end
+    end
+  end
+  return cs
+end
+
 local function _anmt_parse_args(fstr, opts, animateq)
   _anmt_multifstrsq = false
   local cs = {} -- controls[i], ith control; a control is a single symbol such as a, h, and k in a*(x-h)^2+k
@@ -2531,6 +2555,7 @@ local function _anmt_parse_args(fstr, opts, animateq)
     cs[1] = 'p'; rs[1] = {0, 1, 1/100} -- 'p' (play), reserved for animation
     if opts ~= nil and type(opts.p) == 'table' and opts.p.default ~= nil then rs[1].default = opts.p.default end
   end
+  cs = _anmt_opts_controls(opts, cs)
 
   local xr = opts.x or {-5, 5}
   if type(xr) ~= 'table' or xr[1] >= xr[2] then error('Range of x is invalid.') end
@@ -2549,28 +2574,23 @@ local function _anmt_parse_args(fstr, opts, animateq)
     elseif type(fstr[1]) == 'table' then -- fstr = {{...}, {...}, ...}
       _anmt_adjust_traces(fstr, fregex)
       s = ''
-      if type(opts.controls) == 'string' then  -- to use controls, opts.controls 'a', 'b' can be defined like 'ab', 'a, b', 'a b', etc
-        s = {}
-        for i = 1, #opts.controls do
-          s[i] = string.sub(opts.controls, i, i)
-        end
-        s = table.concat(s, ' ')
-        opts.controls = s
-      end
       _anmt_multifstrsq = true
     end
   else
     error("manipulate({xfstr, yfstr}, ...): xfstr and yfstr must be paramatric equations of x(t) and y(t) in strings.")
   end
-  for c in string.gmatch(s, "[^(%@%s|%(|%)|%{|%}|%[|%]|%+|%-|%*|%^|%/)]+") do
-    if #c == 1 and not (c == 'p' or c == 'x' or c == 'y' or c == 't' or (c >= '0' and c <= '9') or ismember(c , cs)) then -- new control?
-      if opts[c] ~= nil then
-        if type(opts[c]) ~= 'table' then error('Range of ' .. c .. ' is invalid.') end
-      else
-        error("Range of control '" .. c .. "' is not specified.")
+  if type(opts.controls) == 'string' then
+    local I = 1
+    if animateq then I = 2 end -- skip 1st one: p
+    for i = I, #cs do
+      rs[#rs + 1] = opts[cs[i]]
+    end
+  else
+    for c in string.gmatch(s, "[^(%@%s|%(|%)|%{|%}|%[|%]|%+|%-|%*|%^|%/)]+") do
+      if _anmt_is_new_controlq(c, cs) then
+        cs[#cs + 1] = c
+        rs[#rs + 1] = opts[c]
       end
-      cs[#cs + 1] = c
-      rs[#rs + 1] = opts[c]
     end
   end
   for i = 1, #rs do
