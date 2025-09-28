@@ -1891,11 +1891,11 @@ jscode = [[
   function func(x)   { return x**3 - 2*x + 2; } // f(x)
   function fprime(x) { return 3*x**2 - 2; }     // f'(x))
   function nextx(x)  { return x - func(x) / fprime(x); }
-  var xs = [];
+  var xs = [];      // 0, space holder so that xs[i] is the ith entry
   xs.push(1.2);      // 1 or 0? repeat between 0 and 1
   for (let i = 0; i < 100; i += 1) { xs.push( nextx(xs[i]) ); }
 
-  function displaytext() { return 'Iteration ' + I + ': x = ' + xs[I]; }
+  function displaytext() { return 'Iteration ' + I + ': x = ' + xs[I-1]; }
 ]]
 
 fstr = {'@(t) t', '@(t) func(xs[I-1]) + fprime(xs[I-1]) * (t - xs[I-1])'}
