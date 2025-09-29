@@ -2536,16 +2536,6 @@ local function _anmt_is_new_controlq(c, cs) -- each a-zA-Z but p, t, x, y, T, X,
   return t
 end
 
-local function _anmt_opts_controls(opts, cs)
-  if type(opts.controls) == 'string' then
-    for i = 1, #opts.controls do
-      local c = string.sub(opts.controls, i, i)
-      if _anmt_is_new_controlq(c, cs) then cs[#cs + 1] = c end
-    end
-  end
-  return cs
-end
-
 local function _anmt_parse_args(fstr, opts, animateq)
   _anmt_multifstrsq = false
   local cs = {} -- controls[i], ith control; a control is a single symbol such as a, h, and k in a*(x-h)^2+k
@@ -2555,7 +2545,16 @@ local function _anmt_parse_args(fstr, opts, animateq)
     cs[1] = 'p'; rs[1] = {0, 1, 1/100} -- 'p' (play), reserved for animation
     if opts ~= nil and type(opts.p) == 'table' and opts.p.default ~= nil then rs[1].default = opts.p.default end
   end
-  cs = _anmt_opts_controls(opts, cs)
+  if opts.controls ~= nil then
+    if type(opts.controls) == 'string' then
+      for i = 1, #opts.controls do
+        local c = string.sub(opts.controls, i, i)
+        if _anmt_is_new_controlq(c, cs) then cs[#cs + 1] = c end
+      end
+    else
+      error("Field 'controls' must be a string.")
+    end
+  end
 
   local xr = opts.x or {-5, 5}
   if type(xr) ~= 'table' or xr[1] >= xr[2] then error('Range of x is invalid.') end
