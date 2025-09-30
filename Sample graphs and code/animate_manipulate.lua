@@ -56,3 +56,59 @@ opts = {t = {0, 2 * pi, 0.01},
                         {x = 'xx', y = 'yy', color = 'red', size = 10, point = true}
                        }}
 animate(fstr, opts)
+
+-- animate5.jpg
+jscode = [[
+  function f(x) { return x * Math.exp(0.5*x) + 1.2*x - 5; }
+  function g(x) { return 5 / (Math.exp(0.5*x) + 1.2); }
+  var xs = [5.5]; // 5.5, initial guess
+  for (let I = 0; I < 30; I += 1) { xs.push( g(xs[I]) ); }
+
+  const mthlyTRange = [-1, 6]; // part of the algorithm
+  const mthlyWidth = mthlyTRange[1] - mthlyTRange[0];
+  const mthlyMidpt = mthlyWidth / 2;
+
+  function piecewisefx(t, I) { // I: 0, 1, ...
+    if (I == 0) { // plot the initial guess xs[0]
+      return xs[0];
+    } else {
+      I = I - 1;
+      t = t - mthlyTRange[0];
+      if (t < mthlyMidpt) {
+        t = t / mthlyMidpt; //t in [0, 1]
+        return xs[I] + t * (g(xs[I]) - xs[I])
+      } else {
+        return g(xs[I]);
+      }
+    }
+  }
+  function piecewisefy(t, I) { // I: 0, 1, ...
+    if (I == 0) { // plot the initial guess xs[0]
+      t = (t - mthlyTRange[0]) / mthlyWidth; // t in [0, 1]
+      return t*g(xs[0]);
+    } else {
+      I = I - 1;
+      t = t - mthlyTRange[0];
+      if (t < mthlyMidpt) {
+        return g(xs[I]);
+      } else {
+        t = (t - mthlyMidpt) / mthlyMidpt; // t in [0, 1]
+        const y = g(xs[I]);
+        return y + t * (g(y) - y);
+      }
+    }
+  }
+
+  function displaytext() { return 'Iteration ' + I + ': x = ' + xs[I-1]; }
+]]
+
+fstr = {{x = '@(t) piecewisefx(t,I-1)', y = '@(t) piecewisefy(t,I-1)', t = {-1, 6, 0.01}, width = 2, color = 'grey'}}
+opts = {t = {-1, 6, 0.001}, I = {1, 30, 1, default = 30}, x = {-0.2, 6}, y = {-0.2, 3},
+        layout = { width = 640, height = 640, square = false, title = "Fixed-point method for xe^(0.5x) + 1.2x - 5 = 0 starting at x = 5.5" },
+        javascript = jscode, keycontrol = 'I', cumulative = true,
+        controls = 'I', -- it must be defined
+        enhancements = {{x = '@(t) t', y = '@(t) t', t = {-1, 6}, width = 2, color = 'black'},
+                        {x = '@(t) t', y = '@(t) 5 / (exp(0.5*t) + 1.2)', color = 'orange'},
+                        {x = 'xs[I-1]', y = 'g(xs[I-1])', color = 'red', size = 8, point = true}
+                       }}
+manipulate(fstr, opts)
