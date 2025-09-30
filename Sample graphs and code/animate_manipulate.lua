@@ -59,23 +59,22 @@ animate(fstr, opts)
 
 -- animate5.jpg
 jscode = [[
-  function f(x) { return x * Math.exp(0.5*x) + 1.2*x - 5; }
   function g(x) { return 5 / (Math.exp(0.5*x) + 1.2); }
   var xs = [5.5]; // 5.5, initial guess
   for (let I = 0; I < 30; I += 1) { xs.push( g(xs[I]) ); }
 
-  const mthlyTRange = [-1, 6]; // part of the algorithm
-  const mthlyWidth = mthlyTRange[1] - mthlyTRange[0];
-  const mthlyMidpt = mthlyWidth / 2;
+  const trange = [-1, 6];
+  const width = trange[1] - trange[0];
+  const midpt = width / 2;
 
   function piecewisefx(t, I) { // I: 0, 1, ...
     if (I == 0) { // plot the initial guess xs[0]
       return xs[0];
     } else {
       I = I - 1;
-      t = t - mthlyTRange[0];
-      if (t < mthlyMidpt) {
-        t = t / mthlyMidpt; //t in [0, 1]
+      t = t - trange[0];
+      if (t < midpt) {
+        t = t / midpt; //t in [0, 1]
         return xs[I] + t * (g(xs[I]) - xs[I])
       } else {
         return g(xs[I]);
@@ -84,15 +83,15 @@ jscode = [[
   }
   function piecewisefy(t, I) { // I: 0, 1, ...
     if (I == 0) { // plot the initial guess xs[0]
-      t = (t - mthlyTRange[0]) / mthlyWidth; // t in [0, 1]
+      t = (t - trange[0]) / width; // t in [0, 1]
       return t*g(xs[0]);
     } else {
       I = I - 1;
-      t = t - mthlyTRange[0];
-      if (t < mthlyMidpt) {
+      t = t - trange[0];
+      if (t < midpt) {
         return g(xs[I]);
       } else {
-        t = (t - mthlyMidpt) / mthlyMidpt; // t in [0, 1]
+        t = (t - midpt) / midpt; // t in [0, 1]
         const y = g(xs[I]);
         return y + t * (g(y) - y);
       }
