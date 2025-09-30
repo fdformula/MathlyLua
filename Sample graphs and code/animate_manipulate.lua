@@ -59,8 +59,8 @@ animate(fstr, opts)
 
 -- animate5.jpg
 jscode = [[
-  function g(x) { return 5 / (Math.exp(0.5*x) + 1.2); }
-  var xs = [5.5]; // 5.5, initial guess
+  function g(x) { return 1 - x*x; }
+  var xs = [0.5]; // 0.5, initial value
   for (let I = 0; I < 30; I += 1) { xs.push( g(xs[I]) ); }
 
   const trange = [-3, 3];
@@ -102,12 +102,12 @@ jscode = [[
 ]]
 
 fstr = {{x = '@(t) piecewisefx(t,I-1)', y = '@(t) piecewisefy(t,I-1)', t = {-3, 3, 0.01}, width = 2, color = 'grey'}}
-opts = {t = {-1, 6, 0.001}, I = {1, 30, 1, default = 30}, x = {-0.2, 6}, y = {-0.2, 3},
+opts = {t = {-0.1, 1.2, 0.001}, I = {1, 30, 1, default = 30}, x = {-0.2, 1.2}, y = {-0.2, 1.2},
         layout = { width = 640, height = 640, square = false, title = "" },
         javascript = jscode, keycontrol = 'I', cumulative = true,
         controls = 'I', -- it must be defined
-        enhancements = {{x = '@(t) t', y = '@(t) t', t = {-1, 6}, width = 2, color = 'black'},
-                        {x = '@(t) t', y = '@(t) 5 / (exp(0.5*t) + 1.2)', color = 'orange'},
+        enhancements = {{x = '@(t) t', y = '@(t) t', t = {-1, 6}, width = 2, color = 'green'},
+                        {x = '@(t) t', y = '@(t) 1 - t^2', color = 'orange'},
                         {x = 'xs[I-1]', y = 'g(xs[I-1])', color = 'red', size = 8, point = true}
                        }}
 manipulate(fstr, opts)
