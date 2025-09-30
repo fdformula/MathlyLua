@@ -578,64 +578,6 @@ opts = {t = {-5, 5, 0.01}, x = {-5, 5},
 animate(fstr, opts)
 </code></pre>
 
-<p>Animating fixed-point method for solving f(x) = xe^(0.5x) + 1.2x - 5 = 0:</p>
-<pre><code>
-jscode = [[
-  function f(x) { return x * Math.exp(0.5*x) + 1.2*x - 5; }
-  function g(x) { return 5 / (Math.exp(0.5*x) + 1.2); }
-  var xs = [5.5]; // 5.5, initial guess
-  for (let I = 0; I < 30; I += 1) { xs.push( g(xs[I]) ); }
-
-  const mthlyTRange = [-1, 6]; // part of the algorithm
-  const mthlyWidth = mthlyTRange[1] - mthlyTRange[0];
-  const mthlyMidpt = mthlyWidth / 2;
-
-  function piecewisefx(t, I) { // I: 0, 1, ...
-    if (I == 0) { // plot the initial guess xs[0]
-      return xs[0];
-    } else {
-      I = I - 1;
-      t = t - mthlyTRange[0];
-      if (t < mthlyMidpt) {
-        t = t / mthlyMidpt; //t in [0, 1]
-        return xs[I] + t * (g(xs[I]) - xs[I])
-      } else {
-        return g(xs[I]);
-      }
-    }
-  }
-  function piecewisefy(t, I) { // I: 0, 1, ...
-    if (I == 0) { // plot the initial guess xs[0]
-      t = (t - mthlyTRange[0]) / mthlyWidth; // t in [0, 1]
-      return t*g(xs[0]);
-    } else {
-      I = I - 1;
-      t = t - mthlyTRange[0];
-      if (t < mthlyMidpt) {
-        return g(xs[I]);
-      } else {
-        t = (t - mthlyMidpt) / mthlyMidpt; // t in [0, 1]
-        const y = g(xs[I]);
-        return y + t * (g(y) - y);
-      }
-    }
-  }
-
-  function displaytext() { return 'Iteration ' + I + ': x = ' + xs[I-1]; }
-]]
-
-fstr = {{x = '@(t) piecewisefx(t,I-1)', y = '@(t) piecewisefy(t,I-1)', t = {-1, 6, 0.01}, width = 2, color = 'grey'}}
-opts = {t = {-1, 6, 0.001}, I = {1, 30, 1, default = 30}, x = {-0.2, 6}, y = {-0.2, 3},
-        layout = { width = 640, height = 640, square = false, title = "" },
-        javascript = jscode, keycontrol = 'I', cumulative = true,
-        controls = 'I', -- it must be defined
-        enhancements = {{x = '@(t) t', y = '@(t) t', t = {-1, 6}, width = 2, color = 'black'},
-                        {x = '@(t) t', y = '@(t) 5 / (exp(0.5*t) + 1.2)', color = 'orange'},
-                        {x = 'xs[I-1]', y = 'g(xs[I-1])', color = 'red', size = 8, point = true}
-                       }}
-manipulate(fstr, opts)
-</code></pre>
-
 <h4>&bull; &nbsp; <a name=any></a><a name=all href=#m><code>all(x, f)</code>, <code>any(x, f)</code></a></h4>
 <ol>
 <li><code>all(x, f)</code>: Test if <code>f(x)</code> is true for every number in <code>x</code>.
@@ -1974,6 +1916,65 @@ opts = {t = {-6.5, 6.5, 0.01}, I = {1, 100, 1}, x = {-6.5, 6.5}, y = {-60, 60},
                        }}
 manipulate(fstr, opts)
 </code></pre>
+
+<p>Animating fixed-point method for solving <code>f(x) = xe<sup>0.5x</sup> + 1.2x - 5 = 0:</code></p>
+<pre><code>
+jscode = [[
+  function f(x) { return x * Math.exp(0.5*x) + 1.2*x - 5; }
+  function g(x) { return 5 / (Math.exp(0.5*x) + 1.2); }
+  var xs = [5.5]; // 5.5, initial guess
+  for (let I = 0; I < 30; I += 1) { xs.push( g(xs[I]) ); }
+
+  const mthlyTRange = [-1, 6]; // part of the algorithm
+  const mthlyWidth = mthlyTRange[1] - mthlyTRange[0];
+  const mthlyMidpt = mthlyWidth / 2;
+
+  function piecewisefx(t, I) { // I: 0, 1, ...
+    if (I == 0) { // plot the initial guess xs[0]
+      return xs[0];
+    } else {
+      I = I - 1;
+      t = t - mthlyTRange[0];
+      if (t < mthlyMidpt) {
+        t = t / mthlyMidpt; //t in [0, 1]
+        return xs[I] + t * (g(xs[I]) - xs[I])
+      } else {
+        return g(xs[I]);
+      }
+    }
+  }
+  function piecewisefy(t, I) { // I: 0, 1, ...
+    if (I == 0) { // plot the initial guess xs[0]
+      t = (t - mthlyTRange[0]) / mthlyWidth; // t in [0, 1]
+      return t*g(xs[0]);
+    } else {
+      I = I - 1;
+      t = t - mthlyTRange[0];
+      if (t < mthlyMidpt) {
+        return g(xs[I]);
+      } else {
+        t = (t - mthlyMidpt) / mthlyMidpt; // t in [0, 1]
+        const y = g(xs[I]);
+        return y + t * (g(y) - y);
+      }
+    }
+  }
+
+  function displaytext() { return 'Iteration ' + I + ': x = ' + xs[I-1]; }
+]]
+
+fstr = {{x = '@(t) piecewisefx(t,I-1)', y = '@(t) piecewisefy(t,I-1)', t = {-1, 6, 0.01}, width = 2, color = 'grey'}}
+opts = {t = {-1, 6, 0.001}, I = {1, 30, 1, default = 30}, x = {-0.2, 6}, y = {-0.2, 3},
+        layout = { width = 640, height = 640, square = false, title = "" },
+        javascript = jscode, keycontrol = 'I', cumulative = true,
+        controls = 'I', -- it must be defined
+        enhancements = {{x = '@(t) t', y = '@(t) t', t = {-1, 6}, width = 2, color = 'black'},
+                        {x = '@(t) t', y = '@(t) 5 / (exp(0.5*t) + 1.2)', color = 'orange'},
+                        {x = 'xs[I-1]', y = 'g(xs[I-1])', color = 'red', size = 8, point = true}
+                       }}
+manipulate(fstr, opts)
+</code></pre>
+
 
 <h4>&bull; &nbsp; <a name=map href=#m><code>map(f, tbl1, tbl2, ...)</code></a></h4>
 <p>Apply function <code>f</code> to each group of corresponding atomic elements in tables, <code>tbl1, tbl2, ...</code>, and return the result.</p>
