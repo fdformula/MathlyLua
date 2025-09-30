@@ -408,6 +408,8 @@ value of the parameter <code>t</code> for the currently plotted point. They and 
 <code>'2*X - a * Y + k'</code>.</li>
 <li>Show no title? Add <code>layout = { title = '' }</code>; No square aspect ratio? Add <code>layout = { square = false }.</code></li>
 <li>The parameter of a parametric curve, specified in <code>fstr</code>, must be <code>t</code>.</li>
+<li>All controls can be specified in <code>opts.controls</code> like <code>'ahk'</code>, <code>'a, h, k'</code>, <code>'a h, k'</code>, etc. If the field, <code>controls</code>, is not specified,
+they can be recognized automatically from the string definition of <code>y = f(x)</code> or its parametric equations in <code>fstr</code>.</li>
 <li>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>.
 With a control, field <code>default</code> defines the initial value of the control. If not provided, it defaults
 to <code>start</code>.</li>
