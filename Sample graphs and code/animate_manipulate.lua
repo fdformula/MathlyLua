@@ -63,7 +63,7 @@ jscode = [[
   var xs = [5.5]; // 5.5, initial guess
   for (let I = 0; I < 30; I += 1) { xs.push( g(xs[I]) ); }
 
-  const trange = [-1, 6];
+  const trange = [-3, 3];
   const width = trange[1] - trange[0];
   const midpt = width / 2;
 
@@ -101,7 +101,7 @@ jscode = [[
   function displaytext() { return 'Iteration ' + I + ': x = ' + xs[I-1]; }
 ]]
 
-fstr = {{x = '@(t) piecewisefx(t,I-1)', y = '@(t) piecewisefy(t,I-1)', t = {-1, 6, 0.01}, width = 2, color = 'grey'}}
+fstr = {{x = '@(t) piecewisefx(t,I-1)', y = '@(t) piecewisefy(t,I-1)', t = {-3, 3, 0.01}, width = 2, color = 'grey'}}
 opts = {t = {-1, 6, 0.001}, I = {1, 30, 1, default = 30}, x = {-0.2, 6}, y = {-0.2, 3},
         layout = { width = 640, height = 640, square = false, title = "" },
         javascript = jscode, keycontrol = 'I', cumulative = true,
