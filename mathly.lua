@@ -2933,6 +2933,8 @@ mthlySldr%d.addEventListener("input", function() { document.getElementById("mthl
     file:write(fmt(s, i, i, i, i, i, qq(animateq, 'mthlyAutoPlayq = false; ', '')))
   end
 
+  -- if the number of traces are various, like in cumulative cases, setting
+  -- the initial traces to the largest number is a key!? 9/30/25
   file:write(fmt([[
 
 Plotly.newPlot('mathlyDiv', mthlyInitData, mthlyLayout);
