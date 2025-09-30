@@ -2648,8 +2648,9 @@ local function _amnt_write_subtraces(traces, tr, file, resolution, key)   -- tra
         local tr1, res = obj.t, 500
         if tr1 == nil then tr1 = tr or {-6, 6} end
         if type(obj.resolution) == 'number' then res = min({500, obj.resolution}) end
-        file:write(head .. "  if (true) {\n    const t = [];\n")
-        file:write(fmt("    %sfor (let i = %f; i <= %f; i += %f) { t.push(i); }\n", head, tr1[1], tr1[2], (tr1[2] - tr1[1]) / res))
+        file:write(head .. "  if (true) {\n    " .. head .. "const t = [];\n")
+        local step = tr1[3] or (tr1[2] - tr1[1]) / res
+        file:write(fmt("    %sfor (let i = %f; i <= %f; i += %f) { t.push(i); }\n", head, tr1[1], tr1[2], step))
         trace = fmt("{ 'x': t.map(t => %s), 'y': t.map(t => %s), 'mode': 'lines', 'line': { 'simplify': false, 'color': '%s', 'width': %d } }",
                     obj.x, obj.y, obj.color or 'black', obj.width or 3)
         file:write(fmt("    %smthlyTraces.push(%s);\n%s  }\n", head, trace, head))
