@@ -400,7 +400,7 @@ Each control is a single letter, <code>a, b, ..., z, A, B, ...</code>, or <code>
 and <code>Y</code>. For example, <code>a, h</code>, and <code>k</code> are controls in
 <code>f(x) = a (x - h)^2 + k</code> for exploring the variation of the parabola as they change.</p>
 <p>The <code>opts</code> is a table of tables, used to define the ranges of <code>x, y</code>, and <code>t</code> (if <code>fstr</code> is the parametric equations of <code>x(t)</code>
-and <code>y(t)</code> in <a href=#easyf>shortcut string format</a>), etc. You may include <code>enhancements</code> to improve the effect of an animation. An enhancement is actually a simple graphics
+and <code>y(t)</code> in <a href=#easyf>shortcut string format</a>), etc. You may include optional <code>enhancements</code> to improve the effect of an animation. An enhancement is actually a simple graphics
 object here, a line, a point, or a parametric curve.</p>
 <p><ol>
 <li><code>(X, Y)</code> are the coordinates of the currently plotted point on the animated curve defined in <code>fstr</code>. If the curve is defined by parametric equations, <code>T</code> refers to the
@@ -409,10 +409,12 @@ value of the parameter <code>t</code> for the currently plotted point. They and 
 <li>Show no title? Add <code>layout = { title = '' }</code>; No square aspect ratio? Add <code>layout = { square = false }.</code></li>
 <li>The parameter of a parametric curve, specified in <code>fstr</code>, must be <code>t</code>.</li>
 <li>All controls can be specified in <code>opts.controls</code> like <code>'ahk'</code>, <code>'a, h, k'</code>, <code>'a h, k'</code>, etc. If the field, <code>controls</code>, is not specified,
-they can be recognized automatically from the string definition of <code>y = f(x)</code> or its parametric equations in <code>fstr</code>.</li>
+they will be recognized automatically from the string definition of <code>y = f(x)</code> or its parametric equations in <code>fstr</code>.</li>
 <li>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>.
 With a control, field <code>default</code> defines the initial value of the control. If not provided, it defaults
 to <code>start</code>.</li>
+<li>For each graphics object in <code>enhancements</code>, field <code>style</code> can specify more properties of the object. It is a string like <code>style = 'dash: "dot"'</code> and
+<code>style = 'dash: "dot", color: "red", width: 2'</code> for a line. Here, "dot" can be "dash", "dashdot", "longdash", "longdashdot", etc.</li>
 <li>Field <code>resolution</code> of <code>opts</code> may be needed for smooth parametric curves. It defaults to 500. The larger, the smoother, but more computing power is needed.
 <br><br>Note: With each parametric curve in <code>enhancements</code>, field <code>resolution</code> can be defined separately, and its default and minimum value is 500.</li>
 </ol>
@@ -450,10 +452,12 @@ opts = {t = {0, 10 * pi, 0.01},        ----- adjust options if needed
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}
        }
 animate(fstr, opts)
+</code></pre>
 
--- Animating hypocycloid, a plane curve traced out by a fixed point P on a circle C of radius b
--- as C rolls without slipping on the inside of a circle with center O and radius a, where b < a.
--- See: https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf
+<p>&#x2713; &nbsp; Animating hypocycloid, a plane curve traced out by a fixed point P on a circle C of radius b
+as C rolls without slipping on the inside of a circle with center O and radius a, where b < a.</p>
+<p>See: <a href="https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf">ParametricCurves.pdf</a></p>
+<pre><code>
 fstr = {'@(t) (a - b) * cos(t) + b * cos((a - b) / b * t)', '@(t) (a - b) * sin(t) - b * sin((a - b) / b * t)'}
 opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 7.8}, b = {0.2, 9, 0.1, default = 1.6}, x = {-10, 10},
         resolution = 1500,
@@ -464,10 +468,12 @@ opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 7.8}, b = {0.2, 9, 
                         {x = {'X', '(a - b) * cos(T)'}, y = {'Y', '(a - b) * sin(T)'}, line = true, color = 'green'}
                        }}
 animate(fstr, opts)
+</code></pre>
 
--- Animating epicycloid, a plane curve traced out by a fixed point P on a circle C of radius b as C
--- rolls without slipping on the outside of a circle with center O and radius a, where b < a.
--- See: https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf
+<p>&#x2713; &nbsp; Animating epicycloid, a plane curve traced out by a fixed point P on a circle C of radius b as C
+rolls without slipping on the outside of a circle with center O and radius a, where b < a.</p>
+<p>See: <a href="https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf">ParametricCurves.pdf</a></p>
+<pre><code>
 fstr = {'@(t) (a + b) * cos(t) - b * cos((a + b) / b * t)', '@(t) (a + b) * sin(t) - b * sin((a + b) / b * t)'}
 opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 6.0}, b = {0.2, 9, 0.1, default = 1.7}, x = {-10, 10},
         resolution = 1500,
@@ -483,12 +489,14 @@ animate(fstr, opts)
 
 <p>JavaScript code can be added as follows for animations which involve more complicated computing. The <code>enhancements</code> may access
 variables and functions defined in the JavaScript code.</p>
-<p>&#x2713; &nbsp; Names of users' variables and functions can NOT be <code>x, y, t, X, Y, T</code>, and controls of which <code>p</code> is reserved for 'play'.</p>
-<p>&#x2713; &nbsp; If needed, an extra message can be displayed through the interface, <code>displaytext()</code>, a user-defined JavaScript function that returns a string, the message.</p>
-<pre><code>-- A stick of length L can smoothly slide through a point (b, 0). Given that one end
--- of the stick moves along a circle with its center at the origin and a radius of R,
--- animate the path of the other end of the stick.
--- See: https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf
+<ol>
+<li>Names of users' variables and functions can NOT be <code>p, t, x, y, T, X, Y</code> where <code>p</code> is reserved for 'play'.</li>
+<li>If needed, an extra message can be displayed through the interface, <code>displaytext()</code>, a user-defined JavaScript function that returns a string, the message.</li>
+</ol>
+<p>&#x2713; &nbsp; Animating a stick of length L that can smoothly slide through a point (b, 0), given that one end of the stick moves along a circle
+with its center at the origin and a radius of R.
+<p>See: <a href="https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf">ParametricCurves.pdf</a></p>
+<pre><code>
 mathly = require('mathly')
 
 jscode = [[
@@ -526,7 +534,7 @@ opts = {t = {0, 2 * pi, 0.01},
 animate(fstr, opts) -- 'animate' can be replaced with 'manipulate'
 </code></pre>
 
-<p>Animating osculating circle of y = sin(x):</p>
+<p>&#x2713; &nbsp; Animating osculating circle of y = sin(x):</p>
 <pre><code>
 jscode = [[
   // see https://www.desmos.com/calculator/lbjisuikaf
@@ -552,7 +560,7 @@ opts = {t = {-2*pi, 2*pi, 0.01}, x = {-2*pi, 2*pi},
 animate(fstr, opts)
 </code></pre>
 
-<p>Animating osculating circle of <code>y = x<sup>2</sup></code>:</p>
+<p>&#x2713; &nbsp; Animating osculating circle of <code>y = x<sup>2</sup></code>:</p>
 <pre><code>
 jscode = [[
   function f(x) { return x*x; }  // setup: f(x) = x^2
@@ -583,7 +591,7 @@ If all the graphing objects at a moment are to be displayed on a graph, opts.<co
 <p>The <code>fstr</code> can be a table of tables as seen in the following example. They take exactly the same format of the field,
 <code>enhancements</code>, and the field, opts.<code>controls</code>, is required. The field, opts.<code>keycontrol</code>, can be used to
 define a single control that controls steps or movements of an animation.</p>
-<p>Animating the generation of a cobweb for x = g(x) = 1 - x<sup>2</sup> starting at x = 0.5.</p>
+<p>&#x2713; &nbsp; Animating the fixed-point method or the generation of a cobweb:</p>
 <pre><code>
 jscode = [[
   function g(x) { return 1 - x*x; }
@@ -1918,10 +1926,11 @@ opts = {t = {0, 10*pi, 0.01}, x = {-2, 2}, n = {1, 12, 1},
         resolution = 6000,
         layout = { width = 640, height = 540 }}
 manipulate(fstr, opts)
+</code></pre>
 
--- JavaScript and enhancements are allowed as with 'animate'
---
--- animating Newton's Method for solving f(x) = x^3 - 2x + 2 = 0
+<p>JavaScript and enhancements are allowed as with <code>animate</code>.</p>
+<p>&#x2713; &nbsp; Animating Newton's method for solving <code>f(x) = x<sup>3</sup> - 2x + 2 = 0</code>:</p>
+<pre><code>
 jscode = [[
   function func(x)   { return x**3 - 2*x + 2; } // f(x)
   function fprime(x) { return 3*x**2 - 2; }     // f'(x))
@@ -1946,7 +1955,35 @@ opts = {t = {-6.5, 6.5, 0.01}, I = {1, 100, 1}, x = {-6.5, 6.5}, y = {-60, 60},
 manipulate(fstr, opts)
 </code></pre>
 
-<p>Animating left-endpoint method for the definite integral of f(x) over [a, b]:
+<p>&#x2713; &nbsp; Animating the derivative of <code>y = f(x)</code> at <code>x = x<sub>0</sub></code>:</p>
+<pre><code>
+jscode = [[
+  function f(x) { return x*x; }
+  const x0 = 0.5;
+  const fx0 = f(x0);
+  if (Math.abs(h) < 0.0000000001) { if (h > 0) {h == 0.000000001;} else {h = -0.000000001}}
+  const x1 = x0 + h, fx1 = f(x1), k = (f(x1) - fx0) / h; // k: slope
+  function displaytext() { return 'Slope of secant line: ' + k; }
+]]
+
+fstr = '@(x) fx0 + k * (x - x0)'
+opts = {h = {-1.95, 0.87, 0.01, default = -0.79}, controls = 'h',
+        x = {-1.5, 1.43}, y = {-0.1, 2.12}, width = 1, color = 'grey',
+        layout = { width = 540, height = 640, square = true, title = "Animating a derivative" },
+        javascript = jscode,
+        enhancements = {{x = '@(t) t', y = '@(t) t^2', color = 'orange', width = 2}, -- y = f(x)
+                        {x = '@(t) t', y = '@(t) fx0 + 1*(t - x0)', style = 'dash: "dot"', width = 2, color = "green"}, -- tangent line at x = x0
+                        {x = 'x0', y = 'fx0', point = true, color = 'green', width = 8},
+                        {x = 'x0', y = 0, point = true, color = 'green', width = 8},
+                        {x = {'x0', 'x0'}, y = {0, 'fx0'}, line = true, color = 'green', width = 1},
+                        {x = 'x1', y = 'fx1', point = true, color = 'red', width = 8},
+                        {x = 'x1', y = 0, point = true, color = 'red', width = 8},
+                        {x = {'x1', 'x1'}, y = {0, 'fx1'}, line = true, color = 'grey', width = 1}
+        }}
+manipulate(fstr, opts)
+</code></pre>
+
+<p>&#x2713; &nbsp; Animating the left-endpoint method for the definite integral of <code>f(x)</code> on <code>[a, b]</code>:
 <pre><code>
 jscode = [[
   function f(x) { return 1 - x*x; }
@@ -1979,7 +2016,7 @@ opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, con
 manipulate(fstr, opts)
 </code></pre>
 
-<p>Animating right-endpoint method for the definite integral of f(x) over [a, b]:
+<p>&#x2713; &nbsp; Animating the right-endpoint method for the definite integral of <code>f(x)</code> on <code>[a, b]</code>:
 <pre><code>
 jscode = [[
   function f(x) { return 1 - x*x; }
@@ -2012,7 +2049,7 @@ opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, con
 manipulate(fstr, opts)
 </code></pre>
 
-<p>Animating midpoint method for the definite integral of f(x) over [a, b]:
+<p>&#x2713; &nbsp; Animating the midpoint method for the definite integral of <code>f(x)</code> on <code>[a, b]</code>:
 <pre><code>
 jscode = [[
   function f(x) { return 1 - x*x; }
@@ -2045,7 +2082,7 @@ opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, con
 manipulate(fstr, opts)
 </code></pre>
 
-<p>Animating trapezoidal method for the definite integral of f(x) over [a, b]:
+<p>&#x2713; &nbsp; Animating the trapezoidal method for the definite integral of <code>f(x)</code> on <code>[a, b]</code>:
 <pre><code>
 jscode = [[
   function f(x) { return 1 - x*x; }
