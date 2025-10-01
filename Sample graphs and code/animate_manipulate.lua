@@ -58,7 +58,6 @@ opts = {t = {0, 2 * pi, 0.01},
 animate(fstr, opts)
 
 -- animate5.jpg
-MaxN = 20 -- max number of subintervals
 jscode = [[
   function f(x) { return 1 - x*x; }
   const a = 0, b = 1;
@@ -82,6 +81,7 @@ jscode = [[
   function displaytext() { return 'Approximation: ' + sum(); }
 ]]
 
+MaxN = 20 -- max number of subintervals
 fstr = '@(x) 1 - x^2';
 opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
         layout = { width = 540, height = 540, square = true, title = "Left-endpoint Method" },
@@ -89,7 +89,6 @@ opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, con
 manipulate(fstr, opts)
 
 -- animate6.jpg
-MaxI = 30 -- range of control I: [1, MaxI]
 jscode = [[
   function g(x) { return 1 - x*x; }
   var xs = [0.5]; // 0.5, initial value
@@ -97,7 +96,7 @@ jscode = [[
   for (let I = 0; I <= %d; I += 1) { xs.push( g(xs[I]) ); } // one extra element, xs[0]!
 ]]
 
--- note: xs[I-1] == g(xs[I-2]), xs[I] == g(g(xs[I-2])) -- why I-2? 1) JScript index starts at 0; 2) xs[0] is extra.
+MaxI = 30 -- range of control I: [1, MaxI]
 fstr = {{x = {'xs[I-2]', 'xs[I-1]'}, y = {'xs[I-1]', 'xs[I-1]'}, line = true, color = 'grey', width = 1}, -- horizontal line segment
         {x = {'xs[I-1]', 'xs[I-1]'}, y = {'xs[I-1]', 'xs[I]'}, line = true, color = 'grey', width = 1}} -- vertical line segment
 opts = {t = {-0.1, 1.1, 0.001}, I = {1, MaxI, 1, default = MaxI}, x = {-0.1, 1.1}, y = {-0.1, 1.1},
