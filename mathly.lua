@@ -2,7 +2,7 @@
 
 LUA MODULE
 
-  Mathly - Turning Lua into a Tiny, Free but Powerful MATLAB
+  Mathly - Turning Lua into a Tiny, Free but Powerful MATLAB and More
 
 DESCRIPTION
 
