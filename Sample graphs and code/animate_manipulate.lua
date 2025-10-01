@@ -57,7 +57,7 @@ opts = {t = {0, 2 * pi, 0.01},
                        }}
 animate(fstr, opts)
 
--- animate5.jpg
+-- manipulate3.jpg
 jscode = [[
   function f(x) { return 1 - x*x; }
   const a = 0, b = 1;
@@ -88,7 +88,7 @@ opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, con
         javascript = string.format(jscode, MaxN)}
 manipulate(fstr, opts)
 
--- animate6.jpg
+-- manipulate4.jpg
 jscode = [[
   function g(x) { return 1 - x*x; }
   var xs = [0.5]; // 0.5, initial value
