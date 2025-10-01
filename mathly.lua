@@ -2635,14 +2635,15 @@ local function _amnt_write_subtraces(traces, tr, file, resolution, key)   -- tra
   end
   local function write_traces()
     for i = 1, #traces do
-      local obj = traces[i]
+      local obj, style = traces[i], '' -- Plotly JavaScript properties in string is allowed
+      if type(obj.style) == 'string' then style = ", " .. obj.style end
       if obj.line then
-        trace = fmt("{ 'x': [%s, %s], 'y': [%s, %s], 'mode': 'lines', 'line': { 'color': '%s', 'width': %d } }",
-                    toJS(obj.x[1]), toJS(obj.x[2]), toJS(obj.y[1]), toJS(obj.y[2]), obj.color or 'black', obj.width or 3)
+        trace = fmt("{ 'x': [%s, %s], 'y': [%s, %s], 'mode': 'lines', 'line': { 'color': '%s', 'width': %d %s } }",
+                    toJS(obj.x[1]), toJS(obj.x[2]), toJS(obj.y[1]), toJS(obj.y[2]), obj.color or 'black', obj.width or 3, style)
         file:write(fmt("  %smthlyTraces.push(%s);\n\n", head, trace))
       elseif obj.point then
-        trace = fmt("{ 'x': [%s], 'y': [%s], 'mode': 'markers', 'marker': { 'color': '%s', 'size': %d } }",
-                    toJS(obj.x), toJS(obj.y), obj.color or 'black', obj.size or 8)
+        trace = fmt("{ 'x': [%s], 'y': [%s], 'mode': 'markers', 'marker': { 'color': '%s', 'size': %d %s } }",
+                    toJS(obj.x), toJS(obj.y), obj.color or 'black', obj.size or 8, style)
         file:write(fmt("  %smthlyTraces.push(%s);\n\n", head, trace))
       elseif obj.parametriceqs then
         local tr1, res = obj.t, 500
@@ -2651,8 +2652,8 @@ local function _amnt_write_subtraces(traces, tr, file, resolution, key)   -- tra
         file:write(head .. "  if (true) {\n    " .. head .. "const t = [];\n")
         local step = tr1[3] or (tr1[2] - tr1[1]) / res
         file:write(fmt("    %sfor (let i = %f; i <= %f; i += %f) { t.push(i); }\n", head, tr1[1], tr1[2], step))
-        trace = fmt("{ 'x': t.map(t => %s), 'y': t.map(t => %s), 'mode': 'lines', 'line': { 'simplify': false, 'color': '%s', 'width': %d } }",
-                    obj.x, obj.y, obj.color or 'black', obj.width or 3)
+        trace = fmt("{ 'x': t.map(t => %s), 'y': t.map(t => %s), 'mode': 'lines', 'line': { 'simplify': false, 'color': '%s', 'width': %d %s } }",
+                    obj.x, obj.y, obj.color or 'black', obj.width or 3, style)
         file:write(fmt("    %smthlyTraces.push(%s);\n%s  }\n", head, trace, head))
       end
     end
