@@ -2491,7 +2491,7 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
   _3d_plotq = false
 end -- plotparametriccurve3d
 
-local function _to_jscript_functions(expr)
+local function _to_jscript_expr(expr)
   local gsub = string.gsub
   local jexpr = gsub(expr, "%^", "**")
   jexpr = gsub(jexpr, "sin", "Math.sin")
@@ -2514,15 +2514,15 @@ local function _anmt_adjust_traces(traces, fregex)
     elseif obj.point then -- { x = 5.1, y = 9.2, color = 'blue', size = 3, point = true}
     elseif obj.parametriceqs or (type(obj.x) == 'string' and type(obj.y) == 'string') then
       _, s = string.match(obj.x, fregex)
-      obj.x = _to_jscript_functions(s)
+      obj.x = _to_jscript_expr(s)
       _, s = string.match(obj.y, fregex)
-      obj.y = _to_jscript_functions(s)
+      obj.y = _to_jscript_expr(s)
       obj.parametriceqs = true
     end
   end
 end
 
-local function _anmt_is_new_controlq(c, cs) -- each a-zA-Z but p, t, x, y, T, X, and Y is a control
+local function _anmt_is_new_controlq(c, cs, opts) -- each a-zA-Z but p, t, x, y, T, X, and Y is a control
   local t = #c == 1 and ((c >= 'a' and c <= 'z') or (c >= 'A' and c <= 'Z')) and
             not ismember(c, {'p', 't', 'x', 'y', 'T', 'X', 'Y'}) and
             not ismember(c, cs)
@@ -2549,7 +2549,7 @@ local function _anmt_parse_args(fstr, opts, animateq)
     if type(opts.controls) == 'string' then
       for i = 1, #opts.controls do
         local c = string.sub(opts.controls, i, i)
-        if _anmt_is_new_controlq(c, cs) then cs[#cs + 1] = c end
+        if _anmt_is_new_controlq(c, cs, opts) then cs[#cs + 1] = c end
       end
     else
       error("Field 'controls' must be a string.")
@@ -2586,7 +2586,7 @@ local function _anmt_parse_args(fstr, opts, animateq)
     end
   else
     for c in string.gmatch(s, "[^(%@%s|%(|%)|%{|%}|%[|%]|%+|%-|%*|%^|%/)]+") do
-      if _anmt_is_new_controlq(c, cs) then
+      if _anmt_is_new_controlq(c, cs, opts) then
         cs[#cs + 1] = c
         rs[#rs + 1] = opts[c]
       end
@@ -2599,9 +2599,9 @@ local function _anmt_parse_args(fstr, opts, animateq)
 
   local jxexpr, jyexpr, tr = nil, nil, nil
   if not _anmt_multifstrsq then
-    jyexpr = _to_jscript_functions(yexpr)
+    jyexpr = _to_jscript_expr(yexpr)
     if xexpr ~= nil then
-      jxexpr = _to_jscript_functions(xexpr)
+      jxexpr = _to_jscript_expr(xexpr)
       if opts.t == nil or type(opts.t) ~= 'table' or opts.t[1] >= opts.t[2] then
         print("Range of parameter 't' is not specified, or it is invalid. Default: { -6, 6, 0.1 }.")
         tr = {-6, 6, 0.1}
@@ -2631,7 +2631,7 @@ local function _amnt_write_subtraces(traces, tr, file, resolution, key)   -- tra
   if type(traces) ~= 'table' or #traces == 0 then return end
   local fmt, head = string.format, ''
   local function toJS(v)
-    if type(v) == 'string' then return _to_jscript_functions(v) else return fmt("%f", v) end
+    if type(v) == 'string' then return _to_jscript_expr(v) else return fmt("%f", v) end
   end
   local function write_traces()
     for i = 1, #traces do
@@ -2943,7 +2943,7 @@ setInterval(mthlyAnimatePlot, %d); // animate every 0.2 seconds
 </script>
 </body>
 </html>
-]], qq(_anmt_multifstrsq, 1500, 200)))
+]], qq(_anmt_multifstrsq, 200, 200)))
   file:close()
 end -- _write_manipulate_html
 
