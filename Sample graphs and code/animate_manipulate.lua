@@ -69,7 +69,7 @@ jscode = [[
 -- note: xs[I-1] == g(xs[I-2]), xs[I] == g(g(xs[I-2])) -- why I-2? 1) JScript index starts at 0; 2) xs[0] is extra.
 fstr = {{x = {'xs[I-2]', 'xs[I-1]'}, y = {'xs[I-1]', 'xs[I-1]'}, line = true, color = 'grey', width = 1}, -- horizontal line segment
         {x = {'xs[I-1]', 'xs[I-1]'}, y = {'xs[I-1]', 'xs[I]'}, line = true, color = 'grey', width = 1}} -- vertical line segment
-opts = {t = {-0.1, 1.1, 0.001}, I = {1, MaxI, 1, default = 30}, x = {-0.1, 1.1}, y = {-0.1, 1.1},
+opts = {t = {-0.1, 1.1, 0.001}, I = {1, MaxI, 1, default = MaxI}, x = {-0.1, 1.1}, y = {-0.1, 1.1},
         layout = { width = 540, height = 540, square = true, title = "" },
         javascript = string.format(jscode, MaxI), cumulative = true, controls = 'I',
         enhancements = {{x = '@(t) t', y = '@(t) t', t = {-1, 6}, width = 2, color = 'green'},   -- line: y = x
