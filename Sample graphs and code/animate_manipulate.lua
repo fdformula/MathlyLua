@@ -61,9 +61,12 @@ animate(fstr, opts)
 jscode = [[
   function g(x) { return 1 - x*x; }
   var xs = [0.5]; // 0.5, initial value
+  const trange = [-3, 3];
+  function displaytext() { return 'Iteration ' + I + ': x = ' + xs[I-1]; }
+
   for (let I = 0; I < 30; I += 1) { xs.push( g(xs[I]) ); }
 
-  const trange = [-3, 3];
+  // no need to change the JavaScript code below
   const width = trange[1] - trange[0];
   const midpt = width / 2;
 
@@ -97,17 +100,14 @@ jscode = [[
       }
     }
   }
-
-  function displaytext() { return 'Iteration ' + I + ': x = ' + xs[I-1]; }
 ]]
 
 fstr = {{x = '@(t) piecewisefx(t,I-1)', y = '@(t) piecewisefy(t,I-1)', t = {-3, 3, 0.01}, width = 2, color = 'grey'}}
 opts = {t = {-0.1, 1.2, 0.001}, I = {1, 30, 1, default = 30}, x = {-0.2, 1.2}, y = {-0.2, 1.2},
         layout = { width = 640, height = 640, square = false, title = "" },
-        javascript = jscode, keycontrol = 'I', cumulative = true,
-        controls = 'I', -- it must be defined
-        enhancements = {{x = '@(t) t', y = '@(t) t', t = {-1, 6}, width = 2, color = 'green'},
-                        {x = '@(t) t', y = '@(t) 1 - t^2', color = 'orange'},
-                        {x = 'xs[I-1]', y = 'g(xs[I-1])', color = 'red', size = 8, point = true}
+        javascript = jscode, cumulative = true, controls = 'I',
+        enhancements = {{x = '@(t) t', y = '@(t) t', t = {-1, 6}, width = 2, color = 'green'},   -- line: y = x
+                        {x = '@(t) t', y = '@(t) 1 - t^2', color = 'orange'},                    -- curve: y = g(x)
+                        {x = 'xs[I-1]', y = 'g(xs[I-1])', color = 'red', size = 8, point = true} -- point
                        }}
 manipulate(fstr, opts)
