@@ -484,7 +484,7 @@ animate(fstr, opts)
 <p>JavaScript code can be added as follows for animations which involve more complicated computing. The <code>enhancements</code> may access
 variables and functions defined in the JavaScript code.</p>
 <p>&#x2713; &nbsp; Names of users' variables and functions can NOT be <code>x, y, t, X, Y, T</code>, and controls of which <code>p</code> is reserved for 'play'.</p>
-<p>&#x2713; &nbsp; If needed, an extra message can be displayed through an interface, <code>displaytext()</code>, a user-defined JavaScript function that returns a string, the message.</p>
+<p>&#x2713; &nbsp; If needed, an extra message can be displayed through the interface, <code>displaytext()</code>, a user-defined JavaScript function that returns a string, the message.</p>
 <pre><code>-- A stick of length L can smoothly slide through a point (b, 0). Given that one end
 -- of the stick moves along a circle with its center at the origin and a radius of R,
 -- animate the path of the other end of the stick.
@@ -576,6 +576,67 @@ opts = {t = {-5, 5, 0.01}, x = {-5, 5},
                         {x = 'X', y = 'Y', color = 'red', size = 10, point = true}
                        }}
 animate(fstr, opts)
+</code></pre>
+
+<p>For more complicated animations like with cobwebs, each further step produces new graphing objects. If all the graphing objects
+are to be displayed on a graph, fields <code>keycontrol</code> and <code>cumulative = true</code> must be specified.</p>
+<p>The <code>fstr</code> can be a list of lists as seen in the following example. They take exactly the same format of the field,
+<code>enhancements</code>. The field <code>keycontrol</code> is a single control used to control steps or movements.
+<p>Animating the generation of a cobweb for x = g(x) = 1 - x<sup>2</sup> starting at x = 0.5.</p>
+<pre><code>
+jscode = [[
+  function g(x) { return 1 - x*x; }
+  var xs = [0.5]; // 0.5, initial value
+  for (let I = 0; I < 30; I += 1) { xs.push( g(xs[I]) ); }
+
+  const trange = [-3, 3];
+  const width = trange[1] - trange[0];
+  const midpt = width / 2;
+
+  function piecewisefx(t, I) { // I: 0, 1, ...
+    if (I == 0) { // plot the initial guess xs[0]
+      return xs[0];
+    } else {
+      I = I - 1;
+      t = t - trange[0];
+      if (t < midpt) {
+        t = t / midpt; //t in [0, 1]
+        return xs[I] + t * (g(xs[I]) - xs[I])
+      } else {
+        return g(xs[I]);
+      }
+    }
+  }
+  function piecewisefy(t, I) { // I: 0, 1, ...
+    if (I == 0) { // plot the initial guess xs[0]
+      t = (t - trange[0]) / width; // t in [0, 1]
+      return t*g(xs[0]);
+    } else {
+      I = I - 1;
+      t = t - trange[0];
+      if (t < midpt) {
+        return g(xs[I]);
+      } else {
+        t = (t - midpt) / midpt; // t in [0, 1]
+        const y = g(xs[I]);
+        return y + t * (g(y) - y);
+      }
+    }
+  }
+
+  function displaytext() { return 'Iteration ' + I + ': x = ' + xs[I-1]; }
+]]
+
+fstr = {{x = '@(t) piecewisefx(t,I-1)', y = '@(t) piecewisefy(t,I-1)', t = {-3, 3, 0.01}, width = 2, color = 'grey'}}
+opts = {t = {-0.1, 1.2, 0.001}, I = {1, 30, 1, default = 30}, x = {-0.2, 1.2}, y = {-0.2, 1.2},
+        layout = { width = 640, height = 640, square = false, title = "" },
+        javascript = jscode, keycontrol = 'I', cumulative = true,
+        controls = 'I', -- it must be defined
+        enhancements = {{x = '@(t) t', y = '@(t) t', t = {-1, 6}, width = 2, color = 'green'},
+                        {x = '@(t) t', y = '@(t) 1 - t^2', color = 'orange'},
+                        {x = 'xs[I-1]', y = 'g(xs[I-1])', color = 'red', size = 8, point = true}
+                       }}
+manipulate(fstr, opts)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=any></a><a name=all href=#m><code>all(x, f)</code>, <code>any(x, f)</code></a></h4>
@@ -1916,65 +1977,6 @@ opts = {t = {-6.5, 6.5, 0.01}, I = {1, 100, 1}, x = {-6.5, 6.5}, y = {-60, 60},
                        }}
 manipulate(fstr, opts)
 </code></pre>
-
-<p>Animating fixed-point method for solving <code>f(x) = xe<sup>0.5x</sup> + 1.2x - 5 = 0:</code></p>
-<pre><code>
-jscode = [[
-  function f(x) { return x * Math.exp(0.5*x) + 1.2*x - 5; }
-  function g(x) { return 5 / (Math.exp(0.5*x) + 1.2); }
-  var xs = [5.5]; // 5.5, initial guess
-  for (let I = 0; I < 30; I += 1) { xs.push( g(xs[I]) ); }
-
-  const mthlyTRange = [-1, 6]; // part of the algorithm
-  const mthlyWidth = mthlyTRange[1] - mthlyTRange[0];
-  const mthlyMidpt = mthlyWidth / 2;
-
-  function piecewisefx(t, I) { // I: 0, 1, ...
-    if (I == 0) { // plot the initial guess xs[0]
-      return xs[0];
-    } else {
-      I = I - 1;
-      t = t - mthlyTRange[0];
-      if (t < mthlyMidpt) {
-        t = t / mthlyMidpt; //t in [0, 1]
-        return xs[I] + t * (g(xs[I]) - xs[I])
-      } else {
-        return g(xs[I]);
-      }
-    }
-  }
-  function piecewisefy(t, I) { // I: 0, 1, ...
-    if (I == 0) { // plot the initial guess xs[0]
-      t = (t - mthlyTRange[0]) / mthlyWidth; // t in [0, 1]
-      return t*g(xs[0]);
-    } else {
-      I = I - 1;
-      t = t - mthlyTRange[0];
-      if (t < mthlyMidpt) {
-        return g(xs[I]);
-      } else {
-        t = (t - mthlyMidpt) / mthlyMidpt; // t in [0, 1]
-        const y = g(xs[I]);
-        return y + t * (g(y) - y);
-      }
-    }
-  }
-
-  function displaytext() { return 'Iteration ' + I + ': x = ' + xs[I-1]; }
-]]
-
-fstr = {{x = '@(t) piecewisefx(t,I-1)', y = '@(t) piecewisefy(t,I-1)', t = {-1, 6, 0.01}, width = 2, color = 'grey'}}
-opts = {t = {-1, 6, 0.001}, I = {1, 30, 1, default = 30}, x = {-0.2, 6}, y = {-0.2, 3},
-        layout = { width = 640, height = 640, square = false, title = "" },
-        javascript = jscode, keycontrol = 'I', cumulative = true,
-        controls = 'I', -- it must be defined
-        enhancements = {{x = '@(t) t', y = '@(t) t', t = {-1, 6}, width = 2, color = 'black'},
-                        {x = '@(t) t', y = '@(t) 5 / (exp(0.5*t) + 1.2)', color = 'orange'},
-                        {x = 'xs[I-1]', y = 'g(xs[I-1])', color = 'red', size = 8, point = true}
-                       }}
-manipulate(fstr, opts)
-</code></pre>
-
 
 <h4>&bull; &nbsp; <a name=map href=#m><code>map(f, tbl1, tbl2, ...)</code></a></h4>
 <p>Apply function <code>f</code> to each group of corresponding atomic elements in tables, <code>tbl1, tbl2, ...</code>, and return the result.</p>
