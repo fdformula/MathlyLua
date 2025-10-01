@@ -607,138 +607,6 @@ opts = {t = {-0.1, 1.1, 0.001}, I = {1, MaxI, 1, default = MaxI}, x = {-0.1, 1.1
 manipulate(fstr, opts)
 </code></pre>
 
-<p>Animating left-endpoint method for the definite integral of f(x) over [a, b]:
-<pre><code>
-jscode = [[
-  function f(x) { return 1 - x*x; }
-  const a = 0, b = 1;
-  const h = (b - a) / N;
-  function plotboxes() {
-    var x1 = a, f1 = f(a);
-    for (let i = 0; i < N; i++) {
-      const x2 = x1 + h, f2 = f(x2); // mthlyTraces, a javascript "global" variables
-      mthlyTraces.push({'x': [x1, x1], 'y': [0, f1], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
-      mthlyTraces.push({'x': [x1, x2], 'y': [f1, f1], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } }); // left-endpoint
-      mthlyTraces.push({'x': [x2, x2], 'y': [f1, 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
-      x1 = x2; f1 = f2;
-    }
-  }
-  function sum() {
-    plotboxes();
-    var s = 0;
-    for (let i = 0; i < N; i++) { s += f(a + i*h); }
-    return s * h;
-  }
-  function displaytext() { return 'Approximation: ' + sum(); }
-]]
-
-MaxN = 20 -- max number of subintervals
-fstr = '@(x) 1 - x^2'
-opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
-        layout = { width = 540, height = 540, square = true, title = "Left-endpoint Method" },
-        javascript = string.format(jscode, MaxN)}
-manipulate(fstr, opts)
-</code></pre>
-
-<p>Animating right-endpoint method for the definite integral of f(x) over [a, b]:
-<pre><code>
-jscode = [[
-  function f(x) { return 1 - x*x; }
-  const a = 0, b = 1;
-  var h = (b - a) / N;
-  function plotboxes() {
-    var x1 = a, f1 = f(a);
-    for (let i = 0; i < N; i++) {
-      const x2 = x1 + h, f2 = f(x2); // mthlyTraces, a javascript "global" variables
-      mthlyTraces.push({'x': [x1, x1], 'y': [0, f2], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
-      mthlyTraces.push({'x': [x1, x2], 'y': [f2, f2], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } }); // right-endpoint
-      mthlyTraces.push({'x': [x2, x2], 'y': [f2, 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
-      x1 = x2; f1 = f2;
-    }
-  }
-  function sum() {
-    plotboxes();
-    var s = 0;
-    for (let i = 1; i <= N; i++) { s += f(a + i*h) }
-    return s * h;
-  }
-  function displaytext() { return 'Approximation: ' + sum(); }
-]]
-
-MaxN = 20 -- max number of subintervals
-fstr = '@(x) 1 - x^2'
-opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
-        layout = { width = 540, height = 540, square = true, title = "Left-endpoint Method" },
-        javascript = string.format(jscode, MaxN)}
-manipulate(fstr, opts)
-</code></pre>
-
-<p>Animating midpoint method for the definite integral of f(x) over [a, b]:
-<pre><code>
-jscode = [[
-  function f(x) { return 1 - x*x; }
-  const a = 0, b = 1, h = (b - a) / N;
-  function plotboxes() {
-    var x1 = a;
-    for (let i = 0; i < N; i++) {
-      const x2 = x1 + h; // mthlyTraces, a javascript "global" variables
-      const m = x1 + h / 2, fm = f(m);
-      mthlyTraces.push({'x': [x1, x1], 'y': [0, fm], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
-      mthlyTraces.push({'x': [x1, x2], 'y': [fm, fm], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } }); // midpoint
-      mthlyTraces.push({'x': [x2, x2], 'y': [fm, 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
-      x1 = x2;
-    }
-  }
-  function sum() {
-    plotboxes();
-    var s = 0;
-    for (let i = 0; i < N; i++) { s += f(a + (i + 0.5)*h) }
-    return s * h;
-  }
-  function displaytext() { return 'Approximation: ' + sum(); }
-]]
-
-MaxN = 20 -- max number of subintervals
-fstr = '@(x) 1 - x^2'
-opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
-        layout = { width = 540, height = 540, square = true, title = "Left-endpoint Method" },
-        javascript = string.format(jscode, MaxN)}
-manipulate(fstr, opts)
-</code></pre>
-
-<p>Animating trapezoidal method for the definite integral of f(x) over [a, b]:
-<pre><code>
-jscode = [[
-  function f(x) { return 1 - x*x; }
-  const a = 0, b = 1;
-  var h = (b - a) / N;
-  function plotboxes() {
-    var x1 = a, f1 = f(a);
-    for (let i = 0; i < N; i++) {
-      const x2 = x1 + h, f2 = f(x2); // mthlyTraces, a javascript "global" variables
-      mthlyTraces.push({'x': [x1, x1], 'y': [0, f1], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
-      mthlyTraces.push({'x': [x1, x2], 'y': [f1, f2], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } }); // trapezoidal
-      mthlyTraces.push({'x': [x2, x2], 'y': [f2, 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
-      x1 = x2; f1 = f2;
-    }
-  }
-  function sum() {
-    plotboxes();
-    var s = 0, x = a + h;
-    for (let i = 1; i < N; i++) { s += f(x); x = x + h; }
-    return (f(a) + 2*s + f(b)) * h / 2;
-  }
-  function displaytext() { return 'Approximation: ' + sum(); }
-]]
-
-MaxN = 20 -- max number of subintervals
-fstr = '@(x) 1 - x^2'
-opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
-        layout = { width = 540, height = 540, square = true, title = "Left-endpoint Method" },
-        javascript = string.format(jscode, MaxN)}
-manipulate(fstr, opts)
-</code></pre>
-
 <h4>&bull; &nbsp; <a name=any></a><a name=all href=#m><code>all(x, f)</code>, <code>any(x, f)</code></a></h4>
 <ol>
 <li><code>all(x, f)</code>: Test if <code>f(x)</code> is true for every number in <code>x</code>.
@@ -2075,6 +1943,138 @@ opts = {t = {-6.5, 6.5, 0.01}, I = {1, 100, 1}, x = {-6.5, 6.5}, y = {-60, 60},
                         {x = 'xs[I-1]', y = 'func(xs[I-1])', color = 'blue', size = 8, point = true},
                         {x = 'xs[I]', y = 0, color = 'red', size = 10, point = true}
                        }}
+manipulate(fstr, opts)
+</code></pre>
+
+<p>Animating left-endpoint method for the definite integral of f(x) over [a, b]:
+<pre><code>
+jscode = [[
+  function f(x) { return 1 - x*x; }
+  const a = 0, b = 1;
+  const h = (b - a) / N;
+  function plotboxes() {
+    var x1 = a, f1 = f(a);
+    for (let i = 0; i < N; i++) {
+      const x2 = x1 + h, f2 = f(x2); // mthlyTraces, a javascript "global" variables
+      mthlyTraces.push({'x': [x1, x1], 'y': [0, f1], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
+      mthlyTraces.push({'x': [x1, x2], 'y': [f1, f1], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } }); // left-endpoint
+      mthlyTraces.push({'x': [x2, x2], 'y': [f1, 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
+      x1 = x2; f1 = f2;
+    }
+  }
+  function sum() {
+    plotboxes();
+    var s = 0;
+    for (let i = 0; i < N; i++) { s += f(a + i*h); }
+    return s * h;
+  }
+  function displaytext() { return 'Approximation: ' + sum(); }
+]]
+
+MaxN = 20 -- max number of subintervals
+fstr = '@(x) 1 - x^2'
+opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
+        layout = { width = 540, height = 540, square = true, title = "Left-endpoint Method" },
+        javascript = string.format(jscode, MaxN)}
+manipulate(fstr, opts)
+</code></pre>
+
+<p>Animating right-endpoint method for the definite integral of f(x) over [a, b]:
+<pre><code>
+jscode = [[
+  function f(x) { return 1 - x*x; }
+  const a = 0, b = 1;
+  var h = (b - a) / N;
+  function plotboxes() {
+    var x1 = a, f1 = f(a);
+    for (let i = 0; i < N; i++) {
+      const x2 = x1 + h, f2 = f(x2); // mthlyTraces, a javascript "global" variables
+      mthlyTraces.push({'x': [x1, x1], 'y': [0, f2], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
+      mthlyTraces.push({'x': [x1, x2], 'y': [f2, f2], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } }); // right-endpoint
+      mthlyTraces.push({'x': [x2, x2], 'y': [f2, 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
+      x1 = x2; f1 = f2;
+    }
+  }
+  function sum() {
+    plotboxes();
+    var s = 0;
+    for (let i = 1; i <= N; i++) { s += f(a + i*h) }
+    return s * h;
+  }
+  function displaytext() { return 'Approximation: ' + sum(); }
+]]
+
+MaxN = 20 -- max number of subintervals
+fstr = '@(x) 1 - x^2'
+opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
+        layout = { width = 540, height = 540, square = true, title = "Left-endpoint Method" },
+        javascript = string.format(jscode, MaxN)}
+manipulate(fstr, opts)
+</code></pre>
+
+<p>Animating midpoint method for the definite integral of f(x) over [a, b]:
+<pre><code>
+jscode = [[
+  function f(x) { return 1 - x*x; }
+  const a = 0, b = 1, h = (b - a) / N;
+  function plotboxes() {
+    var x1 = a;
+    for (let i = 0; i < N; i++) {
+      const x2 = x1 + h; // mthlyTraces, a javascript "global" variables
+      const m = x1 + h / 2, fm = f(m);
+      mthlyTraces.push({'x': [x1, x1], 'y': [0, fm], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
+      mthlyTraces.push({'x': [x1, x2], 'y': [fm, fm], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } }); // midpoint
+      mthlyTraces.push({'x': [x2, x2], 'y': [fm, 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
+      x1 = x2;
+    }
+  }
+  function sum() {
+    plotboxes();
+    var s = 0;
+    for (let i = 0; i < N; i++) { s += f(a + (i + 0.5)*h) }
+    return s * h;
+  }
+  function displaytext() { return 'Approximation: ' + sum(); }
+]]
+
+MaxN = 20 -- max number of subintervals
+fstr = '@(x) 1 - x^2'
+opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
+        layout = { width = 540, height = 540, square = true, title = "Left-endpoint Method" },
+        javascript = string.format(jscode, MaxN)}
+manipulate(fstr, opts)
+</code></pre>
+
+<p>Animating trapezoidal method for the definite integral of f(x) over [a, b]:
+<pre><code>
+jscode = [[
+  function f(x) { return 1 - x*x; }
+  const a = 0, b = 1;
+  var h = (b - a) / N;
+  function plotboxes() {
+    var x1 = a, f1 = f(a);
+    for (let i = 0; i < N; i++) {
+      const x2 = x1 + h, f2 = f(x2); // mthlyTraces, a javascript "global" variables
+      mthlyTraces.push({'x': [x1, x1], 'y': [0, f1], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
+      mthlyTraces.push({'x': [x1, x2], 'y': [f1, f2], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } }); // trapezoidal
+      mthlyTraces.push({'x': [x2, x2], 'y': [f2, 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
+      x1 = x2; f1 = f2;
+    }
+  }
+  function sum() {
+    plotboxes();
+    var s = 0, x = a + h;
+    for (let i = 1; i < N; i++) { s += f(x); x = x + h; }
+    return (f(a) + 2*s + f(b)) * h / 2;
+  }
+  function displaytext() { return 'Approximation: ' + sum(); }
+]]
+
+MaxN = 20 -- max number of subintervals
+fstr = '@(x) 1 - x^2'
+opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
+        layout = { width = 540, height = 540, square = true, title = "Left-endpoint Method" },
+        javascript = string.format(jscode, MaxN)}
 manipulate(fstr, opts)
 </code></pre>
 
