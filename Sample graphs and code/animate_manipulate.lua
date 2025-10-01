@@ -58,6 +58,37 @@ opts = {t = {0, 2 * pi, 0.01},
 animate(fstr, opts)
 
 -- animate5.jpg
+MaxN = 20 -- max number of subintervals
+jscode = [[
+  function f(x) { return 1 - x*x; }
+  const a = 0, b = 1;
+  const h = (b - a) / N;
+  function plotboxes() {
+    var x1 = a, f1 = f(a);
+    for (let i = 0; i < N; i++) {
+      const x2 = x1 + h, f2 = f(x2); // mthlyTraces, a javascript "global" variables
+      mthlyTraces.push({'x': [x1, x1], 'y': [0, f1], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
+      mthlyTraces.push({'x': [x1, x2], 'y': [f1, f1], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } }); // left-endpoint
+      mthlyTraces.push({'x': [x2, x2], 'y': [f1, 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
+      x1 = x2; f1 = f2;
+    }
+  }
+  function sum() {
+    plotboxes();
+    var s = 0;
+    for (let i = 0; i < N; i++) { s += f(a + i*h); }
+    return s * h;
+  }
+  function displaytext() { return 'Approximation: ' + sum(); }
+]]
+
+fstr = '@(x) 1 - x^2';
+opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
+        layout = { width = 540, height = 540, square = true, title = "Left-endpoint Method" },
+        javascript = string.format(jscode, MaxN)}
+manipulate(fstr, opts)
+
+-- animate6.jpg
 MaxI = 30 -- range of control I: [1, MaxI]
 jscode = [[
   function g(x) { return 1 - x*x; }
