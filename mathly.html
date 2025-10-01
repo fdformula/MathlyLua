@@ -585,55 +585,22 @@ at a moment are to be displayed on a graph, opts.<code>cumulative = true</code> 
 define a single control that controls steps or movements of an animation.</p>
 <p>Animating the generation of a cobweb for x = g(x) = 1 - x<sup>2</sup> starting at x = 0.5.</p>
 <pre><code>
+MaxI = 20 -- range of control I: [1, MaxI]
 jscode = [[
   function g(x) { return 1 - x*x; }
   var xs = [0.5]; // 0.5, initial value
-  const trange = [-3, 3];
   function displaytext() { return 'Iteration ' + I + ': x = ' + xs[I-1]; }
-
-  for (let I = 0; I < 30; I += 1) { xs.push( g(xs[I]) ); }
-
-  // no need to change the JavaScript code below
-  const width = trange[1] - trange[0];
-  const midpt = width / 2;
-
-  function piecewisefx(t, I) { // I: 0, 1, ...
-    if (I == 0) { // plot the initial guess xs[0]
-      return xs[0];
-    } else {
-      I = I - 1;
-      t = t - trange[0];
-      if (t < midpt) {
-        t = t / midpt; //t in [0, 1]
-        return xs[I] + t * (g(xs[I]) - xs[I])
-      } else {
-        return g(xs[I]);
-      }
-    }
-  }
-  function piecewisefy(t, I) { // I: 0, 1, ...
-    if (I == 0) { // plot the initial guess xs[0]
-      t = (t - trange[0]) / width; // t in [0, 1]
-      return t*g(xs[0]);
-    } else {
-      I = I - 1;
-      t = t - trange[0];
-      if (t < midpt) {
-        return g(xs[I]);
-      } else {
-        t = (t - midpt) / midpt; // t in [0, 1]
-        const y = g(xs[I]);
-        return y + t * (g(y) - y);
-      }
-    }
-  }
+  for (let I = 0; I <= %d; I += 1) { xs.push( g(xs[I]) ); } // one extra element, xs[0]!
 ]]
 
-fstr = {{x = '@(t) piecewisefx(t,I-1)', y = '@(t) piecewisefy(t,I-1)', t = {-3, 3, 0.01}, width = 2, color = 'grey'}}
-opts = {t = {-0.1, 1.2, 0.001}, I = {1, 30, 1, default = 30}, x = {-0.2, 1.2}, y = {-0.2, 1.2},
-        layout = { width = 640, height = 640, square = false, title = "" },
-        javascript = jscode, cumulative = true, controls = 'I',
+-- note: xs[I-1] == g(xs[I-2]), xs[I] == g(g(xs[I-2])) -- why I-2? 1) JScript index starts at 0; 2) xs[0] is extra.
+fstr = {{x = {'xs[I-2]', 'xs[I-1]'}, y = {'xs[I-1]', 'xs[I-1]'}, line = true, color = 'grey', width = 1}, -- horizontal line segment
+        {x = {'xs[I-1]', 'xs[I-1]'}, y = {'xs[I-1]', 'xs[I]'}, line = true, color = 'grey', width = 1}} -- vertical line segment
+opts = {t = {-0.1, 1.1, 0.001}, I = {1, MaxI, 1, default = MaxI}, x = {-0.1, 1.1}, y = {-0.1, 1.1},
+        layout = { width = 540, height = 540, square = true, title = "" },
+        javascript = string.format(jscode, MaxI), cumulative = true, controls = 'I',
         enhancements = {{x = '@(t) t', y = '@(t) t', t = {-1, 6}, width = 2, color = 'green'},   -- line: y = x
+                        {x = {'xs[0]', 'xs[0]'}, y = {0, 'xs[1]'}, line = true, width = 1, color = 'grey'}, -- line: line segment
                         {x = '@(t) t', y = '@(t) 1 - t^2', color = 'orange'},                    -- curve: y = g(x)
                         {x = 'xs[I-1]', y = 'g(xs[I-1])', color = 'red', size = 8, point = true} -- point
                        }}
