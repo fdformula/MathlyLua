@@ -2800,14 +2800,14 @@ var mthlySldr1step = %f;
   file:write(fmt("  'yaxis': { 'range': [%f, %f]", yr[1], yr[2]))
   if squareq then file:write(", 'scaleanchor': 'x', 'scaleratio': 1") end -- square aspect ratio
   file:write(" },\n  'showlegend': false\n};\n\n")
-  if title == nil and not _anmt_multifstrsq then
-    if xexpr == nil then
+  if title == nil then
+    if _anmt_multifstrsq then
+      title = ''
+    elseif xexpr == nil then
       title = 'y = ' .. yexpr
     else
       title = 'x(t) = ' .. xexpr .. ', y(t) = ' .. yexpr
     end
-  else
-    title = ''
   end
   file:write("var title = document.getElementById('title');\ntitle.value = '" .. title .. "';\n")
 

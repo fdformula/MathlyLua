@@ -2011,7 +2011,7 @@ jscode = [[
 MaxN = 20 -- max number of subintervals
 fstr = '@(x) 1 - x^2'
 opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
-        layout = { width = 540, height = 540, square = true, title = "Left-endpoint Method" },
+        layout = { width = 540, height = 540, square = true, title = "Left-Endpoint Method" },
         javascript = string.format(jscode, MaxN)}
 manipulate(fstr, opts)
 </code></pre>
@@ -2044,7 +2044,7 @@ jscode = [[
 MaxN = 20 -- max number of subintervals
 fstr = '@(x) 1 - x^2'
 opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
-        layout = { width = 540, height = 540, square = true, title = "Left-endpoint Method" },
+        layout = { width = 540, height = 540, square = true, title = "Right-Endpoint Method" },
         javascript = string.format(jscode, MaxN)}
 manipulate(fstr, opts)
 </code></pre>
@@ -2077,12 +2077,12 @@ jscode = [[
 MaxN = 20 -- max number of subintervals
 fstr = '@(x) 1 - x^2'
 opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
-        layout = { width = 540, height = 540, square = true, title = "Left-endpoint Method" },
+        layout = { width = 540, height = 540, square = true, title = "Midpoint Method" },
         javascript = string.format(jscode, MaxN)}
 manipulate(fstr, opts)
 </code></pre>
 
-<p>&#x2713; &nbsp; Animating the trapezoidal method for the definite integral of <code>f(x)</code> on <code>[a, b]</code>:
+<p>&#x2713; &nbsp; Animating the trapezoidal rule for the definite integral of <code>f(x)</code> on <code>[a, b]</code>:
 <pre><code>
 jscode = [[
   function f(x) { return 1 - x*x; }
@@ -2110,7 +2110,7 @@ jscode = [[
 MaxN = 20 -- max number of subintervals
 fstr = '@(x) 1 - x^2'
 opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
-        layout = { width = 540, height = 540, square = true, title = "Left-endpoint Method" },
+        layout = { width = 540, height = 540, square = true, title = "Trapezoidal Rule" },
         javascript = string.format(jscode, MaxN)}
 manipulate(fstr, opts)
 </code></pre>
