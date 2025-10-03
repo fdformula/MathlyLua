@@ -20,7 +20,7 @@ FUNCTIONS PROVIDED IN THIS MODULE
     all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display, dot,
     expand, eye, findroot, flatten, fliplr, flipud, format, fstr2f, fzero, hasindex,
     horzcat, inv, iseven, isinteger, ismatrix, ismember, isodd, isvector, lagrangepoly,
-    length, linsolve, linspace, lu, map, match, max, mean, merge, min, namedargs,
+    length, linsolve, linspace, lu, map, match, max, mean, merge, min, mtable, namedargs,
     newtonpoly, norm, ones, polynomial, polyval, printf, prod, qq, qr, rand, randi,
     range, remake, repmat, reshape, round, rr, rref, save, seq, size, sort, sprintf,
     std, strcat, submatrix, subtable, sum, tblcat, text, tic, toc, transpose, tt,
@@ -2522,18 +2522,27 @@ local function _anmt_adjust_traces(traces, fregex)
   end
 end
 
-local function _anmt_is_new_controlq(c, cs, opts) -- each a-zA-Z but p, t, x, y, T, X, and Y is a control
+local function _anmt_new_control(c, cs, rs, opts) -- each a-zA-Z but p, t, x, y, T, X, and Y is a control
   local t = #c == 1 and ((c >= 'a' and c <= 'z') or (c >= 'A' and c <= 'Z')) and
             not ismember(c, {'p', 't', 'x', 'y', 'T', 'X', 'Y'}) and
             not ismember(c, cs)
   if t then
     if opts[c] ~= nil then
       if type(opts[c]) ~= 'table' then error('Range of ' .. c .. ' is invalid.') end
+      local i = #cs + 1
+      cs[i] = c
+      rs[i] = opts[c]
+      if rs[i][3] == nil then rs[i][3] = qq(rs[i][1] > rs[i][2], -1, 1) end
     else
       error("Range of control '" .. c .. "' is not specified.")
     end
   end
-  return t
+end
+
+local function _anmt_scan_controls(str, cs, rs, opts)
+  for c in string.gmatch(str, "[^(%@%s|%(|%)|%{|%}|%[|%]|%+|%-|%*|%^|%/)]+") do
+    _anmt_new_control(c, cs, rs, opts)
+  end
 end
 
 local function _anmt_parse_args(fstr, opts, animateq)
@@ -2548,8 +2557,7 @@ local function _anmt_parse_args(fstr, opts, animateq)
   if opts.controls ~= nil then
     if type(opts.controls) == 'string' then
       for i = 1, #opts.controls do
-        local c = string.sub(opts.controls, i, i)
-        if _anmt_is_new_controlq(c, cs, opts) then cs[#cs + 1] = c end
+        _anmt_new_control(string.sub(opts.controls, i, i), cs, rs, opts)
       end
     else
       error("Field 'controls' must be a string.")
@@ -2585,16 +2593,7 @@ local function _anmt_parse_args(fstr, opts, animateq)
       rs[#rs + 1] = opts[cs[i]]
     end
   else
-    for c in string.gmatch(s, "[^(%@%s|%(|%)|%{|%}|%[|%]|%+|%-|%*|%^|%/)]+") do
-      if _anmt_is_new_controlq(c, cs, opts) then
-        cs[#cs + 1] = c
-        rs[#rs + 1] = opts[c]
-      end
-    end
-  end
-  for i = 1, #rs do
-    if rs[i][1] > rs[i][2] then rs[i][1], rs[i][2] = rs[i][2], rs[i][1] end
-    if rs[i][3] == nil then rs[i][3] = 1 end
+    _anmt_scan_controls(s, cs, rs, opts)
   end
 
   local jxexpr, jyexpr, tr = nil, nil, nil
@@ -2631,7 +2630,7 @@ local function _amnt_write_subtraces(traces, tr, file, resolution, key)   -- tra
   if type(traces) ~= 'table' or #traces == 0 then return end
   local fmt, head = string.format, ''
   local function toJS(v)
-    if type(v) == 'string' then return _to_jscript_expr(v) else return fmt("%f", v) end
+    if type(v) == 'string' then return _to_jscript_expr(v) else return tostring(v) end
   end
   local function write_traces()
     for i = 1, #traces do
@@ -2651,7 +2650,7 @@ local function _amnt_write_subtraces(traces, tr, file, resolution, key)   -- tra
         if type(obj.resolution) == 'number' then res = min({500, obj.resolution}) end
         file:write(head .. "  if (true) {\n    " .. head .. "const t = [];\n")
         local step = tr1[3] or (tr1[2] - tr1[1]) / res
-        file:write(fmt("    %sfor (let i = %f; i <= %f; i += %f) { t.push(i); }\n", head, tr1[1], tr1[2], step))
+        file:write(fmt("    %sfor (let i = %s; i <= %s; i += %s) { t.push(i); }\n", head, tostring(tr1[1]), tostring(tr1[2]), tostring(step)))
         trace = fmt("{ 'x': t.map(t => %s), 'y': t.map(t => %s), 'mode': 'lines', 'line': { 'simplify': false, 'color': '%s', 'width': %d %s } }",
                     obj.x, obj.y, obj.color or 'black', obj.width or 3, style)
         file:write(fmt("    %smthlyTraces.push(%s);\n%s  }\n", head, trace, head))
@@ -2667,8 +2666,8 @@ local function _amnt_write_subtraces(traces, tr, file, resolution, key)   -- tra
     file:write(fmt("  const mthlyTmp = %s;\n", k))
     local step = 1
     if #key[k] >= 3 then step = key[k][3] end
-    file:write(fmt("  for (let %s = %f; %s <= mthlyTmp; %s += %f) {\n",
-                   k, key[k][1], k, k, step))
+    file:write(fmt("  for (let %s = %s; %s <= mthlyTmp; %s += %s) {\n",
+                   k, tostring(key[k][1]), k, k, tostring(step)))
     write_traces()
     file:write("  }\n")
   end
@@ -2760,10 +2759,10 @@ input:focus {outline: none;}
   local top = 60 -- sliders
   for i = 1, #cs do
     s = [[<label for="mthlySldr%d" style='top:%dpx;'>%s:</label>
-<input type="range" id="mthlySldr%d" min="%f" max="%f" value="%f" style='top:%dpx;' step="%f"></input><span id="mthlySldr%dvalue" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>
+<input type="range" id="mthlySldr%d" min="%s" max="%s" value="%s" style='top:%dpx;' step="%s"></input><span id="mthlySldr%dvalue" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>
 ]]
     if (rs[i][2] - rs[i][1]) / rs[i][3] < 5 then rs[i][3] = (rs[i][2] - rs[i][1]) / 5 end
-    s = fmt(s, i, top, cs[i], i, rs[i][1], rs[i][2], rs[i][1], top, rs[i][3], i, 290, top)
+    s = fmt(s, i, top, cs[i], i, tostring(rs[i][1]), tostring(rs[i][2]), tostring(rs[i][1]), top, tostring(rs[i][3]), i, 290, top)
     if i == 1 and animateq then
       file:write(fmt('<button type="button" onclick="mthlyPlay()" style="left:345px;top:%dpx;position:absolute">Play</button> <button type="button" onclick="mthlyStop()" style="left:395px;top:%dpx;position:absolute">Stop</button>\n', top, top))
     end
@@ -2784,20 +2783,20 @@ var X, Y, T, p;
 var mthlyAutoPlayq = true;
 function mthlyPlay() { mthlyAutoPlayq = true; }
 function mthlyStop() { mthlyAutoPlayq = false; }
-var mthlySldr1step = %f;
+var mthlySldr1step = %s;
 ]]
-    file:write(fmt(s, rs[1][3], xr[2]))
+    file:write(fmt(s, tostring(rs[1][3])))
   end
 
   local squareq = true
   if layout ~= nil and layout.square == false then squareq = false end
-  file:write(fmt("\nconst mthlyLayout = {\n  'xaxis': { 'range': [%f, %f] }, // plot with fixed axes\n", xr[1], xr[2]))
+  file:write(fmt("\nconst mthlyLayout = {\n  'xaxis': { 'range': [%s, %s] }, // plot with fixed axes\n", tostring(xr[1]), tostring(xr[2])))
   if yr == nil then
     yr = xr
   elseif type(yr) ~= 'table' or yr[1] >= yr[2] then
     error('Range of y is invalid.')
   end
-  file:write(fmt("  'yaxis': { 'range': [%f, %f]", yr[1], yr[2]))
+  file:write(fmt("  'yaxis': { 'range': [%s, %s]", tostring(yr[1]), tostring(yr[2])))
   if squareq then file:write(", 'scaleanchor': 'x', 'scaleratio': 1") end -- square aspect ratio
   file:write(" },\n  'showlegend': false\n};\n\n")
   if title == nil then
@@ -2818,17 +2817,19 @@ var mthlySldr1step = %f;
   for i = 1, #cs do -- values of control sliders
     local v = rs[i].default;
     if v == nil then v = rs[i][1] end
-    file:write(fmt("mthlySldr%d.value = %f;\n", i, v))
-    file:write(fmt("var %s = %f;\n", cs[i], v))
+    file:write(fmt("mthlySldr%d.value = %s;\n", i, tostring(v)))
+    file:write(fmt("var %s = %s;\n", cs[i], tostring(v)))
   end -- why Number(...)? Values of sliders in JavaScript are STRINGS!
 
   if not animateq then file:write("p = 1;\n") end
   if xexpr ~= nil then -- parametric eqs
-    s = fmt("for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { t.push(i); }\n",
-            tr[1], tr[2], qq(tr[1] > 0, '-', '+'), abs(tr[1]), qq(tr[1] > 0, '+', '-'), abs(tr[1]), (tr[2] - tr[1]) / resolution)
+    s = fmt("for (let i = %s; i <= p * (%s %s %s) %s %s; i += %s) { t.push(i); }\n",
+            tostring(tr[1]), tostring(tr[2]), qq(tr[1] > 0, '-', '+'), tostring(abs(tr[1])),
+            qq(tr[1] > 0, '+', '-'), tostring(abs(tr[1])), tostring((tr[2] - tr[1]) / resolution))
   else
-    s = fmt("for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { x.push(i); }\n",
-            xr[1], xr[2], qq(xr[1] > 0, '-', '+'), abs(xr[1]), qq(xr[1] > 0, '+', '-'), abs(xr[1]), (xr[2] - xr[1]) / resolution)
+    s = fmt("for (let i = %s; i <= p * (%s %s %s) %s %s; i += %s) { x.push(i); }\n",
+            tostring(xr[1]), tostring(xr[2]), qq(xr[1] > 0, '-', '+'), tostring(abs(xr[1])),
+            qq(xr[1] > 0, '+', '-'), tostring(abs(xr[1])), tostring((xr[2] - xr[1]) / resolution))
   end
   file:write(s)
 
@@ -2874,12 +2875,14 @@ var mthlySldr1step = %f;
 
   if animateq then
     if xexpr ~= nil then -- parametric eqs
-      file:write(fmt("  t = []; for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { t.push(i); };\n  T = t[t.length - 1];\n",
-                     tr[1], tr[2], qq(tr[1] > 0, '-', '+'), abs(tr[1]), qq(tr[1] > 0, '+', '-'), abs(tr[1]), (tr[2] - tr[1]) / resolution))
+      file:write(fmt("  t = []; for (let i = %s; i <= p * (%s %s %s) %s %s; i += %s) { t.push(i); };\n  T = t[t.length - 1];\n",
+                     tostring(tr[1]), tostring(tr[2]), qq(tr[1] > 0, '-', '+'), tostring(abs(tr[1])),
+                     qq(tr[1] > 0, '+', '-'), tostring(abs(tr[1])), tostring((tr[2] - tr[1]) / resolution)))
       file:write(fmt("  if (true) { const t = T; X = %s; Y = %s; };\n", jxexpr, jyexpr))
     else
-      file:write(fmt("  x = []; for (let i = %f; i <= p * (%f %s %f) %s %f; i += %f) { x.push(i); };\n  X = x[x.length - 1];",
-                     xr[1], xr[2], qq(xr[1] > 0, '-', '+'), abs(xr[1]), qq(xr[1] > 0, '+', '-'), abs(xr[1]), (xr[2] - xr[1]) / resolution))
+      file:write(fmt("  x = []; for (let i = %s; i <= p * (%s %s %s) %s %s; i += %s) { x.push(i); };\n  X = x[x.length - 1];",
+                     tostring(xr[1]), tostring(xr[2]), qq(xr[1] > 0, '-', '+'), tostring(abs(xr[1])),
+                     qq(xr[1] > 0, '+', '-'), tostring(abs(xr[1])), tostring((xr[2] - xr[1]) / resolution)))
       file:write(fmt("  if (true) { const x = X; Y = %s; T = x; };\n", jyexpr))
     end
   end
@@ -2990,6 +2993,63 @@ function animate(fstr, opts) -- Mathematica
   _open_url(tmp_plot_html_file)
   print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
 end
+
+function mtable(str, opts) -- Mathematica
+  local cs, rs = {}, {} -- controls & their ranges
+  if opts == nil then opts = {} end
+  -- scan for controls in str and set their ranges from opts
+  if type(opts.controls) == 'string' then -- order of controls is in this string explicitly
+    for i = 1, #opts.controls do
+      _anmt_new_control(string.sub(opts.controls, i, i), cs, rs, opts)
+    end
+  elseif type(str) == 'string' then  -- order of controls is in str implicitly
+    _anmt_scan_controls(str, cs, rs, opts)
+  end
+  if #cs == 0 then
+    for k, v in pairs(opts) do
+      if type(k) == 'string' then _anmt_new_control(k, cs, rs, opts) end
+    end
+    if #cs == 0 then print("No controls are specified."); return end
+  end
+  -- generate Lua code
+  local code, idx = '', 1
+  for i = 1, #cs do code = code .. string.format('local t%d = {}\n', i) end
+  local function luacode(i)
+    local head = ''; for j = 2, i do head = head .. '  ' end
+    local t = string.format('t%d', idx); idx = idx + 1
+    local T = string.format('t%d', idx)
+    code = code .. head .. 'for ' .. cs[i] .. ' = ' .. tostring(rs[i][1]) .. ', ' .. tostring(rs[i][2]) ..', ' .. tostring(rs[i][3]) .. ' do\n'
+    if i == #rs then
+      code = code .. head .. string.format("  %s[#%s + 1] = ", t, t)
+      local ty = type(str)
+      if ty == 'number' then
+        code = code .. tostring(str)
+      elseif ty == 'string' then
+        if string.sub(str, 1, 1) == '!' then -- '!a+b' will be "a+b" without evaluation
+          code = code .. "'" .. string.sub(str, 2) .. "'"
+        else
+          code = code .. str
+        end
+      elseif ty == 'boolean' then
+        code = code .. qq(str, 'true', 'false')
+      else
+        error("mytable(expr, ...): expr can't be a table, but you may use a string, e.g., '{1, 2, 3}' and '{1, i, {3, {j - 1}}, 5}'.")
+      end
+      code = code .. '\n'
+    else
+      luacode(i + 1)
+      code = code .. head .. string.format('  %s[#%s + 1] = %s; %s = {}\n', t, t, T, T)
+    end
+    code = code .. head .. "end\n"
+  end
+  luacode(1)
+  code = code .. "return t1\n"
+  if opts.printcode == true then print(code) end
+  -- run generated Lua code dynamically
+  local stat, v = pcall(load, code)
+  if stat then stat, v = pcall(v) end
+  return v
+end -- mtable
 
 local function _freq_distro(x, nbins, xmin, xmax, width)
   nbins = nbins or 10
