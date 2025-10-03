@@ -1913,7 +1913,7 @@ function plot(...)
         v[1] = 'graph'
       end
 
-      if v[1] == 'text' then -- text graph object: {'text', trace}
+      if v[1] == 'dotplot' or v[1] == 'text' then -- graph object: {'text', trace}
         traces[#traces + 1] = v[2]
       elseif v[1] == 'contour' then -- contourplot graph object: {'contour', x, y, z}
         local trace = {type = 'contour', x = v[2], y = v[3], z = v[4]}
@@ -3600,6 +3600,17 @@ local function _contour_data(x)
   else
     return x
   end
+end
+
+function dotplot(x, y, style)
+  local args = namedargs(
+    {x, y, style},
+    {'x', 'y', 'style'})
+  x, y, style = args[1], args[2], args[3]
+  if style == nil or type(style) ~= 'table' then
+    style = { size = 8, symbol = 'circle', opacity = 1 }
+  end
+  return { 'dotplot', {x = x, y = y, mode = 'markers', marker = style }}
 end
 
 -- x and y are tables of the same size

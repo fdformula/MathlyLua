@@ -248,7 +248,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <p><a href=#animate>animate</a>, <a href=#manipulate>manipulate</a>, <a href=#plot>plot</a>; <a href=#plot3d>plot3d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>,
 <a href=#plotparametricsurface3d>plotparametricsurface3d</a>, <a href=#plotsphericalsurface3d>plotsphericalsurface3d</a></p>
 
-<p><a href=#arc>arc</a>, <a href=#circle>circle</a>, <a href=#contourplot>contourplot</a>, <a href=#line>line</a>, <a href=#parametriccurve2d>parametriccurve2d</a>,
+<p><a href=#arc>arc</a>, <a href=#circle>circle</a>, <a href=#contourplot>contourplot</a>, <a=#dotplot>dotplot</a>, <a href=#line>line</a>, <a href=#parametriccurve2d>parametriccurve2d</a>,
 <a href=#point>point</a>, <a href=#polarcurve2d>polarcurve2d</a>, <a href=#polygon>polygon</a>, <a href=#scatter>scatter</a>, <a href=#text>text</a>,
 <a href=#wedge>wedge</a>; <a href=#boxplot>boxplot</a>, <a href=#freqpolygon>freqpolygon</a>, <a href=#hist>hist</a>, <a href=#hist1>hist1</a>,
 <a href=#histfreqpolygon>histfreqpolygon</a>, <a href=#pareto>pareto</a>, <a href=#pie>pie</a>; <a href=#directionfield>directionfield (or slopefield)</a>,
@@ -280,6 +280,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#disp><code>disp(x)</code></a></td><td> </td><td>Print a mathly matrix.</td></tr>
 <tr><td> </td><td><a href=#display><code>display(x)</code></a></td><td> </td><td>Print a table of any type, including mathly matrices, with structure.</td></tr>
 <tr><td> </td><td><a href=#dot><code>dot(a, b)</code></a></td><td> </td><td>Calculate the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ..., a<sub>n</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ..., b<sub>n</sub>}</code>.</td></tr>
+<tr><td> </td><td><a href=#dotplot><code>dotplot(x, y, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a dot plot.</td></tr>
 <tr><td> </td><td><a href=#eval><code>eval(str)</code></a></td><td> </td><td>Evaluate the expression in <code>str</code> and return the result.</td></tr>
 <tr><td> </td><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrunk <code>mxn</code> mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
 <tr><td> </td><td><a name=eye></a><code>eye(n)</code></td><td> </td><td>Return a <code>nxn</code> identity mathly matrix.</td></tr>
@@ -1361,6 +1362,27 @@ disp(dot({1, 2, 3}, {3, 4, 5}))
 -- 26
 dot({1, 2}, {3, 4})
 -- 11
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=dotplot href=#m><code>dotplot(x, y, style)</code></a></h4>
+<p>Return a graphics object for <a href=#plot><code>plot</code></a> to plot a dot plot.</p>
+<p>Here, <code>x = {x<sub>1</sub>, x<sub>2</sub>, ..., x<sub>n</sub>}</code> and
+<code>y = {y<sub>1</sub>, y<sub>2</sub>, ..., y<sub>n</sub>}</code> define the x and
+y-coordinates of the dots to be plotted, and <code>style</code> is optional.
+The configuration of <code>style</code> looks like <code>style = { color = 'red', size = 8,
+symbol = 'circle', opacity = 0.7, line = { color = 'rgb(#, #, #)', width = 1} }</code>,
+where <code>symbol</code> can be 'circle', 'square', 'diamond', 'cross', 'x', 'triangle-up',
+'pentagon', 'star', 'circle-open', 'square-open', etc.</p>
+
+<pre><code>mathly = require('mathly')
+x = range(0, 2*pi, 0.3)
+y = map('@(x) sin(x)', x)
+plot(dotplot(x, y, {size = 5, color = 'red', opacity = 0.5, symbol = 'star', line = {color = 'blue', width = 0.5}}))
+plot(dotplot(x, y), cos, {range = {0, 2*pi}})
+
+x = mtable('i', {i = {1, 100}})
+y = mtable('1 / i', {i = {1, 100}})
+plot(dotplot(x, y, {size=3}))
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=eval href=#m><code>eval(str)</code></a></h4>
