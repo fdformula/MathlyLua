@@ -20,7 +20,7 @@ FUNCTIONS PROVIDED IN THIS MODULE
     all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display, dot,
     expand, eye, findroot, flatten, fliplr, flipud, format, fstr2f, fzero, hasindex,
     horzcat, inv, iseven, isinteger, ismatrix, ismember, isodd, isvector, lagrangepoly,
-    length, linsolve, linspace, lu, map, match, max, mean, merge, min, mtable, namedargs,
+    length, linsolve, linspace, lu, map, match, max, mean, merge, min, tables, namedargs,
     newtonpoly, norm, ones, polynomial, polyval, printf, prod, qq, qr, rand, randi,
     range, remake, repmat, reshape, round, rr, rref, save, seq, size, sort, sprintf,
     std, strcat, submatrix, subtable, sum, tblcat, text, tic, toc, transpose, tt,
@@ -2994,7 +2994,7 @@ function animate(fstr, opts) -- Mathematica
   print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
 end
 
-function mtable(str, opts) -- Mathematica
+function tables(str, opts) -- Mathematica
   local cs, rs = {}, {} -- controls & their ranges
   if opts == nil then opts = {} end
   -- scan for controls in str and set their ranges from opts
@@ -3049,7 +3049,7 @@ function mtable(str, opts) -- Mathematica
   local stat, v = pcall(load, code)
   if stat then stat, v = pcall(v) end
   return v
-end -- mtable
+end -- tables
 
 local function _freq_distro(x, nbins, xmin, xmax, width)
   nbins = nbins or 10
