@@ -3601,34 +3601,27 @@ function dotplot(x, y, style)
   return { 'dotplot', {x = x, y = y, mode = 'markers', marker = style }}
 end
 
-local function _contour_data(x)
-  if x == nil then x = {-6, 6} end
-  if type(x) ~= 'table' then
-    error('contourplot(f, x, y, style): x and y must be ranges or tables of numbers.')
-  end
-  x = flatten(x)
-  if #x <= 3 then
-    return linspace(x[1], x[2], x[3] or 200)
-  else
-    return x
-  end
-end
-
 -- x and y are tables of the same size
 function contourplot(f, x, y, style)
   local args = namedargs(
     {f, x, y, style},
     {'f', 'x', 'y', 'style'})
   f, x, y, style = args[1], args[2], args[3], args[4]
-
-  if type(f) == 'string' then f = fstr2f(f) end
-  x = _contour_data(x)
-  if y == nil then
-    y = x
-  else
-    y = _contour_data(y)
+  local function data(x)
+    if type(x) ~= 'table' then
+      error('contourplot(f, x, y, style): x and y must be ranges or tables of numbers.')
+    end
+    x = flatten(x)
+    if #x <= 3 then
+      return linspace(x[1], x[2], x[3] or 200)
+    else
+      return x
+    end
   end
-
+  if type(f) == 'string' then f = fstr2f(f) end
+  if x == nil then x = {-6, 6} end
+  x = data(x)
+  if y == nil then y = x else y = data(y) end
   local z = {}
   for i = 1, #x do
     z[i] = {}
