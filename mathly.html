@@ -3157,6 +3157,9 @@ x = tables('i', {i = {1, 20, 2}}); disp(x)
 
 x = tables('1 / i^2', {i = {1, 10}}); disp(x)
 -- {1.0, 0.25, 0.1111, 0.0625, 0.04, 0.0278, 0.0204, 0.0156, 0.0123, 0.01}
+
+x = tables('qq(mod(i, 5) == 0 and mod(i, 6) == 0, i, nil)',{i = {0, 100}}); disp(x)
+-- {0, 30, 60, 90}
 </code></pre>
 <p>The order of controls in <code>opts.controls</code> matters. If <code>opts.controls</code> is not
 specified, controls will be automatically recognized from <code>expr</code> if <code>expr</code>

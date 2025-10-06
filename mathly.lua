@@ -2540,7 +2540,7 @@ local function _anmt_new_control(c, cs, rs, opts) -- each a-zA-Z but p, t, x, y,
 end
 
 local function _anmt_scan_controls(str, cs, rs, opts)
-  for c in string.gmatch(str, "[^(%@%s|%(|%)|%{|%}|%[|%]|%+|%-|%*|%^|%/)]+") do
+  for c in string.gmatch(str, "[^(%@%s|%(|%)|%{|%}|%[|%]|%+|%-|%*|%^|%/|%,)]+") do
     _anmt_new_control(c, cs, rs, opts)
   end
 end
