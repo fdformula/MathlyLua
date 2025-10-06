@@ -1433,7 +1433,7 @@ end
 function findroot(f, i, t) return fzero(f, i, t) end -- mathematica
 
 --// for lagrangepoly(...), newtonpoly(...), polynomial(...), and scatter(...)
-local function _converse_poly_input(data) -- {{x1, y1}, {x2, y2}, ...}
+local function _poly_input(data) -- {{x1, y1}, {x2, y2}, ...}
   local x, y = {}, {}
   if type(data) == 'table' and type(data[1]) == 'table' then
     for i = 1, #data do
@@ -1450,7 +1450,7 @@ end
 -- if xx is provided, return the value(s) of the Lagrange polynomial for data (x, y)'s
 -- otherwise, return the string of the Lagrange polynomial for data (x, y)'s, e.g, 'function f(x) return -3*(x - 2) + 4*(x - 1) end'
 function lagrangepoly(x, y, xx)
-  local X, Y = _converse_poly_input(x)
+  local X, Y = _poly_input(x)
   if #X ~= 0 then xx = y; x, y = X, Y end
   assert(type(x) == 'table' and type(y) == 'table' and #x == #y, 'lagrangepoly(x, y ...): x and y must be tables of the same size.')
   local coefs = {}
@@ -1511,7 +1511,7 @@ end -- lagrangepoly
 -- if xx is provided, return the value(s) of the Newton interpolating polynomial for data (x, y)'s;
 -- otherwise, return the polynomial, e.g, 'function f(x) return -3*(x - 1) + 4*(x - 1)*(x-2) end'
 function newtonpoly(x, y, xx)
-  local X, Y = _converse_poly_input(x)
+  local X, Y = _poly_input(x)
   if #X ~= 0 then xx = y; x, y = X, Y end
   assert(type(x) == 'table' and type(y) == 'table' and #x == #y, 'newtonpoly(x, y ...): x and y must be tables of the same size.')
 
@@ -1576,7 +1576,7 @@ end -- newtonpoly
 -- if xx is provided, return the value(s) of a polynomial, defined by data (x, y)'s, at xx;
 -- otherwise, return the string and the coefficeints of the polynomial
 function polynomial(x, y, xx)
-  local X, Y = _converse_poly_input(x)
+  local X, Y = _poly_input(x)
   if #X ~= 0 then xx = y; x, y = X, Y end
   assert(type(x) == 'table' and type(y) == 'table' and #x == #y and #x > 1,
          'polynomial(x, y...): x and y must be tables of the same size (≥ 2).')
@@ -3475,7 +3475,7 @@ function point(x, y, style)  -- plot a point at (x, y)
   if type(x) == 'number' then
     x, y = {x}, {y}
   else
-    local X, Y = _converse_poly_input(x)
+    local X, Y = _poly_input(x)
     if #X ~= 0 then style = y; x, y = X, Y end
   end
   assert(type(x) == 'table' and type(y) == 'table' and #x == #y, 'point(x, y ...): x and y must be two numbers or two tables of the same size.')
@@ -3576,7 +3576,7 @@ function scatter(x, y, style)
     {'x', 'y', 'style'})
   x, y, style = args[1], args[2], args[3]
 
-  local X, Y = _converse_poly_input(x)
+  local X, Y = _poly_input(x)
   if #X ~= 0 then style = y; x, y = X, Y end
   x = flatten(x)
   y = flatten(y)
