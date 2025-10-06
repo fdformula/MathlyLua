@@ -1382,6 +1382,7 @@ plot(dotplot(x, y), cos, {range = {0, 2*pi}})
 
 x = tables('i', {i = {1, 100}})
 y = tables('(-1)^i * i / (i + 1)', {i = {1, 100}})
+axisnotsquare()
 plot(dotplot(x, y, {size = 3}))
 </code></pre>
 
@@ -1704,6 +1705,7 @@ end
 -- explore a folder and all subfolders for files specified in 'patterns'
 --
 -- e.g., explore('/usr/share/', '*.lua'), explore('/', {'*.lua', 'fd*.jl'})
+clear()
 function explore(path, patterns)
   local sep = qq(iswindows(), '\\', '/')
   if type(patterns) == 'string' then
@@ -1823,7 +1825,7 @@ disp(x)
 
 <h4>&bull; &nbsp; <a name=linspace href=#m><code>linspace(x, y, n)</code></a></h4>
 <p>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</p>
-<p>See also: <a href=#range><code>range</code></a>, <a href=#seq><code>seq</code></a>.</p>
+<p>See also: <a href=#range><code>range</code></a>, <a href=#seq><code>seq</code></a>, <a href=#tables><code>tables</code></a>.</p>
 <pre><code>mathly = require('mathly')
 clear()
 x = linspace(0, 2*pi, 500)
@@ -2772,7 +2774,6 @@ and/or <code>expr2</code> is time-consuming because both <code>expr1</code> and 
 <pre><code>mathly = require('mathly')
 x = 10
 -- the following two statements are equivalent.
-
 if isodd(x) then
   y = 'odd'
 else
@@ -2806,7 +2807,7 @@ disp(Q * R - A)
 
 <h4>&bull; &nbsp; <a name=range href=#m><code>range(x, y, s)</code></a></h4>
 <p>Return a table of numbers starting at <code>x</code>, in between <code>x</code> and <code>y</code>, and incrementing by <code>s</code> (<code>1</code> by default if <code>x</code> &lt; <code>y</code>; <code>-1</code>, otherwise).</p>
-<p>See also: <a href=#linspace><code>linspace</code></a>, <a href=#seq><code>seq</code></a>.</p>
+<p>See also: <a href=#linspace><code>linspace</code></a>, <a href=#seq><code>seq</code></a>, <a href=#tables><code>tables</code></a>.</p>
 <pre><code>mathly = require('mathly')
 
 x = range(1, 10) -- or range(10)
@@ -3032,7 +3033,7 @@ print(c) -- nil
 
 <h4>&bull; &nbsp; <a name=seq href=#m><code>seq(x, y, n)</code></a></h4>
 <p>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</p>
-<p>See also: <a href=#linspace><code>linspace</code></a>, <a href=#range><code>range</code></a>.</p>
+<p>See also: <a href=#linspace><code>linspace</code></a>, <a href=#range><code>range</code></a>, <a href=#tables><code>tables</code></a>.</p>
 <pre><code>mathly = require('mathly')
 
 x = seq(1, 10) -- same as range(1, 10)
@@ -3141,7 +3142,7 @@ It must be the most frequently used <i>Mathematica</i> command.</p>
 which were implemented first.</p>
 <p>To see how to dynamically generate Lua code and run it, explore Mathly source code. Use <code>opts.printcode = true</code>
 to print the generated code for input passed to the function.</p>
-<p>See also: <a href=#animate><code>animate</code></a>.</p>
+<p>See also: <a href=#animate><code>animate</code></a>; <a href=#linspace><code>linspace</code></a>, <a href=#range><code>range</code></a>, <a href=#seq><code>seq</code></a>.</p>
 <pre><code>mathly = require('mathly')
 x = tables(5, {i = {1, 10}}); disp(x)
 -- {5, 5, 5, 5, 5, 5, 5, 5, 5, 5}
@@ -3256,8 +3257,6 @@ tic() -- start recording the time
 for i = 1, 1000000 do
   x = cos(i) * sin(i)
 end
-toc()
-
 x = toc()
 printf("The loop took %.2f seconds.", x)
 </code></pre>
