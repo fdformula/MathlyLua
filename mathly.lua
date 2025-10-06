@@ -3590,18 +3590,6 @@ function scatter(x, y, style)
   return data
 end
 
-local function _contour_data(x)
-  if type(x) ~= 'table' then
-    error('contourplot(f, x, y, style): x and y must be ranges or tables of numbers.')
-  end
-  x = flatten(x)
-  if #x <= 3 then
-    return linspace(x[1], x[2], x[3] or 100)
-  else
-    return x
-  end
-end
-
 function dotplot(x, y, style)
   local args = namedargs(
     {x, y, style},
@@ -3611,6 +3599,19 @@ function dotplot(x, y, style)
     style = { size = 8, symbol = 'circle', opacity = 1 }
   end
   return { 'dotplot', {x = x, y = y, mode = 'markers', marker = style }}
+end
+
+local function _contour_data(x)
+  if x == nil then x = {-6, 6} end
+  if type(x) ~= 'table' then
+    error('contourplot(f, x, y, style): x and y must be ranges or tables of numbers.')
+  end
+  x = flatten(x)
+  if #x <= 3 then
+    return linspace(x[1], x[2], x[3] or 200)
+  else
+    return x
+  end
 end
 
 -- x and y are tables of the same size
