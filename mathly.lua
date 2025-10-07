@@ -1161,10 +1161,7 @@ function clear()
   shownotlegend()
 end
 
--- generates a sequence of numbers on [from, to] with a step size, by.
-function seq(from, to, by) return range(from, to, by) end -- ~R
-
--- generates an evenly spaced sequence/table of 'len' numbers on the interval [from, to]. same as seq(...).
+-- generates an evenly spaced sequence/table of 'len' numbers on the interval [from, to].
 function linspace(from, to, len)
   assert(from ~= to, 'linspace(from, to, len): FROM can\'t equal to TO.')
   len = len or 100
@@ -1391,7 +1388,9 @@ function range(start, stop, step) -- Python, but inclusive
     end
   end
   return setmetatable(v, mathly_meta)
-end
+end -- range
+
+function seq(from, to, by) return range(from, to, by) end -- ~R
 
 --// find and return the zero/root of function f on specified interval
 function fzero(f, intv, tol) -- matlab
