@@ -1161,30 +1161,22 @@ function clear()
   shownotlegend()
 end
 
--- generates an evenly spaced sequence/table of 'len' numbers on the interval [from, to]. same as linspace(...).
-function seq(from, to, len) -- ~R, generate a sequence of numbers
-  if len == nil then return range(from, to) end
-  if len < 0 then
-    print("seq(from, to, len): len can't be negative.")
-    return {}
-  end
-  local lst = {}
-  local step = (to - from) / (len - 1)
-  local i = 1
+-- generates a sequence of numbers on [from, to] with a step size, by.
+function seq(from, to, by) return range(from, to, by) end -- ~R
+
+-- generates an evenly spaced sequence/table of 'len' numbers on the interval [from, to]. same as seq(...).
+function linspace(from, to, len)
+  assert(from ~= to, 'linspace(from, to, len): FROM can\'t equal to TO.')
+  len = len or 100
+  assert(len > 2, "linspace(from, to, len): len must be greater than 2.")
+  local lst, step, i = {}, (to - from) / (len - 1), 1
+  if from > to then from, to = to, from end
   while i <= len do
     lst[i] = from
     from = from + step
     i = i + 1
   end
   return setmetatable(lst, mathly_meta)
-end
-
--- generates an evenly spaced sequence/table of 'len' numbers on the interval [from, to]. same as seq(...).
-function linspace(from, to, len)
-  len = len or 100
-  assert(len > 0, 'linspace(from, to, len): len must be positive.')
-  if from > to then from, to = to, from end
-  return seq(from, to, len)
 end
 
 -- calculates the product of all elements of a table
@@ -1371,7 +1363,7 @@ function vectorangle(a, b)
 end
 
 -- generates a evenly spaced sequence/table of numbers starting at 'start' and likely ending at 'stop' by 'step'.
-function range(start, stop, step) -- ~Python but inclusive
+function range(start, stop, step) -- Python, but inclusive
   if start == nil then error('range(start, stop, step): no input.') end
   if stop == nil then
     stop = start

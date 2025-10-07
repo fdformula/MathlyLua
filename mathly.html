@@ -362,7 +362,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#rref><code>rref(A, ...)</code></a></td><td> </td><td>Return the reduced row-echelon form of a mathly matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a href=#save><code>save(datafile, ...)</code></a></td><td> </td><td>Save specified or all user-defined variables and their values to a Lua or MATLAB script file.</td></tr>
 <tr><td> </td><td><a href=#scatter><code>scatter(x, y, style)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a scatter plot.</td></tr>
-<tr><td> </td><td><a href=#seq><code>seq(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</td></tr>
+<tr><td> </td><td><a href=#seq><code>seq(x, y, step)</code></a></td><td> </td><td>Return a sequence of numbers on <code>[x, y]</code>, starting at <code>x</code> with increment <code>step</code>.</td></tr>
 <tr><td> </td><td><a name=size></a><code>size(A)</code></td><td> </td><td>Return the dimensions of a mathly matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a href=#slopefield><code>slopefield(f, xrange, yrange, scale)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot the slope field of <code>dy/dx = f(x, y)</code>.</td></tr>
 <tr><td> </td><td><a href=#sort><code>sort(tbl, compf)</code></a></td><td> </td><td>Sort table <code>tbl</code> and return the resulted table.</td></tr>
@@ -3031,18 +3031,26 @@ disp(b)
 print(c) -- nil
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=seq href=#m><code>seq(x, y, n)</code></a></h4>
-<p>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code>, in <code>[x, y]</code>, ending at <code>y</code>.</p>
+<h4>&bull; &nbsp; <a name=seq href=#m><code>seq(x, y, step)</code></a></h4>
+<p>It generates a sequence of numbers on <code>[x, y]</code>, starting at <code>x</code> with increment <code>step</code>. It is exactly the same as <a href=#range><code>range</code></a>.</p>
 <p>See also: <a href=#linspace><code>linspace</code></a>, <a href=#range><code>range</code></a>, <a href=#tables><code>tables</code></a>.</p>
 <pre><code>mathly = require('mathly')
 
-x = seq(1, 10) -- same as range(1, 10)
+x = seq(10)
 disp(x)
 -- 1   2   3   4   5   6   7   8   9  10
 
-x = seq(0, 1, 10) -- same as linspace(0, 1, 10)
+x = seq(-2, 3)
+disp(x)
+-- -2  -1   0   1   2   3
+
+x = seq(10, 5)
+disp(x)
+-- 10   9   8   7   6   5
+
+x = seq(0, 10, 2.6)
 display(x)
--- {0, 0.1111, 0.2222, 0.3333, 0.4444, 0.5556, 0.6667, 0.7778, 0.8889, 1.0000}
+-- {0, 2.6, 5.2, 7.8}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=directionfield></a><a name=slopefield href=#m><code>slopefield(f, xrange, yrange, scale), directionfield(f, xrange, yrange, scale)</code></a></h4>
