@@ -2531,7 +2531,7 @@ local function _anmt_new_control(c, cs, rs, opts) -- each a-zA-Z but p, t, x, y,
 end
 
 local function _anmt_scan_controls(str, cs, rs, opts)
-  for c in string.gmatch(str, "[^(%@%s|%(|%)|%{|%}|%[|%]|%+|%-|%*|%^|%/|%,)]+") do
+  for c in string.gmatch(str, "[^(%@%s|%(|%)|%{|%}|%[|%]|%+|%-|%*|%^|%/|%%|%,)]+") do
     _anmt_new_control(c, cs, rs, opts)
   end
 end
@@ -2938,7 +2938,7 @@ setInterval(mthlyAnimatePlot, %d); // animate every 0.2 seconds
 </script>
 </body>
 </html>
-]], qq(_anmt_multifstrsq, 200, 200)))
+]], 200)) -- qq(_anmt_multifstrsq, 1200, 200)))
   file:close()
 end -- _write_manipulate_html
 
