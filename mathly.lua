@@ -2182,9 +2182,11 @@ function plot(...)
   end
 
   if adjustxrangeq then
+    local x_step = 1
     if x_start == nil then
       if xrange ~= nil then
         x_start, x_stop = xrange[1], xrange[2]
+        if xrange[3] ~= nil then x_step = xrange[3] end
       else
         x_start, x_stop = -5, 5
       end
@@ -2194,7 +2196,7 @@ function plot(...)
     for i = 1, #traces do
       if #traces[i] > 0 and #traces[i][1] >= 2 and type(traces[i][1][2]) == 'function' then
         local f = traces[i][1][2]
-        traces[i][1] = linspace(x_start, x_stop, math.ceil(math.abs(x_stop - x_start)) * 10)
+        traces[i][1] = linspace(x_start, x_stop, math.max(math.ceil(math.abs((x_stop - x_start) / x_step) * 10), 200))
         traces[i][2] = map(f, traces[i][1])
       end
     end

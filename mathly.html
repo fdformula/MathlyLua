@@ -1371,8 +1371,7 @@ dot({1, 2}, {3, 4})
 y-coordinates of the dots to be plotted, and <code>style</code> is optional.
 The configuration of <code>style</code> looks like <code>{ color = 'red', size = 8,
 symbol = 'circle', opacity = 0.7, line = { color = 'rgb(#, #, #)', width = 1} }</code>,
-where <code>symbol</code> can be <code>circle, square, diamond, cross, x, triangle-up,
-pentagon, star, circle-open, square-open</code>, etc.</p>
+where <code>symbol</code> can be <code>circle, square, diamond</code>, etc. See <a href=#plot><code>plot</code></a>.</p>
 
 <pre><code>mathly = require('mathly')
 x = range(0, 2*pi, 0.3)
@@ -2514,7 +2513,8 @@ disp(randn(3, 5, 70, 12.55))
 <li>of a line, i.e., the graph of a function:<p><code>width</code> = 5</p><p><code>style</code> = <code>'-'</code> [solid, <code>':'</code> (dot), or <code>'--'</code> (dash)]</p>
 <p><code>mode</code> = <code>'lines+markers'</code>, <code>'lines'</code>, or <code>'markers'</code></p></li><p></p>
 <li>of a marker:<p><code>size</code> = 10</p><p><code>symbol</code> = <code>'circle'</code></p>
-Some possible symbols are <code>circle</code>, <code>circle-open</code>, <code>circle-open-dot</code>, <code>cross</code>, <code>diamond</code>, <code>square</code>, <code>x</code>, <code>triangle-left</code>, <code>triangle-right</code>, <code>triangle-up</code>, <code>triangle-down</code>, <code>hexagram</code>, <code>star</code>, <code>hourglass</code>, <code>bowtie</code>.</li><p></p>
+Some possible symbols are <code>bowtie, circle, circle-open, circle-open-dot, cross, diamond, hexagram, hourglass,
+pentagon, square, square-open, star, triangle-left, triangle-right, triangle-up, triangle-down, x,</code> etc.</li><p></p>
 <li>of a plot:<p><code>layout</code> = {<code>width</code> = 500, <code>height</code> = 400, <code>grid</code> = {<code>rows</code> = 2, <code>columns</code> = 2}, <code>title</code> = 'Demo'}</p></li>
 </ol>
 <p><a name=plotspecs></a>Shortcuts for specifications like <code>'--ro'</code>:</p>
@@ -2580,6 +2580,15 @@ plot(x, y1, specs3,
 axisnotsquare()
 plot(rand(125, 4), specs1, {names={'f1', 'f2', 'f3', 'g'}}) -- each column of a matrix defines a function with x changing from 0 to # of rows
 plot(rand(100,3), specs1, {layout={grid={rows=3, columns=2}}}, rand(100,2))
+</code></pre>
+
+<p>&#x2713; &nbsp; <code>range = {start, stop, step}</code>: A smaller step can improve the smoothness/resolution of a curve.</p>
+<pre><code>mathly = require('mathly')
+
+fs = tables('!@(x) cos(i * x) * sin(i - x)', {i = {1, 4}, controls = 'i'})
+disp(fs)
+plot({range = {-6, 6}}, table.unpack(fs)) -- same as {-6, 6, 1}
+plot({range = {-6, 6, 0.01}}, table.unpack(fs))
 </code></pre>
 <p>&#x2713; &nbsp; In CudaText, press Ctrl-P P to insert a <code>plot</code> template. See <a href=#cudatext>CudaText</a>.
 
