@@ -23,17 +23,17 @@ FUNCTIONS PROVIDED IN THIS MODULE
     length, linsolve, linspace, lu, map, match, max, mean, merge, min, tables, namedargs,
     newtonpoly, norm, ones, polynomial, polyval, printf, prod, qq, qr, rand, randi,
     range, remake, repmat, reshape, round, rr, rref, save, seq, size, sort, sprintf,
-    std, strcat, submatrix, subtable, sum, tblcat, text, tic, toc, transpose, tt,
-    unique, var, vectorangle, vertcat, who, zeros
+    std, strcat, submatrix, subtable, sum, tables, tblcat, text, tic, toc, transpose,
+    tt, unique, var, vectorangle, vertcat, who, zeros
 
     dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
     oct2hex, hex2bin, hex2dec, hex2oct
 
     cat, cd, dir, isdir, isfile, iswindows, ls, mv, pwd, rm
 
-    arc, circle, contourplot, directionfield, line, parametriccurve2d, point, polarcurve2d,
-    polygon, scatter, text, wedge; boxplot, freqpolygon, hist, hist1, histfreqpolygon,
-    pareto, pie, slopefield, vectorfield2d ← Graphics objects passed to 'plot'.
+    arc, circle, contourplot, directionfield, dotplot, line, parametriccurve2d, point,
+    polarcurve2d, polygon, scatter, text, wedge; boxplot, freqpolygon, hist, hist1,
+    histfreqpolygon, pareto, pie, slopefield, vectorfield2d ← Graphics objects passed to 'plot'.
 
     animate, manipulate, plot; plot3d, plotparametriccurve3d, plotparametricsurface3d,
     plotsphericalsurface3d
@@ -787,7 +787,7 @@ otherwise, ±9.2233720368548e+18 is printed ---]]
 local function _set_disp_format(t)
   local iwidth, dplaces, dispwidth
   iwidth, dplaces = _largest_width_dplaces(t)
-  local allintq = dplaces == 0
+  local allintq, fmt = dplaces == 0, string.format
 
   if _disp_format == 'long' then
     dplaces = 13
@@ -799,13 +799,13 @@ local function _set_disp_format(t)
 
   if (allintq and iwidth > 12) or (not allintq and iwidth + dplaces > 16) then -- 1.2345e+3
     dispwidth = dplaces + 7 -- -1.2345e+10
-    _float_format   = string.format('%%%d.%de', dispwidth, dplaces)
-    _float_format1  = string.format('%%.%de', dplaces)
+    _float_format   = fmt('%%%d.%de', dispwidth, dplaces)
+    _float_format1  = fmt('%%.%de', dplaces)
     if iwidth < dispwidth then -- 1 sign
       if allintq then
-        _int_format = string.format('%%%dd', iwidth)
+        _int_format = fmt('%%%dd', iwidth)
       else
-        _int_format = string.format('%%%dd', dispwidth)
+        _int_format = fmt('%%%dd', dispwidth)
       end
       _int_format1  = '%d'
     else
@@ -820,9 +820,9 @@ local function _set_disp_format(t)
   else
     dispwidth = iwidth + dplaces + 2 -- 1? 1 sign
   end
-  _float_format  = string.format('%%%d.%df', dispwidth, dplaces)
-  _float_format1 = string.format('%%.%df', dplaces)
-  _int_format = string.format('%%%dd', dispwidth)
+  _float_format  = fmt('%%%d.%df', dispwidth, dplaces)
+  _float_format1 = fmt('%%.%df', dplaces)
+  _int_format = fmt('%%%dd', dispwidth)
   _int_format1   = '%d'
 end -- _set_disp_format
 
@@ -2985,15 +2985,52 @@ function animate(fstr, opts) -- Mathematica
   print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
 end
 
+-- scan a string and replace each appearance of a ctrl with its val
+function tables_scan_replace(str, cs, vs)
+  local function scan_replace(ctrl, val)
+    local i, v, cpt = 1, '', '' -- captured
+    while i <= #str do
+      local c = str:sub(i, i)
+      while i <= #str and ((c >= 'a' and c <= 'z') or (c >= 'A' and c <= 'Z') or (c >= '0' and c <= '9')) do
+        cpt = cpt .. c
+        i = i + 1; c = '' -- c processed
+        if i <= #str then c = str:sub(i, i) end
+      end
+      if cpt ~= '' then
+        if cpt == ctrl then
+          v = v .. tostring(val) -- a ctrl can only be a number
+        else
+          v = v .. cpt
+        end
+        cpt = ''
+      end
+      if c ~= '' then v = v .. c end
+      i = i + 1
+    end
+    return v
+  end
+  for i = 1, #cs do str = scan_replace(cs[i], vs[i]) end
+  return str
+end
+
 function tables(str, opts) -- Mathematica
-  local cs, rs = {}, {} -- controls & their ranges
+  local cs, rs, fmt = {}, {}, string.format  -- controls & their ranges
+  local function cs_values_str()
+    local cstr, vstr = '{', '{'
+    for i = 1, #cs do
+      if i > 1 then cstr = cstr .. ', '; vstr = vstr .. ', ' end
+      cstr = cstr .. "'" .. cs[i] .. "'"
+      vstr = vstr .. cs[i]
+    end
+    return cstr .. '}', vstr .. '}'
+  end
   if opts == nil then opts = {} end
   -- scan for controls in str and set their ranges from opts
   if type(opts.controls) == 'string' then -- order of controls is in this string explicitly
     for i = 1, #opts.controls do
-      _anmt_new_control(string.sub(opts.controls, i, i), cs, rs, opts)
+      _anmt_new_control(opts.controls:sub(i, i), cs, rs, opts)
     end
-  elseif type(str) == 'string' then  -- order of controls is in str implicitly
+  elseif type(str) == 'string' and str:sub(1, 1) ~= '!' then  -- order of controls is in str implicitly
     _anmt_scan_controls(str, cs, rs, opts)
   end
   if #cs == 0 then
@@ -3004,20 +3041,25 @@ function tables(str, opts) -- Mathematica
   end
   -- generate Lua code
   local code, idx = '', 1
-  for i = 1, #cs do code = code .. string.format('local t%d = {}\n', i) end
+  for i = 1, #cs do code = code .. fmt('local t%d = {}\n', i) end
   local function luacode(i)
     local head = ''; for j = 2, i do head = head .. '  ' end
-    local t = string.format('t%d', idx); idx = idx + 1
-    local T = string.format('t%d', idx)
+    local t = fmt('t%d', idx); idx = idx + 1
+    local T = fmt('t%d', idx)
     code = code .. head .. 'for ' .. cs[i] .. ' = ' .. tostring(rs[i][1]) .. ', ' .. tostring(rs[i][2]) ..', ' .. tostring(rs[i][3]) .. ' do\n'
     if i == #rs then
-      code = code .. head .. string.format("  %s[#%s + 1] = ", t, t)
+      code = code .. head .. fmt("  %s[#%s + 1] = ", t, t)
       local ty = type(str)
       if ty == 'number' then
         code = code .. tostring(str)
       elseif ty == 'string' then
-        if string.sub(str, 1, 1) == '!' then -- '!a+b' will be "a+b" without evaluation
-          code = code .. "'" .. string.sub(str, 2) .. "'"
+        if str:sub(1, 1) == '!' then -- '!a+b' will be "a+b" without evaluation
+          if type(opts.controls) == 'string' then
+            local cstr, vstr = cs_values_str()
+            code = code .. "tables_scan_replace('" .. str:sub(2) .. "', " .. cstr .. ", " .. vstr .. ")"
+          else
+            code = code .. "'" .. str:sub(2) .. "'"
+          end
         else
           code = code .. str
         end
@@ -3029,7 +3071,7 @@ function tables(str, opts) -- Mathematica
       code = code .. '\n'
     else
       luacode(i + 1)
-      code = code .. head .. string.format('  %s[#%s + 1] = %s; %s = {}\n', t, t, T, T)
+      code = code .. head .. fmt('  %s[#%s + 1] = %s; %s = {}\n', t, t, T, T)
     end
     code = code .. head .. "end\n"
   end
@@ -3045,7 +3087,6 @@ end -- tables
 local function _freq_distro(x, nbins, xmin, xmax, width)
   nbins = nbins or 10
   x = sort(x)
-
   local freqs = {}
   local x1 = xmin
   local j = 1

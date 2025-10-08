@@ -235,9 +235,9 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <a href=#lu>lu</a>, <a href=#map>map</a>, <a href=#match>match</a>, <a href=#mathly>mathly</a>, <a href=#max>max</a>, <a href=#mean>mean</a>,
 <a href=#merge>merge</a>, <a href=#min>min</a>, <a href=#mod>mod</a>, <a href=#namedargs>namedargs</a>, <a href=#newtonpoly>newtonpoly</a>, <a href=#norm>norm</a>,
 <a href=#ones>ones</a>, <a href=#polynomial>polynomial</a>, <a href=#polyval>polyval</a>, <a href=#powermod>powermod</a>, <a href=#printf>printf</a>,
-<a href=#prod>prod</a>, <a href=#qq>qq</a>, <a href=#qr>qr</a>, <a href=#rand>rand</a>, <a href=#randi>randi</a>, <a href=#randn>randn</a>, <a href=#range>range</a>,
+<a href=#prod>prod</a>, <a href=#qq>qq</a>, <a href=#qr>qr</a>, <a href=#rand>rand</a>, <a href=#randi>randi</a>, <a href=#randn>randn</a>, <a href=#range>range</a> (or <a href=#seq>seq</a>),
 <a href=#remake>remake</a>, <a href=#repmat>repmat</a>, <a href=#reshape>reshape</a>, <a href=#reverse>reverse</a>, <a href=#round>round</a>, <a href=#rr>rr</a>,
-<a href=#rref>rref</a>, <a href=#save>save</a>, <a href=#seq>seq</a>, <a href=#size>size</a>, <a href=#sort>sort</a>, <a href=#sprintf>sprintf</a>, <a href=#std>std</a>,
+<a href=#rref>rref</a>, <a href=#save>save</a>, <a href=#seq>seq</a> (or <a href=#range>range</a>), <a href=#size>size</a>, <a href=#sort>sort</a>, <a href=#sprintf>sprintf</a>, <a href=#std>std</a>,
 <a href=#strcat>strcat</a>, <a href=#submatrix>submatrix</a>, <a href=#subtable>subtable</a>, <a href=#sum>sum</a>, <a href=#tables>tables</a>, <a href=#tblcat>tblcat</a>, <a href=#tic>tic</a>,
 <a href=#toc>toc</a>, <a href=#transpose>transpose</a>, <a href=#tt>tt</a>, <a href=#unique>unique</a>, <a href=#var>var</a>, <a href=#vectorangle>vectorangle</a>,
 <a href=#vertcat>vertcat</a>, <a href=#who>who</a>, <a href=#zeros>zeros</a>; <a href=#bin2dec>bin2dec</a>, <a href=#oct2hex>oct2hex, ...</a></p>
@@ -351,7 +351,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#rand><code>rand(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> matrix of which each element is a random number in [0, 1]. If <code>m = 1</code>, return a table.</td></tr>
 <tr><td> </td><td><a href=#randi><code>randi(...)</code></a></td><td> </td><td>Return a matrix of which each element is a random integer in a specified range.</td></tr>
 <tr><td> </td><td><a href=#randn><code>randn(...)</code></a></td><td> </td><td>Return a matrix of normally distributed numbers.</td></tr>
-<tr><td> </td><td><a href=#range><code>range(x, y, s)</code></a></td><td> </td><td>Return a table of numbers starting at <code>x</code>, on <code>[x, y]</code>, and incrementing by <code>s</code>.</td></tr>
+<tr><td> </td><td><a href=#range><code>range(x, y, step), seq(...)</code></a></td><td> </td><td>Return a sequence of numbers on <code>[x, y]</code>, starting at <code>x</code> with increment <code>step</code>.</td></tr>
 <tr><td> </td><td><a href=#remake><code>remake(A, opt)</code></a></td><td> </td><td>Generate a lower, upper, diagonal, symmetrical, or ...  matrix from matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a href=#repmat><code>repmat(A, m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> block matrix with each entry a copy of matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a href=#reshape><code>reshape(A, m, n)</code></a></td><td> </td><td>Rearrange existing elements in a table or mathly matrix <code>A</code> and return a new <code>mxn</code> mathly matrix.</td></tr>
@@ -362,7 +362,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#rref><code>rref(A, ...)</code></a></td><td> </td><td>Return the reduced row-echelon form of a mathly matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a href=#save><code>save(datafile, ...)</code></a></td><td> </td><td>Save specified or all user-defined variables and their values to a Lua or MATLAB script file.</td></tr>
 <tr><td> </td><td><a href=#scatter><code>scatter(x, y, style)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a scatter plot.</td></tr>
-<tr><td> </td><td><a href=#seq><code>seq(x, y, step)</code></a></td><td> </td><td>Return a sequence of numbers on <code>[x, y]</code>, starting at <code>x</code> with increment <code>step</code>.</td></tr>
+<tr><td> </td><td><a href=#seq><code>seq(x, y, step), range(...)</code></a></td><td> </td><td>Return a sequence of numbers on <code>[x, y]</code>, starting at <code>x</code> with increment <code>step</code>.</td></tr>
 <tr><td> </td><td><a name=size></a><code>size(A)</code></td><td> </td><td>Return the dimensions of a mathly matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a href=#slopefield><code>slopefield(f, xrange, yrange, scale)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot the slope field of <code>dy/dx = f(x, y)</code>.</td></tr>
 <tr><td> </td><td><a href=#sort><code>sort(tbl, compf)</code></a></td><td> </td><td>Sort table <code>tbl</code> and return the resulted table.</td></tr>
@@ -3185,8 +3185,8 @@ x = tables('m / n', { n = {1, 4}, m = {1, 3}, k = {0, 1}, controls = "nmk", prin
 --  {{0.25, 0.25}, {0.5, 0.5}, {0.75, 0.75}}}
 
 -- We can't use a table to create a table of tables, but the job can still be done.
-x = tables('{1, 5, 3}', { i = {1, 5}}); disp(x)
--- {{1, 5, 3}, {1, 5, 3}, {1, 5, 3}, {1, 5, 3}, {1, 5, 3}}
+x = tables('{1, 5, i}', { i = {1, 5}}); disp(x)
+-- {{1, 5, 1}, {1, 5, 2}, {1, 5, 3}, {1, 5, 4}, {1, 5, 5}}
 
 x = tables('{1, i, {2, i * j, j - 1}}', { i = {0, 1}, j = {4, 5}}); disp(x)
 -- {{{1, 0, {2, 0, 3}}, {1, 0, {2, 0, 4}}},
@@ -3196,15 +3196,28 @@ p, q = 2, 3
 x = tables("{p*q, sin(i), 'abc', 2*p >= q}", { i = {1, 3}, controls = 'i'}); disp(x)
 -- {{6, 0.8415, 'abc', true}, {6, 0.9093, 'abc', true}, {6, 0.1411, 'abc', true}}
 
--- Special Usage: if expr is a string starting with '!', stop any evaluation
-x = tables('!a', {i = {1, 5}}); disp(x)
--- {'a', 'a', 'a', 'a', 'a'}
-x = tables('!!a+', { i = {1, 5}}); disp(x)
--- {'!a+', '!a+', '!a+', '!a+', '!a+'}
-
 x = tables('i', {i = {0, 2*pi, 0.01}})
 plot(x, sin(x))
 sum(tt(x) * x)
+
+-- Special Usage:
+-- When expr is a string starting with '!',
+--  1) If opts.controls is specified, replace each specified control in expr
+--     with its value;
+--  2) Otherwise, stop any evaluation.
+x = tables('!i + j', {i = {1, 5}}); disp(x)
+-- {'i + j', 'i + j', 'i + j', 'i + j', 'i + j'}
+x = tables('!!i + j', { i = {1, 5}}); disp(x)
+-- {'!i + j', '!i + j', '!i + j', '!i + j', '!i + j'}
+
+fs = tables('!@(x) sin(x + i)', {i = {1, 10}, controls = 'i'})
+disp(fs)
+-- {'@(x) sin(x + 1)', '@(x) sin(x + 2)', '@(x) sin(x + 3)', ..., '@(x) sin(x + 10)'}
+plot(table.unpack(fs))
+
+fs = tables('!@(x) i*sin(x + j) + k', {i = {1, 5}, j = {-1, 1}, k = {0, 2}, controls = 'ikj'})
+disp(fs)
+plot(table.unpack(flatten(fs)))
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=tblcat href=#m><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></code></a></h4>
