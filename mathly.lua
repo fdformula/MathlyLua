@@ -2701,6 +2701,13 @@ local function _amnt_write_traces(fstr, cs, opts, tr, file, xexpr, jxexpr, jyexp
   end
 end -- _amnt_write_traces
 
+local function _anmt_layout_opts(axis, fmt, file) -- axis = layout.xaxis & yaxis
+  if axis ~= nil then
+    map(function(k) if axis[k] ~= nil then file:write(fmt(", '%s': %s", k, qq(axis[k] == true, 'true', 'false'))) end end,
+        {'showgrid', 'zeroline', 'showticklabels'})
+  end
+end
+
 local function _write_manipulate_html(fstr, fname, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, animateq, jscode, opts)
   local file = io.open(fname, "w")
   local fmt = string.format
@@ -2783,13 +2790,17 @@ var mthlySldr1step = %s;
 
   local squareq = true
   if layout ~= nil and layout.square == false then squareq = false end
-  file:write(fmt("\nconst mthlyLayout = {\n  'xaxis': { 'range': [%s, %s] }, // plot with fixed axes\n", tostring(xr[1]), tostring(xr[2])))
+  file:write(fmt("\nconst mthlyLayout = {\n  'xaxis': { 'range': [%s, %s]", tostring(xr[1]), tostring(xr[2])))
+  _anmt_layout_opts(layout.xaxis, fmt, file)
+  file:write("}, // plot with fixed axes\n")
+
   if yr == nil then
     yr = xr
   elseif type(yr) ~= 'table' or yr[1] >= yr[2] then
     error('Range of y is invalid.')
   end
   file:write(fmt("  'yaxis': { 'range': [%s, %s]", tostring(yr[1]), tostring(yr[2])))
+  _anmt_layout_opts(layout.yaxis, fmt, file)
   if squareq then file:write(", 'scaleanchor': 'x', 'scaleratio': 1") end -- square aspect ratio
   file:write(" },\n  'showlegend': false\n};\n\n")
   if title == nil then
@@ -2988,7 +2999,7 @@ function animate(fstr, opts) -- Mathematica
 end
 
 -- scan a string and replace each appearance of a ctrl with its val
-function tables_scan_replace(str, cs, vs)
+function _tables_replace(str, cs, vs) -- must be GLOBAL
   local function scan_replace(ctrl, val)
     local i, v, cpt = 1, '', '' -- captured
     while i <= #str do
@@ -3058,7 +3069,7 @@ function tables(str, opts) -- Mathematica
         if str:sub(1, 1) == '!' then -- '!a+b' will be "a+b" without evaluation
           if type(opts.controls) == 'string' then
             local cstr, vstr = cs_values_str()
-            code = code .. "tables_scan_replace('" .. str:sub(2) .. "', " .. cstr .. ", " .. vstr .. ")"
+            code = code .. "_tables_replace('" .. str:sub(2) .. "', " .. cstr .. ", " .. vstr .. ")"
           else
             code = code .. "'" .. str:sub(2) .. "'"
           end
