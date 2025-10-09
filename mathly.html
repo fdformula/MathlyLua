@@ -461,7 +461,8 @@ animate(fstr, opts)
 <p>&#x2713; &nbsp; Animating hypocycloid, a plane curve traced out by a fixed point P on a circle C of radius b
 as C rolls without slipping on the inside of a circle with center O and radius a, where b < a.</p>
 <p>See: <a href="https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf">ParametricCurves.pdf</a></p>
-<pre><code>
+<pre><code>mathly = require('mathly')
+
 fstr = {'@(t) (a - b) * cos(t) + b * cos((a - b) / b * t)', '@(t) (a - b) * sin(t) - b * sin((a - b) / b * t)'}
 opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 7.8}, b = {0.2, 9, 0.1, default = 1.6}, x = {-10, 10},
         resolution = 1500,
@@ -477,7 +478,8 @@ animate(fstr, opts)
 <p>&#x2713; &nbsp; Animating epicycloid, a plane curve traced out by a fixed point P on a circle C of radius b as C
 rolls without slipping on the outside of a circle with center O and radius a, where b < a.</p>
 <p>See: <a href="https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf">ParametricCurves.pdf</a></p>
-<pre><code>
+<pre><code>mathly = require('mathly')
+
 fstr = {'@(t) (a + b) * cos(t) - b * cos((a + b) / b * t)', '@(t) (a + b) * sin(t) - b * sin((a + b) / b * t)'}
 opts = {t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 6.0}, b = {0.2, 9, 0.1, default = 1.7}, x = {-10, 10},
         resolution = 1500,
@@ -500,8 +502,7 @@ variables and functions defined in the JavaScript code.</p>
 <p>&#x2713; &nbsp; Animating a stick of length L that can smoothly slide through a point (b, 0), given that one end of the stick moves along a circle
 with its center at the origin and a radius of R.
 <p>See: <a href="https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf">ParametricCurves.pdf</a></p>
-<pre><code>
-mathly = require('mathly')
+<pre><code>mathly = require('mathly')
 
 jscode = [[
   // The line passes thru (b,0) and (X,Y) is y = (Y/(X-b))(x-b). So, x = b + ((X-b)/Y)y. Solve
@@ -541,7 +542,8 @@ animate(fstr, opts) -- 'animate' can be replaced with 'manipulate'
 </code></pre>
 
 <p>&#x2713; &nbsp; Animating osculating circle of y = sin(x):</p>
-<pre><code>
+<pre><code>mathly = require('mathly')
+
 jscode = [[
   // see https://www.desmos.com/calculator/lbjisuikaf
   function f(x) { return Math.sin(x); }     // setup: f(x) = sin(x)
@@ -567,7 +569,8 @@ animate(fstr, opts)
 </code></pre>
 
 <p>&#x2713; &nbsp; Animating osculating circle of <code>y = x<sup>2</sup></code>:</p>
-<pre><code>
+<pre><code>mathly = require('mathly')
+
 jscode = [[
   function f(x) { return x*x; }  // setup: f(x) = x^2
   function fp(x) { return 2*x; } // setup: f'(x) = 2x
@@ -598,7 +601,8 @@ If all the graphing objects at a moment are to be displayed on a graph, opts.<co
 <code>enhancements</code>, and the field, opts.<code>controls</code>, is required. The field, opts.<code>keycontrol</code>, can be used to
 define a single control that controls steps or movements of an animation.</p>
 <p>&#x2713; &nbsp; Animating the fixed-point method or the generation of a cobweb:</p>
-<pre><code>
+<pre><code>mathly = require('mathly')
+
 jscode = [[
   function g(x) { return 1 - x*x; }
   var xs = [0.5]; // 0.5, initial value
@@ -1962,7 +1966,8 @@ manipulate(fstr, opts)
 
 <p>JavaScript and enhancements are allowed as with <code>animate</code>.</p>
 <p>&#x2713; &nbsp; Animating Newton's method for solving <code>f(x) = x<sup>3</sup> - 2x + 2 = 0</code>:</p>
-<pre><code>
+<pre><code>mathly = require('mathly')
+
 jscode = [[
   function func(x)   { return x**3 - 2*x + 2; } // f(x)
   function fprime(x) { return 3*x**2 - 2; }     // f'(x))
@@ -1988,7 +1993,8 @@ manipulate(fstr, opts)
 </code></pre>
 
 <p>&#x2713; &nbsp; Animating the derivative of <code>y = f(x)</code> at <code>x = x<sub>0</sub></code>:</p>
-<pre><code>
+<pre><code>mathly = require('mathly')
+
 jscode = [[
   function f(x) { return x*x; }
   const x0 = 0.5;
@@ -2016,7 +2022,8 @@ manipulate(fstr, opts)
 </code></pre>
 
 <p>&#x2713; &nbsp; Animating the left-endpoint method for the definite integral of <code>f(x)</code> on <code>[a, b]</code>:
-<pre><code>
+<pre><code>mathly = require('mathly')
+
 jscode = [[
   function f(x) { return 1 - x*x; }
   const a = 0, b = 1;
@@ -2050,7 +2057,8 @@ manipulate(fstr, opts)
 </code></pre>
 
 <p>&#x2713; &nbsp; Animating the right-endpoint method for the definite integral of <code>f(x)</code> on <code>[a, b]</code>:
-<pre><code>
+<pre><code>mathly = require('mathly')
+
 jscode = [[
   function f(x) { return 1 - x*x; }
   const a = 0, b = 1;
@@ -2084,7 +2092,8 @@ manipulate(fstr, opts)
 </code></pre>
 
 <p>&#x2713; &nbsp; Animating the midpoint method for the definite integral of <code>f(x)</code> on <code>[a, b]</code>:
-<pre><code>
+<pre><code>mathly = require('mathly')
+
 jscode = [[
   function f(x) { return 1 - x*x; }
   const a = 0, b = 1, h = (b - a) / N;
@@ -2118,7 +2127,8 @@ manipulate(fstr, opts)
 </code></pre>
 
 <p>&#x2713; &nbsp; Animating the trapezoidal rule for the definite integral of <code>f(x)</code> on <code>[a, b]</code>:
-<pre><code>
+<pre><code>mathly = require('mathly')
+
 jscode = [[
   function f(x) { return 1 - x*x; }
   const a = 0, b = 1;
