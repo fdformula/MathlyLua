@@ -1978,7 +1978,7 @@ jscode = [[
   xs.push(i); // initial guess
   for (let i = 0; i < 16; i += 1) { xs.push( nextx(xs[i]) ); }
 
-  function displaytext() { return 'Initial guess: ' + i + ', Iteration ' + I + ': x = ' + xs[I-1]; }
+  function displaytext() { return 'Initial guess: ' + i + '; Iteration ' + I + ': x = ' + xs[I-1]; }
 ]]
 
 fstr = {'@(t) t', '@(t) f(xs[I-1]) + fprime(xs[I-1]) * (t - xs[I-1])'}
