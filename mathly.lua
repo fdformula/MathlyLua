@@ -2718,6 +2718,7 @@ local function _write_manipulate_html(fstr, fname, cs, rs, xr, yr, tr, title, xe
   local s = [[<!DOCTYPE html>
 <html>
 <head>
+ <meta charset="utf-8">
  <title>Mathly Function Animation</title>
  <script src="%s"></script>
 <style>
@@ -2761,7 +2762,7 @@ input:focus {outline: none;}
     s = [[<label for="mthlySldr%d" style='top:%dpx;'>%s:</label>
 <input type="range" id="mthlySldr%d" min="%s" max="%s" value="%s" style='top:%dpx;' step="%s"></input><span id="mthlySldr%dvalue" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>
 ]]
-    if (rs[i][2] - rs[i][1]) / rs[i][3] < 5 then rs[i][3] = (rs[i][2] - rs[i][1]) / 5 end
+    --if (rs[i][2] - rs[i][1]) / rs[i][3] < 5 then rs[i][3] = (rs[i][2] - rs[i][1]) / 5 end
     s = fmt(s, i, top, cs[i], i, tostring(rs[i][1]), tostring(rs[i][2]), tostring(rs[i][1]), top, tostring(rs[i][3]), i, 290, top)
     if i == 1 and animateq then
       file:write(fmt('<button type="button" onclick="mthlyPlay()" style="left:345px;top:%dpx;position:absolute">Play</button> <button type="button" onclick="mthlyStop()" style="left:395px;top:%dpx;position:absolute">Stop</button>\n', top, top))
