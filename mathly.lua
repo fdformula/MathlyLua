@@ -2777,7 +2777,6 @@ input:focus {outline: none;}
     s = [[<label for="mthlySldr%d" style='top:%dpx;'>%s:</label>
 <input type="range" id="mthlySldr%d" min="%s" max="%s" value="%s" style='left:%dpx;top:%dpx;' step="%s"></input><span id="mthlySldr%dvalue" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>
 ]]
-    --if (rs[i][2] - rs[i][1]) / rs[i][3] < 5 then rs[i][3] = (rs[i][2] - rs[i][1]) / 5 end
     s = fmt(s, i, top, _anmt_cs_labels[i], i, tostring(rs[i][1]), tostring(rs[i][2]), tostring(rs[i][1]), 64 + shift, top, tostring(rs[i][3]), i, 278 + shift, top)
     if i == 1 and animateq then
       file:write(fmt('<button type="button" onclick="mthlyPlay()" style="left:345px;top:%dpx;position:absolute">Play</button> <button type="button" onclick="mthlyStop()" style="left:395px;top:%dpx;position:absolute">Stop</button>\n', top, top))
@@ -2862,7 +2861,16 @@ var mthlySldr1step = %s;
     end
   end
 
-  file:write("\nvar mthlyTraces = [];\nfunction mthlyUpdateTraces() {\n  mthlyTraces = [];\n") -- // mthlyTraces = new Array(); mthlyTraces.splice(0); ... no good
+  file:write("\nvar mthlyTraces = [];\nconst mthlyxMax = " .. tostring(xr[2]) .. ", mthlyyMax = " .. tostring(yr[2]) .. ";\n")
+  if #cs > 0 then
+    file:write("const ")
+    for i = 1, #cs do
+      if i > 1 then file:write(", ") end
+      file:write("mthly" .. cs[i].. "Max = " .. tostring(rs[i][2]))
+    end
+    file:write(";\n\n")
+  end
+  file:write("function mthlyUpdateTraces() {\n  mthlyTraces = [];\n") -- // mthlyTraces = new Array(); mthlyTraces.splice(0); ... no good
   if type(jscode) == 'string' and jscode ~= '' then file:write("\n  // vvvvv user's javascript vvvvv\n" .. jscode .. "  // ^^^^^ user's javascript ^^^^^\n\n") end
   _amnt_write_traces(fstr, cs, opts, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
   file:write('  document.getElementById("displaytext").innerHTML = displaytext();\n}\n')
