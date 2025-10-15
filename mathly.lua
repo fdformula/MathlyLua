@@ -2515,6 +2515,7 @@ local function _anmt_adjust_traces(traces, fregex)
   end
 end
 
+local _anmt_cs_labels = {}
 local function _anmt_new_control(c, cs, rs, opts) -- each a-zA-Z but p, t, x, y, T, X, and Y is a control
   local t = #c == 1 and ((c >= 'a' and c <= 'z') or (c >= 'A' and c <= 'Z')) and
             not ismember(c, {'p', 't', 'x', 'y', 'T', 'X', 'Y'}) and
@@ -2525,6 +2526,7 @@ local function _anmt_new_control(c, cs, rs, opts) -- each a-zA-Z but p, t, x, y,
       local i = #cs + 1
       cs[i] = c
       rs[i] = opts[c]
+      _anmt_cs_labels[i] = opts[c].label or c
       if rs[i][3] == nil then rs[i][3] = qq(rs[i][1] > rs[i][2], -1, 1) end
     else
       error("Range of control '" .. c .. "' is not specified.")
@@ -2540,8 +2542,9 @@ end
 
 local function _anmt_parse_args(fstr, opts, animateq)
   _anmt_multifstrsq = false
-  local cs = {} -- controls[i], ith control; a control is a single symbol such as a, h, and k in a*(x-h)^2+k
-  local rs = {} -- ranges[i], ranges of the ith control
+  _anmt_cs_labels = {} -- ~[i], label of ith control
+  local cs = {} -- ~[i], ith control
+  local rs = {} -- ~[i], ranges of ith control
   if opts == nil then opts = {} end
   if animateq == true then
     cs[1] = 'p'; rs[1] = {0, 1, 1/100} -- 'p' (play), reserved for animation
@@ -2614,6 +2617,15 @@ local function _anmt_parse_args(fstr, opts, animateq)
 
   local title = nil
   if type(opts.layout) == 'table' then title = opts.layout.title end
+
+  -- make control labels the same length -- doesn't work well, simply left alignment by default
+  -- if #cs > 0 then
+  --   local n = max(map(function(x) return #x end, _anmt_cs_labels))
+  --   if n > 1 then
+  --     _anmt_cs_labels = map(function(x) return string.rep('&nbsp;', n - #x) .. x end, _anmt_cs_labels)
+  --   end
+  -- end
+
   return cs, rs, xr, opts.y, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode
 end -- _anmt_parse_args
 
@@ -2758,12 +2770,15 @@ input:focus {outline: none;}
   end
   file:write(fmt(s, plotly_engine, w, w, h, 50 + 30 * qq(#cs > 1, #cs - 2, 0)))
   local top = 60 -- sliders
+  local shift = 1
+  if #cs > 1 then shift = max(map(function(x) return #x end, _anmt_cs_labels)) end
+  shift = 8 * shift
   for i = 1, #cs do
     s = [[<label for="mthlySldr%d" style='top:%dpx;'>%s:</label>
-<input type="range" id="mthlySldr%d" min="%s" max="%s" value="%s" style='top:%dpx;' step="%s"></input><span id="mthlySldr%dvalue" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>
+<input type="range" id="mthlySldr%d" min="%s" max="%s" value="%s" style='left:%dpx;top:%dpx;' step="%s"></input><span id="mthlySldr%dvalue" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>
 ]]
     --if (rs[i][2] - rs[i][1]) / rs[i][3] < 5 then rs[i][3] = (rs[i][2] - rs[i][1]) / 5 end
-    s = fmt(s, i, top, cs[i], i, tostring(rs[i][1]), tostring(rs[i][2]), tostring(rs[i][1]), top, tostring(rs[i][3]), i, 290, top)
+    s = fmt(s, i, top, _anmt_cs_labels[i], i, tostring(rs[i][1]), tostring(rs[i][2]), tostring(rs[i][1]), 64 + shift, top, tostring(rs[i][3]), i, 278 + shift, top)
     if i == 1 and animateq then
       file:write(fmt('<button type="button" onclick="mthlyPlay()" style="left:345px;top:%dpx;position:absolute">Play</button> <button type="button" onclick="mthlyStop()" style="left:395px;top:%dpx;position:absolute">Stop</button>\n', top, top))
     end
@@ -2847,7 +2862,7 @@ var mthlySldr1step = %s;
     end
   end
 
-  file:write("\nvar mthlyTraces = [];\nfunction mthlyUpdateTraces() {\n  mthlyTraces = []; // or .length = 0;\n")
+  file:write("\nvar mthlyTraces = [];\nfunction mthlyUpdateTraces() {\n  mthlyTraces = [];\n") -- // mthlyTraces = new Array(); mthlyTraces.splice(0); ... no good
   if type(jscode) == 'string' and jscode ~= '' then file:write("\n  // vvvvv user's javascript vvvvv\n" .. jscode .. "  // ^^^^^ user's javascript ^^^^^\n\n") end
   _amnt_write_traces(fstr, cs, opts, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
   file:write('  document.getElementById("displaytext").innerHTML = displaytext();\n}\n')
