@@ -2547,7 +2547,7 @@ local function _anmt_parse_args(fstr, opts, animateq)
   local rs = {} -- ~[i], ranges of ith control
   if opts == nil then opts = {} end
   if animateq == true then
-    cs[1] = 'p'; rs[1] = {0, 1, 1/100} -- 'p' (play), reserved for animation
+    cs[1] = 'p'; _anmt_cs_labels[1] = 'p'; rs[1] = {0, 1, 1/100} -- 'p' (play), reserved for animation
     if opts ~= nil and type(opts.p) == 'table' and opts.p.default ~= nil then rs[1].default = opts.p.default end
   end
   if opts.controls ~= nil then
@@ -2778,9 +2778,9 @@ input:focus {outline: none;}
     s = [[<label for="mthlySldr%d" style='top:%dpx;'>%s:</label>
 <input type="range" id="mthlySldr%d" min="%s" max="%s" value="%s" style='left:%dpx;top:%dpx;' step="%s"></input><span id="mthlySldr%dvalue" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>
 ]]
-    s = fmt(s, i, top, _anmt_cs_labels[i], i, tostring(rs[i][1]), tostring(rs[i][2]), tostring(rs[i][1]), 64 + shift, top, tostring(rs[i][3]), i, 278 + shift, top)
+    s = fmt(s, i, top, _anmt_cs_labels[i], i, tostring(rs[i][1]), tostring(rs[i][2]), tostring(rs[i][1]), 64 + shift, top, tostring(rs[i][3]), i, 285 + shift, top)
     if i == 1 and animateq then
-      file:write(fmt('<button type="button" onclick="mthlyPlay()" style="left:345px;top:%dpx;position:absolute">Play</button> <button type="button" onclick="mthlyStop()" style="left:395px;top:%dpx;position:absolute">Stop</button>\n', top, top))
+      file:write(fmt('<button type="button" onclick="mthlyPlay()" style="left:%dpx;top:%dpx;position:absolute">Play</button> <button type="button" onclick="mthlyStop()" style="left:%dpx;top:%dpx;position:absolute">Stop</button>\n', 345+shift, top, 400+shift, top))
     end
     top = top + 30
     file:write(s)
