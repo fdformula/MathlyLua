@@ -2524,9 +2524,8 @@ local function _anmt_new_control(c, cs, rs, opts) -- each a-zA-Z but p, t, x, y,
     if opts[c] ~= nil then
       if type(opts[c]) ~= 'table' then error('Range of ' .. c .. ' is invalid.') end
       local i = #cs + 1
-      cs[i] = c
+      cs[i] = c; _anmt_cs_labels[i] = opts[c].label or c
       rs[i] = opts[c]
-      _anmt_cs_labels[i] = opts[c].label or c
       if rs[i][3] == nil then rs[i][3] = qq(rs[i][1] > rs[i][2], -1, 1) end
     else
       error("Range of control '" .. c .. "' is not specified.")
@@ -2771,8 +2770,8 @@ input:focus {outline: none;}
   end
   file:write(fmt(s, plotly_engine, w, w, h, 50 + 30 * qq(#cs > 1, #cs - 2, 0)))
   local top = 60 -- sliders
-  local shift = 1
-  if #cs > 1 then shift = max(map(function(x) return #x end, _anmt_cs_labels)) end
+  local shift = 0
+  if #cs > 0 then shift = max(map(function(x) return #x end, _anmt_cs_labels)) end
   shift = 8 * shift
   for i = 1, #cs do
     s = [[<label for="mthlySldr%d" style='top:%dpx;'>%s:</label>
@@ -2780,7 +2779,7 @@ input:focus {outline: none;}
 ]]
     s = fmt(s, i, top, _anmt_cs_labels[i], i, tostring(rs[i][1]), tostring(rs[i][2]), tostring(rs[i][1]), 64 + shift, top, tostring(rs[i][3]), i, 285 + shift, top)
     if i == 1 and animateq then
-      file:write(fmt('<button type="button" onclick="mthlyPlay()" style="left:%dpx;top:%dpx;position:absolute">Play</button> <button type="button" onclick="mthlyStop()" style="left:%dpx;top:%dpx;position:absolute">Stop</button>\n', 345+shift, top, 400+shift, top))
+      file:write(fmt('<button type="button" onclick="mthlyPlay()" style="left:%dpx;top:%dpx;position:absolute">Play</button> <button type="button" onclick="mthlyStop()" style="left:%dpx;top:%dpx;position:absolute">Stop</button>\n', 345+shift, top, 396+shift, top))
     end
     top = top + 30
     file:write(s)
