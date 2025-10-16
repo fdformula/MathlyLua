@@ -2179,143 +2179,77 @@ opts = {h = {-1.95, 0.87, 0.01, default = -0.79}, controls = 'h',
 manipulate(fstr, opts)
 </code></pre>
 
-<p>&#x2713; &nbsp; Animating the left-endpoint method for the definite integral of <code>f(x)</code> on <code>[a, b]</code>:
+<p>&#x2713; &nbsp; Animating the definite integral of <code>f(x)</code> on <code>[a, b]</code>.
 <pre><code>mathly = require('mathly')
 
 jscode = [[
   function f(x) { return 1 - x*x; }
   const a = 0, b = 1;
-  const h = (b - a) / N;
-  function plotboxes() {
-    var x1 = a, f1 = f(a);
-    for (let i = 0; i < N; i++) {
-      const x2 = x1 + h, f2 = f(x2); // mthlyTraces, a javascript "global" variables
-      mthlyTraces.push({'x': [x1, x1], 'y': [0, f1], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
-      mthlyTraces.push({'x': [x1, x2], 'y': [f1, f1], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } }); // left-endpoint
-      mthlyTraces.push({'x': [x2, x2], 'y': [f1, 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
-      x1 = x2; f1 = f2;
-    }
-  }
+  var rule;
   function sum() {
-    plotboxes();
-    var s = 0;
-    for (let i = 0; i < N; i++) { s += f(a + i*h); }
-    return s * h;
-  }
-  function displaytext() { return 'Approximation: ' + sum(); }
-]]
-
-MaxN = 20 -- max number of subintervals
-fstr = '@(x) 1 - x^2'
-opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
-        layout = { width = 540, height = 540, square = true, title = "Left-Endpoint Method",
-                   xaxis = { showgrid = false }, yaxis = { showgrid = false }},
-        javascript = string.format(jscode, MaxN)}
-manipulate(fstr, opts)
-</code></pre>
-
-<p>&#x2713; &nbsp; Animating the right-endpoint method for the definite integral of <code>f(x)</code> on <code>[a, b]</code>:
-<pre><code>mathly = require('mathly')
-
-jscode = [[
-  function f(x) { return 1 - x*x; }
-  const a = 0, b = 1;
-  var h = (b - a) / N;
-  function plotboxes() {
-    var x1 = a, f1 = f(a);
-    for (let i = 0; i < N; i++) {
-      const x2 = x1 + h, f2 = f(x2); // mthlyTraces, a javascript "global" variables
-      mthlyTraces.push({'x': [x1, x1], 'y': [0, f2], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
-      mthlyTraces.push({'x': [x1, x2], 'y': [f2, f2], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } }); // right-endpoint
-      mthlyTraces.push({'x': [x2, x2], 'y': [f2, 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
-      x1 = x2; f1 = f2;
+    var x1 = a, x, randq = false, s = 0, h = (b - a) / N, trapzq = false, f1, f2;
+    if (O == 1) {
+      x = a + h/2;
+      rule = 'Midpoint';
+    } else if (O == 2) {
+      x = a;
+      rule = 'Left endpoint';
+    } else if (O == 3) {
+      x = a + h;
+      rule = 'Right endpoint';
+    } else if (O == 4) {
+      randq = true;
+      x = a + h * Math.random();
+      rule = 'Random point';
+    } else {
+      rule = 'Trapezoidal';
+      x = a; f1 = f(x1);
+      trapzq = true;
     }
-  }
-  function sum() {
-    plotboxes();
-    var s = 0;
-    for (let i = 1; i <= N; i++) { s += f(a + i*h) }
-    return s * h;
-  }
-  function displaytext() { return 'Approximation: ' + sum(); }
-]]
-
-MaxN = 20 -- max number of subintervals
-fstr = '@(x) 1 - x^2'
-opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
-        layout = { width = 540, height = 540, square = true, title = "Right-Endpoint Method",
-                   xaxis = { showgrid = false }, yaxis = { showgrid = false }},
-        javascript = string.format(jscode, MaxN)}
-manipulate(fstr, opts)
-</code></pre>
-
-<p>&#x2713; &nbsp; Animating the midpoint method for the definite integral of <code>f(x)</code> on <code>[a, b]</code>:
-<pre><code>mathly = require('mathly')
-
-jscode = [[
-  function f(x) { return 1 - x*x; }
-  const a = 0, b = 1, h = (b - a) / N;
-  function plotboxes() {
-    var x1 = a;
     for (let i = 0; i < N; i++) {
-      const x2 = x1 + h; // mthlyTraces, a javascript "global" variables
-      const m = x1 + h / 2, fm = f(m);
-      mthlyTraces.push({'x': [x1, x1], 'y': [0, fm], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
-      mthlyTraces.push({'x': [x1, x2], 'y': [fm, fm], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } }); // midpoint
-      mthlyTraces.push({'x': [x2, x2], 'y': [fm, 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
+      const x2 = x1 + h, fx = f(x);
+      if (trapzq) {
+        f2 = f(x2);
+        mthlyTraces.push({'x': [x1, x1], 'y': [0, f1], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1}});
+        mthlyTraces.push({'x': [x1, x2], 'y': [f1, f2], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1}});
+        mthlyTraces.push({'x': [x2, x2], 'y': [f2, 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1}});
+        if (i < N - 1) { s += f2; }
+        f1 = f2;
+      } else {
+        mthlyTraces.push({'x': [x1, x1], 'y': [0, fx], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1}});
+        mthlyTraces.push({'x': [x1, x2], 'y': [fx, fx], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1}});
+        mthlyTraces.push({'x': [x2, x2], 'y': [fx, 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1}});
+        if (O == 1 || O == 4) {
+          mthlyTraces.push({'x': [x, x], 'y': [0, fx], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 0.3}}); // 'dash': 'dot'
+          mthlyTraces.push({'x': [x], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 6}});
+        }
+        s += fx;
+      }
       x1 = x2;
+      if (randq) { x = x1 + h * Math.random(); } else { x = x + h; }
     }
+
+    // plot a big number of extra objects outside the graph so that no old traces will stay
+    // ugly, but works!
+    x = mthlyxMax + 5;
+    for (i = 0; i < mthlyNMax * 3; i++) {
+      mthlyTraces.push({ 'x': [x], 'y': [mthlyyMax + 5], 'mode': 'markers'});
+      x += h;
+    }
+
+    return trapzq? (f(a) + 2*s + f2) * h/2 : s * h;
   }
-  function sum() {
-    plotboxes();
-    var s = 0;
-    for (let i = 0; i < N; i++) { s += f(a + (i + 0.5)*h) }
-    return s * h;
-  }
-  function displaytext() { return 'Approximation: ' + sum(); }
+  function displaytext() { const s = sum(); return rule + ' method: A = ' + s + ' (Exact value: 2/3 or 0.6666666666666667)'; }
 ]]
 
-MaxN = 20 -- max number of subintervals
+MaxN = 50 -- max number of subintervals
 fstr = '@(x) 1 - x^2'
-opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
-        layout = { width = 540, height = 540, square = true, title = "Midpoint Method",
+opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12},
+        O = {1, 5, 1, default = 1, label = 'Method'},
+        controls = 'ON', javascript = jscode,
+        layout = { width = 640, height = 640, square = true, title = "Animating the integral of f(x) = 1 - x^2 on [0, 1]",
                    xaxis = { showgrid = false }, yaxis = { showgrid = false }},
-        javascript = string.format(jscode, MaxN)}
-manipulate(fstr, opts)
-</code></pre>
-
-<p>&#x2713; &nbsp; Animating the trapezoidal rule for the definite integral of <code>f(x)</code> on <code>[a, b]</code>:
-<pre><code>mathly = require('mathly')
-
-jscode = [[
-  function f(x) { return 1 - x*x; }
-  const a = 0, b = 1;
-  var h = (b - a) / N;
-  function plotboxes() {
-    var x1 = a, f1 = f(a);
-    for (let i = 0; i < N; i++) {
-      const x2 = x1 + h, f2 = f(x2); // mthlyTraces, a javascript "global" variables
-      mthlyTraces.push({'x': [x1, x1], 'y': [0, f1], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
-      mthlyTraces.push({'x': [x1, x2], 'y': [f1, f2], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } }); // trapezoidal
-      mthlyTraces.push({'x': [x2, x2], 'y': [f2, 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1 } });
-      x1 = x2; f1 = f2;
-    }
-  }
-  function sum() {
-    plotboxes();
-    var s = 0, x = a + h;
-    for (let i = 1; i < N; i++) { s += f(x); x = x + h; }
-    return (f(a) + 2*s + f(b)) * h / 2;
-  }
-  function displaytext() { return 'Approximation: ' + sum(); }
-]]
-
-MaxN = 20 -- max number of subintervals
-fstr = '@(x) 1 - x^2'
-opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12}, controls = 'N',
-        layout = { width = 540, height = 540, square = true, title = "Trapezoidal Rule",
-                   xaxis = { showgrid = false }, yaxis = { showgrid = false }},
-        javascript = string.format(jscode, MaxN)}
+        }
 manipulate(fstr, opts)
 </code></pre>
 
