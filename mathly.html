@@ -2191,14 +2191,14 @@ jscode = [[
   function sum() {
     var x1 = a, x, randq = false, s = 0, h = (b - a) / N, trapzq = false, f1, f2;
     if (O == 1) {
-      x = a + h/2;
-      rule = 'Midpoint';
-    } else if (O == 2) {
       x = a;
       rule = 'Left endpoint';
-    } else if (O == 3) {
+    } else if (O == 2) {
       x = a + h;
       rule = 'Right endpoint';
+    } else if (O == 3) {
+      x = a + h/2;
+      rule = 'Midpoint';
     } else if (O == 4) {
       randq = true;
       x = a + h * Math.random();
@@ -2221,8 +2221,8 @@ jscode = [[
         mthlyTraces.push({'x': [x1, x1], 'y': [0, fx], 'mode': 'lines', 'line': style});
         mthlyTraces.push({'x': [x1, x2], 'y': [fx, fx], 'mode': 'lines', 'line': style});
         mthlyTraces.push({'x': [x2, x2], 'y': [fx, 0], 'mode': 'lines', 'line': style});
-        if (O == 1 || O == 4) {
-          mthlyTraces.push({'x': [x, x], 'y': [0, fx], 'mode': 'lines', 'line': { 'dash': 'dot', 'color': 'grey', 'width': 0.3}});
+        if (O == 3 || O == 4) {
+          mthlyTraces.push({'x': [x, x], 'y': [0, fx], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 0.3}}); // 'dash': 'dot'
           mthlyTraces.push({'x': [x], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 6}});
         }
         s += fx;
@@ -2239,7 +2239,7 @@ jscode = [[
       x += h;
     }
 
-    if (trapzq) { s += (f(a) + f2) * 2; }
+    if (trapzq) { s += (f(a) + f2) / 2; }
     return s * h;
   }
   function displaytext() { const s = sum(); return rule + ' method: A = ' + s + ' (Exact value: 2/3 or 0.6666666666666667)'; }
@@ -2247,8 +2247,8 @@ jscode = [[
 
 MaxN = 50 -- max number of subintervals
 fstr = '@(x) 1 - x^2'
-opts = {N = {1, MaxN, 1, default = MaxN}, x = {-0.1, 1.1}, y = {-0.1, 1.12},
-        O = {1, 5, 1, default = 1, label = 'Method'},
+opts = {N = {1, MaxN, 1, default = MaxN, label = 'Subintervals'}, x = {-0.1, 1.1}, y = {-0.1, 1.12},
+        O = {1, 5, 1, default = 3, label = 'Method'},
         controls = 'ON', javascript = jscode,
         layout = { width = 640, height = 640, square = true, title = "Animating the integral of f(x) = 1 - x^2 on [0, 1]",
                    xaxis = { showgrid = false }, yaxis = { showgrid = false }},
