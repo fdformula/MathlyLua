@@ -12,6 +12,7 @@ label {
  text-align: left;
  vertical-align: middle;
  position: absolute;
+ white-space: nowrap;
 }
 input {
  display: inline-block;
@@ -28,11 +29,11 @@ input:focus {outline: none;}
 <div id="mathlyDiv" style="width:640px;height:640px;display:inline-block;top:80px;position:absolute;"></div>
 <!-- controls -->
 <label for="mthlySldr1" style='top:60px;'>Method:</label>
-<input type="range" id="mthlySldr1" min="1" max="6" value="1" style='left:112px;top:60px;' step="1"></input><span id="mthlySldr1value" style="left:326px;top:60px;position:absolute">&nbsp;</span>
-<label for="mthlySldr2" style='top:90px;'>m:</label>
-<input type="range" id="mthlySldr2" min="1" max="32" value="1" style='left:112px;top:90px;' step="1"></input><span id="mthlySldr2value" style="left:326px;top:90px;position:absolute">&nbsp;</span>
-<label for="mthlySldr3" style='top:120px;'>n:</label>
-<input type="range" id="mthlySldr3" min="1" max="32" value="1" style='left:112px;top:120px;' step="1"></input><span id="mthlySldr3value" style="left:326px;top:120px;position:absolute">&nbsp;</span>
+<input type="range" id="mthlySldr1" min="1" max="6" value="1" style='left:176px;top:60px;' step="1"></input><span id="mthlySldr1value" style="left:397px;top:60px;position:absolute">&nbsp;</span>
+<label for="mthlySldr2" style='top:90px;'>X Subintervals:</label>
+<input type="range" id="mthlySldr2" min="1" max="32" value="1" style='left:176px;top:90px;' step="1"></input><span id="mthlySldr2value" style="left:397px;top:90px;position:absolute">&nbsp;</span>
+<label for="mthlySldr3" style='top:120px;'>Y Subintervals:</label>
+<input type="range" id="mthlySldr3" min="1" max="32" value="1" style='left:176px;top:120px;' step="1"></input><span id="mthlySldr3value" style="left:397px;top:120px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:150px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
 function displaytext() { return ""; } // to be overwritten
@@ -126,8 +127,7 @@ function mthlyUpdateTraces() {
       }
     }
 
-    // plot a big number of extra objects outside the graph so that no old traces will stay
-    // ugly, but works!
+    // plot a big number of extra objects outside the graph so that no old traces will stay - ugly, but works!
     x = mthlyxMax + 1;
     for (i = 0; i < mthlymMax; i++) {
       y = mthlyyMax + 1
@@ -143,7 +143,7 @@ function mthlyUpdateTraces() {
   function displaytext() { const s = sum(); return rule + 'point method: V = ' + s + ' (Exact value: 48)'; }
   // ^^^^^ user's javascript ^^^^^
 
-  mthlyTraces.push({ 'x': x, 'y': x.map(x => 2*d), 'mode': 'lines', 'line': { 'simplify': false } });
+  mthlyTraces.push({ 'x': x, 'y': x.map(x => mthlyyMax + 5), 'mode': 'lines', 'line': { 'simplify': false } });
 
   document.getElementById("displaytext").innerHTML = displaytext();
 }
