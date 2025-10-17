@@ -2741,6 +2741,7 @@ label {
  text-align: left;
  vertical-align: middle;
  position: absolute;
+ white-space: nowrap;
 }
 input {
  display: inline-block;

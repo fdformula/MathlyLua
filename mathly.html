@@ -1988,7 +1988,7 @@ jscode = [[
 fstr = {'@(t) t', '@(t) f(xs[I-1]) + fprime(xs[I-1]) * (t - xs[I-1])'}
 opts = {t = {-4, 4, 0.01}, I = {1, 16, 1, label = 'Iterations'}, x = {-4, 4}, y = {-45, 15},
         layout = { width = 640, height = 640, square = false, title = "Newton\\'s method for x^3 - 2*x + 2 = 0 starting at x = 1.2" },
-        javascript = jscode, controls = 'iI', i = {0, 2.5, 0.5, default = 2.5, label = 'Initial_Guess'},
+        javascript = jscode, controls = 'iI', i = {0, 2.5, 0.5, default = 2.5, label = 'Initial Guess'},
         enhancements = {{x = {'xs[I-1]', 'xs[I-1]'}, y = {'f(xs[I-1])', 0}, line = true, width = 1, color = 'grey'},
                         {x = '@(t) t', y = '@(t) t^3 - 2*t + 2', t = {-4, 4}, color = 'orange'},
                         {x = 'xs[I-1]', y = 0, color = 'grey', size = 8, point = true},
@@ -2159,11 +2159,11 @@ jscode = [[
   const fx0 = f(x0);
   if (Math.abs(h) < 0.0000000001) { if (h > 0) {h == 0.000000001;} else {h = -0.000000001}}
   const x1 = x0 + h, fx1 = f(x1), k = (f(x1) - fx0) / h; // k: slope
-  function displaytext() { return 'Slope of secant line: ' + k + '(Exact value: 1)'; }
+  function displaytext() { return 'Slope of the secant line: ' + k + ' (Exact value: 1)'; }
 ]]
 
 fstr = '@(x) fx0 + k * (x - x0)'
-opts = {h = {-1.95, 0.87, 0.01, default = -0.79, label = 'Step_Size'}, controls = 'h',
+opts = {h = {-1.95, 0.87, 0.01, default = -0.79, label = 'Step Size'}, controls = 'h',
         x = {-1.5, 1.43}, y = {-0.1, 2.12}, width = 1, color = 'grey',
         layout = { width = 540, height = 640, square = true, title = "Animating a derivative" },
         javascript = jscode,
@@ -2334,7 +2334,7 @@ jcode = [[
 ]]
 
 fstr = '@(x) mthlyyMax + 5'
-opts = {m = {1, 32, 1, default = 8, label = 'x_subintervals'}, n = {1, 32, 1, default = 8, label = 'y_subintervals'}, O = {1, 6, 1, default = 1, label = 'Method'},
+opts = {m = {1, 32, 1, default = 8, label = 'X Subintervals'}, n = {1, 32, 1, default = 8, label = 'Y Subintervals'}, O = {1, 6, 1, default = 1, label = 'Method'},
         x = {0, 2.1}, y = {-0.05, 2.1},
         controls = 'Omn', javascript = jcode,
         layout = { width = 640, height = 640, square = true, title = 'Double integral of 16 - x^2 - 2y^2 over [0, 2] x [0, 2]' }}
