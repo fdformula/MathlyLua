@@ -608,7 +608,7 @@ define a single control that controls steps or movements of an animation.</p>
 <pre><code>mathly = require('mathly')
 
 jscode = [[
-  function g(x) { return 1 - x*x; }
+  function g(x) { return 1 - Math.sqrt(x); } // divergent? g(x) = 1-x^2
   var xs = [a]; // 0.5, initial value
   for (let I = 0; I <= %d; I += 1) { xs.push( g(xs[I]) ); } // one extra element, xs[0]!
 
@@ -629,13 +629,13 @@ jscode = [[
 ]]
 
 -- note: xs[I-1] == g(xs[I-2]), xs[I] == g(g(xs[I-2])) -- why I-2? 1) JScript index starts at 0; 2) xs[0] is extra.
-MaxI = 20 -- range of control I: [1, MaxI]
-fstr = '@(x) 1 - x^2'
-opts = {t = {-0.1, 1.1, 0.001}, I = {1, MaxI, 1, default = MaxI, label = 'Iterations'}, x = {-0.1, 1.1}, y = {-0.1, 1.1},
+MaxI = 30 -- range of control I: [1, MaxI]
+fstr = '@(x) 1 - sqrt(x)'
+opts = {I = {1, MaxI, 1, default = MaxI, label = 'Iterations'}, x = {-0.1, 1.1}, y = {-0.1, 1.1},
         a = {0, 1, 0.1, default = 0.6, label = 'Initial Value'},
-        layout = { width = 540, height = 540, square = true, title = "Cobweb of g(x) = 1 - x^2" },
+        layout = { width = 540, height = 540, square = true, title = "Cobweb of g(x) = 1 - sqrt(x)" },
         javascript = string.format(jscode, MaxI), cumulative = true, controls = 'aI',
-        enhancements = {{x = '@(t) t', y = '@(t) t', t = {-1, 6}, width = 2, color = 'green'},   -- line: y = x
+        enhancements = {{x = '@(t) t', y = '@(t) t', t = {0, 1}, width = 2, color = 'green'},   -- line: y = x
                         {x = {'xs[0]', 'xs[0]'}, y = {0, 'xs[1]'}, line = true, width = 1, color = 'grey'}, -- line: line segment
                         {x = 'xs[I-1]', y = 'g(xs[I-1])', color = 'red', size = 8, point = true} -- point
                        }}
