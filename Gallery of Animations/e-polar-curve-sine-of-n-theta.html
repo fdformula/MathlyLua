@@ -25,11 +25,11 @@ input:focus {outline: none;}
 </style>
 </head>
 <body>
-<input type='text' id='title' style="width:640px;left:0px;text-align:center;border:none;"></input>
-<div id="mathlyDiv" style="width:640px;height:540px;display:inline-block;top:50px;position:absolute;"></div>
+<input type='text' id='title' style="width:500px;left:0px;text-align:center;border:none;"></input>
+<div id="mathlyDiv" style="width:500px;height:500px;display:inline-block;top:50px;position:absolute;"></div>
 <!-- controls -->
 <label for="mthlySldr1" style='top:60px;'>n:</label>
-<input type="range" id="mthlySldr1" min="1" max="12" value="1" style='left:72px;top:60px;' step="1"></input><span id="mthlySldr1value" style="left:293px;top:60px;position:absolute">&nbsp;</span>
+<input type="range" id="mthlySldr1" min="1" max="24" value="1" style='left:72px;top:60px;' step="1"></input><span id="mthlySldr1value" style="left:293px;top:60px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:90px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
 function displaytext() { return ""; } // to be overwritten
@@ -38,8 +38,8 @@ var t = [];
 var X, Y, T, p;
 
 const mthlyLayout = {
-  'xaxis': { 'range': [-2, 2], 'showgrid': false, 'zeroline': false, 'showticklabels': false}, // plot with fixed axes
-  'yaxis': { 'range': [-2, 2], 'showgrid': false, 'zeroline': false, 'showticklabels': false, 'scaleanchor': 'x', 'scaleratio': 1 },
+  'xaxis': { 'range': [-1.2, 1.2]}, // plot with fixed axes
+  'yaxis': { 'range': [-1.2, 1.2], 'scaleanchor': 'x', 'scaleratio': 1 },
   'showlegend': false
 };
 
@@ -49,15 +49,15 @@ var mthlySldr1 = document.getElementById('mthlySldr1');
 mthlySldr1.value = 1;
 var n = 1;
 p = 1;
-for (let i = 0; i <= p * (31.415926535898 + 0) - 0; i += 0.005235987755983) { t.push(i); }
+for (let i = 0; i <= p * (6.2831853071796 + 0) - 0; i += 0.0031415926535898) { t.push(i); }
 
 var mthlyTraces = [];
-const mthlyxMax = 2, mthlyyMax = 2;
-const mthlynMax = 12;
+const mthlyxMax = 1.2, mthlyyMax = 1.2;
+const mthlynMax = 24;
 
 function mthlyUpdateTraces() {
   mthlyTraces = [];
-  mthlyTraces.push({ 'x': t.map(t => (Math.sin(1.6 * t)**2 + Math.cos(n*t)**5) * Math.cos(t)), 'y': t.map(t => (Math.sin(1.6 * t)**2 + Math.cos(n*t)**5) * Math.sin(t)), 'mode': 'lines', 'line': { 'simplify': false } });
+  mthlyTraces.push({ 'x': t.map(t => (Math.sin(n*t)) * Math.cos(t)), 'y': t.map(t => (Math.sin(n*t)) * Math.sin(t)), 'mode': 'lines', 'line': { 'simplify': false } });
 
   document.getElementById("displaytext").innerHTML = displaytext();
 }
