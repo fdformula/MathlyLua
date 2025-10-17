@@ -2546,7 +2546,7 @@ local function _anmt_parse_args(fstr, opts, animateq)
   local rs = {} -- ~[i], ranges of ith control
   if opts == nil then opts = {} end
   if animateq == true then
-    cs[1] = 'p'; _anmt_cs_labels[1] = 'p'; rs[1] = {0, 1, 1/100} -- 'p' (play), reserved for animation
+    cs[1] = 'p'; _anmt_cs_labels[1] = 'Play'; rs[1] = {0, 1, 1/100} -- 'p' (play), reserved for animation
     if opts ~= nil and type(opts.p) == 'table' and opts.p.default ~= nil then rs[1].default = opts.p.default end
   end
   if opts.controls ~= nil then
@@ -2891,7 +2891,7 @@ var mthlySldr1step = %s;
     let x = String(Number(mthlySldr1.value) + mthlySldr1step);
     mthlySldr1.value = String(x);
     if (x > 1) { mthlySldr1.value = '0'; }
-    document.getElementById("mthlySldr1value").innerHTML = mthlySldr1.value;
+    document.getElementById("mthlySldr1value").innerHTML = '' + Math.round(mthlySldr1.value*100) + '%'
   }
 ]]
     file:write(s)
