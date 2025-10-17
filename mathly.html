@@ -609,21 +609,34 @@ define a single control that controls steps or movements of an animation.</p>
 
 jscode = [[
   function g(x) { return 1 - x*x; }
-  var xs = [0.5]; // 0.5, initial value
-  function displaytext() { return 'Iteration ' + I + ': x = ' + xs[I-1]; }
+  var xs = [a]; // 0.5, initial value
   for (let I = 0; I <= %d; I += 1) { xs.push( g(xs[I]) ); } // one extra element, xs[0]!
+
+  function plotgrids() {
+    let style = { 'color': 'grey', 'width': 1 }
+    for (let i = 2; i <= I; i++) {
+      mthlyTraces.push({'x': [ xs[i-2], xs[i-1] ], 'y': [ xs[i-1], xs[i-1] ], 'mode': 'lines', 'line': style}); // horizontal line
+      mthlyTraces.push({'x': [ xs[i-1], xs[i-1] ], 'y': [ xs[i-1], xs[i]   ], 'mode': 'lines', 'line': style}); // vertical line
+    }
+
+    // plot enough extra objects outside the graph so that no old traces will stay - ugly, but works!
+    for (let i = 1; i <= mthlyIMax * 2; i ++) {
+      mthlyTraces.push({ 'x': [mthlyxMax + i], 'y': [mthlyyMax + i], 'mode': 'markers' })
+    }
+  }
+
+  function displaytext() { plotgrids(); return 'x<sub>' + I + '</sub> = ' + xs[I-1]; }
 ]]
 
 -- note: xs[I-1] == g(xs[I-2]), xs[I] == g(g(xs[I-2])) -- why I-2? 1) JScript index starts at 0; 2) xs[0] is extra.
 MaxI = 20 -- range of control I: [1, MaxI]
-fstr = {{x = {'xs[I-2]', 'xs[I-1]'}, y = {'xs[I-1]', 'xs[I-1]'}, line = true, color = 'grey', width = 1}, -- horizontal line segment
-        {x = {'xs[I-1]', 'xs[I-1]'}, y = {'xs[I-1]', 'xs[I]'}, line = true, color = 'grey', width = 1}} -- vertical line segment
-opts = {t = {-0.1, 1.1, 0.001}, I = {1, MaxI, 1, default = MaxI}, x = {-0.1, 1.1}, y = {-0.1, 1.1},
-        layout = { width = 540, height = 540, square = true, title = "" },
-        javascript = string.format(jscode, MaxI), cumulative = true, controls = 'I',
+fstr = '@(x) 1 - x^2'
+opts = {t = {-0.1, 1.1, 0.001}, I = {1, MaxI, 1, default = MaxI, label = 'Iterations'}, x = {-0.1, 1.1}, y = {-0.1, 1.1},
+        a = {0, 1, 0.1, default = 0.6, label = 'Initial Value'},
+        layout = { width = 540, height = 540, square = true, title = "Cobweb of g(x) = 1 - x^2" },
+        javascript = string.format(jscode, MaxI), cumulative = true, controls = 'aI',
         enhancements = {{x = '@(t) t', y = '@(t) t', t = {-1, 6}, width = 2, color = 'green'},   -- line: y = x
                         {x = {'xs[0]', 'xs[0]'}, y = {0, 'xs[1]'}, line = true, width = 1, color = 'grey'}, -- line: line segment
-                        {x = '@(t) t', y = '@(t) 1 - t^2', color = 'orange'},                    -- curve: y = g(x)
                         {x = 'xs[I-1]', y = 'g(xs[I-1])', color = 'red', size = 8, point = true} -- point
                        }}
 manipulate(fstr, opts)
@@ -1955,7 +1968,7 @@ disp(fstr)
 opts = {t = {0, 2 * pi, 0.01},         ----- adjust options if needed
         x = {-1.2, 1.2}, n = {1, 24, 1},
         resolution = 2000,
-        layout = {width = 500, height = 500, square = true}
+        layout = {width = 500, height = 500, square = true, title = 'Polar curve: r(t) = sin(nt)',}
        }
 manipulate(fstr, opts)
 
@@ -1964,7 +1977,7 @@ r = 'sin(1.6 * t)^2 + cos(n*t)^5'
 fstr = {'@(t) (' .. r .. ') * cos(t)', '@(t) (' .. r .. ') * sin(t)'}
 opts = {t = {0, 10*pi, 0.01}, x = {-2, 2}, n = {1, 12, 1},
         resolution = 6000,
-        layout = { width = 640, height = 540, title = '',
+        layout = { width = 640, height = 540, title = 'Polar curve: r(t) = sin(1.6t)^2 + cos(nt)^5',
                    xaxis = { showgrid = false, zeroline = false, showticklabels = false },
                    yaxis = { showgrid = false, zeroline = false, showticklabels = false }}}
 manipulate(fstr, opts)
@@ -2231,7 +2244,7 @@ jscode = [[
       if (randq) { x = x1 + h * Math.random(); } else { x = x + h; }
     }
 
-    // plot a big number of extra objects outside the graph so that no old traces will stay - ugly, but works!
+    // plot enough extra objects outside the graph so that no old traces will stay - ugly, but works!
     x = mthlyxMax + 5;
     for (i = 0; i < mthlyNMax * 5; i++) {
       mthlyTraces.push({ 'x': [x], 'y': [mthlyyMax + 5], 'mode': 'markers'});
@@ -2317,7 +2330,7 @@ jcode = [[
       }
     }
 
-    // plot a big number of extra objects outside the graph so that no old traces will stay - ugly, but works!
+    // plot enough extra objects outside the graph so that no old traces will stay - ugly, but works!
     x = mthlyxMax + 1;
     for (i = 0; i < mthlymMax; i++) {
       y = mthlyyMax + 1
