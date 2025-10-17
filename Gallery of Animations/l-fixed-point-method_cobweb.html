@@ -49,8 +49,8 @@ var title = document.getElementById('title');
 title.value = 'Cobweb of g(x) = 1 - sqrt(x)';
 var mthlySldr1 = document.getElementById('mthlySldr1');
 var mthlySldr2 = document.getElementById('mthlySldr2');
-mthlySldr1.value = 0.6;
-var a = 0.6;
+mthlySldr1.value = 0.9;
+var a = 0.9;
 mthlySldr2.value = 30;
 var I = 30;
 p = 1;
@@ -68,7 +68,7 @@ function mthlyUpdateTraces() {
   var xs = [a]; // 0.5, initial value
   for (let I = 0; I <= 30; I += 1) { xs.push( g(xs[I]) ); } // one extra element, xs[0]!
 
-  function plotgrids() {
+  function plotweb() {
     let style = { 'color': 'grey', 'width': 1 }
     for (let i = 2; i <= I; i++) {
       mthlyTraces.push({'x': [ xs[i-2], xs[i-1] ], 'y': [ xs[i-1], xs[i-1] ], 'mode': 'lines', 'line': style}); // horizontal line
@@ -81,7 +81,7 @@ function mthlyUpdateTraces() {
     }
   }
 
-  function displaytext() { plotgrids(); return 'x<sub>' + I + '</sub> = ' + xs[I-1]; }
+  function displaytext() { plotweb(); return 'x<sub>' + I + '</sub> = ' + xs[I-1]; }
   // ^^^^^ user's javascript ^^^^^
 
   mthlyTraces.push({ 'x': x, 'y': x.map(x => 1 - Math.sqrt(x)), 'mode': 'lines', 'line': { 'simplify': false } });
