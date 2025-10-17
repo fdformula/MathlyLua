@@ -3,7 +3,7 @@
 <head>
  <meta charset="utf-8">
  <title>Mathly Function Animation</title>
- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <style>
 label {
  display: inline-block;
@@ -12,6 +12,7 @@ label {
  text-align: left;
  vertical-align: middle;
  position: absolute;
+ white-space: nowrap;
 }
 input {
  display: inline-block;
@@ -27,7 +28,7 @@ input:focus {outline: none;}
 <input type='text' id='title' style="width:540px;left:0px;text-align:center;border:none;"></input>
 <div id="mathlyDiv" style="width:540px;height:640px;display:inline-block;top:50px;position:absolute;"></div>
 <!-- controls -->
-<label for="mthlySldr1" style='top:60px;'>Step_Size:</label>
+<label for="mthlySldr1" style='top:60px;'>Step Size:</label>
 <input type="range" id="mthlySldr1" min="-1.95" max="0.87" value="-1.95" style='left:136px;top:60px;' step="0.01"></input><span id="mthlySldr1value" style="left:357px;top:60px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:90px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
@@ -63,7 +64,7 @@ function mthlyUpdateTraces() {
   const fx0 = f(x0);
   if (Math.abs(h) < 0.0000000001) { if (h > 0) {h == 0.000000001;} else {h = -0.000000001}}
   const x1 = x0 + h, fx1 = f(x1), k = (f(x1) - fx0) / h; // k: slope
-  function displaytext() { return 'Slope of secant line: ' + k + '(Exact value: 1)'; }
+  function displaytext() { return 'Slope of the secant line: ' + k + ' (Exact value: 1)'; }
   // ^^^^^ user's javascript ^^^^^
 
   mthlyTraces.push({ 'x': x, 'y': x.map(x => fx0 + k * (x - x0)), 'mode': 'lines', 'line': { 'simplify': false } });
