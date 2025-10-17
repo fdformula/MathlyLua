@@ -1986,9 +1986,9 @@ jscode = [[
 ]]
 
 fstr = {'@(t) t', '@(t) f(xs[I-1]) + fprime(xs[I-1]) * (t - xs[I-1])'}
-opts = {t = {-4, 4, 0.01}, I = {1, 16, 1}, x = {-4, 4}, y = {-45, 15},
+opts = {t = {-4, 4, 0.01}, I = {1, 16, 1, label = 'Iterations'}, x = {-4, 4}, y = {-45, 15},
         layout = { width = 640, height = 640, square = false, title = "Newton\\'s method for x^3 - 2*x + 2 = 0 starting at x = 1.2" },
-        javascript = jscode, controls = 'iI', i = {0, 2.5, 0.5, default = 2.5},
+        javascript = jscode, controls = 'iI', i = {0, 2.5, 0.5, default = 2.5, label = 'Initial_Guess'},
         enhancements = {{x = {'xs[I-1]', 'xs[I-1]'}, y = {'f(xs[I-1])', 0}, line = true, width = 1, color = 'grey'},
                         {x = '@(t) t', y = '@(t) t^3 - 2*t + 2', t = {-4, 4}, color = 'orange'},
                         {x = 'xs[I-1]', y = 0, color = 'grey', size = 8, point = true},
@@ -2016,7 +2016,7 @@ jscode = [[
   }
   x1 = X1; x2 = X2;
 
-  function displaytext() { return 'Iteration ' + I + ': x<sub>1</sub> = ' + ab[I-1][0] + ', x<sub>2</sub> = ' + ab[I-1][1] + ', x<sub>3</sub> = ' + midpts[I-1]; }
+  function displaytext() { return 'x<sub>1</sub> = ' + ab[I-1][0] + ', x<sub>2</sub> = ' + ab[I-1][1] + ', x<sub>3</sub> = ' + midpts[I-1]; }
 ]]
 
 fstr = {{'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'},
@@ -2024,7 +2024,7 @@ fstr = {{'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I
         {x = {'ab[I-1][1]', 'ab[I-1][1]'}, y = {'f(ab[I-1][1])', 0}, line = true, width = 1, color = 'grey'},
         {x = 'ab[I-1][0]', y = 0, color = 'grey', size = 8, point = true},
         {x = 'ab[I-1][1]', y = 0, color = 'blue', size = 8, point = true}}
-opts = {t = {-4.1, 4.1, 0.01}, I = {1, 26, 1}, x = {-4.1, 4.1}, y = {-46, 40},
+opts = {t = {-4.1, 4.1, 0.01}, I = {1, 26, 1, label = 'Iterations'}, x = {-4.1, 4.1}, y = {-46, 40},
         layout = { width = 640, height = 640, square = false, title = "Secant method for x^3 - 2x + 2 = 0 starting with x1 = -3 and x2 = 2" },
         javascript = jscode, controls = 'I', cumulative = false,
         enhancements = {{x = '@(t) t', y = '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0]))/(ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])', t = {-4.1, 4.1}, width = 1, color = 'grey'},
@@ -2056,7 +2056,7 @@ jscode = [[
   }
   a = A; b = B;
 
-  function displaytext() { return 'Iteration ' + I + ': [' + ab[I-1][0] + ', ' + ab[I-1][1] + '], midpoint = ' + midpts[I-1]; }
+  function displaytext() { return '[' + ab[I-1][0] + ', ' + ab[I-1][1] + '], midpoint = ' + midpts[I-1]; }
 ]]
 
 fstr = {{'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'},
@@ -2065,7 +2065,7 @@ fstr = {{'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I
         {x = {'midpts[I-1]', 'midpts[I-1]'}, y = {'f(midpts[I-1])', 0}, line = true, width = 1, color = 'grey'},
         {x = {'ab[I-1][1]', 'ab[I-1][1]'}, y = {'f(ab[I-1][1])', 0}, line = true, width = 1, color = 'grey'},
         {x = 'ab[I-1][1]', y = 0, color = 'green', size = 8, point = true}}
-opts = {t = {-3.1, 2.1, 0.01}, I = {1, 56, 1}, x = {-3.1, 2.1}, y = {-22, 8},
+opts = {t = {-3.1, 2.1, 0.01}, I = {1, 56, 1, label = 'Iterations'}, x = {-3.1, 2.1}, y = {-22, 8},
         layout = { width = 640, height = 640, square = false, title = "Midpoint method for x^3 - 2*x + 2 = 0 starting on [-3, 2]" },
         javascript = jscode, controls = 'I', cumulative = false,
         enhancements = {{x = '@(t) t', y = '@(t) t^3 - 2*t + 2', t = {-3.1, 2.1}, color = 'orange'},
@@ -2096,13 +2096,13 @@ jscode = [[
   }
   a = A; b = B;
 
-  function displaytext() { return 'Iteration ' + I + ': [' + ab[I-1][0] + ', ' + ab[I-1][1] + '], x-intercept = ' + midpts[I-1]; }
+  function displaytext() { return '[' + ab[I-1][0] + ', ' + ab[I-1][1] + '], x-intercept = ' + midpts[I-1]; }
 ]]
 
 fstr = {{'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'},
         {x = {'ab[I-1][0]', 'ab[I-1][0]'}, y = {'f(ab[I-1][0])', 0}, line = true, width = 1, color = 'grey'},
         {x = {'ab[I-1][1]', 'ab[I-1][1]'}, y = {'f(ab[I-1][1])', 0}, line = true, width = 1, color = 'grey'}}
-opts = {t = {-2.5, 6.1, 0.01}, I = {1, 12, 1}, x = {-2.5, 6.1}, y = {-6, 6},
+opts = {t = {-2.5, 6.1, 0.01}, I = {1, 12, 1, label = 'Iterations'}, x = {-2.5, 6.1}, y = {-6, 6},
         layout = { width = 640, height = 640, square = false, title = "Regula falsi method for 3cos(x) - 0.3x^2 + 2 = 0 starting on [-1.6, 5.5]" },
         javascript = jscode, controls = 'I', cumulative = false,
         enhancements = {{x = {'ab[I-1][0]', 'ab[I-1][1]'}, y = {'f(ab[I-1][0])', 'f(ab[I-1][1])'}, line = true, width = 1, color = 'grey'},
@@ -2134,13 +2134,13 @@ jscode = [[
   }
   a = A; b = B;
 
-  function displaytext() { return 'Iteration ' + I + ': [' + ab[I-1][0] + ', ' + ab[I-1][1] + '], x-intercept = ' + midpts[I-1]; }
+  function displaytext() { return '[' + ab[I-1][0] + ', ' + ab[I-1][1] + '], x-intercept = ' + midpts[I-1]; }
 ]]
 
 fstr = {{'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'},
         {x = {'ab[I-1][0]', 'ab[I-1][0]'}, y = {'f(ab[I-1][0])', 0}, line = true, width = 1, color = 'grey'},
         {x = {'ab[I-1][1]', 'ab[I-1][1]'}, y = {'f(ab[I-1][1])', 0}, line = true, width = 1, color = 'grey'}}
-opts = {t = {-3.1, 2.1, 0.01}, I = {1, 67, 1}, x = {-3.1, 2.1}, y = {-22, 8},
+opts = {t = {-3.1, 2.1, 0.01}, I = {1, 67, 1, label = 'Iterations'}, x = {-3.1, 2.1}, y = {-22, 8},
         layout = { width = 640, height = 640, square = false, title = "Regula falsi method for x^3 - 2*x + 2 = 0 starting on [-3, 2]" },
         javascript = jscode, controls = 'I', cumulative = false,
         enhancements = {{x = {'ab[I-1][0]', 'ab[I-1][1]'}, y = {'f(ab[I-1][0])', 'f(ab[I-1][1])'}, line = true, width = 1, color = 'grey'},
@@ -2159,11 +2159,11 @@ jscode = [[
   const fx0 = f(x0);
   if (Math.abs(h) < 0.0000000001) { if (h > 0) {h == 0.000000001;} else {h = -0.000000001}}
   const x1 = x0 + h, fx1 = f(x1), k = (f(x1) - fx0) / h; // k: slope
-  function displaytext() { return 'Slope of secant line: ' + k; }
+  function displaytext() { return 'Slope of secant line: ' + k + '(Exact value: 1)'; }
 ]]
 
 fstr = '@(x) fx0 + k * (x - x0)'
-opts = {h = {-1.95, 0.87, 0.01, default = -0.79}, controls = 'h',
+opts = {h = {-1.95, 0.87, 0.01, default = -0.79, label = 'Step_Size'}, controls = 'h',
         x = {-1.5, 1.43}, y = {-0.1, 2.12}, width = 1, color = 'grey',
         layout = { width = 540, height = 640, square = true, title = "Animating a derivative" },
         javascript = jscode,
@@ -2334,7 +2334,7 @@ jcode = [[
 ]]
 
 fstr = '@(x) mthlyyMax + 5'
-opts = {m = {1, 32, 1, default = 8}, n = {1, 32, 1, default = 8}, O = {1, 6, 1, default = 1, label = 'Method'},
+opts = {m = {1, 32, 1, default = 8, label = 'x_subintervals'}, n = {1, 32, 1, default = 8, label = 'y_subintervals'}, O = {1, 6, 1, default = 1, label = 'Method'},
         x = {0, 2.1}, y = {-0.05, 2.1},
         controls = 'Omn', javascript = jcode,
         layout = { width = 640, height = 640, square = true, title = 'Double integral of 16 - x^2 - 2y^2 over [0, 2] x [0, 2]' }}
