@@ -64,8 +64,8 @@ function mthlyUpdateTraces() {
   mthlyTraces = [];
 
   // vvvvv user's javascript vvvvv
-  function g(x) { return 1 - Math.sqrt(x); } // divergent? g(x) = 1-x^2
-  var xs = [a]; // 0.5, initial value
+  function g(x) { return 1 - Math.sqrt(x); }
+  var xs = [a]; // xs[i] == g(xs[i-1]); jscript index starts at 0 & xs[0] is extra
   for (let I = 0; I <= 30; I += 1) { xs.push( g(xs[I]) ); } // one extra element, xs[0]!
 
   function plotweb() {
