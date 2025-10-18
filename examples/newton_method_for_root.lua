@@ -1,0 +1,26 @@
+-- Animating Newton's method for solving f(x) = x^3 - 2x + 2 = 0
+
+mathly = require('mathly')
+
+jscode = [[
+  function f(x) { return x**3 - 2*x + 2; }
+  function fprime(x) { return 3*x**2 - 2; }  // f'(x))
+  function nextx(x) { return x - f(x) / fprime(x); }
+  var xs = [];
+  xs.push(i); // initial guess
+  for (let i = 0; i < 16; i += 1) { xs.push( nextx(xs[i]) ); }
+
+  function displaytext() { return 'Initial guess: ' + i + '; Iteration ' + I + ': x = ' + xs[I-1]; }
+]]
+
+fstr = {'@(t) t', '@(t) f(xs[I-1]) + fprime(xs[I-1]) * (t - xs[I-1])'}
+opts = {t = {-4, 4, 0.01}, I = {1, 16, 1, label = 'Iterations'}, x = {-4, 4}, y = {-45, 15},
+        layout = { width = 640, height = 640, square = false, title = "Newton\\'s method for x^3 - 2*x + 2 = 0 starting at x = 1.2" },
+        javascript = jscode, controls = 'iI', i = {0, 2.5, 0.5, default = 2.5, label = 'Initial Guess'},
+        enhancements = {{x = {'xs[I-1]', 'xs[I-1]'}, y = {'f(xs[I-1])', 0}, line = true, width = 1, color = 'grey'},
+                        {x = '@(t) t', y = '@(t) t^3 - 2*t + 2', t = {-4, 4}, color = 'orange'},
+                        {x = 'xs[I-1]', y = 0, color = 'grey', size = 8, point = true},
+                        {x = 'xs[I-1]', y = 'f(xs[I-1])', color = 'blue', size = 8, point = true},
+                        {x = 'xs[I]', y = 0, color = 'red', size = 10, point = true}
+                       }}
+manipulate(fstr, opts)
