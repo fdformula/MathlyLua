@@ -2484,7 +2484,7 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
   _3d_plotq = false
 end -- plotparametriccurve3d
 
-local function _to_jscript_expr(expr)
+function _to_jscript_expr(expr)
   local gsub = string.gsub
   local jexpr = gsub(expr, "%^", "**")
   jexpr = gsub(jexpr, "sin", "Math.sin")
@@ -2807,7 +2807,7 @@ var mthlySldr1step = %s;
   local squareq = true
   if layout ~= nil and layout.square == false then squareq = false end
   file:write(fmt("\nconst mthlyLayout = {\n  'xaxis': { 'range': [%s, %s]", tostring(xr[1]), tostring(xr[2])))
-  _anmt_layout_opts(layout.xaxis, fmt, file)
+  if layout ~= nil then _anmt_layout_opts(layout.xaxis, fmt, file) end
   file:write("}, // plot with fixed axes\n")
 
   if yr == nil then
@@ -2816,7 +2816,7 @@ var mthlySldr1step = %s;
     error('Range of y is invalid.')
   end
   file:write(fmt("  'yaxis': { 'range': [%s, %s]", tostring(yr[1]), tostring(yr[2])))
-  _anmt_layout_opts(layout.yaxis, fmt, file)
+  if layout ~= nil then _anmt_layout_opts(layout.yaxis, fmt, file) end
   if squareq then file:write(", 'scaleanchor': 'x', 'scaleratio': 1") end -- square aspect ratio
   file:write(" },\n  'showlegend': false\n};\n\n")
   if title == nil then
