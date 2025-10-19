@@ -2579,7 +2579,7 @@ local function _anmt_parse_args(fstr, opts, animateq)
       _anmt_multifstrsq = true
     end
   else
-    error("manipulate({xfstr, yfstr}, ...): xfstr and yfstr must be paramatric equations of x(t) and y(t) in strings.")
+    error(qq(animateq, 'animate', 'manipulate') .. "(fstr, ...): fstr must be a string or a pair of strings.")
   end
   if type(opts.controls) == 'string' then
     local I = 1
@@ -2643,11 +2643,11 @@ local function _amnt_write_subtraces(traces, tr, file, resolution, key)   -- tra
       if obj.line then
         trace = fmt("{ 'x': [%s, %s], 'y': [%s, %s], 'mode': 'lines', 'line': { 'color': '%s', 'width': %d %s } }",
                     toJS(obj.x[1]), toJS(obj.x[2]), toJS(obj.y[1]), toJS(obj.y[2]), obj.color or 'black', obj.width or 3, style)
-        file:write(fmt("  %smthlyTraces.push(%s);\n\n", head, trace))
+        file:write(fmt("  %smthlyTraces.push(%s);\n", head, trace))
       elseif obj.point then
         trace = fmt("{ 'x': [%s], 'y': [%s], 'mode': 'markers', 'marker': { 'color': '%s', 'size': %d %s } }",
                     toJS(obj.x), toJS(obj.y), obj.color or 'black', obj.size or 8, style)
-        file:write(fmt("  %smthlyTraces.push(%s);\n\n", head, trace))
+        file:write(fmt("  %smthlyTraces.push(%s);\n", head, trace))
       elseif obj.parametriceqs then
         local tr1, res = obj.t, 500
         if tr1 == nil then tr1 = tr or {-6, 6} end
@@ -2703,8 +2703,8 @@ local function _amnt_write_traces(fstr, cs, opts, tr, file, xexpr, jxexpr, jyexp
   else -- parametric eqs
     trace = trace .. fmt("'x': t.map(t => %s), 'y': t.map(t => %s),", jxexpr, jyexpr)
   end
-  trace = trace .. " 'mode': 'lines', 'line': { 'simplify': false } }" -- false, color: 'red'}
-  file:write(fmt("  mthlyTraces.push(%s);\n\n", trace))
+  trace = trace .. " 'mode': 'lines', 'line': { 'simplify': false } }" -- color: 'red'}
+  file:write(fmt("  mthlyTraces.push(%s);\n", trace))
 
 ::enhc::
   if type(enhancements) == 'table' then
@@ -2942,11 +2942,8 @@ var mthlySldr1step = %s;
     if i > 1 then file:write(", ") end
     file:write(cs[i])
   end
-  file:write("]; // update values of controls\n\n")
-
-  file:write('  mthlyUpdateTraces();\n')
-
-  file:write([[
+  file:write([[]; // update values of controls
+  mthlyUpdateTraces();
   Plotly.animate('mathlyDiv', {
     'data': mthlyTraces,
     'traces': mthlyTraces.keys() // update all traces
