@@ -413,6 +413,7 @@ value of the parameter <code>t</code> for the currently plotted point. They and 
 <li>All controls can be specified in <code>opts.controls</code> like <code>'ahk'</code>, <code>'a, h, k'</code>, <code>'a h, k'</code>, etc. If the field, <code>controls</code>, is not specified,
 they will be recognized automatically from the string definition of <code>y = f(x)</code> or its parametric equations in <code>fstr</code>.</li>
 <li>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>.</li>
+<li>For parametric curves, if <code>t</code>'s range is omitted, it defaults to <code>x</code>'s range, if the latter is provided, or {-6, 6, 0.1}.</li>
 <li>While a control is a single letter, its label can be a word or so, defined like in <code>m = {0, 3, 1, label = 'Option'}</code>, where <code>m</code> is a control.</li>
 <li>The global variable <code>mthlyTraces</code>, an array of traces to be shown on the graph, and the global constants like <code>mthlyxMax, mthlyyMax,</code> and <code>mthly&lt;c&gt;Max</code>,
 the largest values of <code>x, y</code> and <code>c</code> on the graph, are available to JavaScript, where <code>c</code> is each control. For instance, if there are two controls <code>m</code> and <code>n</code>,

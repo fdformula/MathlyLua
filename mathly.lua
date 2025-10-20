@@ -2599,9 +2599,8 @@ local function _anmt_parse_args(fstr, opts)
   jyexpr = _to_jscript_expr(yexpr)
   if xexpr ~= nil then
     jxexpr = _to_jscript_expr(xexpr)
-    if opts.t == nil or type(opts.t) ~= 'table' or opts.t[1] >= opts.t[2] then
-      print("Range of parameter 't' is not specified, or it is invalid. Default: { -6, 6, 0.1 }.")
-      tr = {-6, 6, 0.1}
+    if opts.t == nil or type(opts.t) ~= 'table' then
+      tr = opts.x or {-6, 6, 0.1}
     else
       tr = opts.t
     end
@@ -2634,12 +2633,17 @@ local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces =
                     toJS(obj.x), toJS(obj.y), obj.color or 'black', obj.size or 8, style)
         file:write(fmt("  %smthlyTraces.push(%s);\n", head, trace))
       elseif obj.parametriceqs then
-        local tr1, res = obj.t, 500
-        if tr1 == nil then tr1 = tr or {-6, 6} end
-        if type(obj.resolution) == 'number' then res = min({500, obj.resolution}) end
-        file:write(head .. "  if (true) {\n    " .. head .. "const t = [];\n")
-        local step = tr1[3] or (tr1[2] - tr1[1]) / res
-        file:write(fmt("    %sfor (let i = %s; i <= %s; i += %s) { t.push(i); }\n", head, tostring(tr1[1]), tostring(tr1[2]), tostring(step)))
+        local tr1, res, localtrq = obj.t, 500, true
+        if tr1 == nil then
+          if tr ~= nil then localtrq = false else tr1 = {-6, 6} end
+        end
+        file:write(head .. "  if (true) {\n")  -- 'if (true) ' can be deleted)
+        if localtrq then
+          file:write(head .. "    const t = [];\n") -- local t
+          if type(obj.resolution) == 'number' then res = min({500, obj.resolution}) end
+          local step = tr1[3] or (tr1[2] - tr1[1]) / res
+          file:write(fmt("    %sfor (let i = %s; i <= %s; i += %s) { t.push(i); }\n", head, tostring(tr1[1]), tostring(tr1[2]), tostring(step)))
+        end
         trace = fmt("{ 'x': t.map(t => %s), 'y': t.map(t => %s), 'mode': 'lines', 'line': { 'simplify': false, 'color': '%s', 'width': %d %s } }",
                     obj.x, obj.y, obj.color or 'black', obj.width or 3, style)
         file:write(fmt("    %smthlyTraces.push(%s);\n%s  }\n", head, trace, head))
