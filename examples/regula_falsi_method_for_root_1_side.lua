@@ -25,7 +25,7 @@ jscode = [[
 ]]
 
 fstr = {'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'}
-opts = {t = {-3.1, 2.1, 0.01}, I = {1, 67, 1, label = 'Iterations'}, x = {-3.1, 2.1}, y = {-22, 8},
+opts = {I = {1, 67, 1, label = 'Iterations'}, x = {-3.1, 2.1}, y = {-22, 8},
         layout = { width = 640, height = 640, square = false, title = "Regula falsi method for x^3 - 2*x + 2 = 0 starting on [-3, 2]" },
         javascript = jscode, controls = 'I',
         enhancements = {

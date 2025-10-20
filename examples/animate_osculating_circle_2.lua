@@ -15,7 +15,7 @@ jscode = [[
 ]]
 
 fstr = {'@(t) t', '@(t) t*t'}
-opts = {t = {-5, 5, 0.01}, x = {-5, 5},
+opts = {x = {-5, 5},
         layout = { title = 'y = x^2' },
         p = { default = 0.43 }, -- control p starts at p = 0.43
         javascript = jscode,

@@ -14,7 +14,7 @@ jscode = [[
 ]]
 
 fstr = {'@(t) t', '@(t) f(xs[I-1]) + fprime(xs[I-1]) * (t - xs[I-1])'}
-opts = {t = {-4, 4, 0.01}, I = {1, 16, 1, label = 'Iterations'}, x = {-4, 4}, y = {-45, 15},
+opts = {I = {1, 16, 1, label = 'Iterations'}, x = {-4, 4}, y = {-45, 15},
         layout = { width = 640, height = 640, square = false, title = "Newton\\'s method for x^3 - 2*x + 2 = 0 starting at x = 1.2" },
         javascript = jscode, controls = 'iI', i = {0, 2.5, 0.5, default = 2.5, label = 'Initial Guess'},
         enhancements = {

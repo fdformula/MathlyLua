@@ -21,7 +21,7 @@ jscode = [[
 ]]
 
 fstr = {'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'}
-opts = {t = {-4.1, 4.1, 0.01}, I = {1, 26, 1, label = 'Iterations'}, x = {-4.1, 4.1}, y = {-46, 40},
+opts = {I = {1, 26, 1, label = 'Iterations'}, x = {-4.1, 4.1}, y = {-46, 40},
         layout = { width = 640, height = 640, square = false, title = "Secant method for x^3 - 2x + 2 = 0 starting with x1 = -3 and x2 = 2" },
         javascript = jscode, controls = 'I',
         enhancements = {
