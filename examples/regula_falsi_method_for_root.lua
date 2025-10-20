@@ -24,14 +24,17 @@ jscode = [[
   function displaytext() { return '[' + ab[I-1][0] + ', ' + ab[I-1][1] + '], x-intercept = ' + midpts[I-1]; }
 ]]
 
-fstr = {{'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'},
-        {x = {'ab[I-1][0]', 'ab[I-1][0]'}, y = {'f(ab[I-1][0])', 0}, line = true, width = 1, color = 'grey'},
-        {x = {'ab[I-1][1]', 'ab[I-1][1]'}, y = {'f(ab[I-1][1])', 0}, line = true, width = 1, color = 'grey'}}
+fstr = {'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'}
 opts = {t = {-2.5, 6.1, 0.01}, I = {1, 12, 1, label = 'Iterations'}, x = {-2.5, 6.1}, y = {-6, 6},
         layout = { width = 640, height = 640, square = false, title = "Regula falsi method for 3cos(x) - 0.3x^2 + 2 = 0 starting on [-1.6, 5.5]" },
-        javascript = jscode, controls = 'I', cumulative = false,
-        enhancements = {{x = {'ab[I-1][0]', 'ab[I-1][1]'}, y = {'f(ab[I-1][0])', 'f(ab[I-1][1])'}, line = true, width = 1, color = 'grey'},
-                        {x = '@(t) t', y = '@(t) 3*cos(t) - 0.3*t^2 + 2', t = {-2.5, 6.1}, color = 'orange'},
-                        {x = 'midpts[I-1]', y = 0, color = 'red', size = 8, point = true}
-                       }}
+        javascript = jscode, controls = 'I',
+        enhancements = {
+          {x = {'ab[I-1][0]', 'ab[I-1][1]'}, y = {'f(ab[I-1][0])', 'f(ab[I-1][1])'}, line = true, width = 1, color = 'grey'},
+          {x = '@(t) t', y = '@(t) 3*cos(t) - 0.3*t^2 + 2', t = {-2.5, 6.1}, color = 'orange'},
+          {x = {'ab[I-1][0]', 'ab[I-1][0]'}, y = {'f(ab[I-1][0])', 0}, line = true, width = 1, color = 'grey'},
+          {x = 'ab[I-1][0]', y = 0, point = true, size = 8, color = 'green'},
+          {x = {'ab[I-1][1]', 'ab[I-1][1]'}, y = {'f(ab[I-1][1])', 0}, line = true, width = 1, color = 'grey'},
+          {x = 'ab[I-1][1]', y = 0, point = true, size = 8, color = 'blue'},
+          {x = 'midpts[I-1]', y = 0, color = 'red', size = 8, point = true}
+        }}
 manipulate(fstr, opts)

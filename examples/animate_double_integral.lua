@@ -77,7 +77,7 @@ jcode = [[
   function displaytext() { const s = sum(); return rule + 'point method: V = ' + s + ' (Exact value: 48)'; }
 ]]
 
-fstr = '@(x) mthlyyMax + 5'
+fstr = '@(x) mthlyyMax + 5' -- any curve outside of the graph
 opts = {m = {1, 32, 1, default = 8, label = 'X Subintervals'}, n = {1, 32, 1, default = 8, label = 'Y Subintervals'}, O = {1, 6, 1, default = 1, label = 'Method'},
         x = {0, 2.1}, y = {-0.05, 2.1},
         controls = 'Omn', javascript = jcode,

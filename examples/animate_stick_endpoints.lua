@@ -31,13 +31,14 @@ opts = {t = {0, 2 * pi, 0.01},
                    xaxis = { showgrid = false, zeroline = false, showticklabels = false },
                    yaxis = { showgrid = false, zeroline = false, showticklabels = false }},
         javascript = jscode,
-        enhancements = {{x = fstr[1], y = fstr[2], t = {0, 2*pi}, color = 'blue'},                           -- order of graphics objects matters, the latter
-                        {x = '@(t) b + (L / sqrt(R**2 + b**2 - 2 * b * R * cos(t)) - 1) * (b - R * cos(t))', -- ones are plotted over the former ones
-                         y = '@(t) R * (1 - L / sqrt(R**2 + b**2 - 2 * b * R * cos(t))) * sin(t)',
-                         t = {0, 2 * pi}, color = 'cyan'},
-                        {x = {'X', 'xx'}, y = {'Y', 'yy'}, line = true, color = 'orange'}, -- xx and yy are calculated in the JavaScript code
-                        {x = 'X', y = 'Y', color = 'blue', size = 10, point = true},
-                        {x = 'b', y = 0, color = 'grey', size = 10, point = true},
-                        {x = 'xx', y = 'yy', color = 'red', size = 10, point = true}
-                       }}
+        enhancements = {
+          {x = fstr[1], y = fstr[2], t = {0, 2*pi}, color = 'blue'},                           -- order of graphics objects matters, the latter
+          {x = '@(t) b + (L / sqrt(R**2 + b**2 - 2 * b * R * cos(t)) - 1) * (b - R * cos(t))', -- ones are plotted over the former ones
+           y = '@(t) R * (1 - L / sqrt(R**2 + b**2 - 2 * b * R * cos(t))) * sin(t)',
+           t = {0, 2 * pi}, color = 'cyan'},
+          {x = {'X', 'xx'}, y = {'Y', 'yy'}, line = true, color = 'orange'}, -- xx and yy are calculated in the JavaScript code
+          {x = 'X', y = 'Y', color = 'blue', size = 10, point = true},
+          {x = 'b', y = 0, color = 'grey', size = 10, point = true},
+          {x = 'xx', y = 'yy', color = 'red', size = 10, point = true}
+        }}
 animate(fstr, opts) -- 'animate' can be replaced with 'manipulate'

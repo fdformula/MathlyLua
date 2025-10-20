@@ -24,17 +24,18 @@ jscode = [[
   function displaytext() { return '[' + ab[I-1][0] + ', ' + ab[I-1][1] + '], midpoint = ' + midpts[I-1]; }
 ]]
 
-fstr = {{'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'},
-        {x = {'ab[I-1][0]', 'ab[I-1][0]'}, y = {'f(ab[I-1][0])', 0}, line = true, width = 1, color = 'grey'},
-        {x = 'ab[I-1][0]', y = 0, color = 'green', size = 8, point = true},
-        {x = {'midpts[I-1]', 'midpts[I-1]'}, y = {'f(midpts[I-1])', 0}, line = true, width = 1, color = 'grey'},
-        {x = {'ab[I-1][1]', 'ab[I-1][1]'}, y = {'f(ab[I-1][1])', 0}, line = true, width = 1, color = 'grey'},
-        {x = 'ab[I-1][1]', y = 0, color = 'green', size = 8, point = true}}
+fstr = {'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'}
 opts = {t = {-3.1, 2.1, 0.01}, I = {1, 56, 1, label = 'Iterations'}, x = {-3.1, 2.1}, y = {-22, 8},
         layout = { width = 640, height = 640, square = false, title = "Midpoint method for x^3 - 2*x + 2 = 0 starting on [-3, 2]" },
-        javascript = jscode, controls = 'I', cumulative = false,
-        enhancements = {{x = '@(t) t', y = '@(t) t^3 - 2*t + 2', t = {-3.1, 2.1}, color = 'orange'},
-                        {x = 'midpts[I-1]', y = 0, color = 'red', size = 8, point = true}
-                       }}
+        javascript = jscode, controls = 'I',
+        enhancements = {
+          {x = '@(t) t', y = '@(t) t^3 - 2*t + 2', t = {-3.1, 2.1}, color = 'orange'},
+          {x = {'ab[I-1][0]', 'ab[I-1][0]'}, y = {'f(ab[I-1][0])', 0}, line = true, width = 1, color = 'grey'},
+          {x = 'ab[I-1][0]', y = 0, color = 'green', size = 8, point = true},
+          {x = {'midpts[I-1]', 'midpts[I-1]'}, y = {'f(midpts[I-1])', 0}, line = true, width = 1, color = 'grey'},
+          {x = {'ab[I-1][1]', 'ab[I-1][1]'}, y = {'f(ab[I-1][1])', 0}, line = true, width = 1, color = 'grey'},
+          {x = 'ab[I-1][1]', y = 0, color = 'blue', size = 8, point = true},
+          {x = 'midpts[I-1]', y = 0, color = 'red', size = 8, point = true}
+        }}
 manipulate(fstr, opts)
 
