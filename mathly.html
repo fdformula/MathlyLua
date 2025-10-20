@@ -484,6 +484,22 @@ variables and functions defined in the JavaScript code.</p>
 </ol>
 
 <p>&#x2713; &nbsp; If there are multiple points, lines, and/or curves to be animated, use <code>fstr</code> to animate (the primary) one, and add others to <code>enhancements</code>.</p>
+<pre><code>mathly = require('mathly')
+
+fstr = '@(x) 4*sin(x)'
+-- fstr = {'@(t) 6*cos(t)', '@(t) 4*sin(t)'} -- try this one and see
+opts = {t = {0, 2*pi}, x = {-6.1, 6.1}, y = { -4.3, 4.3 }, color = 'red', width = 5, style = "'dash': 'dot'",
+        layout = { width = 600, height = 400, square = true, title = 'Demo' },
+        enhancements = {{x = 'X', y = 'Y', color = 'red', size = 8, point = true},
+                        {x = '@(t) cos(t)', y = '@(t) sin(t)', t = {0, pi}},            -- t's range is given, independent of fstr; static
+                        {x = '@(t) 1.5*cos(t)', y = '@(t) 1.5*sin(t)', t = {pi, 2*pi}}, --
+                        {x = '@(t) t', y = '@(t) 3 * sin(t)', color = 'green'},         -- t's range is not given, sync with fstr. note: if fstr = '@(x) ...', t = x
+                        {x = '@(t) t', y = '@(t) 3 * cos(t)', color = 'blue'},          --
+                        {x = 'T', y = '3* sin(T)', point = true, color = 'green'},      -- lines, points? use T, X, and Y
+                        {x = 'T', y = '3* cos(T)', point = true, color = 'orange'}
+                       }}
+animate(fstr, opts)
+</code></pre>
 
 <h4>&bull; &nbsp; <a name=any></a><a name=all href=#m><code>all(x, f)</code>, <code>any(x, f)</code></a></h4>
 <ol>

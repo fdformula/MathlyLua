@@ -882,8 +882,7 @@ local function _vartostring_lua(x, firstq, titleq, printnowq) -- print x, for ge
   if firstq == nil then firstq = true end
 
   local function print1(x)
-    local typ = type(x)
-    local s = ''
+    local typ, s = type(x), ''
     if typ == 'string' then
       s = "'" .. x .. "'"
     elseif typ == 'boolean' then
@@ -2660,7 +2659,11 @@ local function _amnt_write_traces(fstr, cs, opts, tr, file, xexpr, jxexpr, jyexp
   else -- parametric eqs
     trace = trace .. fmt("'x': t.map(t => %s), 'y': t.map(t => %s),", jxexpr, jyexpr)
   end
-  trace = trace .. " 'mode': 'lines', 'line': { 'simplify': false } }" -- color: 'red'}
+  trace = trace .. " 'mode': 'lines', 'line': { 'simplify': false"
+  if opts.color ~= nil then trace = trace .. ", 'color': '" .. opts.color .. "'" end
+  if opts.width ~= nil then trace = trace .. ", 'width': " .. opts.width end
+  if opts.style ~= nil then trace = trace .. ", " .. opts.style end
+  trace = trace .. " } }" -- color: 'red'}
   file:write(fmt("  mthlyTraces.push(%s);\n", trace))
 
   if type(enhancements) == 'table' then
@@ -2801,9 +2804,11 @@ var mthlySldr1step = %s;
             tostring(tr[1]), tostring(tr[2]), qq(tr[1] > 0, '-', '+'), tostring(abs(tr[1])),
             qq(tr[1] > 0, '+', '-'), tostring(abs(tr[1])), tostring((tr[2] - tr[1]) / resolution))
   else
-    s = fmt("for (let i = %s; i <= p * (%s %s %s) %s %s; i += %s) { x.push(i); }\n",
+    s = fmt("for (let i = %s; i <= p * (%s %s %s) %s %s; i += %s) { x.push(i); }",
             tostring(xr[1]), tostring(xr[2]), qq(xr[1] > 0, '-', '+'), tostring(abs(xr[1])),
             qq(xr[1] > 0, '+', '-'), tostring(abs(xr[1])), tostring((xr[2] - xr[1]) / resolution))
+    if tr == nil then tr = xr; s = s .. "; t = x;" end
+    s = s .. "\n"
   end
   file:write(s)
 
@@ -2863,7 +2868,7 @@ var mthlySldr1step = %s;
                      qq(tr[1] > 0, '+', '-'), tostring(abs(tr[1])), tostring((tr[2] - tr[1]) / resolution)))
       file:write(fmt("  if (true) { const t = T; X = %s; Y = %s; };\n", jxexpr, jyexpr))
     else
-      file:write(fmt("  x = []; for (let i = %s; i <= p * (%s %s %s) %s %s; i += %s) { x.push(i); };\n  X = x[x.length - 1];",
+      file:write(fmt("  x = []; for (let i = %s; i <= p * (%s %s %s) %s %s; i += %s) { x.push(i); }; t = x;\n  X = x[x.length - 1];",
                      tostring(xr[1]), tostring(xr[2]), qq(xr[1] > 0, '-', '+'), tostring(abs(xr[1])),
                      qq(xr[1] > 0, '+', '-'), tostring(abs(xr[1])), tostring((xr[2] - xr[1]) / resolution)))
       file:write(fmt("  if (true) { const x = X; Y = %s; T = x; };\n", jyexpr))
