@@ -482,11 +482,7 @@ variables and functions defined in the JavaScript code.</p>
 <li><a href=examples/animate_fixed_point_cobweb.lua target="_blank">Animating the fixed-point method or the generation of a cobweb for x = g(x).</a>
 </ol>
 
-<p>&#x2713; &nbsp; For more complicated animations, each further step produces new graphing objects.
-If all the graphing objects at a moment are to be displayed on a graph, opts.<code>cumulative = true</code> is required.
-In addition, the <code>fstr</code> can be a table of tables as seen in the following example. They take exactly the same format of the field,
-<code>enhancements</code>, and the field, opts.<code>controls</code>, is required. The field, opts.<code>keycontrol</code>, can be used to
-define a single control that controls steps or movements of an animation.</p>
+<p>&#x2713; &nbsp; If there are multiple points, lines, and/or curves to be animated, use <code>fstr</code> to animate (the primary) one, and add others to <code>enhancements</code>.</p>
 
 <h4>&bull; &nbsp; <a name=any></a><a name=all href=#m><code>all(x, f)</code>, <code>any(x, f)</code></a></h4>
 <ol>

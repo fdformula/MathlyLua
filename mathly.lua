@@ -2484,6 +2484,9 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
   _3d_plotq = false
 end -- plotparametriccurve3d
 
+local _anmt_fregex = '^%s*@%s*(%(%s*[%w,%s]*%))%s*(.+)%s*$' -- catch expression of a function
+local _anmt_animateq, _anmt_act = false, '' -- animate or manipulate
+
 function _to_jscript_expr(expr)
   local gsub = string.gsub
   local jexpr = gsub(expr, "%^", "**")
@@ -2496,19 +2499,18 @@ function _to_jscript_expr(expr)
   return jexpr
 end
 
-local _anmt_multifstrsq = false
-local function _anmt_adjust_traces(traces, fregex)
+local function _anmt_adjust_traces(traces)
   if type(traces) ~= 'table' or type(traces[1]) ~= 'table' then
-    error('animate, manipulate: fstr can be and opts.enhancements must be a list of lists.')
+    error(_anmt_act .. '(...): enhancements must be a list of lists.')
   end
   for i = 1, #traces do
     local obj = traces[i]
     if obj.line then -- { x = {-4, 2}, y = {3, 4}, color = 'blue', width = 2, line = true}
     elseif obj.point then -- { x = 5.1, y = 9.2, color = 'blue', size = 3, point = true}
     elseif obj.parametriceqs or (type(obj.x) == 'string' and type(obj.y) == 'string') then
-      _, s = string.match(obj.x, fregex)
+      _, s = string.match(obj.x, _anmt_fregex)
       obj.x = _to_jscript_expr(s)
-      _, s = string.match(obj.y, fregex)
+      _, s = string.match(obj.y, _anmt_fregex)
       obj.y = _to_jscript_expr(s)
       obj.parametriceqs = true
     end
@@ -2539,13 +2541,12 @@ local function _anmt_scan_controls(str, cs, rs, opts)
   end
 end
 
-local function _anmt_parse_args(fstr, opts, animateq)
-  _anmt_multifstrsq = false
+local function _anmt_parse_args(fstr, opts)
   _anmt_cs_labels = {} -- ~[i], label of ith control
   local cs = {} -- ~[i], ith control
   local rs = {} -- ~[i], ranges of ith control
   if opts == nil then opts = {} end
-  if animateq == true then
+  if _anmt_animateq == true then
     cs[1] = 'p'; _anmt_cs_labels[1] = 'Play'; rs[1] = {0, 1, 1/100} -- 'p' (play), reserved for animation
     if opts ~= nil and type(opts.p) == 'table' and opts.p.default ~= nil then rs[1].default = opts.p.default end
   end
@@ -2562,28 +2563,31 @@ local function _anmt_parse_args(fstr, opts, animateq)
   local xr = opts.x or {-5, 5}
   if type(xr) ~= 'table' or xr[1] >= xr[2] then error('Range of x is invalid.') end
 
-  local fregex = '^%s*@%s*(%(%s*[%w,%s]*%))%s*(.+)%s*$' -- catch expression of a function
   local xexpr, yexpr, s
   if type(fstr) == 'string' then
     s = fstr
     xexpr = nil
-    _, yexpr = string.match(fstr, fregex)
+    _, yexpr = string.match(fstr, _anmt_fregex)
   elseif type(fstr) == 'table' then
-    if #fstr == 2 and type(fstr[1]) == 'string' and type(fstr[2]) == 'string' then
-      _, xexpr = string.match(fstr[1], fregex)
-      _, yexpr = string.match(fstr[2], fregex)
-      s = fstr[1] .. ' ' .. yexpr
+    local x, y = '', ''
+    if type(fstr.x) == 'string' and type(fstr.y) == 'string' then
+      x, y = fstr.x, fstr.y
+    elseif #fstr == 2 and type(fstr[1]) == 'string' and type(fstr[2]) == 'string' then
+      x, y = fstr[1], fstr[2]
+    end
+    if x ~= '' then
+      _, xexpr = string.match(x, _anmt_fregex)
+      _, yexpr = string.match(y, _anmt_fregex)
+      s = x .. ' ' .. yexpr
     elseif type(fstr[1]) == 'table' then -- fstr = {{...}, {...}, ...}
-      _anmt_adjust_traces(fstr, fregex)
-      s = ''
-      _anmt_multifstrsq = true
+      error(_anmt_act .. "(fstr, ...): fstr can't be a table of tables.")
     end
   else
-    error(qq(animateq, 'animate', 'manipulate') .. "(fstr, ...): fstr must be a string or a pair of strings.")
+    error(_anmt_act .. "(fstr, ...): fstr must be a string or a pair of strings.")
   end
   if type(opts.controls) == 'string' then
     local I = 1
-    if animateq then I = 2 end -- skip 1st one: p
+    if _anmt_animateq then I = 2 end -- skip 1st one: p
     for i = I, #cs do
       rs[#rs + 1] = opts[cs[i]]
     end
@@ -2592,45 +2596,26 @@ local function _anmt_parse_args(fstr, opts, animateq)
   end
 
   local jxexpr, jyexpr, tr = nil, nil, nil
-  if not _anmt_multifstrsq then
-    jyexpr = _to_jscript_expr(yexpr)
-    if xexpr ~= nil then
-      jxexpr = _to_jscript_expr(xexpr)
-      if opts.t == nil or type(opts.t) ~= 'table' or opts.t[1] >= opts.t[2] then
-        print("Range of parameter 't' is not specified, or it is invalid. Default: { -6, 6, 0.1 }.")
-        tr = {-6, 6, 0.1}
-      else
-        tr = opts.t
-      end
+  jyexpr = _to_jscript_expr(yexpr)
+  if xexpr ~= nil then
+    jxexpr = _to_jscript_expr(xexpr)
+    if opts.t == nil or type(opts.t) ~= 'table' or opts.t[1] >= opts.t[2] then
+      print("Range of parameter 't' is not specified, or it is invalid. Default: { -6, 6, 0.1 }.")
+      tr = {-6, 6, 0.1}
+    else
+      tr = opts.t
     end
   end
-  local jscode, enhancements = '', nil
-  if opts ~= {} then
-    enhancements = opts.enhancements
-    if opts.javascript ~= nil and opts.javascript ~= '' then jscode = opts.javascript end
-  end
-
-  if enhancements ~= nil then -- point, line, parametriceqs
-    _anmt_adjust_traces(enhancements, fregex)
-  end
+  local jscode = ''
+  if opts.javascript ~= nil then jscode = opts.javascript end
+  if opts.enhancements ~= nil then _anmt_adjust_traces(opts.enhancements) end -- point, line, parametriceqs
 
   local title = nil
   if type(opts.layout) == 'table' then title = opts.layout.title end
-
-  -- make control labels the same length -- doesn't work well, simply left alignment by default
-  -- if #cs > 0 then
-  --   local n = max(map(function(x) return #x end, _anmt_cs_labels))
-  --   if n > 1 then
-  --     _anmt_cs_labels = map(function(x) return string.rep('&nbsp;', n - #x) .. x end, _anmt_cs_labels)
-  --   end
-  -- end
-
-  return cs, rs, xr, opts.y, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode
+  return cs, rs, xr, opts.y, tr, title, xexpr, yexpr, jxexpr, jyexpr, opts.enhancements, jscode
 end -- _anmt_parse_args
 
--- key: nil - no cumulative effect of the primary graphics objects in fstr; otherwise - cumulative effect, by default,
--- and it has the info about the primary control
-local function _amnt_write_subtraces(traces, tr, file, resolution, key)   -- traces = {{...}, {...}, ...}
+local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces = {{...}, {...}, ...}
   if type(traces) ~= 'table' or #traces == 0 then return end
   local fmt, head = string.format, ''
   local function toJS(v)
@@ -2661,44 +2646,12 @@ local function _amnt_write_subtraces(traces, tr, file, resolution, key)   -- tra
       end
     end
   end
-
-  if key == nil then
-    write_traces()
-  else -- cumulative
-    head = '  '
-    local k = key.keycontrol
-    file:write(fmt("  const mthlyTmp = %s;\n", k))
-    local step = 1
-    if #key[k] >= 3 then step = key[k][3] end
-    file:write(fmt("  for (let %s = %s; %s <= mthlyTmp; %s += %s) {\n",
-                   k, tostring(key[k][1]), k, k, tostring(step)))
-    write_traces()
-    file:write("  }\n")
-  end
+  write_traces()
 end -- _amnt_write_subtraces
 
 local function _amnt_write_traces(fstr, cs, opts, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
   local fmt, trace = string.format, '{ '
-  if _anmt_multifstrsq then
-    local k, t = nil, nil
-    if not (opts.cumulative == false) then
-      if type(opts.keycontrol) == 'string' then
-        k = string.sub(opts.keycontrol, 1, 1)
-      elseif type(cs) == 'table' and #cs == 1 then
-        k = cs[1]
-      end
-      if type(opts[k]) == 'table' then
-        t = {}
-        t[k] = opts[k] -- range of the key control
-        t.keycontrol = k
-      end
-      if t == nil then
-        print('animate, manipulate: either opts.keycontrol or its range is not specified.')
-      end
-    end
-    _amnt_write_subtraces(fstr, tr, file, resolution, t)
-    goto enhc
-  elseif xexpr == nil then
+  if xexpr == nil then
     trace = trace .. fmt("'x': x, 'y': x.map(x => %s),", jyexpr)
   else -- parametric eqs
     trace = trace .. fmt("'x': t.map(t => %s), 'y': t.map(t => %s),", jxexpr, jyexpr)
@@ -2706,9 +2659,8 @@ local function _amnt_write_traces(fstr, cs, opts, tr, file, xexpr, jxexpr, jyexp
   trace = trace .. " 'mode': 'lines', 'line': { 'simplify': false } }" -- color: 'red'}
   file:write(fmt("  mthlyTraces.push(%s);\n", trace))
 
-::enhc::
   if type(enhancements) == 'table' then
-    _amnt_write_subtraces(enhancements, tr, file, resolution, nil)
+    _amnt_write_subtraces(enhancements, tr, file, resolution)
   end
 end -- _amnt_write_traces
 
@@ -2719,7 +2671,7 @@ local function _anmt_layout_opts(axis, fmt, file) -- axis = layout.xaxis & yaxis
   end
 end
 
-local function _write_manipulate_html(fstr, fname, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, animateq, jscode, opts)
+local function _write_manipulate_html(fstr, fname, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode, opts)
   local file = io.open(fname, "w")
   local fmt = string.format
   if file == nil then
@@ -2779,7 +2731,7 @@ input:focus {outline: none;}
 <input type="range" id="mthlySldr%d" min="%s" max="%s" value="%s" style='left:%dpx;top:%dpx;' step="%s"></input><span id="mthlySldr%dvalue" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>
 ]]
     s = fmt(s, i, top, _anmt_cs_labels[i], i, tostring(rs[i][1]), tostring(rs[i][2]), tostring(rs[i][1]), 64 + shift, top, tostring(rs[i][3]), i, 285 + shift, top)
-    if i == 1 and animateq then
+    if i == 1 and _anmt_animateq then
       file:write(fmt('<button type="button" onclick="mthlyPlay()" style="left:%dpx;top:%dpx;position:absolute">Play</button> <button type="button" onclick="mthlyStop()" style="left:%dpx;top:%dpx;position:absolute">Stop</button>\n', 345+shift, top, 396+shift, top))
     end
     top = top + 30
@@ -2794,7 +2746,7 @@ var x = [];
 var t = [];
 var X, Y, T, p;
 ]])
-  if animateq then
+  if _anmt_animateq then
     s = [[
 var mthlyAutoPlayq = true;
 function mthlyPlay() { mthlyAutoPlayq = true; }
@@ -2820,9 +2772,7 @@ var mthlySldr1step = %s;
   if squareq then file:write(", 'scaleanchor': 'x', 'scaleratio': 1") end -- square aspect ratio
   file:write(" },\n  'showlegend': false\n};\n\n")
   if title == nil then
-    if _anmt_multifstrsq then
-      title = ''
-    elseif xexpr == nil then
+    if xexpr == nil then
       title = 'y = ' .. yexpr
     else
       title = 'x(t) = ' .. xexpr .. ', y(t) = ' .. yexpr
@@ -2841,7 +2791,7 @@ var mthlySldr1step = %s;
     file:write(fmt("var %s = %s;\n", cs[i], tostring(v)))
   end -- why Number(...)? Values of sliders in JavaScript are STRINGS!
 
-  if not animateq then file:write("p = 1;\n") end
+  if not _anmt_animateq then file:write("p = 1;\n") end
   if xexpr ~= nil then -- parametric eqs
     s = fmt("for (let i = %s; i <= p * (%s %s %s) %s %s; i += %s) { t.push(i); }\n",
             tostring(tr[1]), tostring(tr[2]), qq(tr[1] > 0, '-', '+'), tostring(abs(tr[1])),
@@ -2854,7 +2804,7 @@ var mthlySldr1step = %s;
   file:write(s)
 
   -- X, Y, T - values at the last/present point of a curve
-  if animateq then
+  if _anmt_animateq then
     if xexpr ~= nil then
       file:write(fmt("let mthlyTmp = t[t.length - 1];\nif (true) { const t = mthlyTmp; X = %s; Y = %s; T = mthlyTmp; }\n", jxexpr, jyexpr))
     else
@@ -2886,7 +2836,7 @@ var mthlySldr1step = %s;
   file:write("];\nvar mthlyNewCs = [];\n") -- new values of controls; need no initial values
 
   file:write("function mthlyAnimatePlot() {\n")
-  if animateq then
+  if _anmt_animateq then
     s = [[
   if (mthlyAutoPlayq) {
     let x = String(Number(mthlySldr1.value) + mthlySldr1step);
@@ -2902,7 +2852,7 @@ var mthlySldr1step = %s;
     file:write(fmt("  %s = Number(mthlySldr%d.value);\n", cs[i], i))
   end
 
-  if animateq then
+  if _anmt_animateq then
     if xexpr ~= nil then -- parametric eqs
       file:write(fmt("  t = []; for (let i = %s; i <= p * (%s %s %s) %s %s; i += %s) { t.push(i); };\n  T = t[t.length - 1];\n",
                      tostring(tr[1]), tostring(tr[2]), qq(tr[1] > 0, '-', '+'), tostring(abs(tr[1])),
@@ -2960,11 +2910,9 @@ var mthlySldr1step = %s;
 document.getElementById("mthlySldr%dvalue").innerHTML = mthlySldr%d.value;
 mthlySldr%d.addEventListener("input", function() { document.getElementById("mthlySldr%dvalue").innerHTML = mthlySldr%d.value; %smthlyAnimatePlot() });
 ]]
-    file:write(fmt(s, i, i, i, i, i, qq(animateq, 'mthlyAutoPlayq = false; ', '')))
+    file:write(fmt(s, i, i, i, i, i, qq(_anmt_animateq, 'mthlyAutoPlayq = false; ', '')))
   end
 
-  -- if the number of traces are various, like in cumulative cases, setting
-  -- the initial traces to the largest number is a key!? 9/30/25
   file:write(fmt([[
 
 Plotly.newPlot('mathlyDiv', mthlyInitData, mthlyLayout);
@@ -2973,7 +2921,7 @@ setInterval(mthlyAnimatePlot, %d); // animate every 0.2 seconds
 </script>
 </body>
 </html>
-]], 200)) -- qq(_anmt_multifstrsq, 1200, 200)))
+]], 200))
   file:close()
 end -- _write_manipulate_html
 
@@ -3007,15 +2955,17 @@ end
 
 -- manipulate/animate interactively the graph of f(x) with 'controls' and enhancements
 function manipulate(fstr, opts) -- Mathematica
-  local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode = _anmt_parse_args(fstr, opts, false)
-  _write_manipulate_html(fstr, tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, false, jscode, opts)
+  _anmt_animateq, _anmt_act = false, 'manipulate'
+  local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode = _anmt_parse_args(fstr, opts)
+  _write_manipulate_html(fstr, tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode, opts)
   _open_url(tmp_plot_html_file)
   print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
 end
 
 function animate(fstr, opts) -- Mathematica
-  local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode = _anmt_parse_args(fstr, opts, true)
-  _write_manipulate_html(fstr, tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, true, jscode, opts)
+  _anmt_animateq, _anmt_act = true, 'animate'
+  local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode = _anmt_parse_args(fstr, opts)
+  _write_manipulate_html(fstr, tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode, opts)
   _open_url(tmp_plot_html_file)
   print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
 end
