@@ -412,12 +412,15 @@ value of the parameter <code>t</code> for the currently plotted point. They and 
 <li>The parameter of a parametric curve, specified in <code>fstr</code>, must be <code>t</code>.</li>
 <li>All controls can be specified in <code>opts.controls</code> like <code>'ahk'</code>, <code>'a, h, k'</code>, <code>'a h, k'</code>, etc. If the field, <code>controls</code>, is not specified,
 they will be recognized automatically from the string definition of <code>y = f(x)</code> or its parametric equations in <code>fstr</code>.</li>
-<li>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>.</li>
-<li>For parametric curves, if <code>t</code>'s range is omitted, it defaults to <code>x</code>'s range, if the latter is provided, or {-6, 6, 0.1}.</li>
+<li>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>. For the parametric curve defined in <code>fstr</code>,
+if the range of <code>t</code> is omitted, it defaults to the range of <code>x</code>, if the latter is specified, or <code>{-6, 6, 0.1}</code>. For a parametric curve defined in
+<code>enhancements</code>, if the range of <code>t</code> is omitted, it defaults to the range of <code>t</code> in <code>fstr</code> (when <code>fstr = {'@(t) ...', '@(t) ...}</code>)
+or <code>x</code> (when <code>fstr = '@(x) ...'</code>), so, the curve is <em>dynamical</em>, i.e., the curve is animated together with the curve defined by <code>fstr</code>;
+otherwise, the curve is static.</li>
 <li>While a control is a single letter, its label can be a word or so, defined like in <code>m = {0, 3, 1, label = 'Option'}</code>, where <code>m</code> is a control.</li>
-<li>The global variable <code>mthlyTraces</code>, an array of traces to be shown on the graph, and the global constants like <code>mthlyxMax, mthlyyMax,</code> and <code>mthly&lt;c&gt;Max</code>,
-the largest values of <code>x, y</code> and <code>c</code> on the graph, are available to JavaScript, where <code>c</code> is each control. For instance, if there are two controls <code>m</code> and <code>n</code>,
-there are two global constants, <code>mthlymMax</code> and <code>mthlynMax</code>.</li>
+<li>The global variable <code>mthlyTraces</code>, an array of traces to be shown on the graph, and the global constants like <code>mthlyxMin, mthlyxMax, mthlyyMin, mthlyyMax,
+mthly&lt;c&gt;Min</code>, and <code>mthly&lt;c&gt;Max</code>, the lowest and largest values of <code>x, y</code> and <code>c</code> on the graph, are available to JavaScript,
+where <code>&lt;c&gt;</code> is each control.</li>
 <li>With a control, field <code>default</code> defines the initial value of the control. If not provided, it defaults
 to <code>start</code>.</li>
 <li>For each graphics object in <code>enhancements</code>, field <code>style</code> can specify more properties of the object. It is a string like <code>style = 'dash: "dot"'</code> and
@@ -484,7 +487,7 @@ variables and functions defined in the JavaScript code.</p>
 </ol>
 
 <p>&#x2713; &nbsp; If there are multiple points, lines, and/or curves to be animated, use <code>fstr</code> to animate (the primary) one,
-and add others to <code>enhancements</code> or use JavaScript to handle them.</p>
+and implement others through <code>enhancements</code> or in JavaScript.</p>
 <pre><code>mathly = require('mathly')
 
 fstr = '@(x) 4*sin(x)'

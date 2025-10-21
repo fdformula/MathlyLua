@@ -2821,12 +2821,12 @@ var mthlySldr1step = %s;
     end
   end
 
-  file:write("\nvar mthlyTraces = [];\nconst mthlyxMax = " .. tostring(xr[2]) .. ", mthlyyMax = " .. tostring(yr[2]) .. ";\n")
+  file:write("\nvar mthlyTraces = [];\nconst mthlyxMin = " .. tostring(xr[1]) .. ", mthlyxMax = " .. tostring(xr[2]) .. ", mthlyyMin = " .. tostring(yr[1]) .. ", mthlyyMax = " .. tostring(yr[2]) .. ";\n")
   if #cs > 0 then
     file:write("const ")
     for i = 1, #cs do
       if i > 1 then file:write(", ") end
-      file:write("mthly" .. cs[i].. "Max = " .. tostring(rs[i][2]))
+      file:write("mthly" .. cs[i].. "Min = " .. tostring(rs[i][1]) .. ", mthly" .. cs[i].. "Max = " .. tostring(rs[i][2]))
     end
     file:write(";\n\n")
   end
