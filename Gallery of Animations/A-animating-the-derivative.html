@@ -3,7 +3,7 @@
 <head>
  <meta charset="utf-8">
  <title>Mathly Function Animation</title>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+ <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <style>
 label {
  display: inline-block;
@@ -29,7 +29,7 @@ input:focus {outline: none;}
 <div id="mathlyDiv" style="width:540px;height:640px;display:inline-block;top:50px;position:absolute;"></div>
 <!-- controls -->
 <label for="mthlySldr1" style='top:60px;'>Increment in x:</label>
-<input type="range" id="mthlySldr1" min="-1.95" max="0.87" value="-1.95" style='left:136px;top:60px;' step="0.01"></input><span id="mthlySldr1value" style="left:357px;top:60px;position:absolute">&nbsp;</span>
+<input type="range" id="mthlySldr1" min="-1.95" max="0.87" value="-1.95" style='left:176px;top:60px;' step="0.01"></input><span id="mthlySldr1value" style="left:397px;top:60px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:90px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
 function displaytext() { return ""; } // to be overwritten
@@ -49,7 +49,7 @@ var mthlySldr1 = document.getElementById('mthlySldr1');
 mthlySldr1.value = -0.79;
 var h = -0.79;
 p = 1;
-for (let i = -1.5; i <= p * (1.43 + 1.5) - 1.5; i += 0.00586) { x.push(i); }
+for (let i = -1.5; i <= p * (1.43 + 1.5) - 1.5; i += 0.00586) { t.push(i); }
 
 var mthlyTraces = [];
 const mthlyxMax = 1.43, mthlyyMax = 2.12;
@@ -67,30 +67,19 @@ function mthlyUpdateTraces() {
   function displaytext() { return 'Slope of the secant line: ' + k + ' (Exact value: 1)'; }
   // ^^^^^ user's javascript ^^^^^
 
-  mthlyTraces.push({ 'x': x, 'y': x.map(x => fx0 + k * (x - x0)), 'mode': 'lines', 'line': { 'simplify': false } });
-
+  mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => fx0 + k * (t - x0)), 'mode': 'lines', 'line': { 'simplify': false, 'color': 'grey', 'width': 1 } });
   if (true) {
-    const t = [];
-    for (let i = -6; i <= 6; i += 0.024) { t.push(i); }
     mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => t**2), 'mode': 'lines', 'line': { 'simplify': false, 'color': 'orange', 'width': 2  } });
   }
   if (true) {
-    const t = [];
-    for (let i = -6; i <= 6; i += 0.024) { t.push(i); }
     mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => fx0 + 1*(t - x0)), 'mode': 'lines', 'line': { 'simplify': false, 'color': 'green', 'width': 2 , dash: "dot" } });
   }
   mthlyTraces.push({ 'x': [x0], 'y': [fx0], 'mode': 'markers', 'marker': { 'color': 'green', 'size': 8  } });
-
   mthlyTraces.push({ 'x': [x0], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'green', 'size': 8  } });
-
   mthlyTraces.push({ 'x': [x0, x0], 'y': [0, fx0], 'mode': 'lines', 'line': { 'color': 'green', 'width': 1  } });
-
   mthlyTraces.push({ 'x': [x1], 'y': [fx1], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 8  } });
-
   mthlyTraces.push({ 'x': [x1], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 8  } });
-
   mthlyTraces.push({ 'x': [x1, x1], 'y': [0, fx1], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
-
   document.getElementById("displaytext").innerHTML = displaytext();
 }
 
@@ -105,7 +94,6 @@ function mthlyAnimatePlot() {
   mthlyNewCs = [h];
   if (Math.abs(mthlyOldCs[0] - mthlyNewCs[0]) < 0.00001) { return; }
   mthlyOldCs = [h]; // update values of controls
-
   mthlyUpdateTraces();
   Plotly.animate('mathlyDiv', {
     'data': mthlyTraces,
@@ -125,4 +113,3 @@ setInterval(mthlyAnimatePlot, 200); // animate every 0.2 seconds
 </script>
 </body>
 </html>
-
