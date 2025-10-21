@@ -407,26 +407,26 @@ object here, a line, a point, or a parametric curve.</p>
 <p><ol>
 <li><code>(X, Y)</code> are the coordinates of the currently plotted point on the animated curve defined in <code>fstr</code>. If the curve is defined by parametric equations, <code>T</code> refers to the
 value of the parameter <code>t</code> for the currently plotted point. They and controls as well can be used in <code>enhancements</code>, and expressions containing them must be in a string, such as
-<code>'2*X - a * Y + k'</code>.</li>
+<code>'2*X - a * Y + k'</code>. They are global variables accessible by JavaScript code.</li>
 <li>Show no title? Add <code>layout = { title = '' }</code>; No square aspect ratio? Add <code>layout = { square = false }.</code></li>
-<li>The parameter of a parametric curve, specified in <code>fstr</code>, must be <code>t</code>.</li>
+<li>The parameter of a parametric curve, specified in <code>fstr</code> and <code>enhancements</code>, must be <code>t</code>.</li>
 <li>All controls can be specified in <code>opts.controls</code> like <code>'ahk'</code>, <code>'a, h, k'</code>, <code>'a h, k'</code>, etc. If the field, <code>controls</code>, is not specified,
-they will be recognized automatically from the string definition of <code>y = f(x)</code> or its parametric equations in <code>fstr</code>.</li>
+they will be recognized automatically from the string expression of <code>y = f(x)</code> or parametric equations in <code>fstr</code> in the order they occur.</li>
 <li>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>. For the parametric curve defined in <code>fstr</code>,
 if the range of <code>t</code> is omitted, it defaults to the range of <code>x</code>, if the latter is specified, or <code>{-6, 6, 0.1}</code>. For a parametric curve defined in
 <code>enhancements</code>, if the range of <code>t</code> is omitted, it defaults to the range of <code>t</code> in <code>fstr</code> (when <code>fstr = {'@(t) ...', '@(t) ...}</code>)
 or <code>x</code> (when <code>fstr = '@(x) ...'</code>), so, the curve is <em>dynamical</em>, i.e., the curve is animated together with the curve defined by <code>fstr</code>;
 otherwise, the curve is static.</li>
 <li>While a control is a single letter, its label can be a word or so, defined like in <code>m = {0, 3, 1, label = 'Option'}</code>, where <code>m</code> is a control.</li>
-<li>The global variable <code>mthlyTraces</code>, an array of traces to be shown on the graph, and the global constants like <code>mthlyxMin, mthlyxMax, mthlyyMin, mthlyyMax,
-mthly&lt;c&gt;Min</code>, and <code>mthly&lt;c&gt;Max</code>, the lowest and largest values of <code>x, y</code> and <code>c</code> on the graph, are available to JavaScript,
-where <code>&lt;c&gt;</code> is each control.</li>
+<li>Each control is a global variable accesible to JavaScript code. In addition, the global variable <code>mthlyTraces</code>, an array of traces to be shown on the graph, and the global constants
+like <code>mthlyxMin, mthlyxMax, mthlyyMin, mthlyyMax, mthly&lt;c&gt;Min</code>, and <code>mthly&lt;c&gt;Max</code>, the lowest and largest values of <code>x, y</code> and <code>&lt;c&gt;</code> on the
+graph, are also accessible to JavaScript, where <code>&lt;c&gt;</code> is each control.</li>
 <li>With a control, field <code>default</code> defines the initial value of the control. If not provided, it defaults
 to <code>start</code>.</li>
-<li>For each graphics object in <code>enhancements</code>, field <code>style</code> can specify more properties of the object. It is a string like <code>style = 'dash: "dot"'</code> and
-<code>style = 'dash: "dot", color: "red", width: 2'</code> for a line. Here, "dot" can be "dash", "dashdot", "longdash", "longdashdot", etc.</li>
-<li>Field <code>resolution</code> of <code>opts</code> may be needed for smooth parametric curves. It defaults to 500. The larger, the smoother, but more computing power is needed.
-<br><br>Note: With each parametric curve in <code>enhancements</code>, field <code>resolution</code> can be defined separately, and its default and minimum value is 500.</li>
+<li>For each graphics object defined in <code>fstr</code> or in <code>enhancements</code>, field <code>style</code> can specify more properties of the object allowd by Plotly. It is a string like
+<code>style = "'dash': 'dot'"</code> and <code>style = "'dash': 'dot', 'color': 'red', 'width': 2"</code> for a line. Here, <code>'dot'</code> can be <code>'dash', 'dashdot', 'longdash', 'longdashdot'</code>, etc.</li>
+<li>Field <code>opts.resolution</code> may be needed for smooth parametric curves. It defaults to 500. The larger, the smoother, but more computing power is needed.
+With each parametric curve in <code>enhancements</code>, field <code>resolution</code> can be defined separately, and its default and minimum value is 500.</li>
 </ol>
 <p>See also: <code><a href=#manipulate>manipulate</a></code>.</p>
 <pre><code>mathly = require('mathly')
