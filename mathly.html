@@ -406,27 +406,27 @@ and <code>y(t)</code> in <a href=#easyf>shortcut string format</a>), etc. You ma
 object here, a line, a point, or a parametric curve.</p>
 <p><ol>
 <li><code>(X, Y)</code> are the coordinates of the currently plotted point on the animated curve defined in <code>fstr</code>. If the curve is defined by parametric equations, <code>T</code> refers to the
-value of the parameter <code>t</code> for the currently plotted point. They and controls as well can be used in <code>enhancements</code>, and expressions containing them must be in a string, such as
+value of the parameter <code>t</code> for the currently plotted point; if it is defined like <code>'@(x) ...'</code>, <code>T</code> assumes the same value of <code>X</code> (because <code>y = f(x)</code> can
+naturally be parametrized as <code>{'@(t) t', '@(t) f(t)'}</code> with <code>x = t</code>). They and each control as well can be used in <code>enhancements</code>, and expressions containing them must be in a string, such as
 <code>'2*X - a * Y + k'</code>. They are global variables accessible by JavaScript code.</li>
-<li>Show no title? Add <code>layout = { title = '' }</code>; No square aspect ratio? Add <code>layout = { square = false }.</code></li>
-<li>The parameter of a parametric curve, specified in <code>fstr</code> and <code>enhancements</code>, must be <code>t</code>.</li>
-<li>All controls can be specified in <code>opts.controls</code> like <code>'ahk'</code>, <code>'a, h, k'</code>, <code>'a h, k'</code>, etc. If the field, <code>controls</code>, is not specified,
-they will be recognized automatically from the string expression of <code>y = f(x)</code> or parametric equations in <code>fstr</code> in the order they occur.</li>
-<li>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>. For the parametric curve defined in <code>fstr</code>,
-if the range of <code>t</code> is omitted, it defaults to the range of <code>x</code>, if the latter is specified, or <code>{-6, 6, 0.1}</code>. For a parametric curve defined in
-<code>enhancements</code>, if the range of <code>t</code> is omitted, it defaults to the range of <code>t</code> in <code>fstr</code> (when <code>fstr = {'@(t) ...', '@(t) ...}</code>)
-or <code>x</code> (when <code>fstr = '@(x) ...'</code>), so, the curve is <em>dynamical</em>, i.e., the curve is animated together with the curve defined by <code>fstr</code>;
-otherwise, the curve is static.</li>
 <li>While a control is a single letter, its label can be a word or so, defined like in <code>m = {0, 3, 1, label = 'Option'}</code>, where <code>m</code> is a control.</li>
 <li>Each control is a global variable accesible to JavaScript code. In addition, the global variable <code>mthlyTraces</code>, an array of traces to be shown on the graph, and the global constants
 like <code>mthlyxMin, mthlyxMax, mthlyyMin, mthlyyMax, mthly&lt;c&gt;Min</code>, and <code>mthly&lt;c&gt;Max</code>, the lowest and largest values of <code>x, y</code> and <code>&lt;c&gt;</code> on the
 graph, are also accessible to JavaScript, where <code>&lt;c&gt;</code> is each control.</li>
-<li>With a control, field <code>default</code> defines the initial value of the control. If not provided, it defaults
-to <code>start</code>.</li>
+<li>All controls can be specified in <code>opts.controls</code> like <code>'ahk'</code>, <code>'a, h, k'</code>, <code>'a h, k'</code>, etc. If the field, <code>controls</code>, is not specified,
+they will be recognized automatically from the string expression of <code>y = f(x)</code> or parametric equations in <code>fstr</code> in the order they occur.</li>
+<li>With a control, field <code>default</code> defines the initial value of the control. If not provided, it defaults to <code>start</code>.<br><br></li>
+<li>The parameter of a parametric curve, specified in <code>fstr</code> and <code>enhancements</code>, must be <code>t</code>.<br><br></li>
+<li>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>. For the parametric curve defined in <code>fstr</code>,
+if the range of <code>t</code> is omitted, it defaults to the range of <code>x</code>, if the latter is specified, or <code>{-6, 6, 0.1}</code>. For a parametric curve defined in
+<code>enhancements</code>, if the range of <code>t</code> is omitted, it defaults to the range of <code>t</code> in <code>fstr</code> (when <code>fstr = {'@(t) ...', '@(t) ...}</code>)
+or <code>x</code> (when <code>fstr = '@(x) ...'</code>), so, the curve is <em>dynamical</em>, i.e., the curve is animated together with the curve defined by <code>fstr</code>;
+otherwise, the curve is static.<br><br></li>
 <li>For each graphics object defined in <code>fstr</code> or in <code>enhancements</code>, field <code>style</code> can specify more properties of the object allowd by Plotly. It is a string like
-<code>style = "'dash': 'dot'"</code> and <code>style = "'dash': 'dot', 'color': 'red', 'width': 2"</code> for a line. Here, <code>'dot'</code> can be <code>'dash', 'dashdot', 'longdash', 'longdashdot'</code>, etc.</li>
+<code>style = "'dash': 'dot'"</code> and <code>style = "'dash': 'dot', 'color': 'red', 'width': 2"</code> for a curve or a line. Here, <code>'dot'</code> can be <code>'dash', 'dashdot', 'longdash', 'longdashdot'</code>, etc.</li>
 <li>Field <code>opts.resolution</code> may be needed for smooth parametric curves. It defaults to 500. The larger, the smoother, but more computing power is needed.
-With each parametric curve in <code>enhancements</code>, field <code>resolution</code> can be defined separately, and its default and minimum value is 500.</li>
+With each parametric curve in <code>enhancements</code>, field <code>resolution</code> can be defined separately, and its default and minimum value is 500.<br><br></li>
+<li>Show no title? Add <code>layout = { title = '' }</code>. No square aspect ratio? Add <code>layout = { square = false }.</code></li>
 </ol>
 <p>See also: <code><a href=#manipulate>manipulate</a></code>.</p>
 <pre><code>mathly = require('mathly')
@@ -2881,7 +2881,7 @@ x = tables('i', {i = {1, 20, 2}}); disp(x)
 x = tables('1 / i^2', {i = {1, 10}}); disp(x)
 -- {1.0, 0.25, 0.1111, 0.0625, 0.04, 0.0278, 0.0204, 0.0156, 0.0123, 0.01}
 
-x = tables('qq(mod(i, 5) == 0 and mod(i, 6) == 0, i, nil)',{i = {0, 100}}); disp(x)
+x = tables('qq(mod(i, 5) == 0 and mod(i, 6) == 0, i, nil)', {i = {0, 100}}); disp(x)
 -- {0, 30, 60, 90}
 </code></pre>
 <p>The order of controls in <code>opts.controls</code> matters. If <code>opts.controls</code> is not
