@@ -15,12 +15,16 @@ jscode = [[
     let midpt = a - (b - a)/(fb - fa) * fa, fmidpt = f(midpt);
     if (fa * fmidpt > 0) {
       a = midpt; fa = fmidpt;
-      counta = counta + 1; countb = 0;
-      if (counta == 3) { fb = fb/2; counta = 2; } // 2, 1, or 0?
+      if (m == 2) {
+        counta = counta + 1; countb = 0;
+        if (counta == 3) { fb = fb/2; counta = r; } // reset counta to r (0/1/2)
+      }
     } else {
       b = midpt; fb = fmidpt;
-      counta = 0; countb = countb + 1;
-      if (countb == 3) { fa = fa/2; countb = 2; } // 2, 1, or 0?
+      if (m == 2) {
+        counta = 0; countb = countb + 1;
+        if (countb == 3) { fa = fa/2; countb = r; } // reset countb to r (0/1/2)
+      }
     }
     midpts.push(midpt);
     ab.push([a, b]);
@@ -28,13 +32,14 @@ jscode = [[
   }
   a = A; b = B;
 
-  function displaytext() { return '[' + ab[I-1][0] + ', ' + ab[I-1][1] + '], x-intercept = ' + midpts[I-1]; }
+  function displaytext() { return ((m == 1)? 'Original ' : 'Modified') +' method: [' + ab[I-1][0] + ', ' + ab[I-1][1] + '], x-intercept = ' + midpts[I-1]; }
 ]]
 
 fstr = {'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'}
 opts = {I = {1, 67, 1, label = 'Iterations'}, x = {-3.1, 2.1}, y = {-22, 8},
+        m = {1, 2, 1, label = 'Method'}, r = {0, 2, 1, label = 'Reset count to'},
         layout = { width = 640, height = 640, square = false, title = "Regula falsi method for x^3 - 2*x + 2 = 0 starting on [-3, 2]" },
-        javascript = jscode, controls = 'I',
+        javascript = jscode, controls = 'mrI',
         enhancements = {
           {x = {'ab[I-1][0]', 'ab[I-1][1]'}, y = {'fas[I-1]', 'fbs[I-1]'}, line = true, width = 1, color = 'grey'},
           {x = '@(t) t', y = '@(t) t^3 - 2*t + 2', t = {-3.1, 2.1}, color = 'orange'},
