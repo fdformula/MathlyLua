@@ -2559,7 +2559,7 @@ local function _anmt_parse_args(fstr, opts)
     end
   end
 
-  local xr = opts.x or {-5, 5}
+  local xr = opts.x or {-5, 5, 0.1}
   if type(xr) ~= 'table' or xr[1] >= xr[2] then error('Range of x is invalid.') end
 
   local xexpr, yexpr, s
@@ -2599,7 +2599,7 @@ local function _anmt_parse_args(fstr, opts)
   if xexpr ~= nil then
     jxexpr = _to_jscript_expr(xexpr)
     if opts.t == nil or type(opts.t) ~= 'table' then
-      tr = opts.x or {-6, 6, 0.1}
+      tr = opts.x or {-5, 5, 0.1}
     else
       tr = opts.t
     end
@@ -2634,7 +2634,7 @@ local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces =
       elseif obj.parametriceqs then
         local tr1, res, localtrq = obj.t, 500, true
         if tr1 == nil then
-          if tr ~= nil then localtrq = false else tr1 = {-6, 6} end
+          if tr ~= nil then localtrq = false else tr1 = {-5, 5, 0.1} end
         end
         file:write(head .. "  if (true) {\n")  -- 'if (true) ' can be deleted)
         if localtrq then
@@ -2679,8 +2679,7 @@ local function _anmt_layout_opts(axis, fmt, file) -- axis = layout.xaxis & yaxis
 end
 
 local function _write_manipulate_html(fstr, fname, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode, opts)
-  local file = io.open(fname, "w")
-  local fmt = string.format
+  local file, fmt = io.open(fname, "w"), string.format
   if file == nil then
     print(fmt("Failed to create %s. The very device might not be writable.", fname))
     return
@@ -2794,8 +2793,7 @@ var mthlySldr1step = %s;
   for i = 1, #cs do -- values of control sliders
     local v = rs[i].default;
     if v == nil then v = rs[i][1] end
-    file:write(fmt("mthlySldr%d.value = %s;\n", i, tostring(v)))
-    file:write(fmt("var %s = %s;\n", cs[i], tostring(v)))
+    file:write(fmt("mthlySldr%d.value = %s;\nvar %s = %s;\n", i, tostring(v), cs[i], tostring(v)))
   end -- why Number(...)? Values of sliders in JavaScript are STRINGS!
 
   if not _anmt_animateq then file:write("p = 1;\n") end
@@ -2822,29 +2820,19 @@ var mthlySldr1step = %s;
   end
 
   file:write("\nvar mthlyTraces = [];\nconst mthlyxMin = " .. tostring(xr[1]) .. ", mthlyxMax = " .. tostring(xr[2]) .. ", mthlyyMin = " .. tostring(yr[1]) .. ", mthlyyMax = " .. tostring(yr[2]) .. ";\n")
-  if #cs > 0 then
-    file:write("const ")
-    for i = 1, #cs do
-      if i > 1 then file:write(", ") end
-      file:write("mthly" .. cs[i].. "Min = " .. tostring(rs[i][1]) .. ", mthly" .. cs[i].. "Max = " .. tostring(rs[i][2]))
-    end
-    file:write(";\n\n")
+  file:write("const mthlytMin = " .. tostring(tr[1]) .. ", mthlytMax = " .. tostring(tr[2]) .. ";\n")
+  for i = 1, #cs do
+    file:write("const mthly" .. cs[i].. "Min = " .. tostring(rs[i][1]) .. ", mthly" .. cs[i].. "Max = " .. tostring(rs[i][2]) .. ';\n')
   end
-  file:write("function mthlyUpdateTraces() {\n  mthlyTraces = [];\n") -- // mthlyTraces = new Array(); mthlyTraces.splice(0); ... no good
+  file:write("\nfunction mthlyUpdateTraces() {\n  mthlyTraces = [];\n") -- // mthlyTraces = new Array(); mthlyTraces.splice(0); ... no good
   if type(jscode) == 'string' and jscode ~= '' then file:write("\n  // vvvvv user's javascript vvvvv\n" .. jscode .. "  // ^^^^^ user's javascript ^^^^^\n\n") end
   _amnt_write_traces(fstr, cs, opts, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
-  file:write('  document.getElementById("displaytext").innerHTML = displaytext();\n}\n')
-
-  file:write("\nmthlyUpdateTraces();\nconst mthlyInitData = mthlyTraces;\n\n")
-
-  file:write("var mthlyOldCs = [") -- previous values of controls
+  file:write('  document.getElementById("displaytext").innerHTML = displaytext();\n}\n\nmthlyUpdateTraces();\nconst mthlyInitData = mthlyTraces;\n\nvar mthlyOldCs = [') -- previous values of controls
   for i = 1, #cs do
     if i > 1 then file:write(",") end
-    file:write("99999999") -- assume each control is numerical
+    file:write("99999999") -- each control is numeric
   end
-  file:write("];\nvar mthlyNewCs = [];\n") -- new values of controls; need no initial values
-
-  file:write("function mthlyAnimatePlot() {\n")
+  file:write("];\nvar mthlyNewCs = [];\nfunction mthlyAnimatePlot() {\n")
   if _anmt_animateq then
     s = [[
   if (mthlyAutoPlayq) {
@@ -3645,7 +3633,7 @@ function contourplot(f, x, y, style)
     end
   end
   if type(f) == 'string' then f = fstr2f(f) end
-  if x == nil then x = {-6, 6} end
+  if x == nil then x = {-5, 5} end
   x = data(x)
   if y == nil then y = x else y = data(y) end
   local z = {}
