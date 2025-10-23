@@ -17,7 +17,7 @@ jscode = [[
   }
   x1 = X1; x2 = X2;
 
-  function displaytext() { return 'x<sub>1</sub> = ' + ab[I-1][0] + ', x<sub>2</sub> = ' + ab[I-1][1] + ', x<sub>3</sub> = ' + midpts[I-1]; }
+  function displaytext() { return 'x<sub>' + (I-1) + '</sub> = ' + ab[I-1][0] + ', x<sub>' + I + '</sub> = ' + ab[I-1][1] + ', x<sub>' + (I+1) + '</sub> = ' + midpts[I-1]; }
 ]]
 
 fstr = {'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'}
@@ -31,6 +31,9 @@ opts = {I = {1, 26, 1, label = 'Iterations'}, x = {-4.1, 4.1}, y = {-46, 40},
           {x = {'ab[I-1][1]', 'ab[I-1][1]'}, y = {'f(ab[I-1][1])', 0}, line = true, width = 1, color = 'grey'},
           {x = 'ab[I-1][0]', y = 0, color = 'green', size = 8, point = true},
           {x = 'ab[I-1][1]', y = 0, color = 'blue', size = 8, point = true},
-          {x = 'midpts[I-1]', y = 0, color = 'red', size = 8, point = true}
+          {x = 'midpts[I-1]', y = 0, color = 'red', size = 8, point = true},
+          {x = 'ab[I-1][0]', y = -1, color = 'black', size = 12, text = "x<sub>' + (I-1) + '</sub>"},
+          {x = 'ab[I-1][1]', y = -1, color = 'black', size = 12, text = "x<sub>' + I + '</sub>"},
+          {x = 'midpts[I-1]', y = -1, color = 'black', size = 12, text = "x<sub>' + (I+1) + '</sub>"}
         }}
 manipulate(fstr, opts)

@@ -10,7 +10,7 @@ jscode = [[
   xs.push(i); // initial guess
   for (let i = 0; i < 16; i += 1) { xs.push( nextx(xs[i]) ); }
 
-  function displaytext() { return 'Initial guess: ' + i + '; Iteration ' + I + ': x = ' + xs[I-1]; }
+  function displaytext() { return 'Initial guess: x<sub>0</sub> = ' + i + '; Iteration ' + I + ': x<sub>' + I + '</sub> = ' + xs[I-1]; }
 ]]
 
 fstr = {'@(t) t', '@(t) f(xs[I-1]) + fprime(xs[I-1]) * (t - xs[I-1])'}
@@ -22,6 +22,8 @@ opts = {I = {1, 16, 1, label = 'Iterations'}, x = {-4, 4}, y = {-45, 15},
           {x = '@(t) t', y = '@(t) t^3 - 2*t + 2', t = {-4, 4}, color = 'orange'},
           {x = 'xs[I-1]', y = 0, color = 'grey', size = 8, point = true},
           {x = 'xs[I-1]', y = 'f(xs[I-1])', color = 'blue', size = 8, point = true},
-          {x = 'xs[I]', y = 0, color = 'red', size = 10, point = true}
+          {x = 'xs[I]', y = 0, color = 'red', size = 10, point = true},
+          {x = 'xs[I-1]', y = -0.7, color = 'black', size = 12, text = "x<sub>' + (I-1) + '</sub>"},
+          {x = 'xs[I]', y = -0.7, color = 'black', size = 12, text = "x<sub>' + I + '</sub>"}
         }}
 manipulate(fstr, opts)
