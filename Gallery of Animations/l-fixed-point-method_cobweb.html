@@ -54,11 +54,13 @@ var a = 0.9;
 mthlySldr2.value = 30;
 var I = 30;
 p = 1;
-for (let i = -0.1; i <= p * (1.1 + 0.1) - 0.1; i += 0.0024) { x.push(i); }
+for (let i = -0.1; i <= p * (1.1 + 0.1) - 0.1; i += 0.0024) { x.push(i); }; t = x;
 
 var mthlyTraces = [];
-const mthlyxMax = 1.1, mthlyyMax = 1.1;
-const mthlyaMax = 1, mthlyIMax = 30;
+const mthlyxMin = -0.1, mthlyxMax = 1.1, mthlyyMin = -0.1, mthlyyMax = 1.1;
+const mthlytMin = -0.1, mthlytMax = 1.1;
+const mthlyaMin = 0, mthlyaMax = 1;
+const mthlyIMin = 1, mthlyIMax = 30;
 
 function mthlyUpdateTraces() {
   mthlyTraces = [];
@@ -81,20 +83,18 @@ function mthlyUpdateTraces() {
     }
   }
 
-  function displaytext() { plotweb(); return 'x<sub>' + I + '</sub> = ' + xs[I-1]; }
+  function displaytext() { plotweb(); return 'x<sub>' + (I-1) + '</sub> = ' + xs[I-1]; }
   // ^^^^^ user's javascript ^^^^^
 
   mthlyTraces.push({ 'x': x, 'y': x.map(x => 1 - Math.sqrt(x)), 'mode': 'lines', 'line': { 'simplify': false } });
-
   if (true) {
     const t = [];
     for (let i = 0; i <= 1; i += 0.002) { t.push(i); }
     mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => t), 'mode': 'lines', 'line': { 'simplify': false, 'color': 'green', 'width': 2  } });
   }
   mthlyTraces.push({ 'x': [xs[0], xs[0]], 'y': [0, xs[1]], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
-
-  mthlyTraces.push({ 'x': [xs[I-1]], 'y': [g(xs[I-1])], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 8  } });
-
+  mthlyTraces.push({ 'x': [xs[I-1]], 'y': [g(xs[I-1])], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 8.000000  } });
+  mthlyTraces.push({ 'x': [xs[I-1]], 'y': [-0.02], 'text': 'x<sub>' + (I-1) + '</sub>', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': 'black', 'size': 12.000000  } });
   document.getElementById("displaytext").innerHTML = displaytext();
 }
 
@@ -116,7 +116,6 @@ function mthlyAnimatePlot() {
   }
   if (unchangedq) { return; }
   mthlyOldCs = [a, I]; // update values of controls
-
   mthlyUpdateTraces();
   Plotly.animate('mathlyDiv', {
     'data': mthlyTraces,
