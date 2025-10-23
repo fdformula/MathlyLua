@@ -398,6 +398,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 </table>
 
 <h4>&bull; &nbsp; <a name=animate href=#m><code>animate(fstr, opts)</code></a></h4>
+<p>See also: <code><a href=#manipulate>manipulate</a></code>.</p>
 <p>Animate a parametric curve or the graph of a single-variable function <code>f(x)</code> with controls.
 Each control is a single letter, <code>a, b, ..., z, A, B, ...</code>, or <code>Z</code>, except <code>p, t, x, y, T, X</code>,
 and <code>Y</code>. For example, <code>a, h</code>, and <code>k</code> are controls in
@@ -435,7 +436,7 @@ With each parametric curve in <code>enhancements</code>, field <code>resolution<
 <li>Show no title? Add <code>layout = { title = '' }</code>. No square aspect ratio? Add <code>layout = { square = false }</code>.<br><br></li>
 <li>The ranges of <code>x</code> and <code>y</code> define their ranges displayed on a graph.</li>
 </ol></p>
-<p>See also: <code><a href=#manipulate>manipulate</a></code>.</p>
+
 <pre><code>mathly = require('mathly')
 
 fstr = '@(x) x^2'
@@ -1786,7 +1787,7 @@ is dynamically generated.</p>
 fstr = '@(x) a * (x - h)^2 + k' -- a, h, and k are each a control here
 opts = {a = {-3, 3, 0.02, default = 3}, h = {-10, 10, 0.5, default = 0}, k = {-90, 90, default = 0},
         x = {-10, 10}, y = {-100, 100},
-        layout = { width = 600, height = 400, square = false, title = '' }} -- no title
+        layout = { width = 600, height = 400, square = false }}
 manipulate(fstr, opts)
 
 -- Lissajous curves
