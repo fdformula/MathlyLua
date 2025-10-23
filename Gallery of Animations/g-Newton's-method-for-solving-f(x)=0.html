@@ -3,7 +3,8 @@
 <head>
  <meta charset="utf-8">
  <title>Mathly Function Animation</title>
- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+ <script src="file:///C:/cygwin/bin/plotly-2.9.0.min.js"></script>
+ <!--  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
 <style>
 label {
  display: inline-block;
@@ -57,8 +58,10 @@ p = 1;
 for (let i = -4; i <= p * (4 + 4) - 4; i += 0.016) { t.push(i); }
 
 var mthlyTraces = [];
-const mthlyxMax = 4, mthlyyMax = 15;
-const mthlyiMax = 2.5, mthlyIMax = 16;
+const mthlyxMin = -4, mthlyxMax = 4, mthlyyMin = -45, mthlyyMax = 15;
+const mthlytMin = -4, mthlytMax = 4;
+const mthlyiMin = 0, mthlyiMax = 2.5;
+const mthlyIMin = 1, mthlyIMax = 16;
 
 function mthlyUpdateTraces() {
   mthlyTraces = [];
@@ -71,24 +74,21 @@ function mthlyUpdateTraces() {
   xs.push(i); // initial guess
   for (let i = 0; i < 16; i += 1) { xs.push( nextx(xs[i]) ); }
 
-  function displaytext() { return 'Initial guess: ' + i + '; Iteration ' + I + ': x = ' + xs[I-1]; }
+  function displaytext() { return 'Initial guess: x<sub>0</sub> = ' + i + '; Iteration ' + I + ': x<sub>' + I + '</sub> = ' + xs[I-1]; }
   // ^^^^^ user's javascript ^^^^^
 
   mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => f(xs[I-1]) + fprime(xs[I-1]) * (t - xs[I-1])), 'mode': 'lines', 'line': { 'simplify': false } });
-
   mthlyTraces.push({ 'x': [xs[I-1], xs[I-1]], 'y': [f(xs[I-1]), 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
-
   if (true) {
     const t = [];
     for (let i = -4; i <= 4; i += 0.016) { t.push(i); }
     mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => t**3 - 2*t + 2), 'mode': 'lines', 'line': { 'simplify': false, 'color': 'orange', 'width': 3  } });
   }
-  mthlyTraces.push({ 'x': [xs[I-1]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'grey', 'size': 8  } });
-
-  mthlyTraces.push({ 'x': [xs[I-1]], 'y': [f(xs[I-1])], 'mode': 'markers', 'marker': { 'color': 'blue', 'size': 8  } });
-
-  mthlyTraces.push({ 'x': [xs[I]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 10  } });
-
+  mthlyTraces.push({ 'x': [xs[I-1]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'grey', 'size': 8.000000  } });
+  mthlyTraces.push({ 'x': [xs[I-1]], 'y': [f(xs[I-1])], 'mode': 'markers', 'marker': { 'color': 'blue', 'size': 8.000000  } });
+  mthlyTraces.push({ 'x': [xs[I]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 10.000000  } });
+  mthlyTraces.push({ 'x': [xs[I-1]], 'y': [-0.7], 'text': 'x<sub>' + (I-1) + '</sub>', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': 'black', 'size': 12.000000  } });
+  mthlyTraces.push({ 'x': [xs[I]], 'y': [-0.7], 'text': 'x<sub>' + I + '</sub>', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': 'black', 'size': 12.000000  } });
   document.getElementById("displaytext").innerHTML = displaytext();
 }
 
@@ -110,7 +110,6 @@ function mthlyAnimatePlot() {
   }
   if (unchangedq) { return; }
   mthlyOldCs = [i, I]; // update values of controls
-
   mthlyUpdateTraces();
   Plotly.animate('mathlyDiv', {
     'data': mthlyTraces,
