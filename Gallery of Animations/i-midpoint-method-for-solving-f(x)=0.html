@@ -3,7 +3,8 @@
 <head>
  <meta charset="utf-8">
  <title>Mathly Function Animation</title>
- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+ <script src="file:///C:/cygwin/bin/plotly-2.9.0.min.js"></script>
+ <!--  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
 <style>
 label {
  display: inline-block;
@@ -49,11 +50,12 @@ var mthlySldr1 = document.getElementById('mthlySldr1');
 mthlySldr1.value = 1;
 var I = 1;
 p = 1;
-for (let i = -3.1; i <= p * (2.1 + 3.1) - 3.1; i += 0.0104) { x.push(i); }
+for (let i = -3.1; i <= p * (2.1 + 3.1) - 3.1; i += 0.0104) { t.push(i); }
 
 var mthlyTraces = [];
-const mthlyxMax = 2.1, mthlyyMax = 8;
-const mthlyIMax = 56;
+const mthlyxMin = -3.1, mthlyxMax = 2.1, mthlyyMin = -22, mthlyyMax = 8;
+const mthlytMin = -3.1, mthlytMax = 2.1;
+const mthlyIMin = 1, mthlyIMax = 56;
 
 function mthlyUpdateTraces() {
   mthlyTraces = [];
@@ -80,23 +82,21 @@ function mthlyUpdateTraces() {
   function displaytext() { return '[' + ab[I-1][0] + ', ' + ab[I-1][1] + '], midpoint = ' + midpts[I-1]; }
   // ^^^^^ user's javascript ^^^^^
 
-  mthlyTraces.push({ 'x': [ab[I-1][0], ab[I-1][0]], 'y': [f(ab[I-1][0]), 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
-
-  mthlyTraces.push({ 'x': [ab[I-1][0]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'green', 'size': 8  } });
-
-  mthlyTraces.push({ 'x': [midpts[I-1], midpts[I-1]], 'y': [f(midpts[I-1]), 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
-
-  mthlyTraces.push({ 'x': [ab[I-1][1], ab[I-1][1]], 'y': [f(ab[I-1][1]), 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
-
-  mthlyTraces.push({ 'x': [ab[I-1][1]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'green', 'size': 8  } });
-
+  mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])), 'mode': 'lines', 'line': { 'simplify': false } });
   if (true) {
     const t = [];
     for (let i = -3.1; i <= 2.1; i += 0.0104) { t.push(i); }
     mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => t**3 - 2*t + 2), 'mode': 'lines', 'line': { 'simplify': false, 'color': 'orange', 'width': 3  } });
   }
-  mthlyTraces.push({ 'x': [midpts[I-1]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 8  } });
-
+  mthlyTraces.push({ 'x': [ab[I-1][0], ab[I-1][0]], 'y': [f(ab[I-1][0]), 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
+  mthlyTraces.push({ 'x': [ab[I-1][0]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'green', 'size': 8.000000  } });
+  mthlyTraces.push({ 'x': [midpts[I-1], midpts[I-1]], 'y': [f(midpts[I-1]), 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
+  mthlyTraces.push({ 'x': [ab[I-1][1], ab[I-1][1]], 'y': [f(ab[I-1][1]), 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
+  mthlyTraces.push({ 'x': [ab[I-1][1]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'blue', 'size': 8.000000  } });
+  mthlyTraces.push({ 'x': [midpts[I-1]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 8.000000  } });
+  mthlyTraces.push({ 'x': [ab[I-1][0]], 'y': [1], 'text': 'a', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': 'black', 'size': 12.000000  } });
+  mthlyTraces.push({ 'x': [ab[I-1][1]], 'y': [-0.5], 'text': 'b', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': 'black', 'size': 12.000000  } });
+  mthlyTraces.push({ 'x': [midpts[I-1]], 'y': [-0.5], 'text': 'midpoint', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': 'black', 'size': 12.000000  } });
   document.getElementById("displaytext").innerHTML = displaytext();
 }
 
@@ -111,7 +111,6 @@ function mthlyAnimatePlot() {
   mthlyNewCs = [I];
   if (Math.abs(mthlyOldCs[0] - mthlyNewCs[0]) < 0.00001) { return; }
   mthlyOldCs = [I]; // update values of controls
-
   mthlyUpdateTraces();
   Plotly.animate('mathlyDiv', {
     'data': mthlyTraces,
