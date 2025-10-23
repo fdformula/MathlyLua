@@ -2506,6 +2506,7 @@ local function _anmt_adjust_traces(traces)
     local obj = traces[i]
     if obj.line then -- { x = {-4, 2}, y = {3, 4}, color = 'blue', width = 2, line = true}
     elseif obj.point then -- { x = 5.1, y = 9.2, color = 'blue', size = 3, point = true}
+    elseif obj.text ~= nil then
     elseif obj.parametriceqs or (type(obj.x) == 'string' and type(obj.y) == 'string') then
       _, s = string.match(obj.x, _anmt_fregex)
       obj.x = _to_jscript_expr(s)
@@ -2622,14 +2623,19 @@ local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces =
   local function write_traces()
     for i = 1, #traces do
       local obj, style = traces[i], '' -- Plotly JavaScript properties in string is allowed
+      local color = qq(type(obj.color) == 'string', obj.color, 'black')
       if type(obj.style) == 'string' then style = ", " .. obj.style end
       if obj.line then
         trace = fmt("{ 'x': [%s, %s], 'y': [%s, %s], 'mode': 'lines', 'line': { 'color': '%s', 'width': %d %s } }",
-                    toJS(obj.x[1]), toJS(obj.x[2]), toJS(obj.y[1]), toJS(obj.y[2]), obj.color or 'black', obj.width or 3, style)
+                    toJS(obj.x[1]), toJS(obj.x[2]), toJS(obj.y[1]), toJS(obj.y[2]), color, obj.width or 3, style)
         file:write(fmt("  %smthlyTraces.push(%s);\n", head, trace))
       elseif obj.point then
-        trace = fmt("{ 'x': [%s], 'y': [%s], 'mode': 'markers', 'marker': { 'color': '%s', 'size': %d %s } }",
-                    toJS(obj.x), toJS(obj.y), obj.color or 'black', obj.size or 8, style)
+        trace = fmt("{ 'x': [%s], 'y': [%s], 'mode': 'markers', 'marker': { 'color': '%s', 'size': %f %s } }",
+                    toJS(obj.x), toJS(obj.y), color, obj.size or 8, style)
+        file:write(fmt("  %smthlyTraces.push(%s);\n", head, trace))
+      elseif obj.text ~= nil then
+        trace = fmt("{ 'x': [%s], 'y': [%s], 'text': '%s', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': '%s', 'size': %f %s } }",
+                    toJS(obj.x), toJS(obj.y), obj.text, color, obj.size or 10, style)
         file:write(fmt("  %smthlyTraces.push(%s);\n", head, trace))
       elseif obj.parametriceqs then
         local tr1, res, localtrq = obj.t, 500, true
@@ -2644,7 +2650,7 @@ local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces =
           file:write(fmt("    %sfor (let i = %s; i <= %s; i += %s) { t.push(i); }\n", head, tostring(tr1[1]), tostring(tr1[2]), tostring(step)))
         end
         trace = fmt("{ 'x': t.map(t => %s), 'y': t.map(t => %s), 'mode': 'lines', 'line': { 'simplify': false, 'color': '%s', 'width': %d %s } }",
-                    obj.x, obj.y, obj.color or 'black', obj.width or 3, style)
+                    obj.x, obj.y, color, obj.width or 3, style)
         file:write(fmt("    %smthlyTraces.push(%s);\n%s  }\n", head, trace, head))
       end
     end
