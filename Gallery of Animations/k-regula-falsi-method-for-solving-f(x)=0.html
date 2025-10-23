@@ -26,11 +26,15 @@ input:focus {outline: none;}
 </head>
 <body>
 <input type='text' id='title' style="width:640px;left:0px;text-align:center;border:none;"></input>
-<div id="mathlyDiv" style="width:640px;height:640px;display:inline-block;top:50px;position:absolute;"></div>
+<div id="mathlyDiv" style="width:640px;height:640px;display:inline-block;top:80px;position:absolute;"></div>
 <!-- controls -->
-<label for="mthlySldr1" style='top:60px;'>Iterations:</label>
-<input type="range" id="mthlySldr1" min="1" max="67" value="1" style='left:144px;top:60px;' step="1"></input><span id="mthlySldr1value" style="left:365px;top:60px;position:absolute">&nbsp;</span>
-<span id="displaytext" style="left:74px;top:90px;position:absolute">&nbsp;</span>
+<label for="mthlySldr1" style='top:60px;'>Method:</label>
+<input type="range" id="mthlySldr1" min="1" max="2" value="1" style='left:176px;top:60px;' step="1"></input><span id="mthlySldr1value" style="left:397px;top:60px;position:absolute">&nbsp;</span>
+<label for="mthlySldr2" style='top:90px;'>Reset count to:</label>
+<input type="range" id="mthlySldr2" min="0" max="2" value="0" style='left:176px;top:90px;' step="1"></input><span id="mthlySldr2value" style="left:397px;top:90px;position:absolute">&nbsp;</span>
+<label for="mthlySldr3" style='top:120px;'>Iterations:</label>
+<input type="range" id="mthlySldr3" min="1" max="67" value="1" style='left:176px;top:120px;' step="1"></input><span id="mthlySldr3value" style="left:397px;top:120px;position:absolute">&nbsp;</span>
+<span id="displaytext" style="left:74px;top:150px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
 function displaytext() { return ""; } // to be overwritten
 var x = [];
@@ -46,14 +50,23 @@ const mthlyLayout = {
 var title = document.getElementById('title');
 title.value = 'Regula falsi method for x^3 - 2*x + 2 = 0 starting on [-3, 2]';
 var mthlySldr1 = document.getElementById('mthlySldr1');
+var mthlySldr2 = document.getElementById('mthlySldr2');
+var mthlySldr3 = document.getElementById('mthlySldr3');
 mthlySldr1.value = 1;
+var m = 1;
+mthlySldr2.value = 0;
+var r = 0;
+mthlySldr3.value = 1;
 var I = 1;
 p = 1;
-for (let i = -3.1; i <= p * (2.1 + 3.1) - 3.1; i += 0.0104) { x.push(i); }
+for (let i = -3.1; i <= p * (2.1 + 3.1) - 3.1; i += 0.0104) { t.push(i); }
 
 var mthlyTraces = [];
-const mthlyxMax = 2.1, mthlyyMax = 8;
-const mthlyIMax = 67;
+const mthlyxMin = -3.1, mthlyxMax = 2.1, mthlyyMin = -22, mthlyyMax = 8;
+const mthlytMin = -3.1, mthlytMax = 2.1;
+const mthlymMin = 1, mthlymMax = 2;
+const mthlyrMin = 0, mthlyrMax = 2;
+const mthlyIMin = 1, mthlyIMax = 67;
 
 function mthlyUpdateTraces() {
   mthlyTraces = [];
@@ -64,50 +77,71 @@ function mthlyUpdateTraces() {
   function f(x) { return x**3 - 2*x + 2; }
   let fa = f(a), fb = f(b);
   var ab = [], midpts = [];
+  var fas = [fa], fbs = [fb];
+  var counta = 0, countb = 0;
   ab.push([a, b]);
   for (let i = 1; i <= 67; i += 1) {
     let midpt = a - (b - a)/(fb - fa) * fa, fmidpt = f(midpt);
     if (fa * fmidpt > 0) {
       a = midpt; fa = fmidpt;
+      if (m == 2) {
+        counta = counta + 1; countb = 0;
+        if (counta == 3) { fb = fb/2; counta = r; } // reset counta to r (0/1/2)
+      }
     } else {
       b = midpt; fb = fmidpt;
+      if (m == 2) {
+        counta = 0; countb = countb + 1;
+        if (countb == 3) { fa = fa/2; countb = r; } // reset countb to r (0/1/2)
+      }
     }
     midpts.push(midpt);
     ab.push([a, b]);
+    fas.push(fa); fbs.push(fb);
   }
   a = A; b = B;
 
-  function displaytext() { return '[' + ab[I-1][0] + ', ' + ab[I-1][1] + '], x-intercept = ' + midpts[I-1]; }
+  function displaytext() { return ((m == 1)? 'Original ' : 'Modified') +' method: [' + ab[I-1][0] + ', ' + ab[I-1][1] + '], x-intercept = ' + midpts[I-1]; }
   // ^^^^^ user's javascript ^^^^^
 
-  mthlyTraces.push({ 'x': [ab[I-1][0], ab[I-1][0]], 'y': [f(ab[I-1][0]), 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
-
-  mthlyTraces.push({ 'x': [ab[I-1][1], ab[I-1][1]], 'y': [f(ab[I-1][1]), 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
-
-  mthlyTraces.push({ 'x': [ab[I-1][0], ab[I-1][1]], 'y': [f(ab[I-1][0]), f(ab[I-1][1])], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
-
+  mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])), 'mode': 'lines', 'line': { 'simplify': false } });
+  mthlyTraces.push({ 'x': [ab[I-1][0], ab[I-1][1]], 'y': [fas[I-1], fbs[I-1]], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
   if (true) {
     const t = [];
     for (let i = -3.1; i <= 2.1; i += 0.0104) { t.push(i); }
     mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => t**3 - 2*t + 2), 'mode': 'lines', 'line': { 'simplify': false, 'color': 'orange', 'width': 3  } });
   }
-  mthlyTraces.push({ 'x': [midpts[I-1]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 8  } });
-
+  mthlyTraces.push({ 'x': [ab[I-1][0], ab[I-1][0]], 'y': [f(ab[I-1][0]), 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
+  mthlyTraces.push({ 'x': [ab[I-1][0]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'green', 'size': 8.000000  } });
+  mthlyTraces.push({ 'x': [ab[I-1][0]], 'y': [fas[I-1]], 'mode': 'markers', 'marker': { 'color': 'green', 'size': 12.000000  } });
+  mthlyTraces.push({ 'x': [ab[I-1][1], ab[I-1][1]], 'y': [f(ab[I-1][1]), 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
+  mthlyTraces.push({ 'x': [ab[I-1][1]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'blue', 'size': 8.000000  } });
+  mthlyTraces.push({ 'x': [ab[I-1][1]], 'y': [fbs[I-1]], 'mode': 'markers', 'marker': { 'color': 'blue', 'size': 12.000000  } });
+  mthlyTraces.push({ 'x': [midpts[I-1]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 8.000000  } });
+  mthlyTraces.push({ 'x': [ab[I-1][0]], 'y': [1], 'text': 'a', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': 'black', 'size': 12.000000  } });
+  mthlyTraces.push({ 'x': [ab[I-1][1]], 'y': [-0.5], 'text': 'b', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': 'black', 'size': 12.000000  } });
   document.getElementById("displaytext").innerHTML = displaytext();
 }
 
 mthlyUpdateTraces();
 const mthlyInitData = mthlyTraces;
 
-var mthlyOldCs = [99999999];
+var mthlyOldCs = [99999999,99999999,99999999];
 var mthlyNewCs = [];
 function mthlyAnimatePlot() {
-  I = Number(mthlySldr1.value);
+  m = Number(mthlySldr1.value);
+  r = Number(mthlySldr2.value);
+  I = Number(mthlySldr3.value);
   // has any controls changed?
-  mthlyNewCs = [I];
-  if (Math.abs(mthlyOldCs[0] - mthlyNewCs[0]) < 0.00001) { return; }
-  mthlyOldCs = [I]; // update values of controls
-
+  mthlyNewCs = [m, r, I];
+  var unchangedq = true;
+  for (let i = 0; i < 3; i++) {
+    if (Math.abs(mthlyOldCs[i] - mthlyNewCs[i]) > 0.00001) {
+      unchangedq = false; break;
+    }
+  }
+  if (unchangedq) { return; }
+  mthlyOldCs = [m, r, I]; // update values of controls
   mthlyUpdateTraces();
   Plotly.animate('mathlyDiv', {
     'data': mthlyTraces,
@@ -120,6 +154,10 @@ function mthlyAnimatePlot() {
 
 document.getElementById("mthlySldr1value").innerHTML = mthlySldr1.value;
 mthlySldr1.addEventListener("input", function() { document.getElementById("mthlySldr1value").innerHTML = mthlySldr1.value; mthlyAnimatePlot() });
+document.getElementById("mthlySldr2value").innerHTML = mthlySldr2.value;
+mthlySldr2.addEventListener("input", function() { document.getElementById("mthlySldr2value").innerHTML = mthlySldr2.value; mthlyAnimatePlot() });
+document.getElementById("mthlySldr3value").innerHTML = mthlySldr3.value;
+mthlySldr3.addEventListener("input", function() { document.getElementById("mthlySldr3value").innerHTML = mthlySldr3.value; mthlyAnimatePlot() });
 
 Plotly.newPlot('mathlyDiv', mthlyInitData, mthlyLayout);
 mthlyAnimatePlot();
