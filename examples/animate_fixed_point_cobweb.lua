@@ -18,7 +18,7 @@ jscode = [[
     }
 
     // plot enough extra objects outside the graph so that no old traces will stay - ugly, but works!
-    for (let i = 1; i <= mthlyIMax * 2; i ++) {
+    for (let i = 1; i <= mthlyIMax * 4; i ++) {
       mthlyTraces.push({ 'x': [mthlyxMax + i], 'y': [mthlyyMax + i], 'mode': 'markers' })
     }
   }
@@ -35,6 +35,7 @@ opts = {I = {1, MaxIterations, 1, default = MaxIterations, label = 'Iterations'}
           {x = '@(t) t', y = '@(t) t', t = {0, 1}, width = 2, color = 'green'}, -- line: y = x
           {x = {'xs[0]', 'xs[0]'}, y = {0, 'xs[1]'}, line = true, width = 1, color = 'grey'},
           {x = 'xs[I-1]', y = 'g(xs[I-1])', color = 'red', size = 8, point = true},
+          {x = 'xs[I-1]', y = 0, color = 'red', size = 8, point = true},
           {x = 'xs[I-1]', y = -0.02, color = 'black', size = 12, text = "x<sub>' + (I-1) + '</sub>"}
         }}
 manipulate(fstr, opts)
