@@ -402,14 +402,14 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 Each control is a single letter, <code>a, b, ..., z, A, B, ...</code>, or <code>Z</code>, except <code>p, t, x, y, T, X</code>,
 and <code>Y</code>. For example, <code>a, h</code>, and <code>k</code> are controls in
 <code>f(x) = a (x - h)^2 + k</code> for exploring the variation of the parabola as they change.</p>
-<p>The <code>opts</code> is a table of tables, used to define the ranges of <code>x, y</code>, and <code>t</code> (if <code>fstr</code> is the parametric equations of <code>x(t)</code>
-and <code>y(t)</code> in <a href=#easyf>shortcut string format</a>), etc. You may include optional <code>enhancements</code> to improve the effect of an animation. An enhancement is
-actually a simple graphics object here, i.e., a line, a point, a text, or a parametric curve, of which the properties, <code>color, size, width</code>, when appliable, can be specified.
-If more properties are needed, define them through field <code>style</code> in a string, such as <code>style = "'symbol': 'star'"</code> for a point. You may search keywords like
+<p><code>fstr</code> must be a string for <code>y = f(x)</code> or a pair of strings for a parametric curve. The string(s) must be a function in the <a href=#easyf>shortcut string format</a>.</p>
+<p>The <code>opts</code> is a table of tables, used to define the ranges of <code>x, y</code>, and <code>t</code>, etc. You may include optional <code>enhancements</code> in it to improve the effect of an animation. An enhancement is
+actually a simple graphics object here, i.e., a line, a point, a text, or a parametric curve, of which the properties, <code>color, size, width</code>, when applicable, can be specified.
+If more properties are needed, define them through field <code>style</code> in a string, such as <code>style = "'symbol': 'diamond', 'line': { 'color': 'rgb(0, 0, 0)', 'width': 2 }"</code> for a point. You may search keywords like
 <a href="https://www.google.com/search?q=Plotly+JavaScript+line+style" target="_blank">Plotly JavaScript line style</a>,
 <a href="https://www.google.com/search?q=Plotly+JavaScript+point+style" target="_blank">Plotly JavaScript point style</a>, and
 <a href="https://www.google.com/search?q=Plotly+JavaScript+textfont+style" target="_blank">Plotly JavaScript textfont style</a>
-for more information. Note: <code>style</code> must be a string, such as, <code>style = "'symbol': 'diamond', 'line': { 'color': 'rgb(0, 0, 0)', 'width': 2 }"</code>.</p>
+for more information.</p>
 <p><ol>
 <li><code>(X, Y)</code> are the coordinates of the currently plotted point on the animated curve defined in <code>fstr</code>. If the curve is defined by parametric equations, <code>T</code> refers to the
 value of the parameter <code>t</code> for the currently plotted point; if it is defined like <code>'@(x) ...'</code>, <code>T</code> assumes the same value of <code>X</code> (because <code>y = f(x)</code> can
@@ -515,7 +515,7 @@ opts = {t = {0, 2*pi}, x = {-6.1, 6.1}, y = { -4.3, 4.3 }, color = 'blue', width
 animate(fstr, opts)
 </code></pre>
 <p>Note: With <code>text</code> in <code>enhancements</code>, if dynamical evaluation is needed, it must be defined like <code>text = <u>"...'</u> + expr1 + '...' + expr2 + '...'
-[+ more terms] + <u>'..."</u></code>, where ... can be any text, expr1, expr2, ..., are JavaScript expressions to be evaluated daynamically.</p>
+[+ more terms] + <u>'..."</u></code>, where ... can be any text, expr1, expr2, ..., are JavaScript expressions to be evaluated dynamically.</p>
 <h4>&bull; &nbsp; <a name=any></a><a name=all href=#m><code>all(x, f)</code>, <code>any(x, f)</code></a></h4>
 <ol>
 <li><code>all(x, f)</code>: Test if <code>f(x)</code> is true for every number in <code>x</code>.
