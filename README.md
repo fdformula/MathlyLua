@@ -28,7 +28,7 @@ You may download Lua source code in https://lua.org/ and compile it yourself or 
 for Microsoft Windows in, say, https://joedf.github.io/LuaBuilds/ and https://www.nuget.org/packages/lua/. Another way to get prebuilt Lua is to download
 ZeroBrane Studio (https://studio.zerobrane.com/), a lightweight Lua IDE for various platforms. It comes with multiple versions of Lua.
 
-Microsoft Windows users may download on this very page the file, `cudatext-for-mathly-win-*.7z`, including Lua 5.4.8.
+Microsoft Windows users may download on this very page the file, `cudatext-for-mathly-win-*.7z`, including a text editor, CudaText, with Lua 5.4.8 integrated.
 Run [7zip](https://7-zip.org/) to extract it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder, C:\cygwin</em>.
 
 [CudaText](https://cudatext.github.io/) is a very good "IDE" for Lua and running mathly as well.
