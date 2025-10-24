@@ -12,7 +12,7 @@ shown in an internet browser.
 The entire mathly tool together with Lua interpreter is less than 5 MB, while providing enough features for instructors and college students
 to implement numerical algorithms. <b>Because it is super lightweight and fast as well, it can run fast even on old and slow devices</b> like 
 Microsoft Surface Pro 4 (Intel Core i5-6300U with 8 GB RAM). In contrast to it, MATLAB needs a few GB of storage space. In addition, 
-it takes about 22 seconds to start MATLAB R2024b on a brand new high-end Intel Core i9-14900HX laptop with 56 GB RAM. Thus, it can hardly 
+it takes about 22 seconds to start MATLAB R2024b on a new high-end Intel Core i9-14900HX laptop with 56 GB RAM. Thus, it can hardly 
 be installed on slow or pretty old computers and run smoothly.
 
 Mathly is especially a good choice for instructors of linear algebra and numerical computing for teaching. It takes no time to
@@ -96,7 +96,7 @@ See mathly.html.
 
 ## Mathly objects and Lua tables
 
-1. A mathly table is a simple Lua table registered as a mathly object. E.g., `x = tt{1, 2, 3}` is such a table. It has exactly the same structure as an ordinary Lua table `y = {1, 2, 3}`. The difference is that we can apply "vectorization" operations and matrix operations on `x` instead of `y`. For instance, `2 * x - 1` gives a new mathly table, {1, 3, 5}. Here, `x[i]` gives the i-th element in the table.
+1. A mathly table is a simple Lua table registered as a mathly object. E.g., `x = tt{1, 2, 3}` is such a table. It has the same structure as an ordinary Lua table `y = {1, 2, 3}`. The difference is that we can apply "vectorization" operations and matrix operations on `x` instead of `y`. For instance, `2 * x - 1` gives a new mathly table, {1, 3, 5}. Here, `x[i]` gives the i-th element in the table.
 
 2. A mathly row vector is actually a `1xn` matrix. E.g., `x = rr{1, 2, 3}` is a mathly row vector. It is stored as {{1, 2, 3}}. To access 2, we must use `x[1][2]`. Similarly, a column vector `y = cc{1, 2, 3}` is a `3x1` matrix stored in the format {{1}, {2}, {3}}. We use `y[2][1]` to access 2. Indeed, `x[1][2]` or `y[2][1]` is quite strange and inconvenient, which is why the results of most operations on these row/column vectors and matrices and many mathly functions are mathly tables.
 
