@@ -57,21 +57,7 @@ Other hotkeys? Refer to `C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt`.
 
 &rArr; MacOS users? Download the file, cudatext-for-mathly-macosx.tar.gz. Expand the downloaded file and refer to the included file, note.txt, for other steps.
 
-## Where to place the downloaded files?
-
-The files may be placed in either
-
-### 1. the folder of your Lua script files to run/test or
-
-### 2. (Windows) the folder, e.g., c:/cygwin/bin/, which contains the command, `lua.exe`:
-```
-lua.exe
-browser-setting.lua
-mathly.lua
-plotly-2.9.0.min.js
-```
-###  (Linux) /usr/local/share/lua/5.4/
-You may need to edit the file `browser-setting.lua`. See comments in the file.
+By default, [Mozilla Firefox](https://www.mozilla.org/) is the internet browser. If you use a different browser, <em>you need to edit the file <code>browser-setting.lua</code>.</em> See comments in the very file.
 
 Note: The *.lua files can be compiled with `luac`. To use compiled modules, we set `package.path` first as follows:
 
