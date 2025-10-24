@@ -29,7 +29,8 @@ for Microsoft Windows in, say, https://joedf.github.io/LuaBuilds/ and https://ww
 ZeroBrane Studio (https://studio.zerobrane.com/), a lightweight Lua IDE for various platforms. It comes with multiple versions of Lua.
 
 Microsoft Windows users may download on this very page the file, `cudatext-for-mathly-win-*.7z`, including Lua 5.4.8.
-Run [7zip](https://7-zip.org/) to extract it to C:\ (the root directory of the C drive). [CudaText](https://cudatext.github.io/) is a very good "IDE" for Lua and running mathly as well.
+Run [7zip](https://7-zip.org/) to extract it to C:\ (the root directory of the C drive). Do not change the name of the folder, C:\cygwin.
+[CudaText](https://cudatext.github.io/) is a very good "IDE" for Lua and running mathly as well.
 Quite a few CudaText plugins are included. Some are customized and even have new features added. While in CudaText, press
 ```
   F1               to open help document on current Lua/mathly function
