@@ -515,8 +515,9 @@ opts = {t = {0, 2*pi}, x = {-6.1, 6.1}, y = { -4.3, 4.3 }, color = 'blue', width
         }}
 animate(fstr, opts)
 </code></pre>
-<p>Note: With <code>text</code> in <code>enhancements</code>, if dynamical evaluation is needed, it must be defined like <code>text = <u>"...'</u> + expr1 + '...' + expr2 + '...'
-[+ more terms] + <u>'..."</u></code>, where ... can be any text, expr1, expr2, ..., are JavaScript expressions to be evaluated dynamically.</p>
+<p>&#x2713; &nbsp; <b>Note</b>: With <code>text</code> in <code>enhancements</code>, if dynamical evaluation is needed, it must be defined like <code>text =
+<u>"...'</u> + expr1 + '...' + expr2 + '...' [+ more terms] + <u>'..."</u></code>, where ... can be any text, expr1, expr2, ..., are each a one-term JavaScript expression
+to be evaluated dynamically. If an expression contains multiple terms, use parentheses to make them a single term, such as <code>(I + 1)</code>.</p>
 <h4>&bull; &nbsp; <a name=any></a><a name=all href=#m><code>all(x, f)</code>, <code>any(x, f)</code></a></h4>
 <ol>
 <li><code>all(x, f)</code>: Test if <code>f(x)</code> is true for every number in <code>x</code>.
