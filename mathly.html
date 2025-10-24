@@ -56,11 +56,12 @@ download prebuilt binary commands for Microsoft Windows in, say,
 <a href="https://www.nuget.org/packages/lua/">https://www.nuget.org/packages/lua/</a>. Another way to get prebuilt Lua is to
 download <a href=https://studio.zerobrane.com/>ZeroBrane Studio</a>, a lightweight Lua IDE for various platforms. It may come with
 multiple versions of Lua.</p>
-<p>&#x2713; &nbsp; <a name=cudatext></a>Microsoft Windows users may download the file
+<p>&rArr; <a name=cudatext></a>Microsoft Windows users may download the file
 <a href=https://github.com/fdformula/MathlyLua><code>cudatext-for-mathly-win-*.7z</code></a>. It includes a text editor, CudaText,
 with Lua 5.4.8 and mathly integrated. Run <a href=https://7-zip.org/>7zip</a> to extract it to <code>C:\</code> (the root directory of the C drive).
-<em>Do not change the name of the folder, <code>C:\cygwin</code>.</em>
-<a href=https://cudatext.github.io/>CudaText</a> is a very good "IDE" for Lua and running mathly as well. Quite a few
+<em>Do not change the name of the folder, <code>C:\cygwin</code>.</em></p>
+
+<p><a href=https://cudatext.github.io/ target="blanket"">CudaText</a> is a very good "IDE" for Lua and running mathly as well. Quite a few
 CudaText plugins are included. Some are customized and even have new features added. While in CudaText, press</p>
 <pre style="color:black"><code>  F1               to open help document on current Lua/mathly function
 
@@ -81,21 +82,12 @@ lines of the file, <code>C:\cygwin\cudatext\py\cuda_ex_terminal\__init__.py</cod
 
 <p>Other hotkeys? Refer to <code>C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt</code>.</p>
 
-<h2><a name=where href=#top>Where to place the downloaded files of this module?</a></h2>
-<p>They can be placed in either</p>
-<ol>
-<li>the folder of your Lua code files to run/test or</li>
-<li>(Windows) the folder, e.g., <code>c:/cygwin/bin/</code>, which contains the command, <code>lua.exe</code>:
-<pre style="color:black"><code>...
-lua.exe
-browser-setting.lua
-mathly.lua
-plotly-2.9.0.min.js
-...
-</code></pre><p></p>
-(Linux) <code>/usr/local/share/lua/5.4/</code>
-</li></ol>
-<p><em>You may need to edit the file <code>browser-setting.lua</code>.</em> See comments in the very file.</p>
+<p>&rArr; Linux users? For most Linux distributions, download the file, cudatext-for-mathly-linux.tar.gz. For other distributions like Fedora,
+download the file, cudatext-for-mathly-linux-RARE.tar.gz. Expand the downloaded file and refer to the included file, note.txt, for other steps.</p>
+
+<p>&rArr; MacOS users? Download the file, cudatext-for-mathly-macosx.tar.gz. Expand the downloaded file and refer to the included file, note.txt, for other steps.</p>
+
+<p>By default, <a href=https://www.mozilla.org/ target="blanket">Mozilla Firefox</a> is the internet browser. If you use a different browser, <em>you need to edit the file <code>browser-setting.lua</code>.</em> See comments in the very file.</p>
 <p>&#x2713; &nbsp; The <code>*.lua</code> files can be compiled with <code>luac</code>. To use compiled modules, we set
 <code>package.path</code> first as follows:</p>
 <p><code>package.path = "./?.luac;;"</code></p>
