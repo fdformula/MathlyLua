@@ -47,7 +47,7 @@ Quite a few CudaText plugins are included. Some are customized and even have new
   Ctrl-P L         to turn on/off Lua lexer switch (when editing Lua script, say, in a HTML file)
   Ctrl-P P         to insert a plot template
 ```
-`F2`, `Ctrl-,`, and `Ctrl-.` work with Bash, Julia, Octave, Python, R, Ruby, and some other languages with interactive REPL terminal.
+`F2`, `Ctrl-,`, and `Ctrl-.` work with Bash, Julia, Octave, Python, R, Ruby, and some other languages with interactive REPL terminals.
 CudaText detects and selects the very language according to the extension of the present filename (defaults to Lua). See: The first few
 lines of the file, `C:\cygwin\cudatext\py\cuda_ex_terminal\__init__.py`.
 
