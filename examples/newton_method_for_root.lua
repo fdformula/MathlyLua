@@ -15,7 +15,7 @@ jscode = [[
 
 fstr = {'@(t) t', '@(t) f(xs[I-1]) + fprime(xs[I-1]) * (t - xs[I-1])'}
 opts = {I = {1, 16, 1, label = 'Iterations'}, x = {-4, 4}, y = {-45, 15},
-        layout = { width = 640, height = 640, square = false, title = "Newton\\'s method for x<sup>3</sup> - 2x + 2 = 0 starting at x = 1.2" },
+        layout = { width = 640, height = 640, square = false, title = "<h3>Newton\\'s method for x<sup>3</sup> - 2x + 2 = 0 starting at x = 1.2</h3>" },
         javascript = jscode, controls = 'iI', i = {0, 2.5, 0.5, default = 2.5, label = 'Initial Guess'},
         enhancements = {
           {x = {'xs[I-1]', 'xs[I-1]'}, y = {'f(xs[I-1])', 0}, line = true, width = 1, color = 'grey'},
