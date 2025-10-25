@@ -57,7 +57,7 @@ Other hotkeys? Refer to `C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt`.
 
 &rArr; MacOS users? Download the file, `cudatext-for-mathly-macosx.tar.gz`. Expand the downloaded file and refer to the included file, `note.txt`, for other steps.
 
-By default, [Mozilla Firefox](https://www.mozilla.org/) is the internet browser. If you use a different browser, <em>you need to edit the file `browser-setting.lua`.</em> See comments in the very file.
+By default, [Mozilla Firefox](https://www.mozilla.org/) is the internet browser. If you use a different browser, <em>you need to edit the file `browser-setting.lua`</em> coming with mathly. See comments in the very file.
 
 Note: The file `mathly.lua` can be compiled with `luac`. To use compiled modules, we set `package.path` first as follows:
 
