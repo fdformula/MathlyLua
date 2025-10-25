@@ -2791,7 +2791,6 @@ var mthlySldr1step = %s;
       title = 'x(t) = ' .. xexpr .. ', y(t) = ' .. yexpr
     end
   end
-  -- file:write("var title = document.getElementById('title');\ntitle.value = '" .. title .. "';\n") -- useless?
 
   for i = 1, #cs do
     file:write(fmt("var mthlySldr%d = document.getElementById('mthlySldr%d');\n", i, i))
