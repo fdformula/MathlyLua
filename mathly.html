@@ -29,7 +29,7 @@ pre {color: green}
 <li><a href=#layout>Plotly JavaScript Figure Reference: <code>layout</code></a></li>
 </ol>
 <h2><a name=intro></a>Introduction</h2>
-<p>Mathly for <a href=https://www.lua.org>Lua</a> is a Lua module which turns Lua into a tiny, free, but powerful MATLAB.
+<p>Mathly for <a href=https://www.lua.org target="blanket">Lua</a> is a Lua module which turns Lua into a tiny, free, but powerful MATLAB.
 It provides a group of commonly used MATLAB functions and features, including <code><a href=#linspace>linspace</a></code>, <code><a href=#zeros>zeros</a></code>,
 <code><a href=#rand>rand</a></code>, <code><a href=#save>save</a></code>, <code><a href=#plot>plot</a></code>, <code><a href=#plot3d>plot3d</a></code>, and
 convenient matrix operations as well. If there is anything many love the most about MATLAB, these tools are. They make
@@ -51,14 +51,14 @@ Lua is so simple and so natural a language that students without programming ski
 
 <h2><a name=version href=#top>Which version of Lua is needed?</a></h2>
 <p>Mathly is developed in Lua 5.4.6. It might work with previous versions.</p>
-<p>You may download Lua source code in <a href="https://lua.org/">https://lua.org/</a> and compile it yourself or simply
+<p>You may download Lua source code in <a href="https://lua.org/" target="blanket">https://lua.org/</a> and compile it yourself or simply
 download prebuilt binary commands for Microsoft Windows in, say,
-<a href="https://www.nuget.org/packages/lua/">https://www.nuget.org/packages/lua/</a>. Another way to get prebuilt Lua is to
-download <a href=https://studio.zerobrane.com/>ZeroBrane Studio</a>, a lightweight Lua IDE for various platforms. It may come with
+<a href="https://www.nuget.org/packages/lua/" target="blanket">https://www.nuget.org/packages/lua/</a>. Another way to get prebuilt Lua is to
+download <a href=https://studio.zerobrane.com/ target="blanket">ZeroBrane Studio</a>, a lightweight Lua IDE for various platforms. It may come with
 multiple versions of Lua.</p>
 <p>&rArr; <a name=cudatext></a>Microsoft Windows users may download the file
-<a href=https://github.com/fdformula/MathlyLua><code>cudatext-for-mathly-win-*.7z</code></a>. It includes a text editor, CudaText,
-with Lua 5.4.8 and mathly integrated. Run <a href=https://7-zip.org/>7zip</a> to extract it to <code>C:\</code> (the root directory of the C drive).
+<a href=https://github.com/fdformula/MathlyLua target="blanket"><code>cudatext-for-mathly-win-*.7z</code></a>. It includes a text editor, CudaText,
+with Lua 5.4.8 and mathly integrated. Run <a href=https://7-zip.org/ target="blanket">7zip</a> to extract it to <code>C:\</code> (the root directory of the C drive).
 <em>Do not change the name of the folder, <code>C:\cygwin</code>.</em></p>
 
 <p><a href=https://cudatext.github.io/ target="blanket"">CudaText</a> is a very good "IDE" for Lua and running mathly as well. Quite a few
@@ -87,8 +87,9 @@ download the file, cudatext-for-mathly-linux-RARE.tar.gz. Expand the downloaded 
 
 <p>&rArr; MacOS users? Download the file, cudatext-for-mathly-macosx.tar.gz. Expand the downloaded file and refer to the included file, note.txt, for other steps.</p>
 
-<p>By default, <a href=https://www.mozilla.org/ target="blanket">Mozilla Firefox</a> is the internet browser. If you use a different browser, <em>you need to edit the file <code>browser-setting.lua</code>.</em> See comments in the very file.</p>
-<p>&#x2713; &nbsp; The <code>*.lua</code> files can be compiled with <code>luac</code>. To use compiled modules, we set
+<p>By default, <a href=https://www.mozilla.org/ target="blanket">Mozilla Firefox</a> is the internet browser. If you use a different browser, <em>you need to edit the
+file <code>browser-setting.lua</code>.</em> See comments in the very file.</p>
+<p>&#x2713; &nbsp; The file <code>mathly.lua</code> can be compiled with <code>luac</code>. To use compiled modules, we set
 <code>package.path</code> first as follows:</p>
 <p><code>package.path = "./?.luac;;"</code></p>
 
