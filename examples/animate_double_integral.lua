@@ -81,5 +81,5 @@ fstr = '@(x) mthlyyMax + 5' -- any curve outside of the graph
 opts = {m = {1, 32, 1, default = 8, label = 'X Subintervals'}, n = {1, 32, 1, default = 8, label = 'Y Subintervals'}, O = {1, 6, 1, default = 1, label = 'Method'},
         x = {0, 2.1}, y = {-0.05, 2.1},
         controls = 'Omn', javascript = jcode,
-        layout = { width = 640, height = 640, square = true, title = 'Double integral of 16 - x^2 - 2y^2 over [0, 2] x [0, 2]' }}
+        layout = { width = 640, height = 640, square = true, title = 'Double integral of 16 - x<sup>2</sup> - 2y<sup>2</sup> over [0, 2] x [0, 2]' }}
 manipulate(fstr, opts)
