@@ -32,7 +32,7 @@ ZeroBrane Studio (https://studio.zerobrane.com/), a lightweight Lua IDE for vari
 mathly integrated. Run [7zip](https://7-zip.org/) to extract it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder,
 `C:\cygwin`</em>.
 
-[CudaText](https://cudatext.github.io/) is a very good "IDE" for Lua and running mathly as well.
+[CudaText](https://cudatext.github.io/) is a very good "IDE" for Lua and mathly.
 Quite a few CudaText plugins are included. Some are customized and even have new features added. While in CudaText, press
 ```
   F1               to open help document on current Lua/mathly function
