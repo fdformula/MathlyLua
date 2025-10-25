@@ -59,7 +59,7 @@ Other hotkeys? Refer to `C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt`.
 
 By default, [Mozilla Firefox](https://www.mozilla.org/) is the internet browser. If you use a different browser, <em>you need to edit the file <code>browser-setting.lua</code>.</em> See comments in the very file.
 
-Note: The *.lua files can be compiled with `luac`. To use compiled modules, we set `package.path` first as follows:
+Note: The file `mathly.lua` can be compiled with `luac`. To use compiled modules, we set `package.path` first as follows:
 
 ```Lua
 package.path = "./?.luac;;"
