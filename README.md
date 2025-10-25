@@ -53,11 +53,15 @@ lines of the file, `C:\cygwin\cudatext\py\cuda_ex_terminal\__init__.py`.
 
 Other hotkeys? Refer to `C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt`.
 
-&rArr; Linux users? For most Linux distributions, download the file, `cudatext-for-mathly-linux.tar.gz`. For other distributions like Fedora, download the file, `cudatext-for-mathly-linux-RARE.tar.gz`. Expand the downloaded file and refer to the included file, `note.txt`, for other steps.
+&rArr; Linux users? For most Linux distributions, download the file, [cudatext-for-mathly-linux.tar.gz](https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-linux.tar.gz).
+For other distributions like Fedora, download the file, [cudatext-for-mathly-linux-RARE.tar.gz](https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-linux-RARE.tar.gz).
+Expand the downloaded file and refer to the included file, `note.txt`, for other steps.
 
-&rArr; MacOS users? Download the file, `cudatext-for-mathly-macosx.tar.gz`. Expand the downloaded file and refer to the included file, `note.txt`, for other steps.
+&rArr; MacOS users? Download the file, [cudatext-for-mathly-macosx.tar.gz](https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-macos.tar.gz). Expand the downloaded file
+and refer to the included file, `note.txt`, for other steps.
 
-By default, [Mozilla Firefox](https://www.mozilla.org/) is the internet browser. If you use a different browser, <em>you need to edit the file `browser-setting.lua`</em> coming with mathly. See comments in the very file.
+By default, [Mozilla Firefox](https://www.mozilla.org/) is the internet browser. If you use a different browser, <em>you need to edit the file `browser-setting.lua`</em> coming with mathly.
+See comments in the very file.
 
 Note: The file `mathly.lua` can be compiled with `luac`. To use compiled modules, we set `package.path` first as follows:
 
