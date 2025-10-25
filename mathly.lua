@@ -2718,8 +2718,8 @@ input:focus {outline: none;}
 </style>
 </head>
 <body>
-<input type='text' id='title' style="width:%dpx;left:0px;text-align:center;border:none;"></input>
 <div id="mathlyDiv" style="width:%dpx;height:%dpx;display:inline-block;top:%dpx;position:absolute;"></div>
+<span id='title' style="width:%dpx;left:0px;display:block;text-align:center;">&nbsp;</span>
 <!-- controls -->
 ]]
   local w, h, optsq, layout, resolution = 800, 600, type(opts) == 'table', nil, 500
@@ -2733,7 +2733,7 @@ input:focus {outline: none;}
       if type(layout.height) == 'number' and layout.height > 0 then h = layout.height end
     end
   end
-  file:write(fmt(s, plotly_engine, w, w, h, 50 + 30 * qq(#cs > 1, #cs - 2, 0)))
+  file:write(fmt(s, plotly_engine, w, h, 50 + 30 * qq(#cs > 1, #cs - 2, 0), w))
   local top = 60 -- sliders
   local shift = 0
   if #cs > 0 then shift = max(map(function(x) return #x end, _anmt_cs_labels)) end
@@ -2751,13 +2751,14 @@ input:focus {outline: none;}
   end
   s = '<span id="displaytext" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>\n'
   file:write(fmt(s, 74, top))
-  file:write([[
+  file:write(fmt([[
 <script type="text/javascript">
-function displaytext() { return ""; } // to be overwritten
+function displaytext()  { return ""; }   // to be overwritten
+function displaytitle() { return "%s"; } //
 var x = [];
 var t = [];
 var X, Y, T, p;
-]])
+]], title or ''))
   if _anmt_animateq then
     s = [[
 var mthlyAutoPlayq = true;
@@ -2790,7 +2791,7 @@ var mthlySldr1step = %s;
       title = 'x(t) = ' .. xexpr .. ', y(t) = ' .. yexpr
     end
   end
-  file:write("var title = document.getElementById('title');\ntitle.value = '" .. title .. "';\n")
+  -- file:write("var title = document.getElementById('title');\ntitle.value = '" .. title .. "';\n") -- useless?
 
   for i = 1, #cs do
     file:write(fmt("var mthlySldr%d = document.getElementById('mthlySldr%d');\n", i, i))
@@ -2833,7 +2834,7 @@ var mthlySldr1step = %s;
   file:write("\nfunction mthlyUpdateTraces() {\n  mthlyTraces = [];\n") -- // mthlyTraces = new Array(); mthlyTraces.splice(0); ... no good
   if type(jscode) == 'string' and jscode ~= '' then file:write("\n  // vvvvv user's javascript vvvvv\n" .. jscode .. "  // ^^^^^ user's javascript ^^^^^\n\n") end
   _amnt_write_traces(fstr, cs, opts, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
-  file:write('  document.getElementById("displaytext").innerHTML = displaytext();\n}\n\nmthlyUpdateTraces();\nconst mthlyInitData = mthlyTraces;\n\nvar mthlyOldCs = [') -- previous values of controls
+  file:write('  document.getElementById("displaytext").innerHTML = displaytext();\n  document.getElementById("title").innerHTML = displaytitle();\n}\n\nmthlyUpdateTraces();\nconst mthlyInitData = mthlyTraces;\n\nvar mthlyOldCs = [') -- previous values of controls
   for i = 1, #cs do
     if i > 1 then file:write(",") end
     file:write("99999999") -- each control is numeric
