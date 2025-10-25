@@ -16,7 +16,7 @@ pre {color: green}
 <body>
 <div>
 <h2><a name=top></a><a href=#m>Mathly Turns Lua into a Tiny, Portable, Free but Powerful MATLAB and More</a></h2>
-<h3>&nbsp; &nbsp; &rArr; <a href=lua5_4.html>Lua 5.4 Manual</a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &rArr; <a href=https://www.lua.org/docs.html target="blanket">Online Lua Documentation</a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &rArr; <a href=https://github.com/fdformula/MathlyLua target="blanket">Mathly on GitHub</a></h3>
+<h3>&nbsp; &nbsp; &rArr; <a href=lua5_4.html>Lua 5.4 Manual</a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &rArr; <a href=https://www.lua.org/docs.html target="_blank">Online Lua Documentation</a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &rArr; <a href=https://github.com/fdformula/MathlyLua target="_blank">Mathly on GitHub</a></h3>
 <ol>
 <li><a href=#intro>Introduction</a></li>
 <li><a href=#version>Which version of Lua is needed?</a></li>
@@ -29,14 +29,14 @@ pre {color: green}
 <li><a href=#layout>Plotly JavaScript Figure Reference: <code>layout</code></a></li>
 </ol>
 <h2><a name=intro></a>Introduction</h2>
-<p>Mathly for <a href=https://www.lua.org target="blanket">Lua</a> is a Lua module which turns Lua into a tiny, free, but powerful MATLAB.
+<p>Mathly for <a href=https://www.lua.org target="_blank">Lua</a> is a Lua module which turns Lua into a tiny, free, but powerful MATLAB.
 It provides a group of commonly used MATLAB functions and features, including <code><a href=#linspace>linspace</a></code>, <code><a href=#zeros>zeros</a></code>,
 <code><a href=#rand>rand</a></code>, <code><a href=#save>save</a></code>, <code><a href=#plot>plot</a></code>, <code><a href=#plot3d>plot3d</a></code>, and
 convenient matrix operations as well. If there is anything many love the most about MATLAB, these tools are. They make
 coding and testing a thought/algorithm much easier and faster than working in most other programming languages. Besides, <a href=#animate><code>animate</code></a>
 and <a href=#manipulate><code>manipulate</code></a> allow easy and cool animation of the graph of a single-variable function or a parametric 2D curve.</p>
 
-<p>Mathly uses <a href="https://plotly.com/javascript/" target="blanket">Plotly JavaScript graphing library</a> to plot graphs. Therefore, graphs are shown in an internet browser.</p>
+<p>Mathly uses <a href="https://plotly.com/javascript/" target="_blank">Plotly JavaScript graphing library</a> to plot graphs. Therefore, graphs are shown in an internet browser.</p>
 
 <p>The entire mathly tool together with Lua interpreter is less than 5 MB, while providing enough features for instructors and college students to implement
 numerical algorithms. <em>Because it is super lightweight and fast as well, it can run fast even on old and slow devices</em> like Microsoft Surface Pro 4 (Intel Core
@@ -51,17 +51,17 @@ Lua is so simple and so natural a language that students without programming ski
 
 <h2><a name=version href=#top>Which version of Lua is needed?</a></h2>
 <p>Mathly is developed in Lua 5.4.6. It might work with previous versions.</p>
-<p>You may download Lua source code in <a href="https://lua.org/" target="blanket">https://lua.org/</a> and compile it yourself or simply
+<p>You may download Lua source code in <a href="https://lua.org/" target="_blank">https://lua.org/</a> and compile it yourself or simply
 download prebuilt binary commands for Microsoft Windows in, say,
-<a href="https://www.nuget.org/packages/lua/" target="blanket">https://www.nuget.org/packages/lua/</a>. Another way to get prebuilt Lua is to
-download <a href=https://studio.zerobrane.com/ target="blanket">ZeroBrane Studio</a>, a lightweight Lua IDE for various platforms. It may come with
+<a href="https://www.nuget.org/packages/lua/" target="_blank">https://www.nuget.org/packages/lua/</a>. Another way to get prebuilt Lua is to
+download <a href=https://studio.zerobrane.com/ target="_blank">ZeroBrane Studio</a>, a lightweight Lua IDE for various platforms. It may come with
 multiple versions of Lua.</p>
 <p>&rArr; <a name=cudatext></a>Microsoft Windows users may download the file
-<a href=https://github.com/fdformula/MathlyLua target="blanket"><code>cudatext-for-mathly-win-*.7z</code></a>. It includes a text editor, CudaText,
-with Lua 5.4.8 and mathly integrated. Run <a href=https://7-zip.org/ target="blanket">7zip</a> to extract it to <code>C:\</code> (the root directory of the C drive).
+<a href=https://github.com/fdformula/MathlyLua target="_blank"><code>cudatext-for-mathly-win-*.7z</code></a>. It includes a text editor, CudaText,
+with Lua 5.4.8 and mathly integrated. Run <a href=https://7-zip.org/ target="_blank">7zip</a> to extract it to <code>C:\</code> (the root directory of the C drive).
 <em>Do not change the name of the folder, <code>C:\cygwin</code>.</em></p>
 
-<p><a href=https://cudatext.github.io/ target="blanket"">CudaText</a> is a very good "IDE" for Lua and running mathly as well. Quite a few
+<p><a href=https://cudatext.github.io/ target="_blank"">CudaText</a> is a very good "IDE" for Lua and running mathly as well. Quite a few
 CudaText plugins are included. Some are customized and even have new features added. While in CudaText, press</p>
 <pre style="color:black"><code>  F1               to open help document on current Lua/mathly function
 
@@ -87,7 +87,7 @@ download the file, cudatext-for-mathly-linux-RARE.tar.gz. Expand the downloaded 
 
 <p>&rArr; MacOS users? Download the file, cudatext-for-mathly-macosx.tar.gz. Expand the downloaded file and refer to the included file, note.txt, for other steps.</p>
 
-<p>By default, <a href=https://www.mozilla.org/ target="blanket">Mozilla Firefox</a> is the internet browser. If you use a different browser, <em>you need to edit the
+<p>By default, <a href=https://www.mozilla.org/ target="_blank">Mozilla Firefox</a> is the internet browser. If you use a different browser, <em>you need to edit the
 file <code>browser-setting.lua</code>.</em> See comments in the very file.</p>
 <p>&#x2713; &nbsp; The file <code>mathly.lua</code> can be compiled with <code>luac</code>. To use compiled modules, we set
 <code>package.path</code> first as follows:</p>
