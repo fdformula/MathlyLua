@@ -66,10 +66,13 @@ jscode = [[
 
 MaxN = 50 -- max number of subintervals
 fstr = '@(x) 1 - x^2'
-opts = {N = {1, MaxN, 1, default = MaxN, label = 'Subintervals'}, x = {-0.1, 1.1}, y = {-0.1, 1.12},
-        O = {1, 5, 1, default = 3, label = 'Method'},
-        controls = 'ON', javascript = jscode,
-        layout = { width = 640, height = 640, square = true, title = "Animating the integral of f(x) = 1 - x<sup>2</sup> on [0, 1]",
-                   xaxis = { showgrid = false }, yaxis = { showgrid = false }},
-        }
+opts = {
+  N = {1, MaxN, 1, default = MaxN, label = 'Subintervals'}, x = {-0.1, 1.1}, y = {-0.1, 1.12},
+  O = {1, 5, 1, default = 3, label = 'Method'},
+  controls = 'ON', javascript = jscode,
+  layout = {
+    width = 640, height = 640, square = true,
+    title = "<h3>Animating the integral of f(x) = 1 - x<sup>2</sup> on [0, 1]</h3>",
+    xaxis = { showgrid = false }, yaxis = { showgrid = false }}
+}
 manipulate(fstr, opts)

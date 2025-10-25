@@ -29,7 +29,7 @@ jscode = [[
 fstr = '@(x) ' .. g
 opts = {I = {1, MaxIterations, 1, default = MaxIterations, label = 'Iterations'}, x = {-0.1, 1.1}, y = {-0.1, 1.1},
         a = {0, 1, 0.1, default = 0.9, label = 'Initial Value'},
-        layout = { width = 540, height = 540, square = true, title = "Cobweb of g(x) = " .. g },
+        layout = { width = 540, height = 540, square = true, title = "<h3>Cobweb of g(x) = " .. g .. '</h3>' },
         javascript = string.format(jscode, _to_jscript_expr(g), MaxIterations), controls = 'aI',
         enhancements = {
           {x = '@(t) t', y = '@(t) t', t = {0, 1}, width = 2, color = 'green'}, -- line: y = x
