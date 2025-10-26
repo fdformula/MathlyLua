@@ -49,10 +49,10 @@ opts = {
     {x = '@(t) t', y = '@(t) t^3 - 2*t + 2', t = {-3.1, 2.1}, color = 'orange'},
     {x = {'ab[I-1][0]', 'ab[I-1][0]'}, y = {'f(ab[I-1][0])', 0}, line = true, width = 1, color = 'grey'},
     {x = 'ab[I-1][0]', y = 0, point = true, size = 8, color = 'green'},
-    {x = 'ab[I-1][0]', y = 'fas[I-1]', point = true, size = 12, color = 'green'},
+    {x = 'ab[I-1][0]', y = 'fas[I-1]', point = true, size = 12, color = 'green', style="'symbol': 'circle-open'"},
     {x = {'ab[I-1][1]', 'ab[I-1][1]'}, y = {'f(ab[I-1][1])', 0}, line = true, width = 1, color = 'grey'},
     {x = 'ab[I-1][1]', y = 0, point = true, size = 8, color = 'blue'},
-    {x = 'ab[I-1][1]', y = 'fbs[I-1]', point = true, size = 12, color = 'blue'},
+    {x = 'ab[I-1][1]', y = 'fbs[I-1]', point = true, size = 12, color = 'blue', style="'symbol': 'circle-open'"},
     {x = 'midpts[I-1]', y = 0, color = 'red', size = 8, point = true},
     {x = 'ab[I-1][0]', y = 1, color = 'black', size = 12, text = 'a'},
     {x = 'ab[I-1][1]', y = -0.5, color = 'black', size = 12, text = 'b'}}}

@@ -24,9 +24,9 @@ opts = {
   enhancements = {
     {x = {'xs[I-1]', 'xs[I-1]'}, y = {'f(xs[I-1])', 0}, line = true, width = 1, color = 'grey'},
     {x = '@(t) t', y = '@(t) t^3 - 2*t + 2', t = {-4, 4}, color = 'orange'},
-    {x = 'xs[I-1]', y = 0, color = 'grey', size = 8, point = true},
-    {x = 'xs[I-1]', y = 'f(xs[I-1])', color = 'blue', size = 8, point = true},
-    {x = 'xs[I]', y = 0, color = 'red', size = 10, point = true},
+    {x = 'xs[I]', y = 0, color = 'blue', size = 8, point = true},
+    {x = 'xs[I-1]', y = 0, color = 'red', size = 8, point = true},
+    {x = 'xs[I-1]', y = 'f(xs[I-1])', color = 'red', size = 8, point = true, style="'symbol': 'circle-open'"},
     {x = 'xs[I-1]', y = -0.7, color = 'black', size = 12, text = "x<sub>' + (I-1) + '</sub>"},
     {x = 'xs[I]', y = -0.7, color = 'black', size = 12, text = "x<sub>' + I + '</sub>"}}}
 manipulate(fstr, opts)
