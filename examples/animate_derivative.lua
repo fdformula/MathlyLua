@@ -20,10 +20,10 @@ opts = {
   enhancements = {
     {x = '@(t) t', y = '@(t) t^2', color = 'orange', width = 2}, -- y = f(x)
     {x = '@(t) t', y = '@(t) fx0 + 1*(t - x0)', style = 'dash: "dot"', width = 2, color = "green"}, -- tangent line at x = x0
-    {x = 'x0', y = 'fx0', point = true, color = 'green', width = 8},
+    {x = 'x0', y = 'fx0', point = true, color = 'green', width = 8, style="'symbol': 'circle-open'"},
     {x = 'x0', y = 0, point = true, color = 'green', width = 8},
     {x = {'x0', 'x0'}, y = {0, 'fx0'}, line = true, color = 'green', width = 1},
-    {x = 'x1', y = 'fx1', point = true, color = 'red', width = 8},
+    {x = 'x1', y = 'fx1', point = true, color = 'red', width = 8, style="'symbol': 'circle-open'"},
     {x = 'x1', y = 0, point = true, color = 'red', width = 8},
     {x = {'x1', 'x1'}, y = {0, 'fx1'}, line = true, color = 'grey', width = 1}
   }
