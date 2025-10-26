@@ -27,15 +27,20 @@ jscode = [[
 ]]
 
 fstr = '@(x) ' .. g
-opts = {I = {1, MaxIterations, 1, default = MaxIterations, label = 'Iterations'}, x = {-0.1, 1.1}, y = {-0.1, 1.1},
-        a = {0, 1, 0.1, default = 0.9, label = 'Initial Value'},
-        layout = { width = 540, height = 540, square = true, title = "<h3>Cobweb of g(x) = " .. g .. '</h3>' },
-        javascript = string.format(jscode, _to_jscript_expr(g), MaxIterations), controls = 'aI',
-        enhancements = {
-          {x = '@(t) t', y = '@(t) t', t = {0, 1}, width = 2, color = 'green'}, -- line: y = x
-          {x = {'xs[0]', 'xs[0]'}, y = {0, 'xs[1]'}, line = true, width = 1, color = 'grey'},
-          {x = 'xs[I-1]', y = 'g(xs[I-1])', color = 'red', size = 8, point = true},
-          {x = 'xs[I-1]', y = 0, color = 'red', size = 8, point = true},
-          {x = 'xs[I-1]', y = -0.02, color = 'black', size = 12, text = "x<sub>' + (I-1) + '</sub>"}
-        }}
+opts = {
+  I = {1, MaxIterations, 1, default = MaxIterations, label = 'Iterations'}, x = {-0.1, 1.1}, y = {-0.1, 1.1},
+  a = {0, 1, 0.1, default = 0.9, label = 'Initial Value'},
+  layout = {
+    width = 540, height = 540, square = true,
+    title = "<h3>Cobweb of g(x) = " .. g .. '</h3>'
+  },
+  javascript = string.format(jscode, _to_jscript_expr(g), MaxIterations), controls = 'aI',
+  enhancements = {
+    {x = '@(t) t', y = '@(t) t', t = {0, 1}, width = 2, color = 'green'}, -- line: y = x
+    {x = {'xs[0]', 'xs[0]'}, y = {0, 'xs[1]'}, line = true, width = 1, color = 'grey'},
+    {x = 'xs[I-1]', y = 'g(xs[I-1])', color = 'red', size = 8, point = true},
+    {x = 'xs[I-1]', y = 0, color = 'red', size = 8, point = true},
+    {x = 'xs[I-1]', y = -0.02, color = 'black', size = 12, text = "x<sub>' + (I-1) + '</sub>"}
+  }
+}
 manipulate(fstr, opts)

@@ -47,15 +47,17 @@ jcode = [[
 ]]
 
 fstr = '@(x) x - x * sin(x) + 2'
-opts = {a = {-3.14, 3.14, 0.01, default = 0, label = 'Rotation'},
-        b = {-3, 3, 0.01, default = 0, label = 'Shear'},
-        q = {0, 1, 1, default = 0, label = 'Shear before Rotation'},
-        c = {-3, 3, 0.01, default = 0, label = 'X Shift'},
-        d = {-3, 3, 0.01, default = 0, label = 'Y Shift'},
-        m = {-3, 3, 0.1, default = 1, label = 'Dilate in x'},
-        n = {-3, 3, 0.1, default = 1, label = 'Dilate in y'},
-        r = {0, 1, 1, default = 0, label = 'Reflect about y = x'},
-        x = {-6, 6}, y = {-6, 6}, controls = 'abqcdmnr',
-        javascript = jcode,
-        layout = { width = 640, height = 640, square = true, title = '' }} -- no title
+opts = {
+  a = {-3.14, 3.14, 0.01, default = 0, label = 'Rotation'},
+  b = {-3, 3, 0.01, default = 0, label = 'Shear'},
+  q = {0, 1, 1, default = 0, label = 'Shear before Rotation'},
+  c = {-3, 3, 0.01, default = 0, label = 'X Shift'},
+  d = {-3, 3, 0.01, default = 0, label = 'Y Shift'},
+  m = {-3, 3, 0.1, default = 1, label = 'Dilate in x'},
+  n = {-3, 3, 0.1, default = 1, label = 'Dilate in y'},
+  r = {0, 1, 1, default = 0, label = 'Reflect about y = x'},
+  x = {-6, 6}, y = {-6, 6}, controls = 'abqcdmnr',
+  javascript = jcode,
+  layout = { width = 640, height = 640, square = true, title = '' } -- no title
+}
 manipulate(fstr, opts)

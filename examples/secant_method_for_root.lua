@@ -21,20 +21,24 @@ jscode = [[
 ]]
 
 fstr = {'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'}
-opts = {I = {1, 26, 1, label = 'Iterations'}, x = {-4.1, 4.1}, y = {-46, 40},
-        layout = { width = 640, height = 640, square = false,
-        title = "<h3>Secant method for x<sup>3</sup> - 2x + 2 = 0 starting with x<sub>1</sub> = -3 and x<sub>2</sub> = 2</h3>" },
-        javascript = jscode, controls = 'I',
-        enhancements = {
-          {x = '@(t) t', y = '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0]))/(ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])', t = {-4.1, 4.1}, width = 1, color = 'grey'},
-          {x = '@(t) t', y = '@(t) t^3 - 2*t + 2', t = {-4.1, 4.1}, color = 'orange'},
-          {x = {'ab[I-1][0]', 'ab[I-1][0]'}, y = {'f(ab[I-1][0])', 0}, line = true, width = 1, color = 'grey'},
-          {x = {'ab[I-1][1]', 'ab[I-1][1]'}, y = {'f(ab[I-1][1])', 0}, line = true, width = 1, color = 'grey'},
-          {x = 'ab[I-1][0]', y = 0, color = 'green', size = 8, point = true},
-          {x = 'ab[I-1][1]', y = 0, color = 'blue', size = 8, point = true},
-          {x = 'midpts[I-1]', y = 0, color = 'red', size = 8, point = true},
-          {x = 'ab[I-1][0]', y = -1, color = 'black', size = 12, text = "x<sub>' + (I-1) + '</sub>"},
-          {x = 'ab[I-1][1]', y = -1, color = 'black', size = 12, text = "x<sub>' + I + '</sub>"},
-          {x = 'midpts[I-1]', y = -1, color = 'black', size = 12, text = "x<sub>' + (I+1) + '</sub>"}
-        }}
+opts = {
+  I = {1, 26, 1, label = 'Iterations'}, x = {-4.1, 4.1}, y = {-46, 40},
+  layout = {
+    width = 640, height = 640, square = false,
+    title = "<h3>Secant method for x<sup>3</sup> - 2x + 2 = 0 starting with x<sub>1</sub> = -3 and x<sub>2</sub> = 2</h3>"
+  },
+  javascript = jscode, controls = 'I',
+  enhancements = {
+    {x = '@(t) t', y = '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0]))/(ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])', t = {-4.1, 4.1}, width = 1, color = 'grey'},
+    {x = '@(t) t', y = '@(t) t^3 - 2*t + 2', t = {-4.1, 4.1}, color = 'orange'},
+    {x = {'ab[I-1][0]', 'ab[I-1][0]'}, y = {'f(ab[I-1][0])', 0}, line = true, width = 1, color = 'grey'},
+    {x = {'ab[I-1][1]', 'ab[I-1][1]'}, y = {'f(ab[I-1][1])', 0}, line = true, width = 1, color = 'grey'},
+    {x = 'ab[I-1][0]', y = 0, color = 'green', size = 8, point = true},
+    {x = 'ab[I-1][1]', y = 0, color = 'blue', size = 8, point = true},
+    {x = 'midpts[I-1]', y = 0, color = 'red', size = 8, point = true},
+    {x = 'ab[I-1][0]', y = -1, color = 'black', size = 12, text = "x<sub>' + (I-1) + '</sub>"},
+    {x = 'ab[I-1][1]', y = -1, color = 'black', size = 12, text = "x<sub>' + I + '</sub>"},
+    {x = 'midpts[I-1]', y = -1, color = 'black', size = 12, text = "x<sub>' + (I+1) + '</sub>"}
+  }
+}
 manipulate(fstr, opts)

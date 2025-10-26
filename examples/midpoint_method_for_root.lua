@@ -25,20 +25,25 @@ jscode = [[
 ]]
 
 fstr = {'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'}
-opts = {I = {1, 56, 1, label = 'Iterations'}, x = {-3.1, 2.1}, y = {-22, 8},
-        layout = { width = 640, height = 640, square = false, title = "<font size=5 color=red>Midpoint method for <em>x<sup>3</sup> - 2x + 2 = 0</em> starting on [-3, 2]</font>" },
-        javascript = jscode, controls = 'I',
-        enhancements = {
-          {x = '@(t) t', y = '@(t) t^3 - 2*t + 2', t = {-3.1, 2.1}, color = 'orange'},
-          {x = {'ab[I-1][0]', 'ab[I-1][0]'}, y = {'f(ab[I-1][0])', 0}, line = true, width = 1, color = 'grey'},
-          {x = 'ab[I-1][0]', y = 0, color = 'green', size = 8, point = true},
-          {x = {'midpts[I-1]', 'midpts[I-1]'}, y = {'f(midpts[I-1])', 0}, line = true, width = 1, color = 'grey'},
-          {x = {'ab[I-1][1]', 'ab[I-1][1]'}, y = {'f(ab[I-1][1])', 0}, line = true, width = 1, color = 'grey'},
-          {x = 'ab[I-1][1]', y = 0, color = 'blue', size = 8, point = true},
-          {x = 'midpts[I-1]', y = 0, color = 'red', size = 8, point = true},
-          {x = 'ab[I-1][0]', y = 1, color = 'black', size = 12, text = 'a'},
-          {x = 'ab[I-1][1]', y = -0.5, color = 'black', size = 12, text = 'b'},
-          {x = 'midpts[I-1]', y = -0.5, color = 'black', size = 12, text = 'midpoint'}
-        }}
+opts = {
+  I = {1, 56, 1, label = 'Iterations'}, x = {-3.1, 2.1}, y = {-22, 8},
+  layout = {
+    width = 640, height = 640, square = false,
+    title = "<font size=4 color=black>Midpoint method for <em>x<sup>3</sup> - 2x + 2 = 0</em> starting on [-3, 2]</font>"
+  },
+  javascript = jscode, controls = 'I',
+  enhancements = {
+    {x = '@(t) t', y = '@(t) t^3 - 2*t + 2', t = {-3.1, 2.1}, color = 'orange'},
+    {x = {'ab[I-1][0]', 'ab[I-1][0]'}, y = {'f(ab[I-1][0])', 0}, line = true, width = 1, color = 'grey'},
+    {x = 'ab[I-1][0]', y = 0, color = 'green', size = 8, point = true},
+    {x = {'midpts[I-1]', 'midpts[I-1]'}, y = {'f(midpts[I-1])', 0}, line = true, width = 1, color = 'grey'},
+    {x = {'ab[I-1][1]', 'ab[I-1][1]'}, y = {'f(ab[I-1][1])', 0}, line = true, width = 1, color = 'grey'},
+    {x = 'ab[I-1][1]', y = 0, color = 'blue', size = 8, point = true},
+    {x = 'midpts[I-1]', y = 0, color = 'red', size = 8, point = true},
+    {x = 'ab[I-1][0]', y = 1, color = 'black', size = 12, text = 'a'},
+    {x = 'ab[I-1][1]', y = -0.5, color = 'black', size = 12, text = 'b'},
+    {x = 'midpts[I-1]', y = -0.5, color = 'black', size = 12, text = 'midpoint'}
+  }
+}
 manipulate(fstr, opts)
 
