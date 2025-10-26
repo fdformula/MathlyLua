@@ -25,8 +25,8 @@ input:focus {outline: none;}
 </style>
 </head>
 <body>
-<input type='text' id='title' style="width:540px;left:0px;text-align:center;border:none;"></input>
 <div id="mathlyDiv" style="width:540px;height:540px;display:inline-block;top:50px;position:absolute;"></div>
+<span id='title' style="width:540px;left:0px;display:block;text-align:center;">&nbsp;</span>
 <!-- controls -->
 <label for="mthlySldr1" style='top:60px;'>Initial Value:</label>
 <input type="range" id="mthlySldr1" min="0" max="1" value="0" style='left:168px;top:60px;' step="0.1"></input><span id="mthlySldr1value" style="left:389px;top:60px;position:absolute">&nbsp;</span>
@@ -34,7 +34,8 @@ input:focus {outline: none;}
 <input type="range" id="mthlySldr2" min="1" max="30" value="1" style='left:168px;top:90px;' step="1"></input><span id="mthlySldr2value" style="left:389px;top:90px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:120px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
-function displaytext() { return ""; } // to be overwritten
+function displaytext()  { return ""; }   // to be overwritten
+function displaytitle() { return "<h3>Cobweb of g(x) = 1 - sqrt(x)</h3>"; } //
 var x = [];
 var t = [];
 var X, Y, T, p;
@@ -45,8 +46,6 @@ const mthlyLayout = {
   'showlegend': false
 };
 
-var title = document.getElementById('title');
-title.value = 'Cobweb of g(x) = 1 - sqrt(x)';
 var mthlySldr1 = document.getElementById('mthlySldr1');
 var mthlySldr2 = document.getElementById('mthlySldr2');
 mthlySldr1.value = 0.9;
@@ -97,6 +96,7 @@ function mthlyUpdateTraces() {
   mthlyTraces.push({ 'x': [xs[I-1]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 8.000000  } });
   mthlyTraces.push({ 'x': [xs[I-1]], 'y': [-0.02], 'text': 'x<sub>' + (I-1) + '</sub>', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': 'black', 'size': 12.000000  } });
   document.getElementById("displaytext").innerHTML = displaytext();
+  document.getElementById("title").innerHTML = displaytitle();
 }
 
 mthlyUpdateTraces();

@@ -25,8 +25,8 @@ input:focus {outline: none;}
 </style>
 </head>
 <body>
-<input type='text' id='title' style="width:640px;left:0px;text-align:center;border:none;"></input>
 <div id="mathlyDiv" style="width:640px;height:640px;display:inline-block;top:80px;position:absolute;"></div>
+<span id='title' style="width:640px;left:0px;display:block;text-align:center;">&nbsp;</span>
 <!-- controls -->
 <label for="mthlySldr1" style='top:60px;'>Method:</label>
 <input type="range" id="mthlySldr1" min="1" max="6" value="1" style='left:176px;top:60px;' step="1"></input><span id="mthlySldr1value" style="left:397px;top:60px;position:absolute">&nbsp;</span>
@@ -36,7 +36,8 @@ input:focus {outline: none;}
 <input type="range" id="mthlySldr3" min="1" max="32" value="1" style='left:176px;top:120px;' step="1"></input><span id="mthlySldr3value" style="left:397px;top:120px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:150px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
-function displaytext() { return ""; } // to be overwritten
+function displaytext()  { return ""; }   // to be overwritten
+function displaytitle() { return "<font size=4>Double integral of f(x, y) = 16 - x<sup>2</sup> - 2y<sup>2</sup> over [0, 2] &times; [0, 2]</font>"; } //
 var x = [];
 var t = [];
 var X, Y, T, p;
@@ -47,8 +48,6 @@ const mthlyLayout = {
   'showlegend': false
 };
 
-var title = document.getElementById('title');
-title.value = 'Double integral of 16 - x^2 - 2y^2 over [0, 2] x [0, 2]';
 var mthlySldr1 = document.getElementById('mthlySldr1');
 var mthlySldr2 = document.getElementById('mthlySldr2');
 var mthlySldr3 = document.getElementById('mthlySldr3');
@@ -59,11 +58,14 @@ var m = 8;
 mthlySldr3.value = 8;
 var n = 8;
 p = 1;
-for (let i = 0; i <= p * (2.1 + 0) - 0; i += 0.0042) { x.push(i); }
+for (let i = 0; i <= p * (2.1 + 0) - 0; i += 0.0042) { x.push(i); }; t = x;
 
 var mthlyTraces = [];
-const mthlyxMax = 2.1, mthlyyMax = 2.1;
-const mthlyOMax = 6, mthlymMax = 32, mthlynMax = 32;
+const mthlyxMin = 0, mthlyxMax = 2.1, mthlyyMin = -0.05, mthlyyMax = 2.1;
+const mthlytMin = 0, mthlytMax = 2.1;
+const mthlyOMin = 1, mthlyOMax = 6;
+const mthlymMin = 1, mthlymMax = 32;
+const mthlynMin = 1, mthlynMax = 32;
 
 function mthlyUpdateTraces() {
   mthlyTraces = [];
@@ -127,7 +129,7 @@ function mthlyUpdateTraces() {
       }
     }
 
-    // plot a big number of extra objects outside the graph so that no old traces will stay - ugly, but works!
+    // plot enough extra objects outside the graph so that no old traces will stay - ugly, but works!
     x = mthlyxMax + 1;
     for (i = 0; i < mthlymMax; i++) {
       y = mthlyyMax + 1
@@ -144,8 +146,8 @@ function mthlyUpdateTraces() {
   // ^^^^^ user's javascript ^^^^^
 
   mthlyTraces.push({ 'x': x, 'y': x.map(x => mthlyyMax + 5), 'mode': 'lines', 'line': { 'simplify': false } });
-
   document.getElementById("displaytext").innerHTML = displaytext();
+  document.getElementById("title").innerHTML = displaytitle();
 }
 
 mthlyUpdateTraces();
@@ -167,7 +169,6 @@ function mthlyAnimatePlot() {
   }
   if (unchangedq) { return; }
   mthlyOldCs = [O, m, n]; // update values of controls
-
   mthlyUpdateTraces();
   Plotly.animate('mathlyDiv', {
     'data': mthlyTraces,

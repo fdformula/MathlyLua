@@ -25,8 +25,8 @@ input:focus {outline: none;}
 </style>
 </head>
 <body>
-<input type='text' id='title' style="width:640px;left:0px;text-align:center;border:none;"></input>
 <div id="mathlyDiv" style="width:640px;height:640px;display:inline-block;top:80px;position:absolute;"></div>
+<span id='title' style="width:640px;left:0px;display:block;text-align:center;">&nbsp;</span>
 <!-- controls -->
 <label for="mthlySldr1" style='top:60px;'>Method:</label>
 <input type="range" id="mthlySldr1" min="1" max="2" value="1" style='left:176px;top:60px;' step="1"></input><span id="mthlySldr1value" style="left:397px;top:60px;position:absolute">&nbsp;</span>
@@ -36,7 +36,8 @@ input:focus {outline: none;}
 <input type="range" id="mthlySldr3" min="1" max="67" value="1" style='left:176px;top:120px;' step="1"></input><span id="mthlySldr3value" style="left:397px;top:120px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:150px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
-function displaytext() { return ""; } // to be overwritten
+function displaytext()  { return ""; }   // to be overwritten
+function displaytitle() { return "<h3>Regula falsi method for x<sup>3</sup> - 2x + 2 = 0 starting on [-3, 2]</h3>"; } //
 var x = [];
 var t = [];
 var X, Y, T, p;
@@ -47,8 +48,6 @@ const mthlyLayout = {
   'showlegend': false
 };
 
-var title = document.getElementById('title');
-title.value = 'Regula falsi method for x^3 - 2*x + 2 = 0 starting on [-3, 2]';
 var mthlySldr1 = document.getElementById('mthlySldr1');
 var mthlySldr2 = document.getElementById('mthlySldr2');
 var mthlySldr3 = document.getElementById('mthlySldr3');
@@ -113,14 +112,15 @@ function mthlyUpdateTraces() {
   }
   mthlyTraces.push({ 'x': [ab[I-1][0], ab[I-1][0]], 'y': [f(ab[I-1][0]), 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
   mthlyTraces.push({ 'x': [ab[I-1][0]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'green', 'size': 8.000000  } });
-  mthlyTraces.push({ 'x': [ab[I-1][0]], 'y': [fas[I-1]], 'mode': 'markers', 'marker': { 'color': 'green', 'size': 12.000000  } });
+  mthlyTraces.push({ 'x': [ab[I-1][0]], 'y': [fas[I-1]], 'mode': 'markers', 'marker': { 'color': 'green', 'size': 12.000000 , 'symbol': 'circle-open' } });
   mthlyTraces.push({ 'x': [ab[I-1][1], ab[I-1][1]], 'y': [f(ab[I-1][1]), 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
   mthlyTraces.push({ 'x': [ab[I-1][1]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'blue', 'size': 8.000000  } });
-  mthlyTraces.push({ 'x': [ab[I-1][1]], 'y': [fbs[I-1]], 'mode': 'markers', 'marker': { 'color': 'blue', 'size': 12.000000  } });
+  mthlyTraces.push({ 'x': [ab[I-1][1]], 'y': [fbs[I-1]], 'mode': 'markers', 'marker': { 'color': 'blue', 'size': 12.000000 , 'symbol': 'circle-open' } });
   mthlyTraces.push({ 'x': [midpts[I-1]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 8.000000  } });
   mthlyTraces.push({ 'x': [ab[I-1][0]], 'y': [1], 'text': 'a', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': 'black', 'size': 12.000000  } });
   mthlyTraces.push({ 'x': [ab[I-1][1]], 'y': [-0.5], 'text': 'b', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': 'black', 'size': 12.000000  } });
   document.getElementById("displaytext").innerHTML = displaytext();
+  document.getElementById("title").innerHTML = displaytitle();
 }
 
 mthlyUpdateTraces();
