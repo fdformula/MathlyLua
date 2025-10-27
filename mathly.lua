@@ -2930,16 +2930,15 @@ mthlySldr%d.addEventListener("input", function() { document.getElementById("mthl
 ]]
     file:write(fmt(s, i, i, i, i, i, qq(_anmt_animateq, 'mthlyAutoPlayq = false; ', '')))
   end
-
-  file:write(fmt([[
+  file:write([[
 
 Plotly.newPlot('mathlyDiv', mthlyInitData, mthlyLayout);
 mthlyAnimatePlot();
-setInterval(mthlyAnimatePlot, %d); // animate every 0.2 seconds
+setInterval(mthlyAnimatePlot, 200); // animate every 0.2 seconds
 </script>
 </body>
 </html>
-]], 200))
+]])
   file:close()
 end -- _write_manipulate_html
 
