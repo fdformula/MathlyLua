@@ -409,8 +409,8 @@ for more information.</p>
 <p><ol>
 <li><code>(X, Y)</code> are the coordinates of the currently plotted point on the animated curve defined in <code>fstr</code>. If the curve is defined by parametric equations, <code>T</code> refers to the
 value of the parameter <code>t</code> for the currently plotted point; if it is defined like <code>'@(x) ...'</code>, <code>T</code> assumes the same value of <code>X</code> (because <code>y = f(x)</code> can
-naturally be parametrized as <code>{'@(t) t', '@(t) f(t)'}</code> with <code>x = t</code>). They and each control as well can be used in <code>enhancements</code>, and expressions containing them must be in a string, such as
-<code>'2*X - a * Y + k'</code>. They are global variables accessible by JavaScript code.</li>
+naturally be parametrized as <code>{'@(t) t', '@(t) f(t)'}</code> with <code>x = t</code>). They and each control as well can be used in <code>enhancements</code>, and expressions containing them must be in
+a string, such as <code>'2*X - a * Y + k'</code>. They are global variables accessible by JavaScript code.</li>
 <li>While a control is a single letter, its label can be a word or so, defined like in <code>m = {0, 3, 1, label = 'Option'}</code>, where <code>m</code> is a control.</li>
 <li>Each control is a global variable accessible to JavaScript code. In addition, the global variable <code>mthlyTraces</code>, an array of traces to be shown on the graph, and the global constants
 like <code>mthlyxMin, mthlyxMax, mthlyyMin, mthlyyMax, mthlytMin, mthlytMax, mthly&lt;c&gt;Min</code>, and <code>mthly&lt;c&gt;Max</code>, the lowest and largest values of <code>x, y, t</code> and
@@ -418,17 +418,23 @@ like <code>mthlyxMin, mthlyxMax, mthlyyMin, mthlyyMax, mthlytMin, mthlytMax, mth
 <li>All controls can be specified in <code>opts.controls</code> like <code>'ahk'</code>, <code>'a, h, k'</code>, <code>'a h, k'</code>, etc. If the field, <code>controls</code>, is not specified,
 they will be recognized automatically from the string expression of <code>y = f(x)</code> or parametric equations in <code>fstr</code> in the order they occur.</li>
 <li>With a control, field <code>default</code> defines the initial value of the control. If not provided, it defaults to <code>start</code>.<br><br></li>
-<li>The parameter of a parametric curve, specified in <code>fstr</code> and <code>enhancements</code>, must be <code>t</code>.<br><br></li>
+
+<li>The parameter of a parametric curve, specified in <code>fstr</code> or <code>enhancements</code>, must be <code>t</code>. The field <code>fill</code> may be specified to fill related regions
+(See <a href=#gobjspecs><code>fill = 'fa'|'ff'|'fn'|'fs'</code></a>).<br><br></li>
+
 <li>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>. For the parametric curve defined in <code>fstr</code>,
 if the range of <code>t</code> is omitted, it defaults to the range of <code>x</code>, if the latter is specified, or <code>{-5, 5, 0.1}</code>. <em>For a parametric curve defined in
 <code>enhancements</code>, if the range of <code>t</code> is omitted, it defaults to the range of <code>t</code> in <code>fstr</code> (when <code>fstr = {'@(t) ...', '@(t) ...}</code>)
 or <code>x</code> (when <code>fstr = '@(x) ...'</code>), so, the curve is dynamical, i.e., the curve is animated together with the curve defined by <code>fstr</code></em>;
 otherwise, the curve is static.<br><br></li>
 <li>For each graphics object defined in <code>fstr</code> or in <code>enhancements</code>, field <code>style</code> can specify more properties of the object allowed by Plotly. It is a string like
-<code>style = "'dash': 'dot'"</code> and <code>style = "'dash': 'dot', 'color': 'red', 'width': 2"</code> for a curve or a line. Here, <code>'dot'</code> can be <code>'dash', 'dashdot', 'longdash', 'longdashdot'</code>, etc.</li>
+<code>style = "'dash': 'dot'"</code> and <code>style = "'dash': 'dot', 'color': 'red', 'width': 2"</code> for a curve or a line. Here, <code>'dot'</code> can be <code>'dash', 'dashdot', 'longdash',
+'longdashdot'</code>, etc.</li>
 <li>Field <code>opts.resolution</code> may be needed for smooth parametric curves. It defaults to 500. The larger, the smoother, but more computing power is needed.
 With each parametric curve in <code>enhancements</code>, field <code>resolution</code> can be defined separately, and its default and minimum value is 500.<br><br></li>
+
 <li>Show no title? Add <code>layout = { title = '' }</code>. No square aspect ratio? Add <code>layout = { square = false }</code>.<br><br></li>
+
 <li>The ranges of <code>x</code> and <code>y</code> define their ranges displayed on a graph.</li>
 </ol></p>
 
@@ -1848,9 +1854,9 @@ r = 'sin(n*t)'        -- r(θ) = sin(nθ); change this only
 fstr = {'@(t) (' .. r .. ') * cos(t)', '@(t) (' .. r .. ') * sin(t)'}
 disp(fstr)
 opts = {
-  t = {0, 2 * pi, 0.01},         ----- adjust options if needed
-  x = {-1.2, 1.2}, n = {1, 24, 1},
+  t = {0, 2 * pi, 0.01}, x = {-1.2, 1.2}, n = {1, 24, 1}, -- adjust options if needed
   resolution = 2000,
+  fill = 'fs',
   layout = {width = 500, height = 500, square = true, title = 'Polar curve: r(t) = sin(nt)'}}
 manipulate(fstr, opts)
 

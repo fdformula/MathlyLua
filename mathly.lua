@@ -2614,6 +2614,21 @@ local function _anmt_parse_args(fstr, opts)
   return cs, rs, xr, opts.y, tr, title, xexpr, yexpr, jxexpr, jyexpr, opts.enhancements, jscode
 end -- _anmt_parse_args
 
+function _anmt_fill(fil)
+  if fil == nil then return '' end
+  local s = ''
+  if fil == 'fs' then     -- fill to Self
+    s = ", 'fill': 'toself'"
+  elseif fil == 'fn' then -- No fill
+    s = ", 'fill': 'none'"
+  elseif fil == 'fa' then -- fill to the x-Axis
+    s = ", 'fill': 'tozeroy'"
+  elseif fil == 'ff' then -- fill to previous Function
+    s = ", 'fill': 'tonexty'"
+  end
+  return s
+end
+
 local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces = {{...}, {...}, ...}
   if type(traces) ~= 'table' or #traces == 0 then return end
   local fmt, head = string.format, ''
@@ -2649,8 +2664,8 @@ local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces =
           local step = tr1[3] or (tr1[2] - tr1[1]) / res
           file:write(fmt("    %sfor (let i = %s; i <= %s; i += %s) { t.push(i); }\n", head, tostring(tr1[1]), tostring(tr1[2]), tostring(step)))
         end
-        trace = fmt("{ 'x': t.map(t => %s), 'y': t.map(t => %s), 'mode': 'lines', 'line': { 'simplify': false, 'color': '%s', 'width': %d %s } }",
-                    obj.x, obj.y, color, obj.width or 3, style)
+        trace = fmt("{ 'x': t.map(t => %s), 'y': t.map(t => %s), 'mode': 'lines', 'line': { 'simplify': false, 'color': '%s', 'width': %d %s }%s }",
+                    obj.x, obj.y, color, obj.width or 3, style, _anmt_fill(obj.fill))
         file:write(fmt("    %smthlyTraces.push(%s);\n%s  }\n", head, trace, head))
       end
     end
@@ -2658,7 +2673,7 @@ local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces =
   write_traces()
 end -- _amnt_write_subtraces
 
-local function _amnt_write_traces(fstr, cs, opts, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
+local function _amnt_write_traces(cs, opts, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
   local fmt, trace = string.format, '{ '
   if xexpr == nil then
     trace = trace .. fmt("'x': x, 'y': x.map(x => %s),", jyexpr)
@@ -2669,7 +2684,7 @@ local function _amnt_write_traces(fstr, cs, opts, tr, file, xexpr, jxexpr, jyexp
   if opts.color ~= nil then trace = trace .. ", 'color': '" .. opts.color .. "'" end
   if opts.width ~= nil then trace = trace .. ", 'width': " .. opts.width end
   if opts.style ~= nil then trace = trace .. ", " .. opts.style end
-  trace = trace .. " } }" -- color: 'red'}
+  trace = trace .. " }" .. _anmt_fill(opts.fill) .. " }" -- color: 'red'}
   file:write(fmt("  mthlyTraces.push(%s);\n", trace))
 
   if type(enhancements) == 'table' then
@@ -2684,7 +2699,7 @@ local function _anmt_layout_opts(axis, fmt, file) -- axis = layout.xaxis & yaxis
   end
 end
 
-local function _write_manipulate_html(fstr, fname, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode, opts)
+local function _write_manipulate_html(fname, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode, opts)
   local file, fmt = io.open(fname, "w"), string.format
   if file == nil then
     print(fmt("Failed to create %s. The very device might not be writable.", fname))
@@ -2832,7 +2847,7 @@ var mthlySldr1step = %s;
   end
   file:write("\nfunction mthlyUpdateTraces() {\n  mthlyTraces = [];\n") -- // mthlyTraces = new Array(); mthlyTraces.splice(0); ... no good
   if type(jscode) == 'string' and jscode ~= '' then file:write("\n  // vvvvv user's javascript vvvvv\n" .. jscode .. "  // ^^^^^ user's javascript ^^^^^\n\n") end
-  _amnt_write_traces(fstr, cs, opts, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
+  _amnt_write_traces(cs, opts, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
   file:write('  document.getElementById("displaytext").innerHTML = displaytext();\n  document.getElementById("title").innerHTML = displaytitle();\n}\n\nmthlyUpdateTraces();\nconst mthlyInitData = mthlyTraces;\n\nvar mthlyOldCs = [') -- previous values of controls
   for i = 1, #cs do
     if i > 1 then file:write(",") end
@@ -2960,7 +2975,7 @@ end
 function manipulate(fstr, opts) -- Mathematica
   _anmt_animateq, _anmt_act = false, 'manipulate'
   local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode = _anmt_parse_args(fstr, opts)
-  _write_manipulate_html(fstr, tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode, opts)
+  _write_manipulate_html(tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode, opts)
   _open_url(tmp_plot_html_file)
   print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
 end
@@ -2968,7 +2983,7 @@ end
 function animate(fstr, opts) -- Mathematica
   _anmt_animateq, _anmt_act = true, 'animate'
   local cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode = _anmt_parse_args(fstr, opts)
-  _write_manipulate_html(fstr, tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode, opts)
+  _write_manipulate_html(tmp_plot_html_file, cs, rs, xr, yr, tr, title, xexpr, yexpr, jxexpr, jyexpr, enhancements, jscode, opts)
   _open_url(tmp_plot_html_file)
   print("The graph is in " .. tmp_plot_html_file .. ' if you need it.')
 end
