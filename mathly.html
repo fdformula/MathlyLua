@@ -460,6 +460,25 @@ opts = {
   enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
 animate(fstr, opts)
 
+-- Lua + Mathly
+fstr = {'@(t) 5 * cos(t)', '@(t) 5 * sin(t)'}
+opts = {
+  p = {0, 1, 0.4}, t = {0, 2 * pi, 0.01}, x = {-10, 10}, width = 0, color = '#00007f',
+  layout = {
+    width = 500, height = 500,
+    xaxis = { showgrid = false, zeroline = false, showticklabels = false },
+    yaxis = { showgrid = false, zeroline = false, showticklabels = false }},
+  enhancements = {
+    {x = '@(t) 5 * cos(t)', y = '@(t) 5 * sin(t)', t = {0, 2 * pi}, color = '#00007f', width = 0, fill = 'fs'},
+    {x = '@(t) 2.2 + 1.6 * cos(t)', y = '@(t) 2.2 + 1.6 * sin(t)', t = {0, 2 * pi}, color = 'white', width = 0, fill = 'fs'},
+    {x = 0, y = -0.5, text = 'Lua', color = 'white', size = 40},
+    {x = '@(t) (5 + 1.7) * cos(t - 0.3)', y = '@(t) (5 + 1.7) * sin(t - 0.3)', color = 'grey', width = 2, style = "'dash': 'dash'"},
+    {x = '@(t) (5 + 1.9)*cos(T) + 1.6 * cos(t)', y = '@(t) (5 + 1.9)*sin(T) + 1.6 * sin(t)', color = '#00007f', width = 0, t = {0, 2 * pi}, fill = 'fs'},
+    {x = '(5 + 1.9)*cos(T)', y = '(5 + 1.9)*sin(T) + 0.2', text = 'Mathly', color = 'white', size = 14}
+  }
+}
+animate(fstr, opts)
+
 -- polar curves: the code below may be used as a template
 -- butterfly curve: polar function r(θ) = e^sin(θ) - 2cos(4θ) + sin^5(θ/12)
 -------------------------------------------------------------------------
