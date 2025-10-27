@@ -2759,7 +2759,10 @@ input:focus {outline: none;}
 ]]
     s = fmt(s, i, top, _anmt_cs_labels[i], i, tostring(rs[i][1]), tostring(rs[i][2]), tostring(rs[i][1]), 64 + shift, top, tostring(rs[i][3]), i, 285 + shift, top)
     if i == 1 and _anmt_animateq then
-      file:write(fmt('<button type="button" onclick="mthlyPlay()" style="left:%dpx;top:%dpx;position:absolute">Play</button> <button type="button" onclick="mthlyStop()" style="left:%dpx;top:%dpx;position:absolute">Stop</button>\n', 345+shift, top, 396+shift, top))
+      file:write(fmt([[
+<button type="button" onclick="mthlyPlay()" style="left:%dpx;top:%dpx;position:absolute">Play/Stop</button>
+<button type="button" onclick="mthlySpeedUp()" style="left:%dpx;top:%dpx;position:absolute">Faster</button> <button type="button" onclick="mthlySlowDown()" style="left:%dpx;top:%dpx;position:absolute">Slower</button>
+]], 340+shift, top, 420+shift, top, 480+shift, top))
     end
     top = top + 30
     file:write(s)
@@ -2775,13 +2778,20 @@ var t = [];
 var X, Y, T, p;
 ]], title or ''))
   if _anmt_animateq then
-    s = [[
-var mthlyAutoPlayq = true;
-function mthlyPlay() { mthlyAutoPlayq = true; }
-function mthlyStop() { mthlyAutoPlayq = false; }
-var mthlySldr1step = %s;
-]]
-    file:write(fmt(s, tostring(rs[1][3])))
+    file:write([[
+var mthlyAutoPlayq = true, mthlyIntervalId = null, mthlyInterval = 200;
+function mthlyPlay() { mthlyAutoPlayq = !mthlyAutoPlayq; }
+function mthlyChangeSpeed(step) {
+  mthlyAutoPlayq = true;
+  if (mthlyIntervalId != null) { clearInterval(mthlyIntervalId); }
+  mthlyInterval += step;
+  if (mthlyInterval <= 0) { mthlyInterval = 50; }
+  mthlyIntervalId = setInterval(mthlyAnimatePlot, mthlyInterval);
+}
+function mthlySpeedUp() { mthlyChangeSpeed(-100); }
+function mthlySlowDown() { mthlyChangeSpeed(100); }
+]])
+    file:write("var mthlySldr1step = " .. tostring(rs[1][3]) .. ";\n")
   end
 
   local squareq = true
@@ -2934,7 +2944,7 @@ mthlySldr%d.addEventListener("input", function() { document.getElementById("mthl
 
 Plotly.newPlot('mathlyDiv', mthlyInitData, mthlyLayout);
 mthlyAnimatePlot();
-setInterval(mthlyAnimatePlot, 200); // animate every 0.2 seconds
+mthlyIntervalId = setInterval(mthlyAnimatePlot, 200); // animate every 0.2 seconds
 </script>
 </body>
 </html>
