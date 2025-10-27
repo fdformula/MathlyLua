@@ -2762,7 +2762,7 @@ input:focus {outline: none;}
       file:write(fmt([[
 <button type="button" onclick="mthlyPlay()" style="left:%dpx;top:%dpx;position:absolute">Play/Stop</button>
 <button type="button" onclick="mthlySpeedUp()" style="left:%dpx;top:%dpx;position:absolute">Faster</button> <button type="button" onclick="mthlySlowDown()" style="left:%dpx;top:%dpx;position:absolute">Slower</button>
-]], 340+shift, top, 420+shift, top, 480+shift, top))
+]], 340+shift, top, qq(iswindows(), 410, 422)+shift, top, qq(iswindows(), 460, 485)+shift, top))
     end
     top = top + 30
     file:write(s)
