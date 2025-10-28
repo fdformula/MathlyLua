@@ -474,7 +474,7 @@ opts = {
     {x = 0, y = 0.7, text = 'Lua', color = 'white', size = 75},
     {x = '@(t) (5 + 2.9) * cos(t + Math.PI/6)', y = '@(t) (5 + 2.9) * sin(t + Math.PI/6)', color = 'grey', width = 2, style = "'dash': 'dash'"},
     {x = '@(t) (5 + 2.9)*cos(T + Math.PI/4) + 1.6 * cos(t)', y = '@(t) (5 + 2.9)*sin(T + Math.PI/4) + 1.6 * sin(t)', color = '#00007f', width = 0, t = {0, 2 * pi}, fill = 'fs'},
-    {x = '(5 + 2.9)*cos(T + Math.PI/4)', y = '(5 + 2.9)*sin(T + Math.PI/4) + 0.2', text = 'Mathly', color = 'white', size = 14}
+    {x = '(5 + 2.9)*cos(T + Math.PI/4)', y = '(5 + 2.9)*sin(T + Math.PI/4) + 0.3', text = 'Mathly', color = 'white', size = 14}
   }
 }
 animate(fstr, opts)
@@ -1813,13 +1813,6 @@ is dynamically generated.</p>
 <p>&#x2713; &nbsp; See <code><a href=#animate>animate</a></code> for more information.</p>
 <pre><code>mathly = require('mathly')
 
-fstr = '@(x) a * (x - h)^2 + k' -- a, h, and k are each a control here
-opts = {
-  a = {-3, 3, 0.02, default = 3}, h = {-10, 10, 0.5, default = 0}, k = {-90, 90, default = 0},
-  x = {-10, 10}, y = {-100, 100},
-  layout = { width = 600, height = 400, square = false }}
-manipulate(fstr, opts)
-
 -- Lissajous curves
 fstr = {'@(t) a*sin(m * t)', '@(t) b*sin(n * t)'}
 opts = {
@@ -1828,7 +1821,7 @@ opts = {
   b = {0.1, 5, 0.1, default = 2}, n = {1, 20, 1, default = 1},
   x = {-5.1, 5.1},
   resolution = 2000,
-  layout = { width = 640, height = 540 }}
+  layout = { width = 640, height = 540, title = '&lt;h3&gt;Lissajous Curves&lt;/h3&gt;' }}
 manipulate(fstr, opts)
 
 fstr = {'@(t) cos(t) + 1/m * cos(a*t) + 1/n * cos(b*t+3.1416/2)',
@@ -1843,6 +1836,19 @@ opts = {
 manipulate(fstr, opts)
 -- m = 2, (n = 5 | 9), a = 9, b = -15
 -- m = 2, n = 2, a = 8, b = -6
+
+-- polar curves: the code below may be used as a template
+---------------------------------------------------------
+r = 'sin(n*t)'        -- r(θ) = sin(nθ); change this only
+---------------------------------------------------------
+fstr = {'@(t) (' .. r .. ') * cos(t)', '@(t) (' .. r .. ') * sin(t)'}
+disp(fstr)
+opts = {
+  t = {0, 2 * pi, 0.01}, x = {-1.2, 1.2}, n = {1, 24, 1}, -- adjust options if needed
+  resolution = 2000,
+  fill = 'fs',
+  layout = {width = 500, height = 500, square = true, title = '&lt;h3&gt;Polar curve: r(t) = sin(nt)&lt;/h3&gt;'}}
+manipulate(fstr, opts)
 
 r = 'm + 1/n * sin(a*t)'
 s = 't + sin(b*t)/c'
@@ -1860,24 +1866,12 @@ opts = {
     xaxis = { showgrid = false, zeroline = false, showticklabels = false },
     yaxis = { showgrid = false, zeroline = false, showticklabels = false }}}
 manipulate(fstr, opts)
+-- m = -2, n = 7, a = -9, b = -2, c = 1
 -- m = n = c = 1, (a = -1, b = -10) | (a = +-10, b = 4)
 -- m = 3, n = 1, a = 8, b = 16, c = ...
 -- m = n = 3, a = 7, b = -14, c = 6
 -- m = 3, n = 1, a = -9, b = 15, c = 6
 -- m = n = 3, a = 8, b = -2, c = 1
-
--- polar curves: the code below may be used as a template
----------------------------------------------------------
-r = 'sin(n*t)'        -- r(θ) = sin(nθ); change this only
----------------------------------------------------------
-fstr = {'@(t) (' .. r .. ') * cos(t)', '@(t) (' .. r .. ') * sin(t)'}
-disp(fstr)
-opts = {
-  t = {0, 2 * pi, 0.01}, x = {-1.2, 1.2}, n = {1, 24, 1}, -- adjust options if needed
-  resolution = 2000,
-  fill = 'fs',
-  layout = {width = 500, height = 500, square = true, title = 'Polar curve: r(t) = sin(nt)'}}
-manipulate(fstr, opts)
 
 -- polar curves: r(θ) = sin(1.6θ)^2 + cos(nθ)^5
 r = 'sin(1.6 * t)^2 + cos(n*t)^5'
@@ -1886,7 +1880,8 @@ opts = {
   t = {0, 10*pi, 0.01}, x = {-2, 2}, n = {1, 12, 1},
   resolution = 6000,
   layout = {
-    width = 640, height = 540, title = 'Polar curve: r(t) = sin(1.6t)^2 + cos(nt)^5',
+    width = 640, height = 540,
+    title = '&lt;font size=5&gt;Polar curve: r(t) = sin(1.6t)&lt;sup&gt;2&lt;/sup&gt; + cos(nt)&lt;sup&gt;5&lt;/sup&gt;&lt;/font&gt;',
     xaxis = { showgrid = false, zeroline = false, showticklabels = false },
     yaxis = { showgrid = false, zeroline = false, showticklabels = false }}}
 manipulate(fstr, opts)
@@ -1907,7 +1902,7 @@ jcode = [[
     } else {
       t = k;
     }
-    return 'y = ' + ax + t;
+    return '&lt;h3&gt;y = ' + ax + t + '&lt;/h3&gt;'
   }
 ]]
 
