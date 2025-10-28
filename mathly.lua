@@ -2614,19 +2614,17 @@ local function _anmt_parse_args(fstr, opts)
   return cs, rs, xr, opts.y, tr, title, xexpr, yexpr, jxexpr, jyexpr, opts.enhancements, jscode
 end -- _anmt_parse_args
 
-function _anmt_fill(fil)
-  if fil == nil then return '' end
-  local s = ''
-  if fil == 'fs' then     -- fill to Self
-    s = ", 'fill': 'toself'"
-  elseif fil == 'fn' then -- No fill
-    s = ", 'fill': 'none'"
-  elseif fil == 'fa' then -- fill to the x-Axis
-    s = ", 'fill': 'tozeroy'"
-  elseif fil == 'ff' then -- fill to previous Function
-    s = ", 'fill': 'tonexty'"
+function _anmt_fill(s)
+  if s == 'fa' then -- fill to the x-Axis
+    s = "tozeroy'"
+  elseif s == 'ff' then -- fill to previous Function
+    s = "tonexty'"
+  elseif s == 'fs' then -- fill to Self
+    s = "toself'"
+  else
+    s = "none'" -- No fill
   end
-  return s
+  return ", 'fill': '" .. s
 end
 
 local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces = {{...}, {...}, ...}
@@ -2649,7 +2647,7 @@ local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces =
                     toJS(obj.x), toJS(obj.y), color, obj.size or 8, style)
         file:write(fmt("  %smthlyTraces.push(%s);\n", head, trace))
       elseif obj.text ~= nil then
-        trace = fmt("{ 'x': [%s], 'y': [%s], 'text': '%s', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': '%s', 'size': %f %s } }",
+        trace = fmt("{ 'x': [%s], 'y': [%s], 'text': '%s', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom center', 'name': '', 'textfont': { 'color': '%s', 'size': %f %s } }",
                     toJS(obj.x), toJS(obj.y), obj.text, color, obj.size or 10, style)
         file:write(fmt("  %smthlyTraces.push(%s);\n", head, trace))
       elseif obj.parametriceqs then
@@ -2761,8 +2759,9 @@ input:focus {outline: none;}
     if i == 1 and _anmt_animateq then
       file:write(fmt([[
 <button type="button" onclick="mthlyPlay()" style="left:%dpx;top:%dpx;position:absolute">Play/Stop</button>
-<button type="button" onclick="mthlySpeedUp()" style="left:%dpx;top:%dpx;position:absolute">Faster</button> <button type="button" onclick="mthlySlowDown()" style="left:%dpx;top:%dpx;position:absolute">Slower</button>
-]], 340+shift, top, qq(iswindows(), 410, 422)+shift, top, qq(iswindows(), 460, 485)+shift, top))
+<button type="button" onclick=mthlySpeedUp(50) style="left:%dpx;top:%dpx;position:absolute">Faster</button>
+<button type="button" onclick=mthlySpeedUp(-50) style="left:%dpx;top:%dpx;position:absolute">Slower</button>
+]], 340+shift, top, qq(iswindows(), 412, 422)+shift, top, qq(iswindows(), 464, 485)+shift, top))
     end
     top = top + 30
     file:write(s)
@@ -2781,15 +2780,13 @@ var X, Y, T, p;
     file:write([[
 var mthlyAutoPlayq = true, mthlyIntervalId = null, mthlyInterval = 200;
 function mthlyPlay() { mthlyAutoPlayq = !mthlyAutoPlayq; }
-function mthlyChangeSpeed(step) {
+function mthlySpeedUp(step) {
   mthlyAutoPlayq = true;
   if (mthlyIntervalId != null) { clearInterval(mthlyIntervalId); }
-  mthlyInterval += step;
-  if (mthlyInterval <= 0) { mthlyInterval = 50; }
+  mthlyInterval -= step;
+  if (mthlyInterval <= 0) { mthlyInterval = 10; }
   mthlyIntervalId = setInterval(mthlyAnimatePlot, mthlyInterval);
 }
-function mthlySpeedUp() { mthlyChangeSpeed(-100); }
-function mthlySlowDown() { mthlyChangeSpeed(100); }
 ]])
     file:write("var mthlySldr1step = " .. tostring(rs[1][3]) .. ";\n")
   end
