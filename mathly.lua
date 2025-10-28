@@ -2752,16 +2752,22 @@ input:focus {outline: none;}
   if #cs > 0 then shift = max(map(function(x) return #x end, _anmt_cs_labels)) end
   shift = 8 * shift
   for i = 1, #cs do
-    s = [[<label for="mthlySldr%d" style='top:%dpx;'>%s:</label>
-<input type="range" id="mthlySldr%d" min="%s" max="%s" value="%s" style='left:%dpx;top:%dpx;' step="%s"></input><span id="mthlySldr%dvalue" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>
+    s = [[<label for="mthlySldr%s" style='top:%dpx;'>%s:</label>
+<input type="range" id="mthlySldr%s" min="%s" max="%s" value="%s" style='left:%dpx;top:%dpx;' step="%s"></input><span id="mthlySldr%svalue" style="left:%dpx;top:%dpx;position:absolute">&nbsp;</span>
 ]]
-    s = fmt(s, i, top, _anmt_cs_labels[i], i, tostring(rs[i][1]), tostring(rs[i][2]), tostring(rs[i][1]), 64 + shift, top, tostring(rs[i][3]), i, 285 + shift, top)
+    s = fmt(s, cs[i], top, _anmt_cs_labels[i], cs[i], tostring(rs[i][1]), tostring(rs[i][2]), tostring(rs[i][1]), 64 + shift, top, tostring(rs[i][3]), cs[i], 285 + shift, top)
     if i == 1 and _anmt_animateq then
       file:write(fmt([[
-<button type="button" onclick="mthlyPlay()" style="left:%dpx;top:%dpx;position:absolute">Play/Stop</button>
-<button type="button" onclick=mthlySpeedUp(50) style="left:%dpx;top:%dpx;position:absolute">Faster</button>
-<button type="button" onclick=mthlySpeedUp(-50) style="left:%dpx;top:%dpx;position:absolute">Slower</button>
-]], 340+shift, top, qq(iswindows(), 412, 422)+shift, top, qq(iswindows(), 464, 485)+shift, top))
+<button type="button" title="Play/Pause" onclick="mthlyPlay()" style="left:%dpx;top:%dpx;position:absolute">&#x23EF;</button>
+<button type="button" title="Slower" onclick=mthlySpeedUp(-50) style="left:%dpx;top:%dpx;position:absolute">&laquo;</button>
+<button type="button" title="Faster" onclick=mthlySpeedUp(50) style="left:%dpx;top:%dpx;position:absolute">&raquo;</button>
+]], 340+shift, top - qq(iswindows(), 1, 0), qq(iswindows(), 362, 376)+shift, top, qq(iswindows(), 384, 405)+shift, top))
+    end
+    if i > 1 then
+      file:write(fmt([[
+<button type="button" title="Previous value" onclick="mthly%sNext(-1)" style="left:%dpx;top:%dpx;position:absolute">&lsaquo;</button>
+<button type="button" title="Next value" onclick="mthly%sNext(1)" style="left:%dpx;top:%dpx;position:absolute">&rsaquo;</button>
+]], cs[i], 340+shift, top, cs[i], qq(iswindows(), 360, 367)+shift, top))
     end
     top = top + 30
     file:write(s)
@@ -2776,6 +2782,20 @@ var x = [];
 var t = [];
 var X, Y, T, p;
 ]], title or ''))
+  for i = 2, #cs do
+    file:write(fmt([[
+function mthly%sNext(d) {
+  let x = %s + d*mthly%sStep;
+  if (x < mthly%sMin) {
+    x = mthly%sMax;
+  } else if (x > mthly%sMax) {
+    x = mthly%sMin;
+  }
+  mthlySldr%s.value = x;
+  document.getElementById("mthlySldr%svalue").innerHTML = x;
+}
+]], cs[i], cs[i], cs[i], cs[i], cs[i], cs[i], cs[i], cs[i], cs[i]))
+  end
   if _anmt_animateq then
     file:write([[
 var mthlyAutoPlayq = true, mthlyIntervalId = null, mthlyInterval = 200;
@@ -2788,7 +2808,7 @@ function mthlySpeedUp(step) {
   mthlyIntervalId = setInterval(mthlyAnimatePlot, mthlyInterval);
 }
 ]])
-    file:write("var mthlySldr1step = " .. tostring(rs[1][3]) .. ";\n")
+    file:write("var mthlySldrpstep = " .. tostring(rs[1][3]) .. ";\n")
   end
 
   local squareq = true
@@ -2815,13 +2835,13 @@ function mthlySpeedUp(step) {
   end
 
   for i = 1, #cs do
-    file:write(fmt("var mthlySldr%d = document.getElementById('mthlySldr%d');\n", i, i))
+    file:write(fmt("var mthlySldr%s = document.getElementById('mthlySldr%s');\n", cs[i], cs[i]))
   end
 
   for i = 1, #cs do -- values of control sliders
     local v = rs[i].default;
     if v == nil then v = rs[i][1] end
-    file:write(fmt("mthlySldr%d.value = %s;\nvar %s = %s;\n", i, tostring(v), cs[i], tostring(v)))
+    file:write(fmt("mthlySldr%s.value = %s;\nvar %s = %s;\n", cs[i], tostring(v), cs[i], tostring(v)))
   end -- why Number(...)? Values of sliders in JavaScript are STRINGS!
 
   if not _anmt_animateq then file:write("p = 1;\n") end
@@ -2847,34 +2867,44 @@ function mthlySpeedUp(step) {
     end
   end
 
-  file:write("\nvar mthlyTraces = [];\nconst mthlyxMin = " .. tostring(xr[1]) .. ", mthlyxMax = " .. tostring(xr[2]) .. ", mthlyyMin = " .. tostring(yr[1]) .. ", mthlyyMax = " .. tostring(yr[2]) .. ";\n")
-  file:write("const mthlytMin = " .. tostring(tr[1]) .. ", mthlytMax = " .. tostring(tr[2]) .. ";\n")
+  file:write("\nvar mthlyTraces = [];\nconst mthlyxMin = " .. tostring(xr[1]) .. ", mthlyxMax = " .. tostring(xr[2]) .. ", mthlyxStep = " .. tostring(xr[3] or 1) ..
+             ";\nconst mthlyyMin = " .. tostring(yr[1]) .. ", mthlyyMax = " .. tostring(yr[2]) .. ";\n")
+  file:write("const mthlytMin = " .. tostring(tr[1]) .. ", mthlytMax = " .. tostring(tr[2]) .. ", mthlytStep = " .. tostring(tr[3] or 1) .. ";\n")
   for i = 1, #cs do
-    file:write("const mthly" .. cs[i].. "Min = " .. tostring(rs[i][1]) .. ", mthly" .. cs[i].. "Max = " .. tostring(rs[i][2]) .. ';\n')
+    file:write("const mthly" .. cs[i].. "Min = " .. tostring(rs[i][1]) .. ", mthly" .. cs[i].. "Max = " .. tostring(rs[i][2]) .. ", mthly" .. cs[i] .. "Step = " .. tostring(rs[i][3] or 1) .. ';\n')
   end
   file:write("\nfunction mthlyUpdateTraces() {\n  mthlyTraces = [];\n") -- // mthlyTraces = new Array(); mthlyTraces.splice(0); ... no good
   if type(jscode) == 'string' and jscode ~= '' then file:write("\n  // vvvvv user's javascript vvvvv\n" .. jscode .. "  // ^^^^^ user's javascript ^^^^^\n\n") end
   _amnt_write_traces(cs, opts, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
-  file:write('  document.getElementById("displaytext").innerHTML = displaytext();\n  document.getElementById("title").innerHTML = displaytitle();\n}\n\nmthlyUpdateTraces();\nconst mthlyInitData = mthlyTraces;\n\nvar mthlyOldCs = [') -- previous values of controls
+  file:write([[
+  document.getElementById("displaytext").innerHTML = displaytext();
+  document.getElementById("title").innerHTML = displaytitle();
+}
+
+mthlyUpdateTraces();
+const mthlyInitData = mthlyTraces;
+
+var mthlyNewCs = []; // new and old values of controls
+var mthlyOldCs = []])
   for i = 1, #cs do
-    if i > 1 then file:write(",") end
+    if i > 1 then file:write(", ") end
     file:write("99999999") -- each control is numeric
   end
-  file:write("];\nvar mthlyNewCs = [];\nfunction mthlyAnimatePlot() {\n")
+  file:write("];\n\nfunction mthlyAnimatePlot() {\n")
   if _anmt_animateq then
     s = [[
   if (mthlyAutoPlayq) {
-    let x = String(Number(mthlySldr1.value) + mthlySldr1step);
-    mthlySldr1.value = String(x);
-    if (x > 1) { mthlySldr1.value = '0'; }
-    document.getElementById("mthlySldr1value").innerHTML = '' + Math.round(mthlySldr1.value*100) + '%'
+    let x = String(Number(mthlySldrp.value) + mthlySldrpstep);
+    mthlySldrp.value = String(x);
+    if (x > 1) { mthlySldrp.value = '0'; }
+    document.getElementById("mthlySldrpvalue").innerHTML = '' + Math.round(mthlySldrp.value*100) + '%'
   }
 ]]
     file:write(s)
   end
 
   for i = 1, #cs do -- values of control sliders
-    file:write(fmt("  %s = Number(mthlySldr%d.value);\n", cs[i], i))
+    file:write(fmt("  %s = Number(mthlySldr%s.value);\n", cs[i], cs[i]))
   end
 
   if _anmt_animateq then
@@ -2932,10 +2962,10 @@ function mthlySpeedUp(step) {
 
   for i = 1, #cs do -- slider event handlers
     s = [[
-document.getElementById("mthlySldr%dvalue").innerHTML = mthlySldr%d.value;
-mthlySldr%d.addEventListener("input", function() { document.getElementById("mthlySldr%dvalue").innerHTML = mthlySldr%d.value; %smthlyAnimatePlot() });
+document.getElementById("mthlySldr%svalue").innerHTML = mthlySldr%s.value;
+mthlySldr%s.addEventListener("input", function() { document.getElementById("mthlySldr%svalue").innerHTML = mthlySldr%s.value; });
 ]]
-    file:write(fmt(s, i, i, i, i, i, qq(_anmt_animateq, 'mthlyAutoPlayq = false; ', '')))
+    file:write(fmt(s, cs[i], cs[i], cs[i], cs[i], cs[i]))
   end
   file:write([[
 

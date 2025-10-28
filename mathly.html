@@ -413,8 +413,9 @@ naturally be parametrized as <code>{'@(t) t', '@(t) f(t)'}</code> with <code>x =
 a string, such as <code>'2*X - a * Y + k'</code>. They are global variables accessible by JavaScript code.</li>
 <li>While a control is a single letter, its label can be a word or so, defined like in <code>m = {0, 3, 1, label = 'Option'}</code>, where <code>m</code> is a control.</li>
 <li>Each control is a global variable accessible to JavaScript code. In addition, the global variable <code>mthlyTraces</code>, an array of traces to be shown on the graph, and the global constants
-like <code>mthlyxMin, mthlyxMax, mthlyyMin, mthlyyMax, mthlytMin, mthlytMax, mthly&lt;c&gt;Min</code>, and <code>mthly&lt;c&gt;Max</code>, the lowest and largest values of <code>x, y, t</code> and
-<code>&lt;c&gt;</code>, respectively, on the graph, are all accessible to JavaScript code, where <code>&lt;c&gt;</code> is each control.</li>
+like <code>mthlyxMin, mthlyxMax, mthlyxStep, mthlyyMin, mthlyyMax, mthlytMin, mthlytMax, mthlytStep, mthly&lt;c&gt;Min</code>, <code>mthly&lt;c&gt;Max</code>, and <code>mthly&lt;c&gt;Step</code>,
+the lowest and largest values and the step size of <code>x, y, t</code> and each control <code>&lt;c&gt;</code>, respectively, on the graph, are all accessible to JavaScript code. Note: <code>mthlyyStep</code>
+is not defined.</li>
 <li>All controls can be specified in <code>opts.controls</code> like <code>'ahk'</code>, <code>'a, h, k'</code>, <code>'a h, k'</code>, etc. If the field, <code>controls</code>, is not specified,
 they will be recognized automatically from the string expression of <code>y = f(x)</code> or parametric equations in <code>fstr</code> in the order they occur.</li>
 <li>With a control, field <code>default</code> defines the initial value of the control. If not provided, it defaults to <code>start</code>.<br><br></li>
