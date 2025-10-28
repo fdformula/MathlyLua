@@ -82,11 +82,11 @@ function mthlyUpdateTraces() {
     } else {
       t = k;
     }
-    return 'y = ' + ax + t;
+    return '<h3>y = ' + ax + t + '</h3>'
   }
   // ^^^^^ user's javascript ^^^^^
 
-  mthlyTraces.push({ 'x': x, 'y': x.map(x => a * (x - h)**2 + k), 'mode': 'lines', 'line': { 'simplify': false } });
+  mthlyTraces.push({ 'x': x, 'y': x.map(x => a * (x - h)**2 + k), 'mode': 'lines', 'line': { 'simplify': false }, 'fill': 'none' });
   document.getElementById("displaytext").innerHTML = displaytext();
   document.getElementById("title").innerHTML = displaytitle();
 }
@@ -129,7 +129,7 @@ mthlySldr3.addEventListener("input", function() { document.getElementById("mthly
 
 Plotly.newPlot('mathlyDiv', mthlyInitData, mthlyLayout);
 mthlyAnimatePlot();
-setInterval(mthlyAnimatePlot, 200); // animate every 0.2 seconds
+mthlyIntervalId = setInterval(mthlyAnimatePlot, 200); // animate every 0.2 seconds
 </script>
 </body>
 </html>

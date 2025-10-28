@@ -28,7 +28,9 @@ input:focus {outline: none;}
 <div id="mathlyDiv" style="width:800px;height:600px;display:inline-block;top:50px;position:absolute;"></div>
 <span id='title' style="width:800px;left:0px;display:block;text-align:center;">&nbsp;</span>
 <!-- controls -->
-<button type="button" onclick="mthlyPlay()" style="left:377px;top:60px;position:absolute">Play</button> <button type="button" onclick="mthlyStop()" style="left:428px;top:60px;position:absolute">Stop</button>
+<button type="button" onclick="mthlyPlay()" style="left:372px;top:60px;position:absolute">Play/Stop</button>
+<button type="button" onclick=mthlySpeedUp(50) style="left:444px;top:60px;position:absolute">Faster</button>
+<button type="button" onclick=mthlySpeedUp(-50) style="left:496px;top:60px;position:absolute">Slower</button>
 <label for="mthlySldr1" style='top:60px;'>Play:</label>
 <input type="range" id="mthlySldr1" min="0" max="1" value="0" style='left:96px;top:60px;' step="0.01"></input><span id="mthlySldr1value" style="left:317px;top:60px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:90px;position:absolute">&nbsp;</span>
@@ -38,9 +40,15 @@ function displaytitle() { return "<h3><em>y = x<sup>2</sup></em></h3>"; } //
 var x = [];
 var t = [];
 var X, Y, T, p;
-var mthlyAutoPlayq = true;
-function mthlyPlay() { mthlyAutoPlayq = true; }
-function mthlyStop() { mthlyAutoPlayq = false; }
+var mthlyAutoPlayq = true, mthlyIntervalId = null, mthlyInterval = 200;
+function mthlyPlay() { mthlyAutoPlayq = !mthlyAutoPlayq; }
+function mthlySpeedUp(step) {
+  mthlyAutoPlayq = true;
+  if (mthlyIntervalId != null) { clearInterval(mthlyIntervalId); }
+  mthlyInterval -= step;
+  if (mthlyInterval <= 0) { mthlyInterval = 10; }
+  mthlyIntervalId = setInterval(mthlyAnimatePlot, mthlyInterval);
+}
 var mthlySldr1step = 0.01;
 
 const mthlyLayout = {
@@ -76,16 +84,16 @@ function mthlyUpdateTraces() {
   const cy = f(X) + q(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));
   // ^^^^^ user's javascript ^^^^^
 
-  mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => t*t), 'mode': 'lines', 'line': { 'simplify': false } });
+  mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => t*t), 'mode': 'lines', 'line': { 'simplify': false }, 'fill': 'none' });
   if (true) {
     const t = [];
     for (let i = -6.2831853071796; i <= 6.2831853071796; i += 0.025132741228718) { t.push(i); }
-    mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => t*t), 'mode': 'lines', 'line': { 'simplify': false, 'color': 'blue', 'width': 3  } });
+    mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => t*t), 'mode': 'lines', 'line': { 'simplify': false, 'color': 'blue', 'width': 3  }, 'fill': 'none' });
   }
   if (true) {
     const t = [];
     for (let i = 0; i <= 6.2831853071796; i += 0.012566370614359) { t.push(i); }
-    mthlyTraces.push({ 'x': t.map(t => cx + Math.cos(t) / k(X)), 'y': t.map(t => cy + Math.sin(t) / k(X)), 'mode': 'lines', 'line': { 'simplify': false, 'color': 'orange', 'width': 3  } });
+    mthlyTraces.push({ 'x': t.map(t => cx + Math.cos(t) / k(X)), 'y': t.map(t => cy + Math.sin(t) / k(X)), 'mode': 'lines', 'line': { 'simplify': false, 'color': 'orange', 'width': 3  }, 'fill': 'none' });
   }
   mthlyTraces.push({ 'x': [X], 'y': [Y], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 10.000000  } });
   document.getElementById("displaytext").innerHTML = displaytext();
@@ -127,7 +135,7 @@ mthlySldr1.addEventListener("input", function() { document.getElementById("mthly
 
 Plotly.newPlot('mathlyDiv', mthlyInitData, mthlyLayout);
 mthlyAnimatePlot();
-setInterval(mthlyAnimatePlot, 200); // animate every 0.2 seconds
+mthlyIntervalId = setInterval(mthlyAnimatePlot, 200); // animate every 0.2 seconds
 </script>
 </body>
 </html>
