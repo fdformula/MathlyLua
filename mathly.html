@@ -464,17 +464,17 @@ animate(fstr, opts)
 -- Lua + Mathly
 fstr = {'@(t) 5 * cos(t)', '@(t) 5 * sin(t)'}
 opts = {
-  p = {0, 1, 0.4}, t = {0, 2 * pi, 0.01}, x = {-10, 10}, width = 0, color = '#00007f',
+  p = {0, 1, 0.4}, t = {0, 2 * pi, 0.01}, x = {-10, 10}, width = 0, color = 'darkblue',
   layout = {
     width = 500, height = 500,
     xaxis = { showgrid = false, zeroline = false, showticklabels = false },
     yaxis = { showgrid = false, zeroline = false, showticklabels = false }},
   enhancements = {
-    {x = '@(t) 5.5 * cos(t)', y = '@(t) 5.5 * sin(t)', t = {0, 2 * pi}, color = '#00007f', width = 0, fill = 'fs'},
+    {x = '@(t) 5.5 * cos(t)', y = '@(t) 5.5 * sin(t)', t = {0, 2 * pi}, color = 'darkblue', width = 0, fill = 'fs'},
     {x = '@(t) 2.2 + 1.6 * cos(t)', y = '@(t) 2.2 + 1.6 * sin(t)', t = {0, 2 * pi}, color = 'white', width = 0, fill = 'fs'},
     {x = 0, y = 0.7, text = 'Lua', color = 'white', size = 75},
     {x = '@(t) (5 + 2.9) * cos(t + Math.PI/6)', y = '@(t) (5 + 2.9) * sin(t + Math.PI/6)', color = 'grey', width = 2, style = "'dash': 'dash'"},
-    {x = '@(t) (5 + 2.9)*cos(T + Math.PI/4) + 1.6 * cos(t)', y = '@(t) (5 + 2.9)*sin(T + Math.PI/4) + 1.6 * sin(t)', color = '#00007f', width = 0, t = {0, 2 * pi}, fill = 'fs'},
+    {x = '@(t) (5 + 2.9)*cos(T + Math.PI/4) + 1.6 * cos(t)', y = '@(t) (5 + 2.9)*sin(T + Math.PI/4) + 1.6 * sin(t)', color = 'darkblue', width = 0, t = {0, 2 * pi}, fill = 'fs'},
     {x = '(5 + 2.9)*cos(T + Math.PI/4)', y = '(5 + 2.9)*sin(T + Math.PI/4) + 0.3', text = 'Mathly', color = 'white', size = 14}
   }
 }
