@@ -9,7 +9,7 @@ fstr = {'@(t) (a + b) * cos(t) - b * cos((a + b) / b * t)', '@(t) (a + b) * sin(
 opts = {
   t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 6.0}, b = {0.2, 9, 0.1, default = 1.7}, x = {-10, 10},
   resolution = 1500,
-  layout = { width = 640, height = 640 },
+  layout = { width = 640, height = 640, title = '<h3>Epicycloid</h3>' },
   enhancements = {
     {x = 'X', y = 'Y', color = 'red', size = 10, point = true},
     {x = '@(t) a * cos(t)', y = '@(t) a * sin(t)', t = {0, 2 * pi}, color = 'orange'},
