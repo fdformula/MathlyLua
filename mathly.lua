@@ -2758,16 +2758,15 @@ input:focus {outline: none;}
     s = fmt(s, cs[i], top, _anmt_cs_labels[i], cs[i], tostring(rs[i][1]), tostring(rs[i][2]), tostring(rs[i][1]), 64 + shift, top, tostring(rs[i][3]), cs[i], 285 + shift, top)
     if i == 1 and _anmt_animateq then
       file:write(fmt([[
-<button type="button" title="Play/Pause" onclick="mthlyPlay()" style="left:%dpx;top:%dpx;position:absolute">&#x23EF;</button>
-<button type="button" title="Slower" onclick=mthlySpeedUp(-50) style="left:%dpx;top:%dpx;position:absolute">&laquo;</button>
-<button type="button" title="Faster" onclick=mthlySpeedUp(50) style="left:%dpx;top:%dpx;position:absolute">&raquo;</button>
-]], 340+shift, top - qq(iswindows(), 1, 0), qq(iswindows(), 362, 376)+shift, top, qq(iswindows(), 384, 405)+shift, top))
-    end
-    if i > 1 then
+<button id='mthlyPlayButtn' type="button" onclick="mthlyPlay()" style="width:68px;left:%dpx;top:%dpx;position:absolute">Pause</button>
+<button type="button" onclick=mthlySpeedUp(-50) style="width:60px;left:%dpx;top:%dpx;position:absolute">Slower</button>
+<button type="button" onclick=mthlySpeedUp(50) style="width:60px;left:%dpx;top:%dpx;position:absolute">Faster</button>
+]], 340+shift, top, 411+shift, top, 474+shift, top))
+    else
       file:write(fmt([[
-<button type="button" title="Previous value" onclick="mthly%sNext(-1)" style="left:%dpx;top:%dpx;position:absolute">&lsaquo;</button>
-<button type="button" title="Next value" onclick="mthly%sNext(1)" style="left:%dpx;top:%dpx;position:absolute">&rsaquo;</button>
-]], cs[i], 340+shift, top, cs[i], qq(iswindows(), 360, 367)+shift, top))
+<button type="button" title="Previous value" onclick="mthly%sNext(-1)" style="width:48px;left:%dpx;top:%dpx;position:absolute">Prev</button>
+<button type="button" title="Next value" onclick="mthly%sNext(1)" style="width:48px;left:%dpx;top:%dpx;position:absolute">Next</button>
+]], cs[i], 340+shift, top, cs[i], 391+shift, top))
     end
     top = top + 30
     file:write(s)
@@ -2782,7 +2781,7 @@ var x = [];
 var t = [];
 var X, Y, T, p;
 ]], title or ''))
-  for i = 2, #cs do
+  for i = qq(_anmt_animateq, 2, 1), #cs do
     file:write(fmt([[
 function mthly%sNext(d) {
   let x = %s + d*mthly%sStep;
@@ -2791,6 +2790,7 @@ function mthly%sNext(d) {
   } else if (x > mthly%sMax) {
     x = mthly%sMin;
   }
+  x = Math.round(x * 1000) / 1000;
   mthlySldr%s.value = x;
   document.getElementById("mthlySldr%svalue").innerHTML = x;
 }
@@ -2799,9 +2799,15 @@ function mthly%sNext(d) {
   if _anmt_animateq then
     file:write([[
 var mthlyAutoPlayq = true, mthlyIntervalId = null, mthlyInterval = 200;
-function mthlyPlay() { mthlyAutoPlayq = !mthlyAutoPlayq; }
+const mthlyPlayButtn = document.getElementById('mthlyPlayButtn');
+function mthlyButtnTxt() {
+  let s = 'Resume';
+  if (mthlyAutoPlayq) { s = 'Pause'; }
+  mthlyPlayButtn.textContent = s;
+}
+function mthlyPlay() { mthlyAutoPlayq = !mthlyAutoPlayq; mthlyButtnTxt(); }
 function mthlySpeedUp(step) {
-  mthlyAutoPlayq = true;
+  mthlyAutoPlayq = true; mthlyButtnTxt();
   if (mthlyIntervalId != null) { clearInterval(mthlyIntervalId); }
   mthlyInterval -= step;
   if (mthlyInterval <= 0) { mthlyInterval = 10; }
@@ -2876,6 +2882,7 @@ function mthlySpeedUp(step) {
   file:write("\nfunction mthlyUpdateTraces() {\n  mthlyTraces = [];\n") -- // mthlyTraces = new Array(); mthlyTraces.splice(0); ... no good
   if type(jscode) == 'string' and jscode ~= '' then file:write("\n  // vvvvv user's javascript vvvvv\n" .. jscode .. "  // ^^^^^ user's javascript ^^^^^\n\n") end
   _amnt_write_traces(cs, opts, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
+  if _anmt_animateq then file:write("mthlyButtnTxt();\n") end
   file:write([[
   document.getElementById("displaytext").innerHTML = displaytext();
   document.getElementById("title").innerHTML = displaytitle();
