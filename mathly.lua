@@ -2798,23 +2798,19 @@ function mthly%sNext(d) {
   end
   if _anmt_animateq then
     file:write([[
+
 var mthlyAutoPlayq = true, mthlyIntervalId = null, mthlyInterval = 200;
 const mthlyPlayButtn = document.getElementById('mthlyPlayButtn');
-function mthlyButtnTxt() {
-  let s = 'Resume';
-  if (mthlyAutoPlayq) { s = 'Pause'; }
-  mthlyPlayButtn.textContent = s;
-}
-function mthlyPlay() { mthlyAutoPlayq = !mthlyAutoPlayq; mthlyButtnTxt(); }
+function mthlyPlayButtnTxt() { mthlyPlayButtn.textContent = mthlyAutoPlayq? 'Pause' : 'Resume'; }
+function mthlyPlay() { mthlyAutoPlayq = !mthlyAutoPlayq; mthlyPlayButtnTxt(); }
 function mthlySpeedUp(step) {
-  mthlyAutoPlayq = true; mthlyButtnTxt();
+  mthlyAutoPlayq = true; mthlyPlayButtnTxt();
   if (mthlyIntervalId != null) { clearInterval(mthlyIntervalId); }
   mthlyInterval -= step;
   if (mthlyInterval <= 0) { mthlyInterval = 10; }
   mthlyIntervalId = setInterval(mthlyAnimatePlot, mthlyInterval);
 }
-]])
-    file:write("var mthlySldrpstep = " .. tostring(rs[1][3]) .. ";\n")
+var mthlySldrpstep = ]] .. tostring(rs[1][3]) .. ";\n")
   end
 
   local squareq = true
@@ -2882,7 +2878,7 @@ function mthlySpeedUp(step) {
   file:write("\nfunction mthlyUpdateTraces() {\n  mthlyTraces = [];\n") -- // mthlyTraces = new Array(); mthlyTraces.splice(0); ... no good
   if type(jscode) == 'string' and jscode ~= '' then file:write("\n  // vvvvv user's javascript vvvvv\n" .. jscode .. "  // ^^^^^ user's javascript ^^^^^\n\n") end
   _amnt_write_traces(cs, opts, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
-  if _anmt_animateq then file:write("mthlyButtnTxt();\n") end
+  if _anmt_animateq then file:write("  mthlyPlayButtnTxt();\n") end
   file:write([[
   document.getElementById("displaytext").innerHTML = displaytext();
   document.getElementById("title").innerHTML = displaytitle();
