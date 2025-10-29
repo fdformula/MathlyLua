@@ -401,7 +401,7 @@ and <code>Y</code>. For example, <code>a, h</code>, and <code>k</code> are contr
 <p><code>fstr</code> must be a string for <code>y = f(x)</code> or a pair of strings for a parametric curve. The string(s) must be a function in the <a href=#easyf>shortcut string format</a>.</p>
 <p>The <code>opts</code> is a table of tables, used to define the ranges of <code>x, y</code>, and <code>t</code>, etc. You may include optional <code>enhancements</code> in it to improve the effect of an animation. An enhancement is
 actually a simple graphics object here, i.e., a line, a point, a text, or a parametric curve, of which the properties, <code>color, size, width</code>, whenever applicable, can be specified.
-If more properties are needed, define them through field <code>style</code> in a string, such as <code>style = "'symbol': 'diamond', 'line': { 'color': 'rgb(0, 0, 0)', 'width': 2 }"</code> for a point. You may search keywords like
+If more properties are needed, define them through field <code>style</code> in a string, such as <code>style = "symbol: 'diamond', line: { color: 'rgb(0, 0, 0)', width: 2 }"</code> for a point. You may search keywords like
 <a href="https://www.google.com/search?q=Plotly+JavaScript+line+style" target="_blank">Plotly JavaScript line style</a>,
 <a href="https://www.google.com/search?q=Plotly+JavaScript+point+style" target="_blank">Plotly JavaScript point style</a>, and
 <a href="https://www.google.com/search?q=Plotly+JavaScript+textfont+style" target="_blank">Plotly JavaScript textfont style</a>
@@ -429,8 +429,8 @@ if the range of <code>t</code> is omitted, it defaults to the range of <code>x</
 or <code>x</code> (when <code>fstr = '@(x) ...'</code>), so, the curve is dynamical, i.e., the curve is animated together with the curve defined by <code>fstr</code></em>;
 otherwise, the curve is static.<br><br></li>
 <li>For each graphics object defined in <code>fstr</code> or in <code>enhancements</code>, field <code>style</code> can specify more properties of the object allowed by Plotly. It is a string like
-<code>style = "'dash': 'dot'"</code> and <code>style = "'dash': 'dot', 'color': 'red', 'width': 2"</code> for a curve or a line. Here, <code>'dot'</code> can be <code>'dash', 'dashdot', 'longdash',
-'longdashdot'</code>, etc.</li>
+<code>style = "dash: 'dot'"</code> and <code>style = "dash: 'dot', color: 'red', width: 2"</code> for a curve or a line. Here, <code>dot</code> can be <code>dash, dashdot, longdash,
+longdashdot</code>, etc.</li>
 <li>Field <code>opts.resolution</code> may be needed for smooth parametric curves. It defaults to 500. The larger, the smoother, but more computing power is needed.
 With each parametric curve in <code>enhancements</code>, field <code>resolution</code> can be defined separately, and its default and minimum value is 500.<br><br></li>
 
@@ -473,7 +473,7 @@ opts = {
     {x = '@(t) 5.5 * cos(t)', y = '@(t) 5.5 * sin(t)', t = {0, 2 * pi}, color = 'darkblue', width = 0, fill = 'fs'},
     {x = '@(t) 2.2 + 1.6 * cos(t)', y = '@(t) 2.2 + 1.6 * sin(t)', t = {0, 2 * pi}, color = 'white', width = 0, fill = 'fs'},
     {x = 0, y = 0.7, text = 'Lua', color = 'white', size = 75},
-    {x = '@(t) (5 + 2.9) * cos(t + Math.PI/6)', y = '@(t) (5 + 2.9) * sin(t + Math.PI/6)', color = 'grey', width = 2, style = "'dash': 'dash'"},
+    {x = '@(t) (5 + 2.9) * cos(t + Math.PI/6)', y = '@(t) (5 + 2.9) * sin(t + Math.PI/6)', color = 'grey', width = 2, style = "dash: 'dash'"},
     {x = '@(t) (5 + 2.9)*cos(T + Math.PI/4) + 1.6 * cos(t)', y = '@(t) (5 + 2.9)*sin(T + Math.PI/4) + 1.6 * sin(t)', color = 'darkblue', width = 0, t = {0, 2 * pi}, fill = 'fs'},
     {x = '(5 + 2.9)*cos(T + Math.PI/4)', y = '(5 + 2.9)*sin(T + Math.PI/4) + 0.3', text = 'Mathly', color = 'white', size = 14}
   }
@@ -526,7 +526,7 @@ and implement others through <code>enhancements</code> or in JavaScript.</p>
 fstr = '@(x) 4*sin(x)'
 -- fstr = {'@(t) 6*cos(t)', '@(t) 4*sin(t)'} -- try this one and see
 opts = {
-  t = {0, 2*pi}, x = {-6.1, 6.1}, y = { -4.3, 4.3 }, color = 'blue', width = 5, style = "'dash': 'dot'",
+  t = {0, 2*pi}, x = {-6.1, 6.1}, y = { -4.3, 4.3 }, color = 'blue', width = 5, style = "dash: 'dot'",
   layout = { width = 600, height = 400, square = true, title = 'Demo' },
   enhancements = {
     {x = 'X', y = 'Y', color = 'blue', size = 8, point = true},
@@ -534,9 +534,9 @@ opts = {
     {x = '@(t)  2 + cos(t)', y = '@(t) 1 + sin(t)', t = {0, pi}},                                 --
     {x = '@(t) 1.5*cos(t)', y = '@(t) -0.5 + 1.5*sin(t)', t = {pi, 2*pi}},                        --
     {x = '@(t) t', y = '@(t) 3 * sin(t)', color = 'green'},                                       -- t's range is not given: sync with fstr. note: if fstr = '@(x) ...', t = x
-    {x = '@(t) -t', y = '@(t) 3 * cos(t)', color = 'red', style = "'dash': 'dashdot'"},           --
-    {x = 'T', y = '3* sin(T)', point = true, color = 'green', style = "'symbol': 'circle-open'"}, -- lines, points? use T, X, and Y
-    {x = '-T', y = '3* cos(T)', point = true, color = 'red', style = "'symbol': 'star'"},
+    {x = '@(t) -t', y = '@(t) 3 * cos(t)', color = 'red', style = "dash: 'dashdot'"},           --
+    {x = 'T', y = '3* sin(T)', point = true, color = 'green', style = "symbol: 'circle-open'"}, -- lines, points? use T, X, and Y
+    {x = '-T', y = '3* cos(T)', point = true, color = 'red', style = "symbol: 'star'"},
     {x = 'X', y = 'Y', text = "(x<sub>0</sub> = ' + X.toFixed(2) + ', y<sub>0</sub> = ' + Y.toFixed(2) + ')", color = '#0fff', size = 10}
   }}
 animate(fstr, opts)

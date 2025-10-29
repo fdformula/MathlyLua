@@ -2624,7 +2624,7 @@ function _anmt_fill(s)
   else
     s = "none'" -- No fill
   end
-  return ", 'fill': '" .. s
+  return ", fill: '" .. s
 end
 
 local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces = {{...}, {...}, ...}
@@ -2639,15 +2639,15 @@ local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces =
       local color = qq(type(obj.color) == 'string', obj.color, 'black')
       if type(obj.style) == 'string' then style = ", " .. obj.style end
       if obj.line then
-        trace = fmt("{ 'x': [%s, %s], 'y': [%s, %s], 'mode': 'lines', 'line': { 'color': '%s', 'width': %d %s } }",
+        trace = fmt("{ x: [%s, %s], y: [%s, %s], mode: 'lines', line: { color: '%s', width: %d %s } }",
                     toJS(obj.x[1]), toJS(obj.x[2]), toJS(obj.y[1]), toJS(obj.y[2]), color, obj.width or 3, style)
         file:write(fmt("  %smthlyTraces.push(%s);\n", head, trace))
       elseif obj.point then
-        trace = fmt("{ 'x': [%s], 'y': [%s], 'mode': 'markers', 'marker': { 'color': '%s', 'size': %f %s } }",
+        trace = fmt("{ x: [%s], y: [%s], mode: 'markers', marker: { color: '%s', size: %f %s } }",
                     toJS(obj.x), toJS(obj.y), color, obj.size or 8, style)
         file:write(fmt("  %smthlyTraces.push(%s);\n", head, trace))
       elseif obj.text ~= nil then
-        trace = fmt("{ 'x': [%s], 'y': [%s], 'text': '%s', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom center', 'name': '', 'textfont': { 'color': '%s', 'size': %f %s } }",
+        trace = fmt("{ x: [%s], y: [%s], text: '%s', mode: 'text', type: 'scatter', textposition: 'bottom center', name: '', textfont: { color: '%s', size: %f %s } }",
                     toJS(obj.x), toJS(obj.y), obj.text, color, obj.size or 10, style)
         file:write(fmt("  %smthlyTraces.push(%s);\n", head, trace))
       elseif obj.parametriceqs then
@@ -2662,7 +2662,7 @@ local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces =
           local step = tr1[3] or (tr1[2] - tr1[1]) / res
           file:write(fmt("    %sfor (let i = %s; i <= %s; i += %s) { t.push(i); }\n", head, tostring(tr1[1]), tostring(tr1[2]), tostring(step)))
         end
-        trace = fmt("{ 'x': t.map(t => %s), 'y': t.map(t => %s), 'mode': 'lines', 'line': { 'simplify': false, 'color': '%s', 'width': %d %s }%s }",
+        trace = fmt("{ x: t.map(t => %s), y: t.map(t => %s), mode: 'lines', line: { simplify: false, color: '%s', width: %d %s }%s }",
                     obj.x, obj.y, color, obj.width or 3, style, _anmt_fill(obj.fill))
         file:write(fmt("    %smthlyTraces.push(%s);\n%s  }\n", head, trace, head))
       end
@@ -2674,13 +2674,13 @@ end -- _amnt_write_subtraces
 local function _amnt_write_traces(cs, opts, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
   local fmt, trace = string.format, '{ '
   if xexpr == nil then
-    trace = trace .. fmt("'x': x, 'y': x.map(x => %s),", jyexpr)
+    trace = trace .. fmt("x: x, y: x.map(x => %s),", jyexpr)
   else -- parametric eqs
-    trace = trace .. fmt("'x': t.map(t => %s), 'y': t.map(t => %s),", jxexpr, jyexpr)
+    trace = trace .. fmt("x: t.map(t => %s), y: t.map(t => %s),", jxexpr, jyexpr)
   end
-  trace = trace .. " 'mode': 'lines', 'line': { 'simplify': false"
-  if opts.color ~= nil then trace = trace .. ", 'color': '" .. opts.color .. "'" end
-  if opts.width ~= nil then trace = trace .. ", 'width': " .. opts.width end
+  trace = trace .. " mode: 'lines', line: { simplify: false"
+  if opts.color ~= nil then trace = trace .. ", color: '" .. opts.color .. "'" end
+  if opts.width ~= nil then trace = trace .. ", width: " .. opts.width end
   if opts.style ~= nil then trace = trace .. ", " .. opts.style end
   trace = trace .. " }" .. _anmt_fill(opts.fill) .. " }" -- color: 'red'}
   file:write(fmt("  mthlyTraces.push(%s);\n", trace))
@@ -2692,7 +2692,7 @@ end -- _amnt_write_traces
 
 local function _anmt_layout_opts(axis, fmt, file) -- axis = layout.xaxis & yaxis
   if axis ~= nil then
-    map(function(k) if axis[k] ~= nil then file:write(fmt(", '%s': %s", k, qq(axis[k] == true, 'true', 'false'))) end end,
+    map(function(k) if axis[k] ~= nil then file:write(fmt(", %s: %s", k, qq(axis[k] == true, 'true', 'false'))) end end,
         {'showgrid', 'zeroline', 'showticklabels'})
   end
 end
@@ -2775,11 +2775,9 @@ input:focus {outline: none;}
   file:write(fmt(s, 74, top))
   file:write(fmt([[
 <script type="text/javascript">
-function displaytext()  { return ""; }   // to be overwritten
-function displaytitle() { return "%s"; } //
-var x = [];
-var t = [];
-var X, Y, T, p;
+function displaytext() { return ""; } // to be overwritten
+function displaytitle() { return "%s"; }
+var x = [], t = [], X, Y, T, p;
 ]], title or ''))
   for i = qq(_anmt_animateq, 2, 1), #cs do
     file:write(fmt([[
@@ -2815,7 +2813,7 @@ var mthlySldrpstep = ]] .. tostring(rs[1][3]) .. ";\n")
 
   local squareq = true
   if layout ~= nil and layout.square == false then squareq = false end
-  file:write(fmt("\nconst mthlyLayout = {\n  'xaxis': { 'range': [%s, %s]", tostring(xr[1]), tostring(xr[2])))
+  file:write(fmt("\nconst mthlyLayout = {\n  xaxis: { range: [%s, %s]", tostring(xr[1]), tostring(xr[2])))
   if layout ~= nil then _anmt_layout_opts(layout.xaxis, fmt, file) end
   file:write("}, // plot with fixed axes\n")
 
@@ -2824,10 +2822,10 @@ var mthlySldrpstep = ]] .. tostring(rs[1][3]) .. ";\n")
   elseif type(yr) ~= 'table' or yr[1] >= yr[2] then
     error('Range of y is invalid.')
   end
-  file:write(fmt("  'yaxis': { 'range': [%s, %s]", tostring(yr[1]), tostring(yr[2])))
+  file:write(fmt("  yaxis: { range: [%s, %s]", tostring(yr[1]), tostring(yr[2])))
   if layout ~= nil then _anmt_layout_opts(layout.yaxis, fmt, file) end
-  if squareq then file:write(", 'scaleanchor': 'x', 'scaleratio': 1") end -- square aspect ratio
-  file:write(" },\n  'showlegend': false\n};\n\n")
+  if squareq then file:write(", scaleanchor: 'x', scaleratio: 1") end -- square aspect ratio
+  file:write(" },\n  showlegend: false\n};\n\n")
   if title == nil then
     if xexpr == nil then
       title = 'y = ' .. yexpr
@@ -2887,8 +2885,7 @@ var mthlySldrpstep = ]] .. tostring(rs[1][3]) .. ";\n")
 mthlyUpdateTraces();
 const mthlyInitData = mthlyTraces;
 
-var mthlyNewCs = []; // new and old values of controls
-var mthlyOldCs = []])
+var mthlyNewCs = [], mthlyOldCs = []])
   for i = 1, #cs do
     if i > 1 then file:write(", ") end
     file:write("99999999") -- each control is numeric
@@ -2953,11 +2950,11 @@ var mthlyOldCs = []])
   file:write([[]; // update values of controls
   mthlyUpdateTraces();
   Plotly.animate('mathlyDiv', {
-    'data': mthlyTraces,
-    'traces': mthlyTraces.keys() // update all traces
+    data: mthlyTraces,
+    traces: mthlyTraces.keys() // update all traces
   }, {
-    'transition': { 'duration': 0 },
-    'frame': { 'duration': 0 }
+    transition: { duration: 0 },
+    frame: { duration: 0 }
   });
 }
 
@@ -2994,13 +2991,11 @@ local function _open_url(url)
       end
     elseif (io.popen("uname -s"):read'*a'):sub(1, 6) == "Darwin" then
       _open_cmd = function(url)
-        -- I cannot test, but this should work on modern Macs.
         -- os.execute(fmt('open "%s"', url))
         os.execute(fmt('%s "%s"', mac_browser, url))
       end
-    else -- that ought to only leave Linux
+    else
       _open_cmd = function(url)
-        -- should work on X-based distros.
         -- os.execute(fmt('xdg-open "%s"', url))
         os.execute(fmt('%s "%s"', linux_browser, url))
       end
