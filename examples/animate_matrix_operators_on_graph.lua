@@ -13,7 +13,7 @@ jcode = [[
       x[j] = A[0][0]*B.x[j] + A[0][1]*B.y[j];
       y[j] = A[1][0]*B.x[j] + A[1][1]*B.y[j];
     }
-    return { 'x' : x, 'y': y};
+    return { x : x, y: y};
   }
 
   function rotate() {
@@ -35,13 +35,13 @@ jcode = [[
       return (k == 1)? shear(b) : rotate(a);
     }
   }
-  const curve  = {'x': x, 'y': x.map(x => f(x))};
+  const curve  = {x: x, y: x.map(x => f(x))};
   var newcurve = transform(dilate(),
                            transform(reflect(),
                                      transform(rotshr(2), transform(rotshr(1), curve))));
   newcurve.x = newcurve.x.map(x => x + c)
   newcurve.y = newcurve.y.map(y => y + d)
-  newcurve.mode  = 'lines'; newcurve.line  = {'simplify': false};
+  newcurve.mode  = 'lines'; newcurve.line  = {simplify: false};
   mthlyTraces.push(newcurve);
   function displaytext() { return 'A shear is applied ' + (q == 0? 'after' : 'before') + ' a rotation.'; }
 ]]

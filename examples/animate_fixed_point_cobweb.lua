@@ -13,13 +13,13 @@ jscode = [[
   function plotweb() {
     let style = { 'color': 'grey', 'width': 1 }
     for (let i = 2; i <= I; i++) {
-      mthlyTraces.push({'x': [ xs[i-2], xs[i-1] ], 'y': [ xs[i-1], xs[i-1] ], 'mode': 'lines', 'line': style}); // horizontal line
-      mthlyTraces.push({'x': [ xs[i-1], xs[i-1] ], 'y': [ xs[i-1], xs[i]   ], 'mode': 'lines', 'line': style}); // vertical line
+      mthlyTraces.push({x: [ xs[i-2], xs[i-1] ], y: [ xs[i-1], xs[i-1] ], mode: 'lines', line: style}); // horizontal line
+      mthlyTraces.push({x: [ xs[i-1], xs[i-1] ], y: [ xs[i-1], xs[i]   ], mode: 'lines', line: style}); // vertical line
     }
 
     // plot enough extra objects outside the graph so that no old traces will stay - ugly, but works!
     for (let i = 1; i <= mthlyIMax * 4; i ++) {
-      mthlyTraces.push({ 'x': [mthlyxMax + i], 'y': [mthlyyMax + i], 'mode': 'markers' })
+      mthlyTraces.push({ x: [mthlyxMax + i], y: [mthlyyMax + i], mode: 'markers' })
     }
   }
 

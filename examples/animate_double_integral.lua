@@ -10,11 +10,11 @@ jcode = [[
   function plotgrids(hx, hy) {
     let x = a, y = c;
     for (i = 0; i <= m; i++) {
-      mthlyTraces.push({ 'x': [x, x], 'y': [c, d], 'mode': 'lines', 'line': { 'color': 'green', 'width': 1  } });
+      mthlyTraces.push({ x: [x, x], y: [c, d], mode: 'lines', line: { color: 'green', width: 1  } });
       x += hx;
     }
     for (i = 0; i <= n; i++) {
-      mthlyTraces.push({ 'x': [a, b], 'y': [y, y], 'mode': 'lines', 'line': { 'color': 'green', 'width': 1  } });
+      mthlyTraces.push({ x: [a, b], y: [y, y], mode: 'lines', line: { color: 'green', width: 1  } });
       y += hy;
     }
   }
@@ -43,7 +43,7 @@ jcode = [[
         y = c;
         for (j = 0; j < n; j++ ) {
           let X = x + hx * Math.random(), Y = y + hy * Math.random();
-          mthlyTraces.push({ 'x': [X], 'y': [Y], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 6  } });
+          mthlyTraces.push({ x: [X], y: [Y], mode: 'markers', marker: { color: 'red', size: 6  } });
           s += f(X, Y);
           y += hy;
         }
@@ -53,7 +53,7 @@ jcode = [[
       for (i = 1; i <= m; i++) {
         let y = ystart;
         for (j = 1; j <= n; j++) {
-          mthlyTraces.push({ 'x': [x], 'y': [y], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 6  } });
+          mthlyTraces.push({ x: [x], y: [y], mode: 'markers', marker: { color: 'red', size: 6  } });
           s += f(x, y);
           y += hy;
         }

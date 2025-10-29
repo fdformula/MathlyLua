@@ -32,18 +32,18 @@ jscode = [[
       const x2 = x1 + h, fx = f(x);
       if (trapzq) {
         f2 = f(x2);
-        mthlyTraces.push({'x': [x1, x1], 'y': [0, f1], 'mode': 'lines', 'line': style});
-        mthlyTraces.push({'x': [x1, x2], 'y': [f1, f2], 'mode': 'lines', 'line': style});
-        mthlyTraces.push({'x': [x2, x2], 'y': [f2, 0], 'mode': 'lines', 'line': style});
+        mthlyTraces.push({x: [x1, x1], y: [0, f1], mode: 'lines', line: style});
+        mthlyTraces.push({x: [x1, x2], y: [f1, f2], mode: 'lines', line: style});
+        mthlyTraces.push({x: [x2, x2], y: [f2, 0], mode: 'lines', line: style});
         if (i < N - 1) { s += f2; }
         f1 = f2;
       } else {
-        mthlyTraces.push({'x': [x1, x1], 'y': [0, fx], 'mode': 'lines', 'line': style});
-        mthlyTraces.push({'x': [x1, x2], 'y': [fx, fx], 'mode': 'lines', 'line': style});
-        mthlyTraces.push({'x': [x2, x2], 'y': [fx, 0], 'mode': 'lines', 'line': style});
+        mthlyTraces.push({x: [x1, x1], y: [0, fx], mode: 'lines', line: style});
+        mthlyTraces.push({x: [x1, x2], y: [fx, fx], mode: 'lines', line: style});
+        mthlyTraces.push({x: [x2, x2], y: [fx, 0], mode: 'lines', line: style});
         if (O == 3 || O == 4) {
-          mthlyTraces.push({'x': [x, x], 'y': [0, fx], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 0.3}}); // 'dash': 'dot'
-          mthlyTraces.push({'x': [x], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 6}});
+          mthlyTraces.push({x: [x, x], y: [0, fx], mode: 'lines', line: { color: 'grey', width: 0.3}}); // dash: 'dot'
+          mthlyTraces.push({x: [x], y: [0], mode: 'markers', marker: { color: 'red', size: 6}});
         }
         s += fx;
       }
@@ -54,7 +54,7 @@ jscode = [[
     // plot enough extra objects outside the graph so that no old traces will stay - ugly, but works!
     x = mthlyxMax + 5;
     for (i = 0; i < mthlyNMax * 5; i++) {
-      mthlyTraces.push({ 'x': [x], 'y': [mthlyyMax + 5], 'mode': 'markers'});
+      mthlyTraces.push({ x: [x], y: [mthlyyMax + 5], mode: 'markers'});
       x += h;
     }
 
