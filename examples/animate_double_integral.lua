@@ -66,7 +66,7 @@ jcode = [[
     for (i = 0; i < mthlymMax; i++) {
       y = mthlyyMax + 1
       for (j = 0; j < mthlynMax; j++) {
-        mthlyTraces.push({ 'x': [x], 'y': [y], 'mode': 'markers'});
+        mthlyTraces.push({ x: [x], y: [y], mode: 'markers'});
         y += hy;
       }
       x += hx;
