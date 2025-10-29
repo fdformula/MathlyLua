@@ -28,36 +28,48 @@ input:focus {outline: none;}
 <div id="mathlyDiv" style="width:500px;height:500px;display:inline-block;top:50px;position:absolute;"></div>
 <span id='title' style="width:500px;left:0px;display:block;text-align:center;">&nbsp;</span>
 <!-- controls -->
-<label for="mthlySldr1" style='top:60px;'>n:</label>
-<input type="range" id="mthlySldr1" min="1" max="24" value="1" style='left:72px;top:60px;' step="1"></input><span id="mthlySldr1value" style="left:293px;top:60px;position:absolute">&nbsp;</span>
+<button type="button" title="Previous value" onclick="mthlynNext(-1)" style="width:48px;left:348px;top:60px;position:absolute">Prev</button>
+<button type="button" title="Next value" onclick="mthlynNext(1)" style="width:48px;left:399px;top:60px;position:absolute">Next</button>
+<label for="mthlySldrn" style='top:60px;'>n:</label>
+<input type="range" id="mthlySldrn" min="1" max="24" value="1" style='left:72px;top:60px;' step="1"></input><span id="mthlySldrnvalue" style="left:293px;top:60px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:90px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
-function displaytext()  { return ""; }   // to be overwritten
-function displaytitle() { return "<h3>Polar Curves: r(t) = sin(nt)</h3>"; } //
-var x = [];
-var t = [];
-var X, Y, T, p;
+function displaytext() { return ""; } // to be overwritten
+function displaytitle() { return "<h3>Polar curve: r(t) = sin(nt)</h3>"; }
+var x = [], t = [], X, Y, T, p;
+function mthlynNext(d) {
+  let x = n + d*mthlynStep;
+  if (x < mthlynMin) {
+    x = mthlynMax;
+  } else if (x > mthlynMax) {
+    x = mthlynMin;
+  }
+  x = Math.round(x * 1000) / 1000;
+  mthlySldrn.value = x;
+  document.getElementById("mthlySldrnvalue").innerHTML = x;
+}
 
 const mthlyLayout = {
-  'xaxis': { 'range': [-1.2, 1.2]}, // plot with fixed axes
-  'yaxis': { 'range': [-1.2, 1.2], 'scaleanchor': 'x', 'scaleratio': 1 },
-  'showlegend': false
+  xaxis: { range: [-1.2, 1.2]}, // plot with fixed axes
+  yaxis: { range: [-1.2, 1.2], scaleanchor: 'x', scaleratio: 1 },
+  showlegend: false
 };
 
-var mthlySldr1 = document.getElementById('mthlySldr1');
-mthlySldr1.value = 1;
+var mthlySldrn = document.getElementById('mthlySldrn');
+mthlySldrn.value = 1;
 var n = 1;
 p = 1;
 for (let i = 0; i <= p * (6.2831853071796 + 0) - 0; i += 0.0031415926535898) { t.push(i); }
 
 var mthlyTraces = [];
-const mthlyxMin = -1.2, mthlyxMax = 1.2, mthlyyMin = -1.2, mthlyyMax = 1.2;
-const mthlytMin = 0, mthlytMax = 6.2831853071796;
-const mthlynMin = 1, mthlynMax = 24;
+const mthlyxMin = -1.2, mthlyxMax = 1.2, mthlyxStep = 1;
+const mthlyyMin = -1.2, mthlyyMax = 1.2;
+const mthlytMin = 0, mthlytMax = 6.2831853071796, mthlytStep = 0.01;
+const mthlynMin = 1, mthlynMax = 24, mthlynStep = 1;
 
 function mthlyUpdateTraces() {
   mthlyTraces = [];
-  mthlyTraces.push({ 'x': t.map(t => (Math.sin(n*t)) * Math.cos(t)), 'y': t.map(t => (Math.sin(n*t)) * Math.sin(t)), 'mode': 'lines', 'line': { 'simplify': false }, 'fill': 'toself' });
+  mthlyTraces.push({ x: t.map(t => (Math.sin(n*t)) * Math.cos(t)), y: t.map(t => (Math.sin(n*t)) * Math.sin(t)), mode: 'lines', line: { simplify: false }, fill: 'toself' });
   document.getElementById("displaytext").innerHTML = displaytext();
   document.getElementById("title").innerHTML = displaytitle();
 }
@@ -65,26 +77,26 @@ function mthlyUpdateTraces() {
 mthlyUpdateTraces();
 const mthlyInitData = mthlyTraces;
 
-var mthlyOldCs = [99999999];
-var mthlyNewCs = [];
+var mthlyNewCs = [], mthlyOldCs = [99999999];
+
 function mthlyAnimatePlot() {
-  n = Number(mthlySldr1.value);
+  n = Number(mthlySldrn.value);
   // has any controls changed?
   mthlyNewCs = [n];
   if (Math.abs(mthlyOldCs[0] - mthlyNewCs[0]) < 0.00001) { return; }
   mthlyOldCs = [n]; // update values of controls
   mthlyUpdateTraces();
   Plotly.animate('mathlyDiv', {
-    'data': mthlyTraces,
-    'traces': mthlyTraces.keys() // update all traces
+    data: mthlyTraces,
+    traces: mthlyTraces.keys() // update all traces
   }, {
-    'transition': { 'duration': 0 },
-    'frame': { 'duration': 0 }
+    transition: { duration: 0 },
+    frame: { duration: 0 }
   });
 }
 
-document.getElementById("mthlySldr1value").innerHTML = mthlySldr1.value;
-mthlySldr1.addEventListener("input", function() { document.getElementById("mthlySldr1value").innerHTML = mthlySldr1.value; mthlyAnimatePlot() });
+document.getElementById("mthlySldrnvalue").innerHTML = mthlySldrn.value;
+mthlySldrn.addEventListener("input", function() { document.getElementById("mthlySldrnvalue").innerHTML = mthlySldrn.value; });
 
 Plotly.newPlot('mathlyDiv', mthlyInitData, mthlyLayout);
 mthlyAnimatePlot();

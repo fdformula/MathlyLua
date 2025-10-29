@@ -28,32 +28,44 @@ input:focus {outline: none;}
 <div id="mathlyDiv" style="width:640px;height:640px;display:inline-block;top:50px;position:absolute;"></div>
 <span id='title' style="width:640px;left:0px;display:block;text-align:center;">&nbsp;</span>
 <!-- controls -->
-<label for="mthlySldr1" style='top:60px;'>Iterations:</label>
-<input type="range" id="mthlySldr1" min="1" max="56" value="1" style='left:144px;top:60px;' step="1"></input><span id="mthlySldr1value" style="left:365px;top:60px;position:absolute">&nbsp;</span>
+<button type="button" title="Previous value" onclick="mthlyINext(-1)" style="width:48px;left:420px;top:60px;position:absolute">Prev</button>
+<button type="button" title="Next value" onclick="mthlyINext(1)" style="width:48px;left:471px;top:60px;position:absolute">Next</button>
+<label for="mthlySldrI" style='top:60px;'>Iterations:</label>
+<input type="range" id="mthlySldrI" min="1" max="56" value="1" style='left:144px;top:60px;' step="1"></input><span id="mthlySldrIvalue" style="left:365px;top:60px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:90px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
-function displaytext()  { return ""; }   // to be overwritten
-function displaytitle() { return "<font size=4 color=black>Midpoint method for <em>x<sup>3</sup> - 2x + 2 = 0</em> starting on [-3, 2]</font>"; } //
-var x = [];
-var t = [];
-var X, Y, T, p;
+function displaytext() { return ""; } // to be overwritten
+function displaytitle() { return "<font size=4 color=black>Midpoint method for <em>x<sup>3</sup> - 2x + 2 = 0</em> starting on [-3, 2]</font>"; }
+var x = [], t = [], X, Y, T, p;
+function mthlyINext(d) {
+  let x = I + d*mthlyIStep;
+  if (x < mthlyIMin) {
+    x = mthlyIMax;
+  } else if (x > mthlyIMax) {
+    x = mthlyIMin;
+  }
+  x = Math.round(x * 1000) / 1000;
+  mthlySldrI.value = x;
+  document.getElementById("mthlySldrIvalue").innerHTML = x;
+}
 
 const mthlyLayout = {
-  'xaxis': { 'range': [-3.1, 2.1]}, // plot with fixed axes
-  'yaxis': { 'range': [-22, 8] },
-  'showlegend': false
+  xaxis: { range: [-3.1, 2.1]}, // plot with fixed axes
+  yaxis: { range: [-22, 8] },
+  showlegend: false
 };
 
-var mthlySldr1 = document.getElementById('mthlySldr1');
-mthlySldr1.value = 1;
+var mthlySldrI = document.getElementById('mthlySldrI');
+mthlySldrI.value = 1;
 var I = 1;
 p = 1;
 for (let i = -3.1; i <= p * (2.1 + 3.1) - 3.1; i += 0.0104) { t.push(i); }
 
 var mthlyTraces = [];
-const mthlyxMin = -3.1, mthlyxMax = 2.1, mthlyyMin = -22, mthlyyMax = 8;
-const mthlytMin = -3.1, mthlytMax = 2.1;
-const mthlyIMin = 1, mthlyIMax = 56;
+const mthlyxMin = -3.1, mthlyxMax = 2.1, mthlyxStep = 1;
+const mthlyyMin = -22, mthlyyMax = 8;
+const mthlytMin = -3.1, mthlytMax = 2.1, mthlytStep = 1;
+const mthlyIMin = 1, mthlyIMax = 56, mthlyIStep = 1;
 
 function mthlyUpdateTraces() {
   mthlyTraces = [];
@@ -80,24 +92,24 @@ function mthlyUpdateTraces() {
   function displaytext() { return '[' + ab[I-1][0] + ', ' + ab[I-1][1] + '], midpoint = ' + midpts[I-1]; }
   // ^^^^^ user's javascript ^^^^^
 
-  mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])), 'mode': 'lines', 'line': { 'simplify': false } });
+  mthlyTraces.push({ x: t.map(t => t), y: t.map(t => f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])), mode: 'lines', line: { simplify: false }, fill: 'none' });
   if (true) {
     const t = [];
     for (let i = -3.1; i <= 2.1; i += 0.0104) { t.push(i); }
-    mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => t**3 - 2*t + 2), 'mode': 'lines', 'line': { 'simplify': false, 'color': 'orange', 'width': 3  } });
+    mthlyTraces.push({ x: t.map(t => t), y: t.map(t => t**3 - 2*t + 2), mode: 'lines', line: { simplify: false, color: 'orange', width: 3  }, fill: 'none' });
   }
-  mthlyTraces.push({ 'x': [ab[I-1][0], ab[I-1][0]], 'y': [f(ab[I-1][0]), 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
-  mthlyTraces.push({ 'x': [ab[I-1][0]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'green', 'size': 8.000000  } });
-  mthlyTraces.push({ 'x': [ab[I-1][0]], 'y': [f(ab[I-1][0])], 'mode': 'markers', 'marker': { 'color': 'green', 'size': 8.000000 , 'symbol': 'circle-open' } });
-  mthlyTraces.push({ 'x': [midpts[I-1], midpts[I-1]], 'y': [f(midpts[I-1]), 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
-  mthlyTraces.push({ 'x': [ab[I-1][1], ab[I-1][1]], 'y': [f(ab[I-1][1]), 0], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
-  mthlyTraces.push({ 'x': [ab[I-1][1]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'blue', 'size': 8.000000  } });
-  mthlyTraces.push({ 'x': [ab[I-1][1]], 'y': [f(ab[I-1][1])], 'mode': 'markers', 'marker': { 'color': 'blue', 'size': 8.000000 , 'symbol': 'circle-open' } });
-  mthlyTraces.push({ 'x': [midpts[I-1]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 8.000000  } });
-  mthlyTraces.push({ 'x': [midpts[I-1]], 'y': [f(midpts[I-1])], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 8.000000 , 'symbol': 'circle-open' } });
-  mthlyTraces.push({ 'x': [ab[I-1][0]], 'y': [1], 'text': 'a', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': 'black', 'size': 12.000000  } });
-  mthlyTraces.push({ 'x': [ab[I-1][1]], 'y': [-0.5], 'text': 'b', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': 'black', 'size': 12.000000  } });
-  mthlyTraces.push({ 'x': [midpts[I-1]], 'y': [-1.1], 'text': 'midpoint', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': 'black', 'size': 12.000000  } });
+  mthlyTraces.push({ x: [ab[I-1][0], ab[I-1][0]], y: [f(ab[I-1][0]), 0], mode: 'lines', line: { color: 'grey', width: 1  } });
+  mthlyTraces.push({ x: [ab[I-1][0]], y: [0], mode: 'markers', marker: { color: 'green', size: 8.000000  } });
+  mthlyTraces.push({ x: [ab[I-1][0]], y: [f(ab[I-1][0])], mode: 'markers', marker: { color: 'green', size: 8.000000 , 'symbol': 'circle-open' } });
+  mthlyTraces.push({ x: [midpts[I-1], midpts[I-1]], y: [f(midpts[I-1]), 0], mode: 'lines', line: { color: 'grey', width: 1  } });
+  mthlyTraces.push({ x: [ab[I-1][1], ab[I-1][1]], y: [f(ab[I-1][1]), 0], mode: 'lines', line: { color: 'grey', width: 1  } });
+  mthlyTraces.push({ x: [ab[I-1][1]], y: [0], mode: 'markers', marker: { color: 'blue', size: 8.000000  } });
+  mthlyTraces.push({ x: [ab[I-1][1]], y: [f(ab[I-1][1])], mode: 'markers', marker: { color: 'blue', size: 8.000000 , 'symbol': 'circle-open' } });
+  mthlyTraces.push({ x: [midpts[I-1]], y: [0], mode: 'markers', marker: { color: 'red', size: 8.000000  } });
+  mthlyTraces.push({ x: [midpts[I-1]], y: [f(midpts[I-1])], mode: 'markers', marker: { color: 'red', size: 8.000000 , 'symbol': 'circle-open' } });
+  mthlyTraces.push({ x: [ab[I-1][0]], y: [1], text: 'a', mode: 'text', type: 'scatter', textposition: 'bottom center', name: '', textfont: { color: 'black', size: 12.000000  } });
+  mthlyTraces.push({ x: [ab[I-1][1]], y: [-0.5], text: 'b', mode: 'text', type: 'scatter', textposition: 'bottom center', name: '', textfont: { color: 'black', size: 12.000000  } });
+  mthlyTraces.push({ x: [midpts[I-1]], y: [-1.1], text: 'midpoint', mode: 'text', type: 'scatter', textposition: 'bottom center', name: '', textfont: { color: 'black', size: 12.000000  } });
   document.getElementById("displaytext").innerHTML = displaytext();
   document.getElementById("title").innerHTML = displaytitle();
 }
@@ -105,30 +117,30 @@ function mthlyUpdateTraces() {
 mthlyUpdateTraces();
 const mthlyInitData = mthlyTraces;
 
-var mthlyOldCs = [99999999];
-var mthlyNewCs = [];
+var mthlyNewCs = [], mthlyOldCs = [99999999];
+
 function mthlyAnimatePlot() {
-  I = Number(mthlySldr1.value);
+  I = Number(mthlySldrI.value);
   // has any controls changed?
   mthlyNewCs = [I];
   if (Math.abs(mthlyOldCs[0] - mthlyNewCs[0]) < 0.00001) { return; }
   mthlyOldCs = [I]; // update values of controls
   mthlyUpdateTraces();
   Plotly.animate('mathlyDiv', {
-    'data': mthlyTraces,
-    'traces': mthlyTraces.keys() // update all traces
+    data: mthlyTraces,
+    traces: mthlyTraces.keys() // update all traces
   }, {
-    'transition': { 'duration': 0 },
-    'frame': { 'duration': 0 }
+    transition: { duration: 0 },
+    frame: { duration: 0 }
   });
 }
 
-document.getElementById("mthlySldr1value").innerHTML = mthlySldr1.value;
-mthlySldr1.addEventListener("input", function() { document.getElementById("mthlySldr1value").innerHTML = mthlySldr1.value; mthlyAnimatePlot() });
+document.getElementById("mthlySldrIvalue").innerHTML = mthlySldrI.value;
+mthlySldrI.addEventListener("input", function() { document.getElementById("mthlySldrIvalue").innerHTML = mthlySldrI.value; });
 
 Plotly.newPlot('mathlyDiv', mthlyInitData, mthlyLayout);
 mthlyAnimatePlot();
-setInterval(mthlyAnimatePlot, 200); // animate every 0.2 seconds
+mthlyIntervalId = setInterval(mthlyAnimatePlot, 200); // animate every 0.2 seconds
 </script>
 </body>
 </html>

@@ -28,44 +28,82 @@ input:focus {outline: none;}
 <div id="mathlyDiv" style="width:600px;height:400px;display:inline-block;top:80px;position:absolute;"></div>
 <span id='title' style="width:600px;left:0px;display:block;text-align:center;">&nbsp;</span>
 <!-- controls -->
-<label for="mthlySldr1" style='top:60px;'>a:</label>
-<input type="range" id="mthlySldr1" min="-3" max="3" value="-3" style='left:72px;top:60px;' step="0.02"></input><span id="mthlySldr1value" style="left:293px;top:60px;position:absolute">&nbsp;</span>
-<label for="mthlySldr2" style='top:90px;'>h:</label>
-<input type="range" id="mthlySldr2" min="-10" max="10" value="-10" style='left:72px;top:90px;' step="0.5"></input><span id="mthlySldr2value" style="left:293px;top:90px;position:absolute">&nbsp;</span>
-<label for="mthlySldr3" style='top:120px;'>k:</label>
-<input type="range" id="mthlySldr3" min="-90" max="90" value="-90" style='left:72px;top:120px;' step="1"></input><span id="mthlySldr3value" style="left:293px;top:120px;position:absolute">&nbsp;</span>
+<button type="button" title="Previous value" onclick="mthlyaNext(-1)" style="width:48px;left:348px;top:60px;position:absolute">Prev</button>
+<button type="button" title="Next value" onclick="mthlyaNext(1)" style="width:48px;left:399px;top:60px;position:absolute">Next</button>
+<label for="mthlySldra" style='top:60px;'>a:</label>
+<input type="range" id="mthlySldra" min="-3" max="3" value="-3" style='left:72px;top:60px;' step="0.02"></input><span id="mthlySldravalue" style="left:293px;top:60px;position:absolute">&nbsp;</span>
+<button type="button" title="Previous value" onclick="mthlyhNext(-1)" style="width:48px;left:348px;top:90px;position:absolute">Prev</button>
+<button type="button" title="Next value" onclick="mthlyhNext(1)" style="width:48px;left:399px;top:90px;position:absolute">Next</button>
+<label for="mthlySldrh" style='top:90px;'>h:</label>
+<input type="range" id="mthlySldrh" min="-10" max="10" value="-10" style='left:72px;top:90px;' step="0.5"></input><span id="mthlySldrhvalue" style="left:293px;top:90px;position:absolute">&nbsp;</span>
+<button type="button" title="Previous value" onclick="mthlykNext(-1)" style="width:48px;left:348px;top:120px;position:absolute">Prev</button>
+<button type="button" title="Next value" onclick="mthlykNext(1)" style="width:48px;left:399px;top:120px;position:absolute">Next</button>
+<label for="mthlySldrk" style='top:120px;'>k:</label>
+<input type="range" id="mthlySldrk" min="-90" max="90" value="-90" style='left:72px;top:120px;' step="1"></input><span id="mthlySldrkvalue" style="left:293px;top:120px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:150px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
-function displaytext()  { return ""; }   // to be overwritten
-function displaytitle() { return ""; } //
-var x = [];
-var t = [];
-var X, Y, T, p;
+function displaytext() { return ""; } // to be overwritten
+function displaytitle() { return ""; }
+var x = [], t = [], X, Y, T, p;
+function mthlyaNext(d) {
+  let x = a + d*mthlyaStep;
+  if (x < mthlyaMin) {
+    x = mthlyaMax;
+  } else if (x > mthlyaMax) {
+    x = mthlyaMin;
+  }
+  x = Math.round(x * 1000) / 1000;
+  mthlySldra.value = x;
+  document.getElementById("mthlySldravalue").innerHTML = x;
+}
+function mthlyhNext(d) {
+  let x = h + d*mthlyhStep;
+  if (x < mthlyhMin) {
+    x = mthlyhMax;
+  } else if (x > mthlyhMax) {
+    x = mthlyhMin;
+  }
+  x = Math.round(x * 1000) / 1000;
+  mthlySldrh.value = x;
+  document.getElementById("mthlySldrhvalue").innerHTML = x;
+}
+function mthlykNext(d) {
+  let x = k + d*mthlykStep;
+  if (x < mthlykMin) {
+    x = mthlykMax;
+  } else if (x > mthlykMax) {
+    x = mthlykMin;
+  }
+  x = Math.round(x * 1000) / 1000;
+  mthlySldrk.value = x;
+  document.getElementById("mthlySldrkvalue").innerHTML = x;
+}
 
 const mthlyLayout = {
-  'xaxis': { 'range': [-10, 10]}, // plot with fixed axes
-  'yaxis': { 'range': [-100, 100] },
-  'showlegend': false
+  xaxis: { range: [-10, 10]}, // plot with fixed axes
+  yaxis: { range: [-100, 100] },
+  showlegend: false
 };
 
-var mthlySldr1 = document.getElementById('mthlySldr1');
-var mthlySldr2 = document.getElementById('mthlySldr2');
-var mthlySldr3 = document.getElementById('mthlySldr3');
-mthlySldr1.value = 3;
+var mthlySldra = document.getElementById('mthlySldra');
+var mthlySldrh = document.getElementById('mthlySldrh');
+var mthlySldrk = document.getElementById('mthlySldrk');
+mthlySldra.value = 3;
 var a = 3;
-mthlySldr2.value = 0;
+mthlySldrh.value = 0;
 var h = 0;
-mthlySldr3.value = 0;
+mthlySldrk.value = 0;
 var k = 0;
 p = 1;
 for (let i = -10; i <= p * (10 + 10) - 10; i += 0.04) { x.push(i); }; t = x;
 
 var mthlyTraces = [];
-const mthlyxMin = -10, mthlyxMax = 10, mthlyyMin = -100, mthlyyMax = 100;
-const mthlytMin = -10, mthlytMax = 10;
-const mthlyaMin = -3, mthlyaMax = 3;
-const mthlyhMin = -10, mthlyhMax = 10;
-const mthlykMin = -90, mthlykMax = 90;
+const mthlyxMin = -10, mthlyxMax = 10, mthlyxStep = 1;
+const mthlyyMin = -100, mthlyyMax = 100;
+const mthlytMin = -10, mthlytMax = 10, mthlytStep = 1;
+const mthlyaMin = -3, mthlyaMax = 3, mthlyaStep = 0.02;
+const mthlyhMin = -10, mthlyhMax = 10, mthlyhStep = 0.5;
+const mthlykMin = -90, mthlykMax = 90, mthlykStep = 1;
 
 function mthlyUpdateTraces() {
   mthlyTraces = [];
@@ -86,7 +124,7 @@ function mthlyUpdateTraces() {
   }
   // ^^^^^ user's javascript ^^^^^
 
-  mthlyTraces.push({ 'x': x, 'y': x.map(x => a * (x - h)**2 + k), 'mode': 'lines', 'line': { 'simplify': false }, 'fill': 'none' });
+  mthlyTraces.push({ x: x, y: x.map(x => a * (x - h)**2 + k), mode: 'lines', line: { simplify: false }, fill: 'none' });
   document.getElementById("displaytext").innerHTML = displaytext();
   document.getElementById("title").innerHTML = displaytitle();
 }
@@ -94,12 +132,12 @@ function mthlyUpdateTraces() {
 mthlyUpdateTraces();
 const mthlyInitData = mthlyTraces;
 
-var mthlyOldCs = [99999999,99999999,99999999];
-var mthlyNewCs = [];
+var mthlyNewCs = [], mthlyOldCs = [99999999, 99999999, 99999999];
+
 function mthlyAnimatePlot() {
-  a = Number(mthlySldr1.value);
-  h = Number(mthlySldr2.value);
-  k = Number(mthlySldr3.value);
+  a = Number(mthlySldra.value);
+  h = Number(mthlySldrh.value);
+  k = Number(mthlySldrk.value);
   // has any controls changed?
   mthlyNewCs = [a, h, k];
   var unchangedq = true;
@@ -112,20 +150,20 @@ function mthlyAnimatePlot() {
   mthlyOldCs = [a, h, k]; // update values of controls
   mthlyUpdateTraces();
   Plotly.animate('mathlyDiv', {
-    'data': mthlyTraces,
-    'traces': mthlyTraces.keys() // update all traces
+    data: mthlyTraces,
+    traces: mthlyTraces.keys() // update all traces
   }, {
-    'transition': { 'duration': 0 },
-    'frame': { 'duration': 0 }
+    transition: { duration: 0 },
+    frame: { duration: 0 }
   });
 }
 
-document.getElementById("mthlySldr1value").innerHTML = mthlySldr1.value;
-mthlySldr1.addEventListener("input", function() { document.getElementById("mthlySldr1value").innerHTML = mthlySldr1.value; mthlyAnimatePlot() });
-document.getElementById("mthlySldr2value").innerHTML = mthlySldr2.value;
-mthlySldr2.addEventListener("input", function() { document.getElementById("mthlySldr2value").innerHTML = mthlySldr2.value; mthlyAnimatePlot() });
-document.getElementById("mthlySldr3value").innerHTML = mthlySldr3.value;
-mthlySldr3.addEventListener("input", function() { document.getElementById("mthlySldr3value").innerHTML = mthlySldr3.value; mthlyAnimatePlot() });
+document.getElementById("mthlySldravalue").innerHTML = mthlySldra.value;
+mthlySldra.addEventListener("input", function() { document.getElementById("mthlySldravalue").innerHTML = mthlySldra.value; });
+document.getElementById("mthlySldrhvalue").innerHTML = mthlySldrh.value;
+mthlySldrh.addEventListener("input", function() { document.getElementById("mthlySldrhvalue").innerHTML = mthlySldrh.value; });
+document.getElementById("mthlySldrkvalue").innerHTML = mthlySldrk.value;
+mthlySldrk.addEventListener("input", function() { document.getElementById("mthlySldrkvalue").innerHTML = mthlySldrk.value; });
 
 Plotly.newPlot('mathlyDiv', mthlyInitData, mthlyLayout);
 mthlyAnimatePlot();

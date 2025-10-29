@@ -28,74 +28,103 @@ input:focus {outline: none;}
 <div id="mathlyDiv" style="width:500px;height:500px;display:inline-block;top:80px;position:absolute;"></div>
 <span id='title' style="width:500px;left:0px;display:block;text-align:center;">&nbsp;</span>
 <!-- controls -->
-<button type="button" onclick="mthlyPlay()" style="left:372px;top:60px;position:absolute">Play/Stop</button>
-<button type="button" onclick=mthlySpeedUp(50) style="left:444px;top:60px;position:absolute">Faster</button>
-<button type="button" onclick=mthlySpeedUp(-50) style="left:496px;top:60px;position:absolute">Slower</button>
-<label for="mthlySldr1" style='top:60px;'>Play:</label>
-<input type="range" id="mthlySldr1" min="0" max="1" value="0" style='left:96px;top:60px;' step="0.01"></input><span id="mthlySldr1value" style="left:317px;top:60px;position:absolute">&nbsp;</span>
-<label for="mthlySldr2" style='top:90px;'>a:</label>
-<input type="range" id="mthlySldr2" min="0.2" max="9" value="0.2" style='left:96px;top:90px;' step="0.1"></input><span id="mthlySldr2value" style="left:317px;top:90px;position:absolute">&nbsp;</span>
-<label for="mthlySldr3" style='top:120px;'>b:</label>
-<input type="range" id="mthlySldr3" min="0.2" max="9" value="0.2" style='left:96px;top:120px;' step="0.1"></input><span id="mthlySldr3value" style="left:317px;top:120px;position:absolute">&nbsp;</span>
+<button id='mthlyPlayButtn' type="button" onclick="mthlyPlay()" style="width:68px;left:372px;top:60px;position:absolute">Pause</button>
+<button type="button" onclick=mthlySpeedUp(-50) style="width:60px;left:443px;top:60px;position:absolute">Slower</button>
+<button type="button" onclick=mthlySpeedUp(50) style="width:60px;left:506px;top:60px;position:absolute">Faster</button>
+<label for="mthlySldrp" style='top:60px;'>Play:</label>
+<input type="range" id="mthlySldrp" min="0" max="1" value="0" style='left:96px;top:60px;' step="0.01"></input><span id="mthlySldrpvalue" style="left:317px;top:60px;position:absolute">&nbsp;</span>
+<button type="button" title="Previous value" onclick="mthlyaNext(-1)" style="width:48px;left:372px;top:90px;position:absolute">Prev</button>
+<button type="button" title="Next value" onclick="mthlyaNext(1)" style="width:48px;left:423px;top:90px;position:absolute">Next</button>
+<label for="mthlySldra" style='top:90px;'>a:</label>
+<input type="range" id="mthlySldra" min="0.2" max="9" value="0.2" style='left:96px;top:90px;' step="0.1"></input><span id="mthlySldravalue" style="left:317px;top:90px;position:absolute">&nbsp;</span>
+<button type="button" title="Previous value" onclick="mthlybNext(-1)" style="width:48px;left:372px;top:120px;position:absolute">Prev</button>
+<button type="button" title="Next value" onclick="mthlybNext(1)" style="width:48px;left:423px;top:120px;position:absolute">Next</button>
+<label for="mthlySldrb" style='top:120px;'>b:</label>
+<input type="range" id="mthlySldrb" min="0.2" max="9" value="0.2" style='left:96px;top:120px;' step="0.1"></input><span id="mthlySldrbvalue" style="left:317px;top:120px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:150px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
-function displaytext()  { return ""; }   // to be overwritten
-function displaytitle() { return "<h3>Hypocycloid</h3>"; } //
-var x = [];
-var t = [];
-var X, Y, T, p;
+function displaytext() { return ""; } // to be overwritten
+function displaytitle() { return "<h3>Hypocycloid</h3>"; }
+var x = [], t = [], X, Y, T, p;
+function mthlyaNext(d) {
+  let x = a + d*mthlyaStep;
+  if (x < mthlyaMin) {
+    x = mthlyaMax;
+  } else if (x > mthlyaMax) {
+    x = mthlyaMin;
+  }
+  x = Math.round(x * 1000) / 1000;
+  mthlySldra.value = x;
+  document.getElementById("mthlySldravalue").innerHTML = x;
+}
+function mthlybNext(d) {
+  let x = b + d*mthlybStep;
+  if (x < mthlybMin) {
+    x = mthlybMax;
+  } else if (x > mthlybMax) {
+    x = mthlybMin;
+  }
+  x = Math.round(x * 1000) / 1000;
+  mthlySldrb.value = x;
+  document.getElementById("mthlySldrbvalue").innerHTML = x;
+}
+
 var mthlyAutoPlayq = true, mthlyIntervalId = null, mthlyInterval = 200;
-function mthlyPlay() { mthlyAutoPlayq = !mthlyAutoPlayq; }
+const mthlyPlayButtn = document.getElementById('mthlyPlayButtn');
+function mthlyPlayButtnTxt() { mthlyPlayButtn.textContent = mthlyAutoPlayq? 'Pause' : 'Resume'; }
+function mthlyPlay() { mthlyAutoPlayq = !mthlyAutoPlayq; mthlyPlayButtnTxt(); }
 function mthlySpeedUp(step) {
-  mthlyAutoPlayq = true;
+  mthlyAutoPlayq = true; mthlyPlayButtnTxt();
   if (mthlyIntervalId != null) { clearInterval(mthlyIntervalId); }
   mthlyInterval -= step;
   if (mthlyInterval <= 0) { mthlyInterval = 10; }
   mthlyIntervalId = setInterval(mthlyAnimatePlot, mthlyInterval);
 }
-var mthlySldr1step = 0.01;
+var mthlySldrpstep = 0.01;
 
 const mthlyLayout = {
-  'xaxis': { 'range': [-10, 10]}, // plot with fixed axes
-  'yaxis': { 'range': [-10, 10], 'scaleanchor': 'x', 'scaleratio': 1 },
-  'showlegend': false
+  xaxis: { range: [-10, 10]}, // plot with fixed axes
+  yaxis: { range: [-10, 10], scaleanchor: 'x', scaleratio: 1 },
+  showlegend: false
 };
 
-var mthlySldr1 = document.getElementById('mthlySldr1');
-var mthlySldr2 = document.getElementById('mthlySldr2');
-var mthlySldr3 = document.getElementById('mthlySldr3');
-mthlySldr1.value = 0;
+var mthlySldrp = document.getElementById('mthlySldrp');
+var mthlySldra = document.getElementById('mthlySldra');
+var mthlySldrb = document.getElementById('mthlySldrb');
+mthlySldrp.value = 0;
 var p = 0;
-mthlySldr2.value = 7.8;
+mthlySldra.value = 7.8;
 var a = 7.8;
-mthlySldr3.value = 1.6;
+mthlySldrb.value = 1.6;
 var b = 1.6;
 for (let i = 0; i <= p * (62.831853071796 + 0) - 0; i += 0.041887902047864) { t.push(i); }
 let mthlyTmp = t[t.length - 1];
 if (true) { const t = mthlyTmp; X = (a - b) * Math.cos(t) + b * Math.cos((a - b) / b * t); Y = (a - b) * Math.sin(t) - b * Math.sin((a - b) / b * t); T = mthlyTmp; }
 
 var mthlyTraces = [];
-const mthlyxMin = -10, mthlyxMax = 10, mthlyyMin = -10, mthlyyMax = 10;
-const mthlytMin = 0, mthlytMax = 62.831853071796;
-const mthlypMin = 0, mthlypMax = 1;
-const mthlyaMin = 0.2, mthlyaMax = 9;
-const mthlybMin = 0.2, mthlybMax = 9;
+const mthlyxMin = -10, mthlyxMax = 10, mthlyxStep = 1;
+const mthlyyMin = -10, mthlyyMax = 10;
+const mthlytMin = 0, mthlytMax = 62.831853071796, mthlytStep = 0.01;
+const mthlypMin = 0, mthlypMax = 1, mthlypStep = 0.01;
+const mthlyaMin = 0.2, mthlyaMax = 9, mthlyaStep = 0.1;
+const mthlybMin = 0.2, mthlybMax = 9, mthlybStep = 0.1;
 
 function mthlyUpdateTraces() {
   mthlyTraces = [];
-  mthlyTraces.push({ 'x': t.map(t => (a - b) * Math.cos(t) + b * Math.cos((a - b) / b * t)), 'y': t.map(t => (a - b) * Math.sin(t) - b * Math.sin((a - b) / b * t)), 'mode': 'lines', 'line': { 'simplify': false }, 'fill': 'none' });
-  mthlyTraces.push({ 'x': [X], 'y': [Y], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 10.000000  } });
+  mthlyTraces.push({ x: t.map(t => (a - b) * Math.cos(t) + b * Math.cos((a - b) / b * t)), y: t.map(t => (a - b) * Math.sin(t) - b * Math.sin((a - b) / b * t)), mode: 'lines', line: { simplify: false }, fill: 'none' });
+  mthlyTraces.push({ x: [X], y: [Y], mode: 'markers', marker: { color: 'red', size: 10.000000  } });
   if (true) {
     const t = [];
     for (let i = 0; i <= 6.2831853071796; i += 0.012566370614359) { t.push(i); }
-    mthlyTraces.push({ 'x': t.map(t => a * Math.cos(t)), 'y': t.map(t => a * Math.sin(t)), 'mode': 'lines', 'line': { 'simplify': false, 'color': 'orange', 'width': 3  }, 'fill': 'none' });
+    mthlyTraces.push({ x: t.map(t => a * Math.cos(t)), y: t.map(t => a * Math.sin(t)), mode: 'lines', line: { simplify: false, color: 'orange', width: 3  }, fill: 'none' });
   }
   if (true) {
     const t = [];
     for (let i = 0; i <= 6.2831853071796; i += 0.012566370614359) { t.push(i); }
-    mthlyTraces.push({ 'x': t.map(t => (a - b) * Math.cos(T) + b * Math.cos(t)), 'y': t.map(t => (a - b) * Math.sin(T) + b * Math.sin(t)), 'mode': 'lines', 'line': { 'simplify': false, 'color': 'green', 'width': 3  }, 'fill': 'none' });
+    mthlyTraces.push({ x: t.map(t => (a - b) * Math.cos(T) + b * Math.cos(t)), y: t.map(t => (a - b) * Math.sin(T) + b * Math.sin(t)), mode: 'lines', line: { simplify: false, color: 'green', width: 3  }, fill: 'none' });
   }
-  mthlyTraces.push({ 'x': [X, (a - b) * Math.cos(T)], 'y': [Y, (a - b) * Math.sin(T)], 'mode': 'lines', 'line': { 'color': 'green', 'width': 3  } });
+  mthlyTraces.push({ x: [X, (a - b) * Math.cos(T)], y: [Y, (a - b) * Math.sin(T)], mode: 'lines', line: { color: 'green', width: 3  } });
+  mthlyPlayButtnTxt();
   document.getElementById("displaytext").innerHTML = displaytext();
   document.getElementById("title").innerHTML = displaytitle();
 }
@@ -103,18 +132,18 @@ function mthlyUpdateTraces() {
 mthlyUpdateTraces();
 const mthlyInitData = mthlyTraces;
 
-var mthlyOldCs = [99999999,99999999,99999999];
-var mthlyNewCs = [];
+var mthlyNewCs = [], mthlyOldCs = [99999999, 99999999, 99999999];
+
 function mthlyAnimatePlot() {
   if (mthlyAutoPlayq) {
-    let x = String(Number(mthlySldr1.value) + mthlySldr1step);
-    mthlySldr1.value = String(x);
-    if (x > 1) { mthlySldr1.value = '0'; }
-    document.getElementById("mthlySldr1value").innerHTML = '' + Math.round(mthlySldr1.value*100) + '%'
+    let x = String(Number(mthlySldrp.value) + mthlySldrpstep);
+    mthlySldrp.value = String(x);
+    if (x > 1) { mthlySldrp.value = '0'; }
+    document.getElementById("mthlySldrpvalue").innerHTML = '' + Math.round(mthlySldrp.value*100) + '%'
   }
-  p = Number(mthlySldr1.value);
-  a = Number(mthlySldr2.value);
-  b = Number(mthlySldr3.value);
+  p = Number(mthlySldrp.value);
+  a = Number(mthlySldra.value);
+  b = Number(mthlySldrb.value);
   t = []; for (let i = 0; i <= p * (62.831853071796 + 0) - 0; i += 0.041887902047864) { t.push(i); };
   T = t[t.length - 1];
   if (true) { const t = T; X = (a - b) * Math.cos(t) + b * Math.cos((a - b) / b * t); Y = (a - b) * Math.sin(t) - b * Math.sin((a - b) / b * t); };
@@ -130,20 +159,20 @@ function mthlyAnimatePlot() {
   mthlyOldCs = [p, a, b]; // update values of controls
   mthlyUpdateTraces();
   Plotly.animate('mathlyDiv', {
-    'data': mthlyTraces,
-    'traces': mthlyTraces.keys() // update all traces
+    data: mthlyTraces,
+    traces: mthlyTraces.keys() // update all traces
   }, {
-    'transition': { 'duration': 0 },
-    'frame': { 'duration': 0 }
+    transition: { duration: 0 },
+    frame: { duration: 0 }
   });
 }
 
-document.getElementById("mthlySldr1value").innerHTML = mthlySldr1.value;
-mthlySldr1.addEventListener("input", function() { document.getElementById("mthlySldr1value").innerHTML = mthlySldr1.value; mthlyAutoPlayq = false; mthlyAnimatePlot() });
-document.getElementById("mthlySldr2value").innerHTML = mthlySldr2.value;
-mthlySldr2.addEventListener("input", function() { document.getElementById("mthlySldr2value").innerHTML = mthlySldr2.value; mthlyAutoPlayq = false; mthlyAnimatePlot() });
-document.getElementById("mthlySldr3value").innerHTML = mthlySldr3.value;
-mthlySldr3.addEventListener("input", function() { document.getElementById("mthlySldr3value").innerHTML = mthlySldr3.value; mthlyAutoPlayq = false; mthlyAnimatePlot() });
+document.getElementById("mthlySldrpvalue").innerHTML = mthlySldrp.value;
+mthlySldrp.addEventListener("input", function() { document.getElementById("mthlySldrpvalue").innerHTML = mthlySldrp.value; });
+document.getElementById("mthlySldravalue").innerHTML = mthlySldra.value;
+mthlySldra.addEventListener("input", function() { document.getElementById("mthlySldravalue").innerHTML = mthlySldra.value; });
+document.getElementById("mthlySldrbvalue").innerHTML = mthlySldrb.value;
+mthlySldrb.addEventListener("input", function() { document.getElementById("mthlySldrbvalue").innerHTML = mthlySldrb.value; });
 
 Plotly.newPlot('mathlyDiv', mthlyInitData, mthlyLayout);
 mthlyAnimatePlot();

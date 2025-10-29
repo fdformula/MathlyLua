@@ -28,38 +28,63 @@ input:focus {outline: none;}
 <div id="mathlyDiv" style="width:540px;height:540px;display:inline-block;top:50px;position:absolute;"></div>
 <span id='title' style="width:540px;left:0px;display:block;text-align:center;">&nbsp;</span>
 <!-- controls -->
-<label for="mthlySldr1" style='top:60px;'>Initial Value:</label>
-<input type="range" id="mthlySldr1" min="0" max="1" value="0" style='left:168px;top:60px;' step="0.1"></input><span id="mthlySldr1value" style="left:389px;top:60px;position:absolute">&nbsp;</span>
-<label for="mthlySldr2" style='top:90px;'>Iterations:</label>
-<input type="range" id="mthlySldr2" min="1" max="30" value="1" style='left:168px;top:90px;' step="1"></input><span id="mthlySldr2value" style="left:389px;top:90px;position:absolute">&nbsp;</span>
+<button type="button" title="Previous value" onclick="mthlyaNext(-1)" style="width:48px;left:444px;top:60px;position:absolute">Prev</button>
+<button type="button" title="Next value" onclick="mthlyaNext(1)" style="width:48px;left:495px;top:60px;position:absolute">Next</button>
+<label for="mthlySldra" style='top:60px;'>Initial Value:</label>
+<input type="range" id="mthlySldra" min="0" max="1" value="0" style='left:168px;top:60px;' step="0.1"></input><span id="mthlySldravalue" style="left:389px;top:60px;position:absolute">&nbsp;</span>
+<button type="button" title="Previous value" onclick="mthlyINext(-1)" style="width:48px;left:444px;top:90px;position:absolute">Prev</button>
+<button type="button" title="Next value" onclick="mthlyINext(1)" style="width:48px;left:495px;top:90px;position:absolute">Next</button>
+<label for="mthlySldrI" style='top:90px;'>Iterations:</label>
+<input type="range" id="mthlySldrI" min="1" max="30" value="1" style='left:168px;top:90px;' step="1"></input><span id="mthlySldrIvalue" style="left:389px;top:90px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:120px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
-function displaytext()  { return ""; }   // to be overwritten
-function displaytitle() { return "<h3>Cobweb of g(x) = 1 - sqrt(x)</h3>"; } //
-var x = [];
-var t = [];
-var X, Y, T, p;
+function displaytext() { return ""; } // to be overwritten
+function displaytitle() { return "<h3>Cobweb of g(x) = 1 - sqrt(x)</h3>"; }
+var x = [], t = [], X, Y, T, p;
+function mthlyaNext(d) {
+  let x = a + d*mthlyaStep;
+  if (x < mthlyaMin) {
+    x = mthlyaMax;
+  } else if (x > mthlyaMax) {
+    x = mthlyaMin;
+  }
+  x = Math.round(x * 1000) / 1000;
+  mthlySldra.value = x;
+  document.getElementById("mthlySldravalue").innerHTML = x;
+}
+function mthlyINext(d) {
+  let x = I + d*mthlyIStep;
+  if (x < mthlyIMin) {
+    x = mthlyIMax;
+  } else if (x > mthlyIMax) {
+    x = mthlyIMin;
+  }
+  x = Math.round(x * 1000) / 1000;
+  mthlySldrI.value = x;
+  document.getElementById("mthlySldrIvalue").innerHTML = x;
+}
 
 const mthlyLayout = {
-  'xaxis': { 'range': [-0.1, 1.1]}, // plot with fixed axes
-  'yaxis': { 'range': [-0.1, 1.1], 'scaleanchor': 'x', 'scaleratio': 1 },
-  'showlegend': false
+  xaxis: { range: [-0.1, 1.1]}, // plot with fixed axes
+  yaxis: { range: [-0.1, 1.1], scaleanchor: 'x', scaleratio: 1 },
+  showlegend: false
 };
 
-var mthlySldr1 = document.getElementById('mthlySldr1');
-var mthlySldr2 = document.getElementById('mthlySldr2');
-mthlySldr1.value = 0.9;
+var mthlySldra = document.getElementById('mthlySldra');
+var mthlySldrI = document.getElementById('mthlySldrI');
+mthlySldra.value = 0.9;
 var a = 0.9;
-mthlySldr2.value = 30;
+mthlySldrI.value = 30;
 var I = 30;
 p = 1;
 for (let i = -0.1; i <= p * (1.1 + 0.1) - 0.1; i += 0.0024) { x.push(i); }; t = x;
 
 var mthlyTraces = [];
-const mthlyxMin = -0.1, mthlyxMax = 1.1, mthlyyMin = -0.1, mthlyyMax = 1.1;
-const mthlytMin = -0.1, mthlytMax = 1.1;
-const mthlyaMin = 0, mthlyaMax = 1;
-const mthlyIMin = 1, mthlyIMax = 30;
+const mthlyxMin = -0.1, mthlyxMax = 1.1, mthlyxStep = 1;
+const mthlyyMin = -0.1, mthlyyMax = 1.1;
+const mthlytMin = -0.1, mthlytMax = 1.1, mthlytStep = 1;
+const mthlyaMin = 0, mthlyaMax = 1, mthlyaStep = 0.1;
+const mthlyIMin = 1, mthlyIMax = 30, mthlyIStep = 1;
 
 function mthlyUpdateTraces() {
   mthlyTraces = [];
@@ -72,29 +97,29 @@ function mthlyUpdateTraces() {
   function plotweb() {
     let style = { 'color': 'grey', 'width': 1 }
     for (let i = 2; i <= I; i++) {
-      mthlyTraces.push({'x': [ xs[i-2], xs[i-1] ], 'y': [ xs[i-1], xs[i-1] ], 'mode': 'lines', 'line': style}); // horizontal line
-      mthlyTraces.push({'x': [ xs[i-1], xs[i-1] ], 'y': [ xs[i-1], xs[i]   ], 'mode': 'lines', 'line': style}); // vertical line
+      mthlyTraces.push({x: [ xs[i-2], xs[i-1] ], y: [ xs[i-1], xs[i-1] ], mode: 'lines', line: style}); // horizontal line
+      mthlyTraces.push({x: [ xs[i-1], xs[i-1] ], y: [ xs[i-1], xs[i]   ], mode: 'lines', line: style}); // vertical line
     }
 
     // plot enough extra objects outside the graph so that no old traces will stay - ugly, but works!
     for (let i = 1; i <= mthlyIMax * 4; i ++) {
-      mthlyTraces.push({ 'x': [mthlyxMax + i], 'y': [mthlyyMax + i], 'mode': 'markers' })
+      mthlyTraces.push({ x: [mthlyxMax + i], y: [mthlyyMax + i], mode: 'markers' })
     }
   }
 
   function displaytext() { plotweb(); return 'x<sub>' + (I-1) + '</sub> = ' + xs[I-1]; }
   // ^^^^^ user's javascript ^^^^^
 
-  mthlyTraces.push({ 'x': x, 'y': x.map(x => 1 - Math.sqrt(x)), 'mode': 'lines', 'line': { 'simplify': false } });
+  mthlyTraces.push({ x: x, y: x.map(x => 1 - Math.sqrt(x)), mode: 'lines', line: { simplify: false }, fill: 'none' });
   if (true) {
     const t = [];
     for (let i = 0; i <= 1; i += 0.002) { t.push(i); }
-    mthlyTraces.push({ 'x': t.map(t => t), 'y': t.map(t => t), 'mode': 'lines', 'line': { 'simplify': false, 'color': 'green', 'width': 2  } });
+    mthlyTraces.push({ x: t.map(t => t), y: t.map(t => t), mode: 'lines', line: { simplify: false, color: 'green', width: 2  }, fill: 'none' });
   }
-  mthlyTraces.push({ 'x': [xs[0], xs[0]], 'y': [0, xs[1]], 'mode': 'lines', 'line': { 'color': 'grey', 'width': 1  } });
-  mthlyTraces.push({ 'x': [xs[I-1]], 'y': [g(xs[I-1])], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 8.000000  } });
-  mthlyTraces.push({ 'x': [xs[I-1]], 'y': [0], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 8.000000  } });
-  mthlyTraces.push({ 'x': [xs[I-1]], 'y': [-0.02], 'text': 'x<sub>' + (I-1) + '</sub>', 'mode': 'text', 'type': 'scatter', 'textposition': 'bottom', 'name': '', 'textfont': { 'color': 'black', 'size': 12.000000  } });
+  mthlyTraces.push({ x: [xs[0], xs[0]], y: [0, xs[1]], mode: 'lines', line: { color: 'grey', width: 1  } });
+  mthlyTraces.push({ x: [xs[I-1]], y: [g(xs[I-1])], mode: 'markers', marker: { color: 'red', size: 8.000000  } });
+  mthlyTraces.push({ x: [xs[I-1]], y: [0], mode: 'markers', marker: { color: 'red', size: 8.000000  } });
+  mthlyTraces.push({ x: [xs[I-1]], y: [-0.02], text: 'x<sub>' + (I-1) + '</sub>', mode: 'text', type: 'scatter', textposition: 'bottom center', name: '', textfont: { color: 'black', size: 12.000000  } });
   document.getElementById("displaytext").innerHTML = displaytext();
   document.getElementById("title").innerHTML = displaytitle();
 }
@@ -102,11 +127,11 @@ function mthlyUpdateTraces() {
 mthlyUpdateTraces();
 const mthlyInitData = mthlyTraces;
 
-var mthlyOldCs = [99999999,99999999];
-var mthlyNewCs = [];
+var mthlyNewCs = [], mthlyOldCs = [99999999, 99999999];
+
 function mthlyAnimatePlot() {
-  a = Number(mthlySldr1.value);
-  I = Number(mthlySldr2.value);
+  a = Number(mthlySldra.value);
+  I = Number(mthlySldrI.value);
   // has any controls changed?
   mthlyNewCs = [a, I];
   var unchangedq = true;
@@ -119,22 +144,22 @@ function mthlyAnimatePlot() {
   mthlyOldCs = [a, I]; // update values of controls
   mthlyUpdateTraces();
   Plotly.animate('mathlyDiv', {
-    'data': mthlyTraces,
-    'traces': mthlyTraces.keys() // update all traces
+    data: mthlyTraces,
+    traces: mthlyTraces.keys() // update all traces
   }, {
-    'transition': { 'duration': 0 },
-    'frame': { 'duration': 0 }
+    transition: { duration: 0 },
+    frame: { duration: 0 }
   });
 }
 
-document.getElementById("mthlySldr1value").innerHTML = mthlySldr1.value;
-mthlySldr1.addEventListener("input", function() { document.getElementById("mthlySldr1value").innerHTML = mthlySldr1.value; mthlyAnimatePlot() });
-document.getElementById("mthlySldr2value").innerHTML = mthlySldr2.value;
-mthlySldr2.addEventListener("input", function() { document.getElementById("mthlySldr2value").innerHTML = mthlySldr2.value; mthlyAnimatePlot() });
+document.getElementById("mthlySldravalue").innerHTML = mthlySldra.value;
+mthlySldra.addEventListener("input", function() { document.getElementById("mthlySldravalue").innerHTML = mthlySldra.value; });
+document.getElementById("mthlySldrIvalue").innerHTML = mthlySldrI.value;
+mthlySldrI.addEventListener("input", function() { document.getElementById("mthlySldrIvalue").innerHTML = mthlySldrI.value; });
 
 Plotly.newPlot('mathlyDiv', mthlyInitData, mthlyLayout);
 mthlyAnimatePlot();
-setInterval(mthlyAnimatePlot, 200); // animate every 0.2 seconds
+mthlyIntervalId = setInterval(mthlyAnimatePlot, 200); // animate every 0.2 seconds
 </script>
 </body>
 </html>
