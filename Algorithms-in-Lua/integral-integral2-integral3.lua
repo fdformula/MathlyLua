@@ -113,7 +113,7 @@ disp(integral2(function(x, y) return x+y end, -- exact value 4
 disp(integral2(function(x, y) return x*y end, -- exact: 3/8 = 0.375
                function(x) return x end, function(x) return 2*x end,
                0, 1))
---0.375
+-- 0.375
 
 disp(integral3(function(x, y, z) return 2*(x+y+z) end, -- exact value 16/3
                function(x, y) return x - y end, function(x, y) return x + y end,
