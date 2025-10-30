@@ -120,7 +120,6 @@ disp(integral3(function(x, y, z) return 2*(x+y+z) end, -- exact value 16/3
                function(x) return x end, function(x) return 2 * x end,
                0, 1))
 -- 5.3333333333333
-
 disp(integral3(function(x, y, z) return y*sin(x) + z*cos(x) end, -- exact value 2
                -1, 1, 0, 1, 0, pi))
 -- 2.0000000835399
