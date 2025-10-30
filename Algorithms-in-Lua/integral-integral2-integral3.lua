@@ -8,7 +8,7 @@
 -- by David Wang, dwang@liberty.edu, on 10/29/2025 Wednesday
 --
 function integral(f, a, b) -- integral[f(x), {x, a, b}]
-  local N, s4, s2 = ceil((b - a) / 0.5 / 3) * 3, 0, 0
+  local N, s4, s2 = ceil(((b - a) / 0.5) / 2) * 2, 0, 0 -- h = 0.5
   if N < 60 then N = 60 end
   local h = (b - a) / N
   local x = linspace(a, b, N + 1)
@@ -31,7 +31,7 @@ function integral2(f, g1, g2, a, b)
   local function F(x) -- F(xi) = integral[f(xi, y), {y, g1(xi), g2(xi)}]
     local y1, y2 = g1(x), g2(x)
     if y2 - y1 < 1e-15 then return 0 end -- important
-    local N, s4, s2 = ceil((y2 - y1) / 0.5 / 3) * 3, 0, 0
+    local N, s4, s2 = ceil(((y2 - y1) / 0.5) / 2) * 2, 0, 0
     if N < 60 then N = 60 end
     local h = (y2 - y1) / N
     local y = linspace(y1, y2, N + 1)
@@ -40,7 +40,7 @@ function integral2(f, g1, g2, a, b)
     return (f(x, y1) + 4*s4 + 2*s2 + f(x, y2)) * h / 3
   end
 
-  local N, s4, s2 = ceil((b - a) / 0.5 / 3) * 3, 0, 0
+  local N, s4, s2 = ceil(((b - a) / 0.5) / 2) * 2, 0, 0
   if N < 60 then N = 60 end
   local h = (b - a) / N
   local x = linspace(a, b, N + 1)
@@ -74,7 +74,7 @@ function integral3(f, g1, g2, h1, h2, a, b)
     local function G(y)
       local z1, z2 = g1(x, y), g2(x, y)
       if z2 - z1 < 1e-15 then return 0 end -- important
-      local N, s4, s2 = ceil((z2 - z1) / 0.5 / 3) * 3, 0, 0
+      local N, s4, s2 = ceil(((z2 - z1) / 0.5) / 2) * 2, 0, 0
       if N < 60 then N = 60 end
       local h = (z2 - z1) / N
       local z = linspace(z1, z2, N + 1)
@@ -85,7 +85,7 @@ function integral3(f, g1, g2, h1, h2, a, b)
 
     local y1, y2 = h1(x), h2(x)
     if y2 - y1 < 1e-15 then return 0 end -- important
-    local N, s4, s2 = ceil((y2 - y1) / 0.5 / 3) * 3, 0, 0
+    local N, s4, s2 = ceil(((y2 - y1) / 0.5) / 2) * 2, 0, 0
     if N < 60 then N = 60 end
     local h = (y2 - y1) / N
     local y = linspace(y1, y2, N + 1)
@@ -94,7 +94,7 @@ function integral3(f, g1, g2, h1, h2, a, b)
     return (G(y1) + 4*s4 + 2*s2 + G(y2)) * h / 3
   end
 
-  local N, s4, s2 = ceil((b - a) / 0.5 / 3) * 3, 0, 0
+  local N, s4, s2 = ceil(((b - a) / 0.5) / 2) * 2, 0, 0
   if N < 60 then N = 60 end
   local h = (b - a) / N
   local x = linspace(a, b, N + 1)
