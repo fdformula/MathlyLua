@@ -5,7 +5,7 @@
 --
 -- Simpson 1/3 method is the only method applied
 --
--- by David Wang, dwang@liberty.edu, on 10/29/2025 Wednesday
+-- by David Wang, dwang at liberty dot edu, on 10/29/2025 Wednesday
 --
 DefaultH = 0.05
 
