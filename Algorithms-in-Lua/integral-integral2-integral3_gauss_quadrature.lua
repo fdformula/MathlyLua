@@ -56,12 +56,12 @@ function _make_function(f)
   end
 end
 
--- double integral of f(x, y) implemented for a region:
---   y in [g1(x), g2(x)] and x in [a, b], or
---   x in [g1[y], g2[y]] and y in [a, b]
+-- double integral ∫∫ f(x, y) dydx over a region:
+--   y in [g1(x), g2(x)]
+--   x in [a, b]
+-- x and y do not matter LITERALY. instead, the ORDER of integration matters
 --
--- in polar coordinates: r -> y, theta -> x
---
+-- in polar coordinates: f(θ, r): ∫∫ f(θ, r) drdθ
 function integral2(f, g1, g2, a, b)
   f, g1, g2 = table.unpack(map(_make_function, {f, g1, g2}))
   local function F(x) -- F(xi) = integral[f(xi, y), {y, g1(xi), g2(xi)}]
@@ -100,16 +100,14 @@ function integral2(f, g1, g2, a, b)
   return m * s
 end
 
--- triple integral of f(x, y, z) implemented for a solid:
+-- triple integral ∫∫∫ f(x, y, z) dzdydx over a solid:
 --   z in [g1(x, y), g2(x, y)]
 --   y in [h1[x], h2[y]]
 --   x in [a, b]
+-- x, y, and z do not matter LITERALY. instead, the ORDER of integration matters
 --
--- here (x, y, z) can be (y, x, z), (y, z, x), (x, z, y), etc.
---
--- in spherical coordinates (rho, theta, phi): rho -> z, phi -> y, theta -> x
---
--- see integral2
+-- in spherical coordinates: f(θ, φ, ρ): ∫∫∫ f(θ, φ, ρ) dρdφdθ
+-- in cylindrical coordinates: f(θ, r, z): ∫∫∫ f(θ, r, z) dzdrdθ
 function integral3(f, g1, g2, h1, h2, a, b)
   f, g1, g2, h1, h2 = table.unpack(map(_make_function, {f, g1, g2, h1, h2}))
   local function F(x) -- F(xi) = integral[f(xi, y, z), {z, g1(xi, y), g2(xi, y)}]
@@ -183,15 +181,21 @@ disp(integral2('@(x, y) x * y', '@(x) x', '@(x) 2*x', 0, 1))
 disp(integral2('@(x, y) x + 2*y', '@(x) 2 * x^2', '@(x) 1 + x^2', -1, 1))
 -- 2.1333333333333 (exact: 32/15 = 2.1333333333333)
 
--- in polar coordinates: r -> y, theta -> x
-disp(integral2('@(x, y) y^3', 0, '@(x) 2*cos(x)', -pi/2, pi/2))
+-- in polar coordinates: f(θ, r): ∫∫ f(θ, r) drdθ
+disp(integral2('@(theta, r) r^3', 0, '@(theta) 2*cos(theta)', -pi/2, pi/2))
 -- 4.7123889803824 (exact: 3*pi/2 = 4.7123889803847)
+
+disp(integral2('@(x, y) sqrt(x^2 + y^2)', '@(x) -sqrt(4 - x^2)', '@(x) sqrt(4 - x^2)', -2, 2))
+-- 16.770580574894 (exact: 16*pi/3 = 16.755160819146)
+disp(integral2('@(theta, r) r^2', 0, 2, 0, 2*pi))
+-- 16.755160819146 (exact: 16*pi/3 = 16.755160819146)
+
 
 disp(integral3('@(x, y, z) 2*(x + y + z)', '@(x, y) x - y', '@(x, y) x + y', '@(x) x', '@(x) 2 * x', 0, 1))
 -- 5.3333333333333 (exact value 16/3 = 5.3333333333333)
 disp(integral3('@(x, y, z) y*sin(x) + z*cos(x)', -1, 1, 0, 1, 0, pi))
 -- 2.0 (exact value 2)
 
--- in spherical coordinates: rho -> z, phi -> y, theta -> x
-disp(integral3('@(x, y, z) z^2 * sin(y)', 0, '@(x, y) cos(y)', 0, pi/4, 0, 2*pi))
+-- in spherical coordinates: f(θ, φ, ρ): ∫∫∫ f(θ, φ, ρ) dρdφdθ
+disp(integral3('@(theta, phi, rho) rho^2 * sin(phi)', 0, '@(theta, phi) cos(phi)', 0, pi/4, 0, 2*pi))
 -- 0.39269908169872 (exact: pi/8 = 0.39269908169872)

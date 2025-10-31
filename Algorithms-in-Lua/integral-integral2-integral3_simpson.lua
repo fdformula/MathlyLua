@@ -22,25 +22,25 @@ function integral(f, a, b) -- integral[f(x), {x, a, b}]
   return sign * (f(a) + 4*s4 + 2*s2 + f(b)) * h / 3
 end
 
--- double integral of f(x, y) implemented for a region:
---   y in [g1(x), g2(x)] and x in [a, b], or
---   x in [g1[y], g2[y]] and y in [a, b]
---
--- in polar coordinates: r -> y, theta -> x
---
-function integral2(f, g1, g2, a, b)
-  if type(f) == 'string' then f = fstr2f(f) end
-  if type(g1) == 'number' then
-    local v = g1; g1 = function(x) return v end
-  elseif type(g1) == 'string' then
-    g1 = fstr2f(g1)
+function _make_function(f)
+  if type(f) == 'number' then
+    local v = f; return function(x, y, z) return v end -- extra arguments do not matter
+  elseif type(f) == 'string' then
+    return fstr2f(f)
+  else
+    return f
   end
-  if type(g2) == 'number' then
-    local v = g2; g2 = function(x) return v end
-  elseif type(g2) == 'string' then
-    g2 = fstr2f(g2)
-  end
+end
 
+-- double integral ∫∫ f(x, y) dydx over a region:
+--   y in [g1(x), g2(x)]
+--   x in [a, b]
+--
+-- x and y do not matter LITERALY. instead, the ORDER of integration matters
+--
+-- in polar coordinates: f(θ, r): ∫∫ f(θ, r) drdθ
+function integral2(f, g1, g2, a, b)
+  f, g1, g2 = table.unpack(map(_make_function, {f, g1, g2}))
   local function F(x) -- F(xi) = integral[f(xi, y), {y, g1(xi), g2(xi)}]
     local y1, y2, sign = g1(x), g2(x), 1
     if y1 > y2 then y1, y2 = y2, y1; sign = -1 end
@@ -64,39 +64,16 @@ function integral2(f, g1, g2, a, b)
   return sign * (F(a) + 4*s4 + 2*s2 + F(b)) * h / 3
 end
 
--- triple integral of f(x, y, z) implemented for a solid:
+-- triple integral ∫∫∫ f(x, y, z) dzdydx over a solid:
 --   z in [g1(x, y), g2(x, y)]
 --   y in [h1[x], h2[y]]
 --   x in [a, b]
+-- x, y, and z do not matter LITERALY. instead, the ORDER of integration matters
 --
--- here (x, y, z) can be (y, x, z), (y, z, x), (x, z, y), etc.
---
--- in spherical coordinates (rho, theta, phi): rho -> z, phi -> y, theta -> x
---
--- see integral2
+-- in spherical coordinates: f(θ, φ, ρ): ∫∫∫ f(θ, φ, ρ) dρdφdθ
+-- in cylindrical coordinates: f(θ, r, z): ∫∫∫ f(θ, r, z) dzdrdθ
 function integral3(f, g1, g2, h1, h2, a, b)
-  if type(f) == 'string' then f = fstr2f(f) end
-  if type(g1) == 'number' then
-    local v = g1; g1 = function(x, y) return v end
-  elseif type(g1) == 'string' then
-    g1 = fstr2f(g1)
-  end
-  if type(g2) == 'number' then
-    local v = g2; g2 = function(x, y) return v end
-  elseif type(g2) == 'string' then
-    g2 = fstr2f(g2)
-  end
-  if type(h1) == 'number' then
-    local v = h1; h1 = function(x) return v end
-  elseif type(h1) == 'string' then
-    h1 = fstr2f(h1)
-  end
-  if type(h2) == 'number' then
-    local v = h2; h2 = function(x) return v end
-  elseif type(h2) == 'string' then
-    h2 = fstr2f(h2)
-  end
-
+  f, g1, g2, h1, h2 = table.unpack(map(_make_function, {f, g1, g2, h1, h2}))
   local function F(x) -- F(xi) = integral[f(xi, y, z), {z, g1(xi, y), g2(xi, y)}]
     local function G(y)
       local z1, z2, sign = g1(x, y), g2(x, y), 1
@@ -131,9 +108,8 @@ function integral3(f, g1, g2, h1, h2, a, b)
   return sign * (F(a) + 4*s4 + 2*s2 + F(b)) * h / 3
 end
 
---
 ----------------- test -----------------
---
+
 disp(integral('@(x) x^2', 0, 1))
 -- 0.33333333333333 (exact value 1/3)
 
@@ -144,8 +120,8 @@ disp(integral2('@(x, y) x * y', '@(x) x', '@(x) 2*x', 0, 1))
 disp(integral2('@(x, y) x + 2*y', '@(x) 2 * x^2', '@(x) 1 + x^2', -1, 1))
 -- 2.1333283333333 (exact: 32/15 = 2.1333333333333)
 
--- in polar coordinates: r -> y, theta -> x
-disp(integral2('@(x, y) y^3', 0, '@(x) 2*cos(x)', -pi/2, pi/2))
+-- in polar coordinates: f(θ, r): ∫∫ f(θ, r) drdθ
+disp(integral2('@(theta, r) r^3', 0, '@(theta) 2*cos(theta)', -pi/2, pi/2))
 -- 4.7123889803847 (exact: 3*pi/2 = 4.7123889803847)
 
 disp(integral3('@(x, y, z) 2*(x + y + z)', '@(x, y) x - y', '@(x, y) x + y', '@(x) x', '@(x) 2 * x', 0, 1))
@@ -153,6 +129,6 @@ disp(integral3('@(x, y, z) 2*(x + y + z)', '@(x, y) x - y', '@(x, y) x + y', '@(
 disp(integral3('@(x, y, z) y*sin(x) + z*cos(x)', -1, 1, 0, 1, 0, pi))
 -- 2.00000006453 (exact value 2)
 
--- in spherical coordinates: rho -> z, phi -> y, theta -> x
-disp(integral3('@(x, y, z) z^2 * sin(y)', 0, '@(x, y) cos(y)', 0, pi/4, 0, 2*pi))
+-- in spherical coordinates: f(θ, φ, ρ): ∫∫∫ f(θ, φ, ρ) dρdφdθ
+disp(integral3('@(theta, phi, rho) rho^2 * sin(phi)', 0, '@(theta, phi) cos(phi)', 0, pi/4, 0, 2*pi))
 -- 0.39270030284801 (exact: pi/8 = 0.39269908169872)
