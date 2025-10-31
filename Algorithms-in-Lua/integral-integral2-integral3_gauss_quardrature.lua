@@ -31,11 +31,6 @@ function integral(f, a, b)
   end
   local sign = 1
   if a > b then a, b = b, a; sign = -1 end
-  function gsum(a, b)
-    local k, h, s = (b - a)/2, (b + a)/2, 0
-    for i = 1, #_Gw do s = s + _Gw[i] * f(k * _Gx[i] + h) end
-    return s
-  end
   local n, A, B, s, siz = 1, a, b, 0, b - a
   if b - a > MaxIntervalSize then
     n = ceil((b - a) / MaxIntervalSize)
@@ -44,7 +39,8 @@ function integral(f, a, b)
   end
   local k = sign * (B - A)/2
   while B <= b do
-    s = s + gsum(A, B)
+    local k, h = (B - A)/2, (B + A)/2
+    for i = 1, #_Gw do s = s + _Gw[i] * f(k * _Gx[i] + h) end
     A, B = B, B + siz
   end
   return k * s
@@ -72,46 +68,36 @@ function integral2(f, g1, g2, a, b)
     local y1, y2, sign = g1(x), g2(x), 1
     if y1 > y2 then y1, y2 = y2, y1; sign = -1 end
     if y2 - y1 < eps then return 0 end -- f(x, y1) * (y2 - y1) end
-
-    function gsum(a, b)
-      local k, h, s = (b - a)/2, (b + a)/2, 0
-      for i = 1, #_Gw do s = s + _Gw[i] * f(x, k * _Gx[i] + h) end
-      return s
-    end
     local n, A, B, s, siz = 1, y1, y2, 0, y2 - y1
     if y2 - y1 > MaxIntervalSize then
       n = ceil((y2 - y1) / MaxIntervalSize)
       siz = (y2 - y1) / n
       B = A + siz
     end
-    local k = sign * (B - A)/2
+    local m = sign * (B - A)/2
     while B <= y2 do
-      s = s + gsum(A, B)
+      local k, h = (B - A)/2, (B + A)/2
+      for i = 1, #_Gw do s = s + _Gw[i] * f(x, k * _Gx[i] + h) end
       A, B = B, B + siz
     end
-    return k * s
+    return m * s
   end
-
   local sign = 1
   if a > b then a, b = b, a; sign = -1 end
   if b - a < eps then return 0 end
-  function gsum(a, b)
-    local k, h, s = (b - a)/2, (b + a)/2, 0
-    for i = 1, #_Gw do s = s + _Gw[i] * F(k * _Gx[i] + h) end
-    return s
-  end
   local n, A, B, s, siz = 1, a, b, 0, b - a
   if b - a > MaxIntervalSize then
     n = ceil((b - a) / MaxIntervalSize)
     siz = (b - a) / n
     B = A + siz
   end
-  local k = sign * (B - A)/2
+  local m = sign * (B - A)/2
   while B <= b do
-    s = s + gsum(A, B)
+    local k, h = (B - A)/2, (B + A)/2
+    for i = 1, #_Gw do s = s + _Gw[i] * F(k * _Gx[i] + h) end
     A, B = B, B + siz
   end
-  return k * s
+  return m * s
 end
 
 -- triple integral of f(x, y, z) implemented for a solid:
@@ -131,29 +117,19 @@ function integral3(f, g1, g2, h1, h2, a, b)
       local z1, z2, sign = g1(x, y), g2(x, y), 1
       if z1 > z2 then z1, z2 = z2, z1; sign = -1 end
       if z2 - z1 < eps then return 0 end
-      function gsum(a, b)
-        local k, h, s = (b - a)/2, (b + a)/2, 0
-        for i = 1, #_Gw do s = s + _Gw[i] * f(x, y, k * _Gx[i] + h) end
-        return s
-      end
       local n, A, B, s, siz = 1, z1, z2, 0, z2 - z1
       if z2 - z1 > MaxIntervalSize then
         n = ceil((z2 - z1) / MaxIntervalSize)
         siz = (z2 - z1) / n
         B = A + siz
       end
-      local k = sign * (B - A)/2
+      local m = sign * (B - A)/2
       while B <= z2 do
-        s = s + gsum(A, B)
+        local k, h = (B - A)/2, (B + A)/2
+        for i = 1, #_Gw do s = s + _Gw[i] * f(x, y, k * _Gx[i] + h) end
         A, B = B, B + siz
       end
-      return k * s
-    end
-
-    function gsum(a, b)
-      local k, h, s = (b - a)/2, (b + a)/2, 0
-      for i = 1, #_Gw do s = s + _Gw[i] * G(k * _Gx[i] + h) end
-      return s
+      return m * s
     end
     local y1, y2, sign = h1(x), h2(x), 1
     if y1 > y2 then y1, y2 = y2, y1; sign = -1 end
@@ -164,34 +140,31 @@ function integral3(f, g1, g2, h1, h2, a, b)
       siz = (y2 - y1) / n
       B = A + siz
     end
-    local k = sign * (B - A)/2
+    local m = sign * (B - A)/2
     while B <= y2 do
-      s = s + gsum(A, B)
+      local k, h = (B - A)/2, (B + A)/2
+      for i = 1, #_Gw do s = s + _Gw[i] * G(k * _Gx[i] + h) end
       A, B = B, B + siz
     end
-    return k * s
+    return m * s
   end
 
   local sign = 1
   if a > b then a, b = b, a; sign = -1 end
   if b - a < eps then return 0 end
-  function gsum(a, b)
-    local k, h, s = (b - a)/2, (b + a)/2, 0
-    for i = 1, #_Gw do s = s + _Gw[i] * F(k * _Gx[i] + h) end
-    return s
-  end
   local n, A, B, s, siz = 1, a, b, 0, b - a
   if b - a > MaxIntervalSize then
     n = ceil((b - a) / MaxIntervalSize)
     siz = (b - a) / n
     B = A + siz
   end
-  local k = sign * (B - A)/2
+  local m = sign * (B - A)/2
   while B <= b do
-    s = s + gsum(A, B)
+    local k, h = (B - A)/2, (B + A)/2
+    for i = 1, #_Gw do s = s + _Gw[i] * F(k * _Gx[i] + h) end
     A, B = B, B + siz
   end
-  return k * s
+  return m * s
 end
 
 ----------------- test -----------------
@@ -202,6 +175,7 @@ disp(integral(10, 1, 20))
 -- 190 (exact)
 disp(integral('@(x) exp(-x^2)', -10, 10))
 -- 1.7725140943124 (exact: about sqrt(pi) = 1.7724538509055)
+
 disp(integral2('@(x, y) x + y', 0, 1, 0, 1))
 -- 1.0 (exact: 1)
 disp(integral2('@(x, y) x * y', '@(x) x', '@(x) 2*x', 0, 1))
