@@ -63,7 +63,6 @@ end
 -- so,
 -- with polar coordinates: ∫∫f(θ,r)drdθ
 function integral2(f, g1, g2, a, b)
-  if abs(b - a) < eps then return 0 end
   f, g1, g2 = table.unpack(map(_make_function, {f, g1, g2}))
   local function prep(a, b)
     local sign = 1
@@ -106,7 +105,6 @@ end
 -- with spherical coordinates:   ∫∫∫f(θ,φ,ρ)dρdφdθ
 -- with cylindrical coordinates: ∫∫∫f(θ,r,z)dzdrdθ
 function integral3(f, g1, g2, h1, h2, a, b)
-  if abs(b - a) < eps then return 0 end
   f, g1, g2, h1, h2 = table.unpack(map(_make_function, {f, g1, g2, h1, h2}))
   local function prep(a, b)
     local sign = 1

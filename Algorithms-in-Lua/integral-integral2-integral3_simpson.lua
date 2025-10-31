@@ -17,7 +17,6 @@ function integral(f, a, b) -- integral[f(x), {x, a, b}]
   end
   local sign = 1
   if a > b then a, b = b, a; sign = -1 end
-  if b - a < eps then return 0 end
   local N, s4, s2 = ceil(((b - a) / DefaultH) / 2) * 2, 0, 0
   local h = (b - a) / N
   local x = linspace(a, b, N + 1)
@@ -58,7 +57,6 @@ function integral2(f, g1, g2, a, b)
 
   local sign = 1
   if a > b then a, b = b, a; sign = -1 end
-  if b - a < eps then return 0 end
   local N, s4, s2 = ceil(((b - a) / DefaultH) / 2) * 2, 0, 0
   local h = (b - a) / N
   local x = linspace(a, b, N + 1)
