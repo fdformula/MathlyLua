@@ -19,12 +19,13 @@ FUNCTIONS PROVIDED IN THIS MODULE
 
     all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display, dot,
     expand, eye, findroot, flatten, fliplr, flipud, format, fstr2f, fzero, hasindex,
-    horzcat, inv, iseven, isinteger, ismatrix, ismember, isodd, isvector, lagrangepoly,
-    length, linsolve, linspace, lu, map, match, max, mean, merge, min, tables, namedargs,
-    newtonpoly, norm, ones, polynomial, polyval, printf, prod, qq, qr, rand, randi,
-    range, remake, repmat, reshape, round, rr, rref, save, seq, size, sort, sprintf,
-    std, strcat, submatrix, subtable, sum, tables, tblcat, text, tic, toc, transpose,
-    tt, unique, var, vectorangle, vertcat, who, zeros
+    horzcat, integral, integral2, integral3, inv, iseven, isinteger, ismatrix,
+    ismember, isodd, isvector, lagrangepoly, length, linsolve, linspace, lu, map,
+    match, max, mean, merge, min, tables, namedargs, newtonpoly, norm, ones,
+    polynomial, polyval, printf, prod, qq, qr, rand, randi, range, remake, repmat,
+    reshape, round, rr, rref, save, seq, size, sort, sprintf, std, strcat,
+    submatrix, subtable, sum, tables, tblcat, text, tic, toc, transpose, tt,
+    unique, var, vectorangle, vertcat, who, zeros
 
     dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
     oct2hex, hex2bin, hex2dec, hex2oct
@@ -1864,6 +1865,143 @@ local _yaxis_visibleq    = true
 local _gridline_visibleq = true
 local _showlegendq       = false
 local _vecfield_annotations = nil
+
+-- Gauss quadrature of 12 nodes: https://pomax.github.io/bezierinfo/legendre-gauss.html
+local _Gw = {
+  0.2491470458134028, 0.2491470458134028, 0.2334925365383548, 0.2334925365383548,
+  0.2031674267230659, 0.2031674267230659, 0.1600783285433462, 0.1600783285433462,
+  0.1069393259953184, 0.1069393259953184, 0.0471753363865118, 0.0471753363865118
+}
+
+local _Gx = {
+ -0.1252334085114689, 0.1252334085114689, -0.3678314989981802, 0.3678314989981802,
+ -0.5873179542866175, 0.5873179542866175, -0.7699026741943047, 0.7699026741943047,
+ -0.9041172563704749, 0.9041172563704749, -0.9815606342467192, 0.9815606342467192
+}
+
+local _MaxIntegIntervSiz = 10
+
+-- ∫f(x)dx on [a, b]
+function integral(f, a, b)
+  if type(f) == 'string' then
+    f = fstr2f(f)
+  elseif type(f) == 'number' then
+    return (b - a) * f
+  end
+  local sign = 1
+  if a > b then a, b = b, a; sign = -1 end
+  local n, A, B, s, siz = 1, a, b, 0, b - a
+  if b - a > _MaxIntegIntervSiz then
+    n = ceil((b - a) / _MaxIntegIntervSiz)
+    siz = (b - a) / n
+    B = A + siz
+  end
+  local m = sign * (B - A)/2
+  while B <= b do
+    local k, h = (B - A)/2, (B + A)/2
+    for i = 1, #_Gw do s = s + _Gw[i] * f(k * _Gx[i] + h) end
+    A, B = B, B + siz
+  end
+  return m * s
+end
+
+local function _integral_func(f)
+  if type(f) == 'number' then
+    local v = f; return function(x, y, z) return v end -- extra arguments do not matter
+  elseif type(f) == 'string' then
+    return fstr2f(f)
+  else
+    return f
+  end
+end
+
+-- double integral ∫∫f(x,y)dydx over a region:
+--   y in [g1(x), g2(x)]
+--   x in [a, b]
+function integral2(f, g1, g2, a, b)
+  if abs(b - a) < eps then return 0 end
+  f, g1, g2 = table.unpack(map(_integral_func, {f, g1, g2}))
+  local function prep(a, b)
+    local sign = 1
+    if a > b then a, b = b, a; sign = -1 end
+    local n, A, B, s, siz = 1, a, b, 0, b - a
+    if b - a > _MaxIntegIntervSiz then
+      n = ceil((b - a) / _MaxIntegIntervSiz)
+      siz = (b - a) / n
+      B = A + siz
+    end
+    return A, B, sign * (B - A)/2, siz, b
+  end
+  local function F(x) -- F(xi) = integral[f(xi, y), {y, g1(xi), g2(xi)}]
+    local y1, y2, s, A, B, m, siz = g1(x), g2(x), 0
+    if abs(y2 - y1) < eps then return 0 end
+    A, B, m, siz, y2 = prep(y1, y2)
+    while B <= y2 do
+      local k, h = (B - A)/2, (B + A)/2
+      for i = 1, #_Gw do s = s + _Gw[i] * f(x, k * _Gx[i] + h) end
+      A, B = B, B + siz
+    end
+    return m * s
+  end
+  local A, B, m, siz, s
+  A, B, m, siz, b = prep(a, b); s = 0
+  while B <= b do
+    local k, h = (B - A)/2, (B + A)/2
+    for i = 1, #_Gw do s = s + _Gw[i] * F(k * _Gx[i] + h) end
+    A, B = B, B + siz
+  end
+  return m * s
+end
+
+-- triple integral ∫∫∫f(x,y,z)dzdydx over a solid:
+--   z in [g1(x, y), g2(x, y)]
+--   y in [h1[x], h2[y]]
+--   x in [a, b]
+function integral3(f, g1, g2, h1, h2, a, b)
+  if abs(b - a) < eps then return 0 end
+  f, g1, g2, h1, h2 = table.unpack(map(_integral_func, {f, g1, g2, h1, h2}))
+  local function prep(a, b)
+    local sign = 1
+    if a > b then a, b = b, a; sign = -1 end
+    local n, A, B, siz = 1, a, b, b - a
+    if b - a > _MaxIntegIntervSiz then
+      n = ceil((b - a) / _MaxIntegIntervSiz)
+      siz = (b - a) / n
+      B = A + siz
+    end
+    return A, B, sign * (B - A)/2, siz, b
+  end
+  local function F(x) -- F(xi) = integral[f(xi, y, z), {z, g1(xi, y), g2(xi, y)}]
+    local function G(y)
+      local z1, z2, s, A, B, m, siz = g1(x, y), g2(x, y), 0
+      if abs(z2 - z1) < eps then return 0 end
+      A, B, m, siz, z2 = prep(z1, z2)
+      while B <= z2 do
+        local k, h = (B - A)/2, (B + A)/2
+        for i = 1, #_Gw do s = s + _Gw[i] * f(x, y, k * _Gx[i] + h) end
+        A, B = B, B + siz
+      end
+      return m * s
+    end
+    local y1, y2, s, A, B, m = h1(x), h2(x), 0
+    if abs(y2 - y1) < eps then return 0 end
+    A, B, m, siz, y2 = prep(y1, y2)
+    while B <= y2 do
+      local k, h = (B - A)/2, (B + A)/2
+      for i = 1, #_Gw do s = s + _Gw[i] * G(k * _Gx[i] + h) end
+      A, B = B, B + siz
+    end
+    return m * s
+  end
+  local A, B, m, siz, s;
+  A, B, m, siz, b = prep(a, b); s = 0
+  while B <= b do
+    local k, h = (B - A)/2, (B + A)/2
+    for i = 1, #_Gw do s = s + _Gw[i] * F(k * _Gx[i] + h) end
+    A, B = B, B + siz
+  end
+  return m * s
+end
 
 -- plot the graphs of functions in a way like in MATLAB with more features
 local plotly = {}

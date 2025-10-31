@@ -226,6 +226,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <a href=#disp>disp</a>, <a href=#display>display</a>, <a href=#div>div</a>, <a href=#dot>dot</a>, <a href=#eval>eval</a>, <a href=#expand>expand</a>,
 <a href=#eye>eye</a>, <a href=#findroot>findroot</a>, <a href=#flatten>flatten</a>, <a href=#fliplr>fliplr</a>, <a href=#flipud>flipud</a>,
 <a href=#format>format</a>, <a href=#fstr2f>fstr2f</a>, <a href=#fzero>fzero</a>, <a href=#gcd>gcd</a>, <a href=#hasindex>hasindex</a>, <a href=#input>input</a>,
+<a href=#integral>integral</a>, <a href=#integral2>integral2</a>, <a href=#integral3>integral3</a>,
 <a href=#inv>inv</a>, <a href=#isinteger>isinteger</a>, <a href=#iseven>iseven</a>, <a href=#isodd>isodd</a>, <a href=#ismatrix>ismatrix</a>,
 <a href=#ismember>ismember</a>, <a href=#isvector>isvector</a>, <a href=#lagrangepoly>lagrangepoly</a>, <a href=#length>length</a>, <a href=#linsolve>linsolve</a>, <a href=#linspace>linspace</a>,
 <a href=#lu>lu</a>, <a href=#map>map</a>, <a href=#match>match</a>, <a href=#mathly>mathly</a>, <a href=#max>max</a>, <a href=#mean>mean</a>,
@@ -295,6 +296,9 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#histfreqpolygon><code>histfreqpolygon(x, nbins, style, xrange, style1)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a histogram plus a frequency polygon, where <code>x</code> is a table of numbers.</td></tr>
 <tr><td> </td><td><a href=#horzcat><code>horzcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
 <tr><td> </td><td><a href=#input><code>input(prompt, s)</code></a></td><td> </td><td>Input from keyboard, return a string (if <code>s = 's'</code>); otherwise, evaluate the input expression, and return the result.</td></tr>
+<tr><td> </td><td><a href=#integral><code>integral(f, a, b)</code></a></td><td> </td><td>Evaluate numerically the definite integral of <code>f(x)</code> on <code>[a, b]</code>.</td></tr>
+<tr><td> </td><td><a href=#integral2><code>integral2(f, g1, g2, a, b)</code></a></td><td> </td><td>Evaluate numerically the double integral of <code>f(x, y)</code> over a region <code>{(x, y) | x&in;[a, b], y&in;[g1(x), g2(x)]}</code>.</td></tr>
+<tr><td> </td><td><a href=#integral3><code>integral3(f, g1, g2, h1, h2, a, b)</code></a></td><td> </td><td>Evaluate numerically the triple integral of <code>f(x, y, z)</code> over a region <code>{(x, y, z) | x&in;[a, b], y&in;[h1(x), h2(x)], z&in;[g1(x, y), g2(x, y)]}</code>.</td></tr>
 <tr><td> </td><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of square Mathly matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a name=isdir><code>isdir(filename)</code></a></td><td> </td><td>Check if <code>filename</code> is a directory/folder.</td></tr>
 <tr><td> </td><td><a href=#isfile><code>isfile(filename)</code></a></td><td> </td><td>Check if <code>filename</code> is a file.</td></tr>
@@ -1602,6 +1606,77 @@ end
 
 x = input('Expression to evaluate: ') -- you may enter sin(pi/2), {1, {2, {3}}}, 1 + 2 * 3, etc.
 print(x)
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=integral href=#m><code>integral(f(x), a, b)</code></a></h4>
+<p>Apply Gauss quadrature of 12 nodes to numerically evaluate the definite integral of <code>f(x)</code> on <code>[a, b]</code>. A large interval <code>[a, b]</code> is
+automatically divided into multiple subintervals, and Gauss quadrature method is applied to each one.</p>
+<pre><code>mathly = require('mathly')
+
+disp(integral(10, 1, 20))
+-- 190 (exact)
+disp(integral('@(x) exp(-x^2)', -10, 10))
+-- 1.7725140943124 (exact: about sqrt(pi) = 1.7724538509055)
+
+disp(integral('@(theta) 0.5 * cos(2*theta)^2', -pi/4, pi/4))
+-- 0.39269908169872 (exact: pi/8 = 0.39269908169872)
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=integral2 href=#m><code>integral2(f, g1, g2, a, b)</code></a></h4>
+<p>Apply Gauss quadrature of 12 nodes to numerically evaluate the double integral, <code>∫∫f(x,y)dydx</code>
+over a region <code>{(x,y) | x&in;[a,b], y&in;[g1(x),g2(x)]}</code>.</p>
+<p>For better accuracy, a large interval in both the <code>x</code> and <code>y</code> directions is
+automatically divided into multiple subintervals, and Gauss quadrature method is applied to each one.</p>
+
+<p>&#x2713; &nbsp;The order of the arguments of the integrand, <code>f(x,y)</code>, <em>from right to left</em>,
+defines the order of integration. By rearranging the order of these arguments, we can handle double integrals
+over either x or y-simple regions.
+<p>&#x2713; &nbsp;Especially, with polar coordinates, the integrand will be like <code>f(θ,r)</code> due to
+<code>∫∫f(θ,r)drdθ</code>.</p>
+<pre><code>mathly = require('mathly')
+
+-- ∫∫f(x,y)dydx:
+disp(integral2('@(x, y) x + y', 0, 1, 0, 1))
+-- 1.0 (exact: 1)
+disp(integral2('@(x, y) x * y', '@(x) x', '@(x) 2*x', 0, 1))
+-- 0.375 (exact: 3/8 = 0.375)
+disp(integral2('@(x, y) x + 2*y', '@(x) 2 * x^2', '@(x) 1 + x^2', -1, 1))
+-- 2.1333333333333 (exact: 32/15 = 2.1333333333333)
+
+-- ∫∫f(y,x)dxdy: here, z = 2x + 3y should be '@(y, x) 2*x + y' instead of '@(x, y) 2*x + y'
+disp(integral2('@(y, x) x^2 + y^2', '@(y) 0.5 * y', '@(y) sqrt(y)', 0, 4))
+-- 6.1714261003907 (exact: 216/35 = 6.1714285714286)
+
+-- with polar coordinates: ∫∫f(θ,r)drdθ
+disp(integral2('@(theta, r) r^3', 0, '@(theta) 2*cos(theta)', -pi/2, pi/2))
+-- 4.7123889803824 (exact: 3*pi/2 = 4.7123889803847)
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=integral3 href=#m><code>integral3(f, g1, g2, h1, h2, a, b)</code></a></h4>
+<p>Apply Gauss quadrature of 12 nodes to numerically evaluate the triple integral, <code>∫∫∫f(x,y,z)dzdydx</code>
+over a region <code>{(x,y,z) | x&in;[a,b], y&in;[h1(x),h2(x)], z&in;[g1(x,y), g2(x,y)]}</code>.</p>
+<p>For better accuracy, a large interval in all <code>x, y</code>, and <code>z</code> directions is automatically
+divided into multiple subintervals, and Gauss quadrature method is applied to each one.</p>
+<p>&#x2713; &nbsp;The order of the arguments of the integrand, <code>f(x,y,z)</code>, <em>from right to left</em>,
+defines the order of integration. By rearranging the order of these arguments, we can handle triple integrals over
+all x, y, or z-simple solids.</p>
+<p>&#x2713; &nbsp;Especially, with spherical coordinates, the integrand will be like <code>f(θ,φ,ρ)</code> due to
+<code>∫∫f(θ,φ,ρ)dρdφdθ</code>.</p>
+<pre><code>mathly = require('mathly')
+
+--- ∫∫∫f(x,y,z)dzdydx
+disp(integral3('@(x, y, z) 2*(x + y + z)', '@(x, y) x - y', '@(x, y) x + y', '@(x) x', '@(x) 2 * x', 0, 1))
+-- 5.3333333333333 (exact value 16/3 = 5.3333333333333)
+disp(integral3('@(x, y, z) y*sin(x) + z*cos(x)', -1, 1, 0, 1, 0, pi))
+-- 2.0 (exact value 2)
+
+-- ∫∫∫f(z,y,x)dxdydz: f(z,y,x) rather than f(x,y,z), i.e., f(x,y,z) = 2x - y + z should be written as f(z,y,x) = 2x - y + z.
+disp(integral3('@(z, y, x) 2*x - y', 0, '@(z, y) y - z', 0, '@(z) z^2', 0, 2))
+-- 1.0666666666667 (exact: 16/15 = 1.0666666666667)
+
+-- with spherical coordinates: f(θ,φ,ρ): ∫∫∫ f(θ,φ,ρ) dρdφdθ
+disp(integral3('@(theta, phi, rho) rho^2 * sin(phi)', 0, '@(theta, phi) cos(phi)', 0, pi/4, 0, 2*pi))
+-- 0.39269908169872 (exact: pi/8 = 0.39269908169872)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=inv href=#m><code>inv(A)</code></a></h4>
