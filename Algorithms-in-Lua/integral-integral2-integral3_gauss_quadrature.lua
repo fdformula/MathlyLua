@@ -59,22 +59,27 @@ end
 -- double integral ∫∫ f(x, y) dydx over a region:
 --   y in [g1(x), g2(x)]
 --   x in [a, b]
--- x and y do not matter LITERALY. instead, the ORDER of integration matters
---
--- in polar coordinates: f(θ, r): ∫∫ f(θ, r) drdθ
+-- the order of the arguments of the integrand, from right to left, is the order of integration
+-- so,
+-- with polar coordinates: ∫∫f(θ,r)drdθ
 function integral2(f, g1, g2, a, b)
+  if abs(b - a) < eps then return 0 end
   f, g1, g2 = table.unpack(map(_make_function, {f, g1, g2}))
-  local function F(x) -- F(xi) = integral[f(xi, y), {y, g1(xi), g2(xi)}]
-    local y1, y2, sign = g1(x), g2(x), 1
-    if y1 > y2 then y1, y2 = y2, y1; sign = -1 end
-    if y2 - y1 < eps then return 0 end -- f(x, y1) * (y2 - y1) end
-    local n, A, B, s, siz = 1, y1, y2, 0, y2 - y1
-    if y2 - y1 > MaxIntervalSize then
-      n = ceil((y2 - y1) / MaxIntervalSize)
-      siz = (y2 - y1) / n
+  local function prep(a, b)
+    local sign = 1
+    if a > b then a, b = b, a; sign = -1 end
+    local n, A, B, s, siz = 1, a, b, 0, b - a
+    if b - a > MaxIntervalSize then
+      n = ceil((b - a) / MaxIntervalSize)
+      siz = (b - a) / n
       B = A + siz
     end
-    local m = sign * (B - A)/2
+    return A, B, sign * (B - A)/2, siz, b
+  end
+  local function F(x) -- F(xi) = integral[f(xi, y), {y, g1(xi), g2(xi)}]
+    local y1, y2, s, A, B, m, siz = g1(x), g2(x), 0
+    if abs(y2 - y1) < eps then return 0 end
+    A, B, m, siz, y2 = prep(y1, y2)
     while B <= y2 do
       local k, h = (B - A)/2, (B + A)/2
       for i = 1, #_Gw do s = s + _Gw[i] * f(x, k * _Gx[i] + h) end
@@ -82,16 +87,8 @@ function integral2(f, g1, g2, a, b)
     end
     return m * s
   end
-  local sign = 1
-  if a > b then a, b = b, a; sign = -1 end
-  if b - a < eps then return 0 end
-  local n, A, B, s, siz = 1, a, b, 0, b - a
-  if b - a > MaxIntervalSize then
-    n = ceil((b - a) / MaxIntervalSize)
-    siz = (b - a) / n
-    B = A + siz
-  end
-  local m = sign * (B - A)/2
+  local A, B, m, siz, s
+  A, B, m, siz, b = prep(a, b); s = 0
   while B <= b do
     local k, h = (B - A)/2, (B + A)/2
     for i = 1, #_Gw do s = s + _Gw[i] * F(k * _Gx[i] + h) end
@@ -104,24 +101,29 @@ end
 --   z in [g1(x, y), g2(x, y)]
 --   y in [h1[x], h2[y]]
 --   x in [a, b]
--- x, y, and z do not matter LITERALY. instead, the ORDER of integration matters
---
--- in spherical coordinates: f(θ, φ, ρ): ∫∫∫ f(θ, φ, ρ) dρdφdθ
--- in cylindrical coordinates: f(θ, r, z): ∫∫∫ f(θ, r, z) dzdrdθ
+-- the order of the arguments of the integrand, from right to left, is the order of integration
+-- so,
+-- with spherical coordinates:   ∫∫∫f(θ,φ,ρ)dρdφdθ
+-- with cylindrical coordinates: ∫∫∫f(θ,r,z)dzdrdθ
 function integral3(f, g1, g2, h1, h2, a, b)
+  if abs(b - a) < eps then return 0 end
   f, g1, g2, h1, h2 = table.unpack(map(_make_function, {f, g1, g2, h1, h2}))
+  local function prep(a, b)
+    local sign = 1
+    if a > b then a, b = b, a; sign = -1 end
+    local n, A, B, siz = 1, a, b, b - a
+    if b - a > MaxIntervalSize then
+      n = ceil((b - a) / MaxIntervalSize)
+      siz = (b - a) / n
+      B = A + siz
+    end
+    return A, B, sign * (B - A)/2, siz, b
+  end
   local function F(x) -- F(xi) = integral[f(xi, y, z), {z, g1(xi, y), g2(xi, y)}]
     local function G(y)
-      local z1, z2, sign = g1(x, y), g2(x, y), 1
-      if z1 > z2 then z1, z2 = z2, z1; sign = -1 end
-      if z2 - z1 < eps then return 0 end
-      local n, A, B, s, siz = 1, z1, z2, 0, z2 - z1
-      if z2 - z1 > MaxIntervalSize then
-        n = ceil((z2 - z1) / MaxIntervalSize)
-        siz = (z2 - z1) / n
-        B = A + siz
-      end
-      local m = sign * (B - A)/2
+      local z1, z2, s, A, B, m, siz = g1(x, y), g2(x, y), 0
+      if abs(z2 - z1) < eps then return 0 end
+      A, B, m, siz, z2 = prep(z1, z2)
       while B <= z2 do
         local k, h = (B - A)/2, (B + A)/2
         for i = 1, #_Gw do s = s + _Gw[i] * f(x, y, k * _Gx[i] + h) end
@@ -129,16 +131,9 @@ function integral3(f, g1, g2, h1, h2, a, b)
       end
       return m * s
     end
-    local y1, y2, sign = h1(x), h2(x), 1
-    if y1 > y2 then y1, y2 = y2, y1; sign = -1 end
-    if y2 - y1 < eps then return 0 end
-    local n, A, B, s, siz = 1, y1, y2, 0, y2 - y1
-    if y2 - y1 > MaxIntervalSize then
-      n = ceil((y2 - y1) / MaxIntervalSize)
-      siz = (y2 - y1) / n
-      B = A + siz
-    end
-    local m = sign * (B - A)/2
+    local y1, y2, s, A, B, m = h1(x), h2(x), 0
+    if abs(y2 - y1) < eps then return 0 end
+    A, B, m, siz, y2 = prep(y1, y2)
     while B <= y2 do
       local k, h = (B - A)/2, (B + A)/2
       for i = 1, #_Gw do s = s + _Gw[i] * G(k * _Gx[i] + h) end
@@ -146,17 +141,8 @@ function integral3(f, g1, g2, h1, h2, a, b)
     end
     return m * s
   end
-
-  local sign = 1
-  if a > b then a, b = b, a; sign = -1 end
-  if b - a < eps then return 0 end
-  local n, A, B, s, siz = 1, a, b, 0, b - a
-  if b - a > MaxIntervalSize then
-    n = ceil((b - a) / MaxIntervalSize)
-    siz = (b - a) / n
-    B = A + siz
-  end
-  local m = sign * (B - A)/2
+  local A, B, m, siz, s;
+  A, B, m, siz, b = prep(a, b); s = 0
   while B <= b do
     local k, h = (B - A)/2, (B + A)/2
     for i = 1, #_Gw do s = s + _Gw[i] * F(k * _Gx[i] + h) end
@@ -181,7 +167,7 @@ disp(integral2('@(x, y) x * y', '@(x) x', '@(x) 2*x', 0, 1))
 disp(integral2('@(x, y) x + 2*y', '@(x) 2 * x^2', '@(x) 1 + x^2', -1, 1))
 -- 2.1333333333333 (exact: 32/15 = 2.1333333333333)
 
--- in polar coordinates: f(θ, r): ∫∫ f(θ, r) drdθ
+-- with polar coordinates: ∫∫f(θ,r)drdθ
 disp(integral2('@(theta, r) r^3', 0, '@(theta) 2*cos(theta)', -pi/2, pi/2))
 -- 4.7123889803824 (exact: 3*pi/2 = 4.7123889803847)
 
@@ -196,6 +182,6 @@ disp(integral3('@(x, y, z) 2*(x + y + z)', '@(x, y) x - y', '@(x, y) x + y', '@(
 disp(integral3('@(x, y, z) y*sin(x) + z*cos(x)', -1, 1, 0, 1, 0, pi))
 -- 2.0 (exact value 2)
 
--- in spherical coordinates: f(θ, φ, ρ): ∫∫∫ f(θ, φ, ρ) dρdφdθ
+-- with spherical coordinates: ∫∫∫f(θ,φ,ρ)dρdφdθ
 disp(integral3('@(theta, phi, rho) rho^2 * sin(phi)', 0, '@(theta, phi) cos(phi)', 0, pi/4, 0, 2*pi))
 -- 0.39269908169872 (exact: pi/8 = 0.39269908169872)

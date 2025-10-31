@@ -39,10 +39,9 @@ end
 -- double integral ∫∫ f(x, y) dydx over a region:
 --   y in [g1(x), g2(x)]
 --   x in [a, b]
---
--- x and y do not matter LITERALY. instead, the ORDER of integration matters
---
--- in polar coordinates: f(θ, r): ∫∫ f(θ, r) drdθ
+-- the order of the arguments of the integrand, from right to left, is the order of integration
+-- so,
+-- with polar coordinates: ∫∫f(θ,r)drdθ
 function integral2(f, g1, g2, a, b)
   f, g1, g2 = table.unpack(map(_make_function, {f, g1, g2}))
   local function F(x) -- F(xi) = integral[f(xi, y), {y, g1(xi), g2(xi)}]
@@ -72,10 +71,10 @@ end
 --   z in [g1(x, y), g2(x, y)]
 --   y in [h1[x], h2[y]]
 --   x in [a, b]
--- x, y, and z do not matter LITERALY. instead, the ORDER of integration matters
---
--- in spherical coordinates: f(θ, φ, ρ): ∫∫∫ f(θ, φ, ρ) dρdφdθ
--- in cylindrical coordinates: f(θ, r, z): ∫∫∫ f(θ, r, z) dzdrdθ
+-- the order of the arguments of the integrand, from right to left, is the order of integration
+-- so,
+-- with spherical coordinates:   ∫∫∫f(θ,φ,ρ)dρdφdθ
+-- with cylindrical coordinates: ∫∫∫f(θ,r,z)dzdrdθ
 function integral3(f, g1, g2, h1, h2, a, b)
   f, g1, g2, h1, h2 = table.unpack(map(_make_function, {f, g1, g2, h1, h2}))
   local function F(x) -- F(xi) = integral[f(xi, y, z), {z, g1(xi, y), g2(xi, y)}]
