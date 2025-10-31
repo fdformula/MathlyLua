@@ -10,7 +10,11 @@
 DefaultH = 0.05
 
 function integral(f, a, b) -- integral[f(x), {x, a, b}]
-  if type(f) == 'string' then f = fstr2f(f) end
+  if type(f) == 'string' then
+    f = fstr2f(f)
+  elseif type(f) == 'number' then
+    return (b - a) * f
+  end
   local sign = 1
   if a > b then a, b = b, a; sign = -1 end
   if b - a < eps then return 0 end
@@ -110,8 +114,12 @@ end
 
 ----------------- test -----------------
 
-disp(integral('@(x) x^2', 0, 1))
--- 0.33333333333333 (exact value 1/3)
+disp(integral('@(x) x^2', 1, 20))
+-- 2666.3333333334 (exact: 7999/3 = 2666.3333333333)
+disp(integral(10, 1, 20))
+-- 190 (exact)
+disp(integral('@(x) exp(-x^2)', -10, 10))
+-- 1.7724538509055 (exact: about sqrt(pi) = 1.7724538509055)
 
 disp(integral2('@(x, y) x + y', 0, 1, 0, 1))
 -- 1.0 (exact: 1)
@@ -123,6 +131,12 @@ disp(integral2('@(x, y) x + 2*y', '@(x) 2 * x^2', '@(x) 1 + x^2', -1, 1))
 -- in polar coordinates: f(θ, r): ∫∫ f(θ, r) drdθ
 disp(integral2('@(theta, r) r^3', 0, '@(theta) 2*cos(theta)', -pi/2, pi/2))
 -- 4.7123889803847 (exact: 3*pi/2 = 4.7123889803847)
+
+disp(integral2('@(x, y) sqrt(x^2 + y^2)', '@(x) -sqrt(4 - x^2)', '@(x) sqrt(4 - x^2)', -2, 2))
+-- 16.740594748532 (exact: 16*pi/3 = 16.755160819146)
+disp(integral2('@(theta, r) r^2', 0, 2, 0, 2*pi))
+-- 16.755160819146 (exact: 16*pi/3 = 16.755160819146)
+
 
 disp(integral3('@(x, y, z) 2*(x + y + z)', '@(x, y) x - y', '@(x, y) x + y', '@(x) x', '@(x) 2 * x', 0, 1))
 -- 5.3333333333333 (exact value 16/3 = 5.3333333333333)
