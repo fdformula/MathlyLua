@@ -1919,7 +1919,6 @@ end
 --   y in [g1(x), g2(x)]
 --   x in [a, b]
 function integral2(f, g1, g2, a, b)
-  if abs(b - a) < eps then return 0 end
   f, g1, g2 = table.unpack(map(_integral_func, {f, g1, g2}))
   local function prep(a, b)
     local sign = 1
@@ -1958,7 +1957,6 @@ end
 --   y in [h1[x], h2[y]]
 --   x in [a, b]
 function integral3(f, g1, g2, h1, h2, a, b)
-  if abs(b - a) < eps then return 0 end
   f, g1, g2, h1, h2 = table.unpack(map(_integral_func, {f, g1, g2, h1, h2}))
   local function prep(a, b)
     local sign = 1

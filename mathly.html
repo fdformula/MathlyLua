@@ -1661,7 +1661,7 @@ divided into multiple subintervals, and Gauss quadrature method is applied to ea
 defines the order of integration. By rearranging the order of these arguments, we can handle triple integrals over
 all x, y, or z-simple solids.</p>
 <p>&#x2713; &nbsp;Especially, with spherical coordinates, the integrand will be like <code>f(θ,φ,ρ)</code> due to
-<code>∫∫f(θ,φ,ρ)dρdφdθ</code>.</p>
+<code>∫∫∫f(θ,φ,ρ)dρdφdθ</code>.</p>
 <pre><code>mathly = require('mathly')
 
 --- ∫∫∫f(x,y,z)dzdydx
@@ -1674,7 +1674,7 @@ disp(integral3('@(x, y, z) y*sin(x) + z*cos(x)', -1, 1, 0, 1, 0, pi))
 disp(integral3('@(z, y, x) 2*x - y', 0, '@(z, y) y - z', 0, '@(z) z^2', 0, 2))
 -- 1.0666666666667 (exact: 16/15 = 1.0666666666667)
 
--- with spherical coordinates: f(θ,φ,ρ): ∫∫∫ f(θ,φ,ρ) dρdφdθ
+-- with spherical coordinates: f(θ,φ,ρ): ∫∫∫f(θ,φ,ρ)dρdφdθ
 disp(integral3('@(theta, phi, rho) rho^2 * sin(phi)', 0, '@(theta, phi) cos(phi)', 0, pi/4, 0, 2*pi))
 -- 0.39269908169872 (exact: pi/8 = 0.39269908169872)
 </code></pre>
