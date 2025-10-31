@@ -3,7 +3,7 @@
 -- 2. doubel integral:   integral2(f, g1, g2, a, b)
 -- 3. triple integral:   integral3(f, g1, g2, h1, h2, a, b)
 --
--- Gauss quadrature is the only method applied
+-- Gauss quadrature is the only method implemented here
 --
 -- by David Wang, dwang at liberty dot edu, on 10/30/2025 Thursday
 --
@@ -37,13 +37,13 @@ function integral(f, a, b)
     siz = (b - a) / n
     B = A + siz
   end
-  local k = sign * (B - A)/2
+  local m = sign * (B - A)/2
   while B <= b do
     local k, h = (B - A)/2, (B + A)/2
     for i = 1, #_Gw do s = s + _Gw[i] * f(k * _Gx[i] + h) end
     A, B = B, B + siz
   end
-  return k * s
+  return m * s
 end
 
 function _make_function(f)

@@ -3,7 +3,7 @@
 -- 2. doubel integral:   integral2(f, g1, g2, a, b)
 -- 3. triple integral:   integral3(f, g1, g2, h1, h2, a, b)
 --
--- Simpson 1/3 method is the only method applied
+-- Simpson 1/3 method is the only method implemented here
 --
 -- by David Wang, dwang at liberty dot edu, on 10/29/2025 Wednesday
 --
