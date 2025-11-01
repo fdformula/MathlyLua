@@ -17,31 +17,31 @@ DESCRIPTION
 
 FUNCTIONS PROVIDED IN THIS MODULE
 
-    all, any, apply, cc, clc, clear, copy, cross, det, diag, diff (or diff1), diff2,
-    disp, display, dot, expand, eye, findroot, flatten, fliplr, flipud, format, fstr2f,
-    fzero, hasindex, horzcat, integral, integral2, integral3, inv, iseven, isinteger,
-    ismatrix, ismember, isodd, isvector, lagrangepoly, length, linsolve, linspace, lu,
-    map, match, max, mean, merge, min, tables, namedargs, newtonpoly, norm, ones,
-    polynomial, polyval, printf, prod, qq, qr, rand, randi, range, remake, repmat,
-    reshape, round, rr, rref, save, seq, size, sort, sprintf, std, strcat, submatrix,
-    subtable, sum, tables, tblcat, text, tic, toc, transpose, tt, unique, var,
-    vectorangle, vertcat, who, zeros
+  all, any, apply, cc, clc, clear, copy, cross, det, diag, diff (or diff1), diff2,
+  disp, display, dot, expand, eye, findroot, flatten, fliplr, flipud, format, fstr2f,
+  fzero, hasindex, horzcat, integral, integral2, integral3, inv, iseven, isinteger,
+  ismatrix, ismember, isodd, isvector, lagrangepoly, length, linsolve, linspace, lu,
+  map, match, max, mean, merge, min, tables, namedargs, newtonpoly, norm, ones,
+  polynomial, polyval, printf, prod, qq, qr, rand, randi, range, remake, repmat,
+  reshape, round, rr, rref, save, seq, size, sort, sprintf, std, strcat, submatrix,
+  subtable, sum, tables, tblcat, text, tic, toc, transpose, tt, unique, var,
+  vectorangle, vertcat, who, zeros
 
-    dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
-    oct2hex, hex2bin, hex2dec, hex2oct
+  dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
+  oct2hex, hex2bin, hex2dec, hex2oct
 
-    cat, cd, dir, isdir, isfile, iswindows, ls, mv, pwd, rm
+  cat, cd, dir, isdir, isfile, iswindows, ls, mv, pwd, rm
 
-    arc, circle, contourplot, directionfield, dotplot, line, parametriccurve2d, point,
-    polarcurve2d, polygon, scatter, text, wedge; boxplot, freqpolygon, hist, hist1,
-    histfreqpolygon, pareto, pie, slopefield, vectorfield2d ← Graphics objects passed to 'plot'.
+  arc, circle, contourplot, directionfield, dotplot, line, parametriccurve2d, point,
+  polarcurve2d, polygon, scatter, text, wedge; boxplot, freqpolygon, hist, hist1,
+  histfreqpolygon, pareto, pie, slopefield, vectorfield2d ← Graphics objects passed to 'plot'.
 
-    animate, manipulate, plot; plot3d, plotparametriccurve3d, plotparametricsurface3d,
-    plotsphericalsurface3d
+  animate, manipulate, plot; plot3d, plotparametriccurve3d, plotparametricsurface3d,
+  plotsphericalsurface3d
 
-    axissquare, axisnotsquare; showaxes, shownotaxes; showxaxis, shownotxaxis;
-    showyaxis, shownotyaxis; showgridlines, shownotgridlines;
-    showlegend, shownotlegend
+  axissquare, axisnotsquare; showaxes, shownotaxes; showxaxis, shownotxaxis;
+  showyaxis, shownotyaxis; showgridlines, shownotgridlines;
+  showlegend, shownotlegend
 
   See code and mathly.html.
 
@@ -1389,8 +1389,7 @@ function range(start, stop, step) -- Python, but inclusive
   end
   return setmetatable(v, mathly_meta)
 end -- range
-
-function seq(from, to, by) return range(from, to, by) end -- ~R
+seq = range -- ~R
 
 --// find and return the zero/root of function f on specified interval
 function fzero(f, intv, tol) -- matlab
@@ -1872,10 +1871,11 @@ function diff(f, x0)
   if type(f) == 'string' then f = fstr2f(f) end
   local h = 0.01
   local x = linspace(x0 - 6*h, x0 + 6*h, 13)
-  return (0.0001803751803752*f(x[1])  - 0.0025974025974026*f(x[2])  + 0.0178571428571429*f(x[3])  -
-          0.0793650793650794*f(x[4])  + 0.2678571428571428*f(x[5])  - 0.8571428571428571*f(x[6])  +
-          0.8571428571428571*f(x[8])  - 0.2678571428571428*f(x[9])  + 0.0793650793650794*f(x[10]) -
-          0.0178571428571429*f(x[11]) + 0.0025974025974026*f(x[12]) - 0.0001803751803752*f(x[13])) / h
+  return (
+   0.0001803751803752*f(x[1])  - 0.0025974025974026*f(x[2])  + 0.0178571428571429*f(x[3])  -
+   0.0793650793650794*f(x[4])  + 0.2678571428571428*f(x[5])  - 0.8571428571428571*f(x[6])  +
+   0.8571428571428571*f(x[8])  - 0.2678571428571428*f(x[9])  + 0.0793650793650794*f(x[10]) -
+   0.0178571428571429*f(x[11]) + 0.0025974025974026*f(x[12]) - 0.0001803751803752*f(x[13])) / h
 end
 diff1 = diff
 
@@ -1883,11 +1883,12 @@ function diff2(f, x0)
   if type(f) == 'string' then f = fstr2f(f) end
   local h = 0.01
   local x = linspace(x0 - 6*h, x0 + 6*h, 13)
-  return (-0.0000601250601251*f(x[1])  + 0.0010389610389610*f(x[2])  - 0.0089285714285714*f(x[3])  +
-           0.0529100529100529*f(x[4])  - 0.2678571428571428*f(x[5])  + 1.7142857142857142*f(x[6])  -
-           2.9827777777777778*f(x0) +
-           1.7142857142857142*f(x[8])  - 0.2678571428571428*f(x[9])  + 0.0529100529100529*f(x[10]) -
-           0.0089285714285714*f(x[11]) + 0.0010389610389610*f(x[12]) - 0.0000601250601251*f(x[13])) / h^2
+  return (
+   -0.0000601250601251*f(x[1])  + 0.0010389610389610*f(x[2])  - 0.0089285714285714*f(x[3])  +
+    0.0529100529100529*f(x[4])  - 0.2678571428571428*f(x[5])  + 1.7142857142857142*f(x[6])  -
+    2.9827777777777778*f(x0) +
+    1.7142857142857142*f(x[8])  - 0.2678571428571428*f(x[9])  + 0.0529100529100529*f(x[10]) -
+    0.0089285714285714*f(x[11]) + 0.0010389610389610*f(x[12]) - 0.0000601250601251*f(x[13])) / h^2
 end
 
 -- Gauss quadrature of 12 nodes: https://pomax.github.io/bezierinfo/legendre-gauss.html
@@ -1927,11 +1928,11 @@ function integral(f, a, b)
     A, B = B, B + siz
   end
   return m * s
-end
+end -- integral
 
-local function _integral_func(f)
+local function _integralF(f)
   if type(f) == 'number' then
-    local v = f; return function(x, y, z) return v end -- extra arguments do not matter
+    local v = f; return function(x, y, z) return v end -- extra args don't matter
   elseif type(f) == 'string' then
     return fstr2f(f)
   else
@@ -1939,11 +1940,11 @@ local function _integral_func(f)
   end
 end
 
--- double integral ∫∫f(x,y)dydx over a region:
---   y in [g1(x), g2(x)]
---   x in [a, b]
+-- ∫∫f(x,y)dydx over D:
+--  y in [g1(x), g2(x)]
+--  x in [a, b]
 function integral2(f, g1, g2, a, b)
-  f, g1, g2 = table.unpack(map(_integral_func, {f, g1, g2}))
+  f, g1, g2 = table.unpack(map(_integralF, {f, g1, g2}))
   local function prep(a, b)
     local sign = 1
     if a > b then a, b = b, a; sign = -1 end
@@ -1974,14 +1975,14 @@ function integral2(f, g1, g2, a, b)
     A, B = B, B + siz
   end
   return m * s
-end
+end -- integral2
 
--- triple integral ∫∫∫f(x,y,z)dzdydx over a solid:
---   z in [g1(x, y), g2(x, y)]
---   y in [h1[x], h2[y]]
---   x in [a, b]
+-- ∫∫∫f(x,y,z)dzdydx over E:
+--  z in [g1(x, y), g2(x, y)]
+--  y in [h1[x], h2[y]]
+--  x in [a, b]
 function integral3(f, g1, g2, h1, h2, a, b)
-  f, g1, g2, h1, h2 = table.unpack(map(_integral_func, {f, g1, g2, h1, h2}))
+  f, g1, g2, h1, h2 = table.unpack(map(_integralF, {f, g1, g2, h1, h2}))
   local function prep(a, b)
     local sign = 1
     if a > b then a, b = b, a; sign = -1 end
@@ -2023,7 +2024,7 @@ function integral3(f, g1, g2, h1, h2, a, b)
     A, B = B, B + siz
   end
   return m * s
-end
+end -- integral3
 
 -- plot the graphs of functions in a way like in MATLAB with more features
 local plotly = {}
