@@ -1630,7 +1630,7 @@ print(x)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=integral href=#m><code>integral(f(x), a, b)</code></a></h4>
-<p>Apply Gauss quadrature of 12 nodes to numerically evaluate the definite integral of <code>f(x)</code> on <code>[a, b]</code>. A large interval <code>[a, b]</code> is
+<p>Apply Gauss quadrature of 12 nodes to numerically evaluate the definite integral of <code>f(x)</code> on <code>[a,b]</code>. A large interval <code>[a,b]</code> is
 automatically divided into multiple subintervals, and Gauss quadrature method is applied to each one.</p>
 <pre><code>mathly = require('mathly')
 
@@ -1643,9 +1643,9 @@ disp(integral('@(theta) 0.5 * cos(2*theta)^2', -pi/4, pi/4))
 -- 0.39269908169872 (exact: pi/8 = 0.39269908169872)
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=integral2 href=#m><code>integral2(f, g1, g2, a, b)</code></a></h4>
+<h4>&bull; &nbsp; <a name=integral2 href=#m><code>integral2(f, g<sub>1</sub>, g<sub>2</sub>, a, b)</code></a></h4>
 <p>Apply Gauss quadrature of 12 nodes to numerically evaluate the double integral, <code>∫∫f(x,y)dydx</code>
-over a region <code>{(x,y) | x&in;[a,b], y&in;[g1(x),g2(x)]}</code>.</p>
+over a region <code>{(x,y) | y&in;[g<sub>1</sub>(x),g<sub>2</sub>(x)], x&in;[a,b]}</code>.</p>
 <p>For better accuracy, a large interval in both the <code>x</code> and <code>y</code> directions is
 automatically divided into multiple subintervals, and Gauss quadrature method is applied to each one.</p>
 
@@ -1675,7 +1675,7 @@ disp(integral2('@(theta, r) r^3', 0, '@(theta) 2*cos(theta)', -pi/2, pi/2))
 
 <h4>&bull; &nbsp; <a name=integral3 href=#m><code>integral3(f, g1, g2, h1, h2, a, b)</code></a></h4>
 <p>Apply Gauss quadrature of 12 nodes to numerically evaluate the triple integral, <code>∫∫∫f(x,y,z)dzdydx</code>
-over a region <code>{(x,y,z) | x&in;[a,b], y&in;[h1(x),h2(x)], z&in;[g1(x,y), g2(x,y)]}</code>.</p>
+over a region <code>{(x,y,z) | z&in;[g<sub>1</sub>(x,y), g<sub>2</sub>(x,y)], y&in;[h<sub>1</sub>(x),h<sub>2</sub>(x)], x&in;[a,b]}</code>.</p>
 <p>For better accuracy, a large interval in all <code>x, y</code>, and <code>z</code> directions is automatically
 divided into multiple subintervals, and Gauss quadrature method is applied to each one.</p>
 <p>&#x2713; &nbsp;The order of the arguments of the integrand, <code>f(x,y,z)</code>, <em>from right to left</em>,
