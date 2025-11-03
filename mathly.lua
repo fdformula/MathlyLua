@@ -2950,8 +2950,8 @@ var x = [], t = [], X, Y, T, p;
 ]], title or ''))
   for i = qq(_anmt_animateq, 2, 1), #cs do
     file:write(fmt([[
-function mthly%sNext(d) {
-  let x = %s + d*mthly%sStep;
+function mthly%sNext(x) {
+  x = %s + x*mthly%sStep;
   if (x < mthly%sMin) {
     x = mthly%sMax;
   } else if (x > mthly%sMax) {
