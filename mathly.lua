@@ -93,24 +93,32 @@ function mod(a, d) return a % d  end
 function  printf(...) io.write(string.format(table.unpack{...})) end
 function sprintf(...) return string.format(table.unpack{...}) end
 
-function demathly(x) return setmetatable(x, nil) end -- force x not to be a mathly matrix
+function demathly(x) return setmetatable(x, nil) end -- x is no more a mathly matrix
 
-function eval(str)
-  local stats, val = pcall(load, 'return ' .. str)
-  if stats then stats, val = pcall(val) end
-  if stats then
-    return val
+function eval(str, msg)
+  local s, v = pcall(load, 'return ' .. str)
+  if s then s, v = pcall(v) end
+  if s then
+    return v
   else
-    error('[string "' .. string.sub(val, 17))
+    if msg ~= nil then
+      error(msg)
+    else
+      v = string.sub(v, 17)
+      if #v < 12 then
+        error('eval("' .. str .. '"): ' .. v)
+      else
+        error('["' .. v)
+      end
+    end
   end
 end
 
--- if s = 's', return input as a string; otherwise, evaluate the input expression and return the result
 function input(prompt, s)
   local ans
   io.write(prompt)
   ans = io.read()
-  if s == 's' then -- no evaluation
+  if s == 's' then
     return ans
   else
     return eval(ans)
@@ -308,13 +316,13 @@ function min(x) return _max_min_shared(math.min, x) end
 
 -- convert a MATLAB-style anonymous function in string to a function handle
 -- e.g., fstr2f('@(x) x^2 - 2*x + 1') returns an anonymous function, function(x) return x^2 -2*x + 1 end.
-function fstr2f(str)
-  str = string.gsub(str, '%s+', ' ')
-  local head, body = string.match(str, '^%s*@%s*(%(%s*[%w,%s]*%))%s*(.+)%s*$')
+function fstr2f(s)
+  s = string.gsub(s, '%s+', ' ')
+  local head, body = string.match(s, '^%s*@%s*(%(%s*[%w,%s]*%))%s*(.+)%s*$')
   if head ~= nil then
-    return eval('function' .. head .. ' return ' .. body .. ' end')
+    return eval('function' .. head .. ' return ' .. body .. ' end', '"' .. s .. '": ' .. body .. ', poor expression')
   else
-    error('Poor function: ' ..  str .. ". Example: '@(x) 3*x^2 - 5 * sin(x) + 1'")
+    error('Poor function: ' ..  s .. ". Example: '@(x) 3*x^2 - 5*x + 1'")
   end
 end
 
@@ -648,13 +656,13 @@ end
 --// calculate the (64-bit) binary expansion of signed decimal integer x
 function dec2bin(x)
   local function _dec2bin(x)
-    local str = ''
+    local s = ''
     while x ~= 0 do
-      str = (x & 1) .. str
+      s = (x & 1) .. s
       x = x >> 1
     end
-    if str == '' then str = '0' end
-    return str
+    if s == '' then s = '0' end
+    return s
   end
   return _dec2bho(x, 'dec2bin', _dec2bin)
 end
@@ -849,7 +857,7 @@ end
 
 -- list all user defined variables (some may be defined by some loaded modules)
 -- if a list of variables are needed by other code, pass false to it: who(false)
-function who(userq) -- ~R
+function who(userq) -- R
   if userq == nil then userq = true end
   local list = {}
   for k,v in pairs(_G) do
@@ -1389,7 +1397,7 @@ function range(start, stop, step) -- Python, but inclusive
   end
   return setmetatable(v, mathly_meta)
 end -- range
-seq = range -- ~R
+seq = range -- R
 
 --// find and return the zero/root of function f on specified interval
 function fzero(f, intv, tol) -- matlab
