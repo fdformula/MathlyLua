@@ -3337,7 +3337,6 @@ about the option and more control of your figure, you may refer to the official 
 at <a href=https://plotly.com/javascript/reference/layout/ target="_blank">https://plotly.com/javascript/reference/layout/</a>.</p>
 <p>For simplicity and the small size of Mathly, we just cover a very small subset of the features provided by Plotly JavaScript
 graphing library. However, it doesn't set limitations for you to experiment with various options/properties supported by Plotly.</p>
-<p>Given time, Plotly shall prevail and hopefully dominate in Python, Julia, and many other programming languages.</p>
 <p>A summary of the option seen in our examples is as follows.</p>
 <pre><code>{layout = {
   width = 600, height = 450, -- Mathly default setting, 4x3
@@ -3357,6 +3356,33 @@ graphing library. However, it doesn't set limitations for you to experiment with
 }})
 </code></pre>
 <p>&#x2713; &nbsp; In CudaText, press Ctrl-P P to insert such a <code>plot</code> template. See <a href=#cudatext>CudaText</a>.
+<p>If axis labels are needed for each of multiple graphs on a figure, <code>gridaxes</code> can be used as follows.</p>
+<pre><code>mathly = require('mathly')
+
+plot(
+  sin, cos, '@(x) x', '@(x) x^2',
+  {layout = {
+     width = 800, height = 500, title = "Example",
+     grid = {rows = 2, columns = 2},
+     gridaxes = {
+       xaxis  = {title = "x label 1"},
+       yaxis  = {title = "y label 1"},
+
+       xaxis2 = {title = "x label 2"},
+       yaxis2 = {title = "y label 2"},
+
+       xaxis3 = {title = "x label 3"},
+       yaxis3 = {title = "y label 3"},
+
+       xaxis4 = {title = "x label 4"},
+       yaxis4 = {title = "y label 4"}
+     },
+     margin = {l = 58, r = 50, t = 40, b = 45, pad = 10},
+     autosize = false
+    }
+  }
+)
+</code></pre>
 <p></p>
 <hr>
 <h2 style="margin-left: 20px;">Note</h2>
