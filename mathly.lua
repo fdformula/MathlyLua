@@ -2331,7 +2331,7 @@ function plot(...)
               if k_ == 'grid' then
                 plotly.layout[k_]['pattern'] = 'independent'
               end
-            elseif v.grid ~= nil and k_ == 'gridaxes' then -- x&y labels for each graph on a figure 11/3/25
+            elseif v.grid ~= nil and k_ == 'gridaxes' then
               if v_['xaxis'] ~= nil then plotly.layout['xaxis'] = v_['xaxis'] end
               if v_['yaxis'] ~= nil then plotly.layout['yaxis'] = v_['yaxis'] end
               local n = (v.grid.rows or 1) * (v.grid.columns or 1)
