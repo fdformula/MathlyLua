@@ -673,7 +673,7 @@ gobjs = {}
 for i = 1, 6 do
   gobjs[i] = polarcurve2d(function(t) return sin(1.6 * t^2) + cos(i * t)^5 end, {0, 8*pi}, '-sfn', 10000)
 end
-plot({layout={width=1900, height=1300, grid={rows=2, columns=3}, title='Example'},
+plot({layout={width=1300, height=1200, grid={rows=2, columns=3}, title='Example'},
       names={'i=1', 'i=2', 'i=3', 'i=4', 'i=5', 'i=6'}}, table.unpack(gobjs))
 
 axissquare()
@@ -2467,6 +2467,7 @@ axisnotsquare()
 plot(rand(125, 4), specs1, {names={'f1', 'f2', 'f3', 'g'}}) -- each column of a matrix defines a function with x changing from 0 to # of rows
 plot(rand(100,3), specs1, {layout={grid={rows=3, columns=2}}}, rand(100,2))
 </code></pre>
+<p>See: <a href=#layout>More complicated examples of grids and subplots</a>.</p>
 
 <p>&#x2713; &nbsp; <code>range = {start, stop, step}</code>: A smaller step can improve the smoothness/resolution of a curve.</p>
 <pre><code>mathly = require('mathly')
@@ -3356,7 +3357,7 @@ graphing library. However, it doesn't set limitations for you to experiment with
 }})
 </code></pre>
 <p>&#x2713; &nbsp; In CudaText, press Ctrl-P P to insert such a <code>plot</code> template. See <a href=#cudatext>CudaText</a>.
-<p>If axis labels are needed for each of multiple graphs on a figure, <code>gridaxes</code> can be used as follows.</p>
+<p>If axis labels are needed for multiple graphs on a figure, <code>gridaxes</code> and <code>gridaxisnames</code> can be used as follows.</p>
 <pre><code>mathly = require('mathly')
 
 plot(
@@ -3380,6 +3381,41 @@ plot(
      margin = {l = 58, r = 50, t = 40, b = 45, pad = 10},
      autosize = false
     }
+  }
+)
+
+-- https://plotly.com/javascript/axes/
+x1 = {0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3}; y1 = {0, 0, 1, 1, 3, 3, 2, 2, 3, 3, 1, 1, 0, 0}
+x2 = {0, 1, 2, 3}; y2 = {1, 2, 4, 8}
+x3 = {1, 10, 100, 10, 1}; y3 = {0, 1, 2, 3, 4}
+x4 = {1, 100, 30, 80, 1}; y4 = {1, 1.5, 2, 2.5, 3}
+
+plot(
+  x1, y1, x2, y2, x3, y3, x4, y4,
+  {layout = {
+     width = 800, height = 500,
+     title = "fixed-ratio axes",
+     grid = {rows = 2, columns = 2},
+     gridaxisnames = {
+       xaxis  = "x",
+       yaxis  = "y",
+       yaxis2 = "y2",
+       xaxis3 = "x2",
+       yaxis3 = "y3",
+       xaxis4 = "x2",
+       yaxis4 = "y4"
+     },
+     gridaxes = {
+       xaxis  = {nticks = 10, domain = {0, 0.45}, title = "shared X axis"},
+       yaxis  = {scaleanchor = "x", domain = {0, 0.45}, title = "1:1"},
+       yaxis2 = {scaleanchor = "x", scaleratio = 0.2, domain = {0.55, 1}, title = "1:5"},
+       xaxis2 = {type = "log", domain = {0.55, 1}, anchor = "y3", title = "unconstrained log X"},
+       yaxis3 = {domain = {0, 0.45}, anchor = "x2", title = "Scale matches ->"},
+       yaxis4 = {scaleanchor = "y3", domain = {0.55, 1}, anchor = "x2", title = "Scale matches <-"}
+     },
+     margin = {l = 58, r = 50, t = 40, b = 45, pad = 10},
+     autosize = false
+   }
   }
 )
 </code></pre>

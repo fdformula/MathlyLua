@@ -1870,6 +1870,7 @@ local _axis_equalq       = false
 local _xaxis_visibleq    = true
 local _yaxis_visibleq    = true
 local _gridline_visibleq = true
+local _specific_gridq    = false
 local _showlegendq       = false
 local _vecfield_annotations = nil
 
@@ -2042,6 +2043,7 @@ function plot(...)
   local yaxis_visibleq = _yaxis_visibleq
   local gridline_visibleq = _gridline_visibleq
   local showlegendq = _showlegendq
+  _specific_gridq    = false
 
   _3d_plotq = false
   plotly.layout = {}
@@ -2331,14 +2333,21 @@ function plot(...)
               if k_ == 'grid' then
                 plotly.layout[k_]['pattern'] = 'independent'
               end
-            elseif v.grid ~= nil and k_ == 'gridaxes' then
-              if v_['xaxis'] ~= nil then plotly.layout['xaxis'] = v_['xaxis'] end
-              if v_['yaxis'] ~= nil then plotly.layout['yaxis'] = v_['yaxis'] end
-              local n = (v.grid.rows or 1) * (v.grid.columns or 1)
-              for ii = 2, n do
-                local x, y = 'xaxis' .. ii, 'yaxis' .. ii
-                if v_[x] ~= nil then plotly.layout[x] = v_[x] end
-                if v_[y] ~= nil then plotly.layout[y] = v_[y] end
+            elseif v.grid ~= nil then
+              if k_ == 'gridaxes' then
+                for j = 1, #traces do
+                  local s = qq(j == 1, '', j)
+                  local x, y = 'xaxis' .. s, 'yaxis' .. s
+                  plotly.layout[x] = v_[x]
+                  plotly.layout[y] = v_[y]
+                end
+              elseif k_ =='gridaxisnames' then
+                _specific_gridq = true
+                for j = 1, #traces do
+                  local s = qq(j == 1, '', j)
+                  traces[j]['xaxis'] = v_['xaxis' .. s]
+                  traces[j]['yaxis'] = v_['yaxis' .. s]
+                end
               end
             end
           end
@@ -5111,10 +5120,11 @@ function figure.toplotstring(self)
     -- plotly-2.9.0.min.js, hopefully all versions, determines if grid options are used
     -- by checking whether the texts of xaxis and yaxis are different for traces
     for i = 1,#self['data'] do
-      local s = tostring(i)
-      self['data'][i]['xaxis'] = 'x' .. s -- they are different :-)
-      self['data'][i]['yaxis'] = 'y' .. s
-      if _3d_plotq then self['data'][i]['zaxis'] = 'z' .. s end
+      if not _specific_gridq then
+        self['data'][i]['xaxis'] = 'x' .. i -- they are different :-)
+        self['data'][i]['yaxis'] = 'y' .. i
+      end
+      if _3d_plotq then self['data'][i]['zaxis'] = 'z' .. i end
     end
   end
 
