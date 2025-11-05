@@ -3348,7 +3348,7 @@ graphing library. However, it doesn't set limitations for you to experiment with
   autosize = false
 }}
 </code></pre>
-<p>You may use it as a template, drop some options, and fine-tune some others for your needs. For example,</p>
+<p>You may use it as a template, remove some options, and fine-tune some others for your needs. For example,</p>
 <pre><code>plot(sin, '-r', {layout = {
   title = "Example",
   xaxis = {title = "x"}, yaxis = {title = "sin &lt;i&gt;x&lt;/i&gt;"},
@@ -3384,21 +3384,20 @@ plot(
   }
 )
 
--- https://plotly.com/javascript/axes/
+-- <a href=https://plotly.com/javascript/axes/ target = "_blank">An example on Plotly.com</a>
 x1 = {0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3}; y1 = {0, 0, 1, 1, 3, 3, 2, 2, 3, 3, 1, 1, 0, 0}
 x2 = {0, 1, 2, 3}; y2 = {1, 2, 4, 8}
 x3 = {1, 10, 100, 10, 1}; y3 = {0, 1, 2, 3, 4}
 x4 = {1, 100, 30, 80, 1}; y4 = {1, 1.5, 2, 2.5, 3}
 
 plot(
-  x1, y1, x2, y2, x3, y3, x4, y4,
+  x1, y1, '-o', x2, y2, '-o', x3, y3, '-o', x4, y4, '-o',
   {layout = {
      width = 650, height = 500,
      title = "fixed-ratio axes",
      grid = {rows = 2, columns = 2},
      gridaxisnames = {
-       xaxis  = "x",
-       yaxis  = "y",
+       -- xaxis  = "x", yaxis  = "y", -- default values
        yaxis2 = "y2",
        xaxis3 = "x2",
        yaxis3 = "y3",
@@ -3415,7 +3414,7 @@ plot(
      },
      margin = {l = 58, r = 50, t = 40, b = 45, pad = 10},
      autosize = false
-   }
+    }
   }
 )
 </code></pre>
