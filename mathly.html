@@ -1650,7 +1650,7 @@ disp(integral('@(theta) 0.5 * cos(2*theta)^2', -pi/4, pi/4))
 -- &int;e<sup>-x<sup>2</sup></sup>dx on (-&infin;,&infin;) = sqrt(&pi;) &asymp; 1.7724538509055
 -- the results below show the effect of round-off errors
 disp(integral('@(x) exp(-x^2)', -5, 5))
--- 1.7724538509021
+-- 1.7724538509028
 disp(integral('@(x) exp(-x^2)', -10, 10))
 -- 1.7724538509044
 disp(integral('@(x) exp(-x^2)', -10000, 10000)) -- theoretically, it should be closer to sqrt(&pi;)
@@ -1667,7 +1667,7 @@ See <a href=#integral><code>integral</code></a>.</p>
 
 <p>&#x2713; &nbsp;The order of the arguments of the integrand, <code>f(x,y)</code>, <em>from right to left</em>,
 defines the order of integration. By rearranging the order of these arguments, we can handle double integrals
-over either x or y-simple regions.
+over all x and y-simple regions.
 <p>&#x2713; &nbsp;Especially, with polar coordinates, the integrand will be like <code>f(θ,r)</code> due to
 <code>∫∫f(θ,r)drdθ</code>.</p>
 <pre><code>mathly = require('mathly')
@@ -1699,7 +1699,7 @@ divided evenly into multiple subintervals, and Gauss quadrature method is applie
 See <a href=#integral><code>integral</code></a>.</p>
 <p>&#x2713; &nbsp;The order of the arguments of the integrand, <code>f(x,y,z)</code>, <em>from right to left</em>,
 defines the order of integration. By rearranging the order of these arguments, we can handle triple integrals over
-all x, y, or z-simple solids.</p>
+all x, y, and z-simple solids.</p>
 <p>&#x2713; &nbsp;Especially, with spherical coordinates, the integrand will be like <code>f(θ,φ,ρ)</code> due to
 <code>∫∫∫f(θ,φ,ρ)dρdφdθ</code>.</p>
 <pre><code>mathly = require('mathly')
