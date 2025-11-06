@@ -3027,8 +3027,8 @@ print(strcat(34,'Hello, ', {'the ', 'world', '!'}, 34)) -- 34? ascii code for "
 It must be the most frequently used <i>Mathematica</i> command.</p>
 <p>The concept, controls, is used here. It is borrowed from <a href=#animate><code>animate</code></a> and <a href=#manipulate><code>manipulate</code></a>
 which were implemented first.</p>
-<p>To see how to dynamically generate Lua code and run it, explore Mathly source code. Use <code>opts.printcode = true</code>
-to print the generated code for input passed to the function.</p>
+<p>To see how multiple controls work, use <code>printcode = true</code> to print the dynamically generated Lua code
+for input passed to the function, and explore the code.</p>
 <p>See also: <a href=#animate><code>animate</code></a>; <a href=#linspace><code>linspace</code></a>, <a href=#range><code>range</code></a> (or <a href=#seq><code>seq</code></a>).</p>
 <pre><code>mathly = require('mathly')
 x = tables(5, {i = {1, 10}}); disp(x)
