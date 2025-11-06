@@ -1,4 +1,5 @@
 -- Animating the double integral of f(x, y) over [a, b] x [c, d]
+-- by David Wang, dwang@liberty.edu, October 2025
 
 mathly = require('mathly')
 

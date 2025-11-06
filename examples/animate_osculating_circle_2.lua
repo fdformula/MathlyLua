@@ -1,4 +1,5 @@
 -- Animating osculating circle of y = x^2
+-- by David Wang, dwang@liberty.edu, October 2025
 
 mathly = require('mathly')
 

@@ -1,4 +1,5 @@
 -- Animating Newton's method for solving f(x) = x^3 - 2x + 2 = 0
+-- by David Wang, dwang@liberty.edu, October 2025
 
 mathly = require('mathly')
 

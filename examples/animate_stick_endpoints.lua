@@ -3,7 +3,8 @@
 -- origin and a radius of R.
 --
 -- See: <a href="https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf">ParametricCurves.pdf</a></p>
-
+--
+-- by David Wang, dwang@liberty.edu, October 2025
 mathly = require('mathly')
 
 jscode = [[

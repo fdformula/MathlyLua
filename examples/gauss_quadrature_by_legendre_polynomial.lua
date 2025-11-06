@@ -1,3 +1,5 @@
+-- by David Wang, dwang@liberty.edu, October 2025
+
 mathly = require('mathly')
 
 -- https://en.wikipedia.org/wiki/Legendre_polynomials

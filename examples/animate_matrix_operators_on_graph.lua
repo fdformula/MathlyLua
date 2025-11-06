@@ -1,4 +1,5 @@
 -- Animating matrix operators on the graph of y = f(x)
+-- by David Wang, dwang@liberty.edu, October 2025
 
 mathly = require('mathly')
 

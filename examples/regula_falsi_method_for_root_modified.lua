@@ -1,4 +1,5 @@
 -- Animating modified regula falsi method for solving f(x) = x^3 - 2x + 2 = 0, forcing to approach a root from both sides.
+-- by David Wang, dwang@liberty.edu, October 2025
 
 mathly = require('mathly')
 

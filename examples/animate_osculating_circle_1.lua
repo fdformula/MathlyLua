@@ -1,4 +1,5 @@
 -- Animating osculating circle of y = sin(x)
+-- by David Wang, dwang@liberty.edu, October 2025
 
 mathly = require('mathly')
 

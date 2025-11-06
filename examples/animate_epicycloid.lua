@@ -2,7 +2,8 @@
 -- rolls without slipping on the outside of a circle with center O and radius a, where b < a.
 --
 -- See: <a href="https://github.com/fdformula/CalculusLabs/blob/main/text/ParametricCurves.pdf">ParametricCurves.pdf</a></p>
-
+--
+-- by David Wang, dwang@liberty.edu, October 2025
 mathly = require('mathly')
 
 fstr = {'@(t) (a + b) * cos(t) - b * cos((a + b) / b * t)', '@(t) (a + b) * sin(t) - b * sin((a + b) / b * t)'}

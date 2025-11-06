@@ -1,4 +1,5 @@
 -- Animating the definite integral of f(x) on [a, b]
+-- by David Wang, dwang@liberty.edu, October 2025
 
 mathly = require('mathly')
 

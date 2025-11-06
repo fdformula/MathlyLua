@@ -1,4 +1,5 @@
 -- Animating the derivative of y = f(x) at x = x0
+-- by David Wang, dwang@liberty.edu, October 2025
 
 mathly = require('mathly')
 

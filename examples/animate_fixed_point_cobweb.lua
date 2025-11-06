@@ -1,4 +1,5 @@
 -- Animating the fixed-point method or the generation of a cobweb for x = g(x)
+-- by David Wang, dwang@liberty.edu, October 2025
 
 mathly = require('mathly')
 --↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ cobweb for x = g(x) ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓--

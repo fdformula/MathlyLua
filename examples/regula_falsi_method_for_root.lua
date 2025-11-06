@@ -1,4 +1,5 @@
 -- Animating regula falsi method for solving f(x) = 3cos(x) - 0.3x^2 + 2 = 0, approaching the root from both sides.
+-- by David Wang, dwang@liberty.edu, October 2025
 
 mathly = require('mathly')
 
