@@ -1914,7 +1914,7 @@ local _Gx = {
  -0.9041172563704748, 0.9041172563704748, -0.9815606342467191, 0.9815606342467191
 }
 
-local _MaxIntegIntervSiz = 10
+local _MaxIntegralIntervalSize = 3 -- see mathly.html#integral
 
 -- ∫f(x)dx on [a, b]
 function integral(f, a, b)
@@ -1926,8 +1926,8 @@ function integral(f, a, b)
   local sign = 1
   if a > b then a, b = b, a; sign = -1 end
   local n, A, B, s, siz = 1, a, b, 0, b - a
-  if b - a > _MaxIntegIntervSiz then
-    n = ceil((b - a) / _MaxIntegIntervSiz)
+  if b - a > _MaxIntegralIntervalSize then
+    n = ceil((b - a) / _MaxIntegralIntervalSize)
     siz = (b - a) / n
     B = A + siz
   end
@@ -1959,8 +1959,8 @@ function integral2(f, g1, g2, a, b)
     local sign = 1
     if a > b then a, b = b, a; sign = -1 end
     local n, A, B, s, siz = 1, a, b, 0, b - a
-    if b - a > _MaxIntegIntervSiz then
-      n = ceil((b - a) / _MaxIntegIntervSiz)
+    if b - a > _MaxIntegralIntervalSize then
+      n = ceil((b - a) / _MaxIntegralIntervalSize)
       siz = (b - a) / n
       B = A + siz
     end
@@ -1997,8 +1997,8 @@ function integral3(f, g1, g2, h1, h2, a, b)
     local sign = 1
     if a > b then a, b = b, a; sign = -1 end
     local n, A, B, siz = 1, a, b, b - a
-    if b - a > _MaxIntegIntervSiz then
-      n = ceil((b - a) / _MaxIntegIntervSiz)
+    if b - a > _MaxIntegralIntervalSize then
+      n = ceil((b - a) / _MaxIntegralIntervalSize)
       siz = (b - a) / n
       B = A + siz
     end

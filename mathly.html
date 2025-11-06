@@ -1630,24 +1630,40 @@ print(x)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=integral href=#m><code>integral(f(x), a, b)</code></a></h4>
-<p>Apply Gauss quadrature of 12 nodes to numerically evaluate the definite integral of <code>f(x)</code> on <code>[a,b]</code>. A large interval <code>[a,b]</code> is
-automatically divided into multiple subintervals, and Gauss quadrature method is applied to each one.</p>
+<p>Apply <a href=examples/gauss_quadrature_by_legendre_polynomial.lua target="_blank">Gauss quadrature</a>
+of 12 nodes to numerically evaluate the definite integral of <code>f(x)</code> on <code>[a,b]</code>. A
+large interval <code>[a,b]</code> is divided evenly into multiple subintervals, <code>[a<sub>i</sub>,b<sub>i</sub>],
+i=1,2,3,...</code>, where <code>b<sub>i</sub>-a<sub>i</sub></code> is at most <code>_MaxIntegralIntervalSize</code>,
+a predetermined constant defined in mathly.lua, and Gauss quadrature method is applied to each subintervals.</p>
+<p>&#x2713; &nbsp; Theoretically, the smaller the value of the parameter <code>_MaxIntegralIntervalSize</code> is,
+the better approximation can be obtained. Please be advised that the accuracy of an approximation depends
+on the integrand, too; in addition, a small value of the parameter requires more computing time, and round-off
+errors can be an issue.</p>
 <pre><code>mathly = require('mathly')
 
 disp(integral(10, 1, 20))
 -- 190 (exact)
-disp(integral('@(x) exp(-x^2)', -10, 10))
--- 1.7725140943124 (exact: about sqrt(pi) = 1.7724538509055)
 
 disp(integral('@(theta) 0.5 * cos(2*theta)^2', -pi/4, pi/4))
 -- 0.39269908169872 (exact: pi/8 = 0.39269908169872)
+
+-- &int;e<sup>-x<sup>2</sup></sup>dx on (-&infin;,&infin;) = sqrt(&pi;) &asymp; 1.7724538509055
+-- the results below show the effect of round-off errors
+disp(integral('@(x) exp(-x^2)', -5, 5))
+-- 1.7724538509021
+disp(integral('@(x) exp(-x^2)', -10, 10))
+-- 1.7724538509044
+disp(integral('@(x) exp(-x^2)', -10000, 10000)) -- theoretically, it should be closer to sqrt(&pi;)
+-- 1.7724538509022
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=integral2 href=#m><code>integral2(f, g<sub>1</sub>, g<sub>2</sub>, a, b)</code></a></h4>
-<p>Apply Gauss quadrature of 12 nodes to numerically evaluate the double integral, <code>∫∫f(x,y)dydx</code>
+<p>Apply <a href=examples/gauss_quadrature_by_legendre_polynomial.lua target="_blank">Gauss quadrature</a> of
+12 nodes to numerically evaluate the double integral, <code>∫∫f(x,y)dydx</code>
 over a region <code>{(x,y) | y&in;[g<sub>1</sub>(x),g<sub>2</sub>(x)], x&in;[a,b]}</code>.</p>
 <p>For better accuracy, a large interval in both the <code>x</code> and <code>y</code> directions is
-automatically divided into multiple subintervals, and Gauss quadrature method is applied to each one.</p>
+divided evenly into multiple subintervals, and Gauss quadrature method is applied to each one.
+See <a href=#integral><code>integral</code></a>.</p>
 
 <p>&#x2713; &nbsp;The order of the arguments of the integrand, <code>f(x,y)</code>, <em>from right to left</em>,
 defines the order of integration. By rearranging the order of these arguments, we can handle double integrals
@@ -1666,18 +1682,21 @@ disp(integral2('@(x, y) x + 2*y', '@(x) 2 * x^2', '@(x) 1 + x^2', -1, 1))
 
 -- ∫∫f(y,x)dxdy: here, z = 2x + 3y should be '@(y, x) 2*x + y' instead of '@(x, y) 2*x + y'
 disp(integral2('@(y, x) x^2 + y^2', '@(y) 0.5 * y', '@(y) sqrt(y)', 0, 4))
--- 6.1714261003907 (exact: 216/35 = 6.1714285714286)
+-- 6.1714280951756 (exact: 216/35 = 6.1714285714286)
 
 -- with polar coordinates: ∫∫f(θ,r)drdθ
 disp(integral2('@(theta, r) r^3', 0, '@(theta) 2*cos(theta)', -pi/2, pi/2))
--- 4.7123889803824 (exact: 3*pi/2 = 4.7123889803847)
+-- 4.7123889803847 (exact: 3*pi/2 = 4.7123889803847)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=integral3 href=#m><code>integral3(f, g1, g2, h1, h2, a, b)</code></a></h4>
-<p>Apply Gauss quadrature of 12 nodes to numerically evaluate the triple integral, <code>∫∫∫f(x,y,z)dzdydx</code>
-over a region <code>{(x,y,z) | z&in;[g<sub>1</sub>(x,y), g<sub>2</sub>(x,y)], y&in;[h<sub>1</sub>(x),h<sub>2</sub>(x)], x&in;[a,b]}</code>.</p>
-<p>For better accuracy, a large interval in all <code>x, y</code>, and <code>z</code> directions is automatically
-divided into multiple subintervals, and Gauss quadrature method is applied to each one.</p>
+<p>Apply <a href=examples/gauss_quadrature_by_legendre_polynomial.lua target="_blank">Gauss quadrature</a>
+of 12 nodes to numerically evaluate the triple integral, <code>∫∫∫f(x,y,z)dzdydx</code> over a region
+<code>{(x,y,z) | z&in;[g<sub>1</sub>(x,y), g<sub>2</sub>(x,y)], y&in;[h<sub>1</sub>(x),h<sub>2</sub>(x)],
+x&in;[a,b]}</code>.</p>
+<p>For better accuracy, a large interval in all <code>x, y</code>, and <code>z</code> directions is
+divided evenly into multiple subintervals, and Gauss quadrature method is applied to each one.
+See <a href=#integral><code>integral</code></a>.</p>
 <p>&#x2713; &nbsp;The order of the arguments of the integrand, <code>f(x,y,z)</code>, <em>from right to left</em>,
 defines the order of integration. By rearranging the order of these arguments, we can handle triple integrals over
 all x, y, or z-simple solids.</p>
