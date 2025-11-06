@@ -1,0 +1,3466 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<style>
+a { text-decoration: none; }
+p { margin: 20px }
+div { font-size: 16px; margin: 30px 20px }
+table, pre { margin: 1px 25px }
+table.numberedRows { counter-reset: rowNum } /* https://forums.madcapsoftware.com/viewtopic.php?t=27293 */
+table.numberedRows tbody tr { counter-increment: rowNum }
+table.numberedRows tbody tr td:first-child::before { content: counter(rowNum) }
+pre {color: green}
+</style>
+</head>
+<body>
+<div>
+<h2><a name=top></a><a href=#m>Mathly Turns Lua into a Tiny, Portable, Free but Powerful MATLAB and More</a></h2>
+<h3>&nbsp; &nbsp; &rArr; <a href=lua5_4.html>Lua 5.4 Manual</a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &rArr; <a href=https://www.lua.org/docs.html target="_blank">Online Lua Documentation</a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &rArr; <a href=https://github.com/fdformula/MathlyLua target="_blank">Mathly on GitHub</a></h3>
+<ol>
+<li><a href=#intro>Introduction</a></li>
+<li><a href=#version>Which version of Lua is needed?</a></li>
+<li><a href=#where>Where to place the downloaded files of this module?</a></li>
+<li><a href=#mobjs><u>Mathly objects and Lua tables</u></a></li>
+<li><a href=#math>Basic mathematical functions and elementwise operations</a></li>
+<li><a href=#m><u>Table of Mathly functions</u></a></li>
+<li><a href=#easyf>Shortcut for defining an anonymous function</a></li>
+<li><a href=#namedargs0>Named arguments</a></li>
+<li><a href=#layout>Plotly JavaScript Figure Reference: <code>layout</code> and <code>grid</code></a></li>
+</ol>
+<h2><a name=intro></a>Introduction</h2>
+<p>Mathly for <a href=https://www.lua.org target="_blank">Lua</a> is a Lua module which turns Lua into a tiny, free, but powerful MATLAB.
+It provides a group of commonly used MATLAB functions and features, including <code><a href=#linspace>linspace</a></code>, <code><a href=#zeros>zeros</a></code>,
+<code><a href=#rand>rand</a></code>, <code><a href=#save>save</a></code>, <code><a href=#plot>plot</a></code>, <code><a href=#plot3d>plot3d</a></code>, and
+convenient matrix operations as well. If there is anything many love the most about MATLAB, these tools are. They make
+coding and testing a thought/algorithm much easier and faster than working in most other programming languages. Besides, <a href=#animate><code>animate</code></a>
+and <a href=#manipulate><code>manipulate</code></a> allow easy and cool animation of the graph of a single-variable function or a parametric 2D curve.</p>
+
+<p>Mathly uses <a href="https://plotly.com/javascript/" target="_blank">Plotly JavaScript graphing library</a> to plot graphs. Therefore, graphs are shown in an internet browser.</p>
+
+<p>The entire Mathly tool together with Lua interpreter is less than 5 MB, while providing enough features for instructors and college students to implement
+numerical algorithms. <em>Because it is super lightweight and fast as well, it can run fast even on old and slow devices</em> like Microsoft Surface Pro 4 (Intel Core
+i5-6300U with 8 GB RAM). In contrast to it, MATLAB needs a few GB of storage space. In addition, it takes about 22
+seconds to start MATLAB R2024b on a new high-end Intel Core i9-14900HX laptop with 56 GB RAM. Thus, it can hardly be installed on slow or
+pretty old computers and run smoothly.</p>
+
+<p>Mathly is especially a good choice for instructors of linear algebra and numerical computing for teaching. It takes
+no time to start Lua with Mathly loaded. While developing code and doing computation in a lecture, they can simply focus
+on delivery of course contents and never need to worry if their computers work too slowly. Moreover,
+Lua is so simple and so natural a language that students without programming skills can understand most of Lua code.</p>
+
+<h2><a name=version href=#top>Which version of Lua is needed?</a></h2>
+<p>Mathly is developed in Lua 5.4.6. It might work with previous versions.</p>
+<p>You may download Lua source code in <a href="https://lua.org/" target="_blank">https://lua.org/</a> and compile it yourself or simply
+download prebuilt binary commands for Microsoft Windows in, say,
+<a href="https://www.nuget.org/packages/lua/" target="_blank">https://www.nuget.org/packages/lua/</a>. Another way to get prebuilt Lua is to
+download <a href=https://studio.zerobrane.com/ target="_blank">ZeroBrane Studio</a>, a lightweight Lua IDE for various platforms. It may come with
+multiple versions of Lua.</p>
+<p>&rArr; <a name=cudatext></a>Microsoft Windows users may download the file
+<a href=https://github.com/fdformula/MathlyLua target="_blank"><code>cudatext-for-mathly-win-*.7z</code></a>. It includes a text editor, CudaText,
+with Lua 5.4.8 and Mathly integrated. Run <a href=https://7-zip.org/ target="_blank">7zip</a> to extract it to <code>C:\</code> (the root directory of the C drive).
+<em>Do not change the name of the folder, <code>C:\cygwin</code>.</em></p>
+
+<p><a href=https://cudatext.github.io/ target="_blank"">CudaText</a> is a very good "IDE" for Lua and Mathly. Quite a few
+CudaText plugins are included. Some are customized and even have new features added. While in CudaText, press</p>
+<pre style="color:black"><code>  F1               to open help document on current Lua/Mathly function
+
+  F2               to start Lua with Mathly loaded
+  Ctrl-,           to run selected code or command on current line in the editor
+  Ctrl-.           to run all code in the editor (HTML file? open it in a browser)
+
+  Ctrl-Alt-Space   to trigger (Lua/Mathly) auto lexical completion
+  Shift-Alt-Space  to trigger auto text completion (Ctrl-P D, load an English dictionary as part of the text)
+
+  Ctrl-P L         to turn on/off Lua lexer switch (when editing Lua script, say, in a HTML file)
+  Ctrl-P P         to insert a <a href=#plot>plot</a> template
+</code></pre>
+<p><code>F2</code>, <code>Ctrl-,</code>, and <code>Ctrl-.</code> work with Bash, Julia, Octave, Python, R, Ruby, and some other
+languages with interactive REPL terminals. CudaText detects and selects the very language
+according to the extension of the present filename (defaults to Lua). See: The first few
+lines of the file, <code>C:\cygwin\cudatext\py\cuda_ex_terminal\__init__.py</code>.</p>
+
+<p>Other hotkeys? Refer to <code>C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt</code>.</p>
+
+<p>&rArr; Linux users? For most Linux distributions, download the file, <code><a href=https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-linux.tar.gz target="_blank">cudatext-for-mathly-linux.tar.gz</a></code>. For other distributions like Fedora,
+download the file, <code><a href=https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-linux-RARE.tar.gz target="_blank">cudatext-for-mathly-linux-RARE.tar.gz</a></code>. Expand the downloaded file and refer to the included file, <code>note.txt</code>, for other steps.</p>
+
+<p>&rArr; MacOS users? Download the file, <code><a href=https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-macos.tar.gz target="_blank">cudatext-for-mathly-macosx.tar.gz</a></code>. Expand the downloaded file and refer to the included file, <code>note.txt</code>, for other steps.</p>
+
+<p>By default, <a href=https://www.mozilla.org/ target="_blank">Mozilla Firefox</a> is the internet browser. If you use a different browser, <em>you need to edit the
+file <code>browser-setting.lua</code></em> coming with Mathly. See comments in the very file.</p>
+<p>&#x2713; &nbsp; The file <code>mathly.lua</code> can be compiled with <code>luac</code>. To use compiled modules, we set
+<code>package.path</code> first as follows:</p>
+<p><code>package.path = "./?.luac;;"</code></p>
+
+<h2><a name=mobjs href=#top>Mathly objects and Lua tables</a></h2>
+<ol>
+<li>A Mathly table is a simple Lua table registered as a Mathly object. E.g., <code>x = tt{1, 2, 3}</code> is such a table.
+It has the same structure as an ordinary Lua table <code>y = {1, 2, 3}</code>. The difference is that we can apply
+"vectorization" operations and matrix operations on <code>x</code> instead of <code>y</code>. For instance, <code>2 * x - 1</code>
+gives a new Mathly table, <code>{1, 3, 5}</code>. Here, <code>x[i]</code> gives the i-th element in the table.</li>
+<p></p>
+<li>A Mathly row vector is actually a <code>1xn</code> matrix. E.g., <code>x = rr{1, 2, 3}</code> is a Mathly row vector.
+It is stored as <code>{{1, 2, 3}}</code>. To access 2, we must use <code>x[1][2]</code>. Similarly, a column vector
+<code>y = cc{1, 2, 3}</code> is a <code>3x1</code> matrix stored in the format <code>{{1}, {2}, {3}}</code>. We use
+<code>y[2][1]</code> to access 2. Indeed, <code>x[1][2]</code> or <code>y[2][1]</code> is quite strange and inconvenient,
+which is why the results of most operations on these row/column vectors and matrices and many Mathly functions are Mathly
+tables.</li>
+<p></p>
+<li>Mathly tables and matrices may simply be called Mathly objects. Mathly objects and Lua tables can appear in same math
+expressions. Mathly automatically converts Lua tables and Mathly tables into Mathly matrices of proper dimensions to complete the
+evaluation of the expressions. We may use Mathly functions such as <code>mathly, cc, rr, tt</code>, and <code>^T</code> to replace the
+automatic conversion by Mathly.</li>
+<p></p>
+<li>In a vector/matrix operation involving Lua tables which are not Mathly objects, there must be at least one Mathly object
+to activate the operation. For example, <code>tt{1, 2} + {3, 4}</code>, <code>{1, 2} + tt{3, 4}</code>, <code>({1, 2} * tt{3, 4} + {5, 6}) * 7 - {8, 9}</code>,
+and <code>tt{1, 2} * {3, 4} + ({5, 6} - tt{8, 9}) * 7</code>.</li>
+</ol>
+<pre><code>mathly = require('mathly')
+
+a = mathly{{1, 2, 3}, {2, 3, 4}}
+b = mathly{{1}, {2}, {3}} -- or simply b = cc{1, 2, 3}
+A = mathly(10, 10)        -- or rand(10, 10)
+B = mathly(1, 10)         -- or rand(1, 10), a Mathly table
+
+inv(A) * B                -- B is interpreted as a 10x1 matrix
+inv(A) * B^T              -- B^T can be cc(B). We control the conversion
+a * {5, 6, 7}             -- Lua table {5, 6, 7} can be cc{5, 6, 7}
+{5, 6} * a                -- Lua table {5, 6} can be rr{5, 6}
+
+x = tt{2, 3, 4} + {5, 6, 7}
+x ^ 3 - 5 * x ^ 2 + 4 *x - 1
+
+A = randi({50, 100}, 3)
+B = randi({0, 10}, 3)
+C = 3 * A - 4 * B + 5
+D = A .. B .. C           -- concatenate matrices A, B, and C horizontally
+disp(D)
+E = A .. cc{1, 2, 3}
+disp(E)
+
+-- matrix/table "division" is elementwise, provided for convenience only
+x = {1, 2, 3, 4, 5}
+rr(x) / 10
+1 / (2 * rr(x) + 1)
+x / cc(cos(x))
+
+A = mathly{{1, 2}, {3, 4}}
+1 / A
+{{2, 3}, {4, 5}} / A
+
+-- elementary row operations
+A = randi({-100, 100}, 5, 7)
+A[3] = A[3] * 2         -- rowi := rowi * scaler
+A[2] = A[2] - A[1] * 2  -- rowj := rowj - rowi * scaler
+A[1], A[3] = A[3], A[1] -- interchange 2 rows
+
+-- plot multiple functions on a single figure
+x = linspace(0, pi, 100)
+y = 5 * x * cos(x ^ 2) - 1
+plot(x, y, '-r', x, -3 * x ^ 2 + 2 * x + 3, '--b')
+</code></pre>
+
+<h2><a name=math href=#top>Basic mathematical functions and elementwise operations</a></h2>
+<p>&#x2713; &nbsp; Basic mathematical functions</p>
+<p>Basic math functions are each now able to work <em>elementwisely</em> on Lua tables, including Mathly objects. They are
+<code>abs</code>, <code>acos</code>, <code>asin</code>, <code>atan</code>, <code>ceil</code>, <code>cos</code>,
+<code>deg</code>, <code>exp</code>, <code>floor</code>, <code>log</code>, <code>rad</code>, <code>random</code>,
+<code>sin</code>, <code>sqrt</code>, and <code>tan</code>. They evaluate a function at every number in a
+table and keep the structure of the table.</p>
+<pre><code>mathly = require('mathly')
+
+A = randi(100, 5, 6)
+disp(cos(A))
+
+x = {-1, 2, -3, {4, -5, {6}}}
+disp(abs(x))
+-- {1, 2, 3, {4, 5, {6}}}
+disp(log(abs(x)))
+</code></pre>
+
+<p>&#x2713; &nbsp; With each of these functions, should we use, say, <code>sin(x)</code> or <code>math.sin(x)</code>?
+<B>You can always use <code>sin(x)</code>. However, if you know <code>x</code> is a number, you may call
+<code>math.sin(x)</code> to get a little improvement in performance.</p></B>
+
+<p>&#x2713; &nbsp; Elementwise operations through <code>map</code>
+<p>We can do elementwise operations, simple or complicated, through <a href=#map><code>map</code></a>.
+<pre><code>mathly = require('mathly')
+
+A = randi(100, 5, 7)
+B = randi(100, 5, 7)
+C = map('@(x, y) x * y', A, B) -- A .* B; -- A, B can be any type of tables with the same structure
+disp(C)
+C = map('@(x, y) x / y', A, B) -- A ./ B
+disp(C)
+disp(map('@(x) x ^ 2', A))     -- A .^ 2
+
+D = map('@(x, y, z) qq(iseven(x), x - y + 3 * z, x + y * y)', A, B, C)
+disp(D)
+
+E = map('@(x, y) {x, y}', {1, 2, {3, {4}, 5}}, {'a', 'b', {'c', {'d'}, 'e'}})
+display(E)
+-- {{1, 'a'}, {2, 'b'}, {{3, 'c'}, {{4, 'd'}}, {5, 'e'}}}
+
+display(sin{1, 2, {3, {4}, 5}})
+</code></pre>
+
+<p>&#x2713; &nbsp; <a name=eps></a><a name=div></a><a name=mod></a>Functions <code>div</code> and <code>mod</code> are simply the names of <a href=manual.html#3.4.1>Lua operators <code>//</code> and <code>%</code></a>, respectively.
+They make Lua code more understandable to people who are new to Lua. They follow the definition: if <code>d &gt; 0</code>, <code>r = mod(a, d)</code> is the remainder of <code>a</code>
+divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d)</code> gives the quotient.</p>
+
+<p>In addition, Mathly provides four commonly used constants:</p>
+<table><tbody>
+<tr><td><code>pi = 3.1415926535898</code></td><td width=40></td><td>It is simply <code>math.pi</code>.</td></tr>
+<tr><td><code>e = 2.718281828459</code></td><td width=40></td><td>It is <code>math.exp(1)</code>.</td></tr>
+<tr><td><code>eps = 2.220446049250313e-16</code></td><td width=40></td><td>It is the machine epsilon, i.e., the smallest difference between any two numbers.</td></tr>
+<tr><td><code>phi = 1.6180339887499</code></td><td width=40></td><td>It is the golden ratio, <code>(1 + math.sqrt(5)) / 2</code>.</td></tr>
+</tbody>
+</table>
+<p></p>
+<p><u>Note</u>: <code>T</code> is reserved by Mathly for finding the transpose of a matrix, e.g., <code>A^T</code>, where <code>A</code> is a Mathly matrix.</p>
+
+<a href=#top name=m><h2>Table of Functions Provided by Mathly</h2></a>
+<code><p><a href=#horzcat>.. (or horzcat)</a>, <a href=#all>all</a>, <a href=#any>any</a>, <a href=#apply>apply</a>, <a href=#cc>cc</a>, <a href=#clc>clc</a>,
+<a href=#clear>clear</a>, <a href=#copy>copy</a>, <a href=#cross>cross</a>, <a href=#demathly>demathly</a>, <a href=#det>det</a>, <a href=#diag>diag</a>,
+<a href=#diff>diff</a> (or <a href=#diff1>diff1</a>), <a href=#diff2>diff2</a>,
+<a href=#disp>disp</a>, <a href=#display>display</a>, <a href=#div>div</a>, <a href=#dot>dot</a>, <a href=#eval>eval</a>, <a href=#expand>expand</a>,
+<a href=#eye>eye</a>, <a href=#findroot>findroot</a>, <a href=#flatten>flatten</a>, <a href=#fliplr>fliplr</a>, <a href=#flipud>flipud</a>,
+<a href=#format>format</a>, <a href=#fstr2f>fstr2f</a>, <a href=#fzero>fzero</a>, <a href=#gcd>gcd</a>, <a href=#hasindex>hasindex</a>, <a href=#input>input</a>,
+<a href=#integral>integral</a>, <a href=#integral2>integral2</a>, <a href=#integral3>integral3</a>,
+<a href=#inv>inv</a>, <a href=#isinteger>isinteger</a>, <a href=#iseven>iseven</a>, <a href=#isodd>isodd</a>, <a href=#ismatrix>ismatrix</a>,
+<a href=#ismember>ismember</a>, <a href=#isvector>isvector</a>, <a href=#lagrangepoly>lagrangepoly</a>, <a href=#length>length</a>, <a href=#linsolve>linsolve</a>, <a href=#linspace>linspace</a>,
+<a href=#lu>lu</a>, <a href=#map>map</a>, <a href=#match>match</a>, <a href=#mathly>mathly</a>, <a href=#max>max</a>, <a href=#mean>mean</a>,
+<a href=#merge>merge</a>, <a href=#min>min</a>, <a href=#mod>mod</a>, <a href=#namedargs>namedargs</a>, <a href=#newtonpoly>newtonpoly</a>, <a href=#norm>norm</a>,
+<a href=#ones>ones</a>, <a href=#polynomial>polynomial</a>, <a href=#polyval>polyval</a>, <a href=#powermod>powermod</a>, <a href=#printf>printf</a>,
+<a href=#prod>prod</a>, <a href=#qq>qq</a>, <a href=#qr>qr</a>, <a href=#rand>rand</a>, <a href=#randi>randi</a>, <a href=#randn>randn</a>, <a href=#range>range</a> (or <a href=#seq>seq</a>),
+<a href=#remake>remake</a>, <a href=#repmat>repmat</a>, <a href=#reshape>reshape</a>, <a href=#reverse>reverse</a>, <a href=#round>round</a>, <a href=#rr>rr</a>,
+<a href=#rref>rref</a>, <a href=#save>save</a>, <a href=#seq>seq</a> (or <a href=#range>range</a>), <a href=#size>size</a>, <a href=#sort>sort</a>, <a href=#sprintf>sprintf</a>, <a href=#std>std</a>,
+<a href=#strcat>strcat</a>, <a href=#submatrix>submatrix</a>, <a href=#subtable>subtable</a>, <a href=#sum>sum</a>, <a href=#tables>tables</a>, <a href=#tblcat>tblcat</a>, <a href=#tic>tic</a>,
+<a href=#toc>toc</a>, <a href=#transpose>transpose</a>, <a href=#tt>tt</a>, <a href=#unique>unique</a>, <a href=#var>var</a>, <a href=#vectorangle>vectorangle</a>,
+<a href=#vertcat>vertcat</a>, <a href=#who>who</a>, <a href=#zeros>zeros</a>; <a href=#bin2dec>bin2dec</a>, <a href=#oct2hex>oct2hex, ...</a></p>
+
+<p><a href=#cat>cat</a>, <a href=#cd>cd</a>, <a href=#dir>dir</a>, <a href=#isdir>isdir</a>, <a href=#isfile>isfile</a>, <a href=#iswindows>iswindows</a>,
+<a href=#ls>ls</a>, <a href=#mv>mv</a>, <a href=#pwd>pwd</a>, <a href=#rm>rm</a></p>
+
+<p><a href=#animate>animate</a>, <a href=#manipulate>manipulate</a>, <a href=#plot>plot</a>; <a href=#plot3d>plot3d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>,
+<a href=#plotparametricsurface3d>plotparametricsurface3d</a>, <a href=#plotsphericalsurface3d>plotsphericalsurface3d</a></p>
+
+<p><a href=#arc>arc</a>, <a href=#circle>circle</a>, <a href=#contourplot>contourplot</a>, <a href=#dotplot>dotplot</a>, <a href=#line>line</a>, <a href=#parametriccurve2d>parametriccurve2d</a>,
+<a href=#point>point</a>, <a href=#polarcurve2d>polarcurve2d</a>, <a href=#polygon>polygon</a>, <a href=#scatter>scatter</a>, <a href=#text>text</a>,
+<a href=#wedge>wedge</a>; <a href=#boxplot>boxplot</a>, <a href=#freqpolygon>freqpolygon</a>, <a href=#hist>hist</a>, <a href=#hist1>hist1</a>,
+<a href=#histfreqpolygon>histfreqpolygon</a>, <a href=#pareto>pareto</a>, <a href=#pie>pie</a>; <a href=#directionfield>directionfield (or slopefield)</a>,
+<a href=#vectorfield2d>vectorfield2d</a></code> &lArr; All are graphics objects passed to <code><a href=#plot>plot</a></code>.</p>
+
+<table class="numberedRows">
+<tbody>
+<tr><td> </td><td width="25%"><a href=#all><code>all(x, f)</code></a></td><td width=1%> </td><td width=74%>Test if <code>f(x)</code> is true for every number in <code>x</code>.</td></tr>
+<tr><td> </td><td><a href=#animate><code>animate(fstr, opts)</code></a></td><td> </td><td>Animate the graph of function <code>f</code> with controls.</td></tr>
+<tr><td> </td><td><a href=#any><code>any(x, f)</code></a></td><td> </td><td>Test if there is any number in <code>x</code> such that <code>f(x)</code> is true.</td></tr>
+<tr><td> </td><td><a href=#apply><code>apply(f, ...)</code></a></td><td> </td><td>As with some other programming languages like <i>Mathematica</i>, call function <code>f</code> with the arguments.</td></tr>
+<tr><td> </td><td><a href=#arc><code>arc(r, center, angles, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot an arc of a circle.</td></tr>
+<tr><td> </td><td><a href=#bin2dec><code>bin2dec, hex2oct, oct2hex...</code></a></td><td> </td><td>Convert numbers from, say, binary to hexadecimal.</td></tr>
+<tr><td> </td><td><a href=#boxplot><code>boxplot(x, names)</code></a></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a box plot (or box-and-whisker plot), where <code>x</code> is a table or a matrix of numbers. <code>names = {'name1', 'name2', ...}</code> is optional.</td></tr>
+<tr><td> </td><td><a href=#cat><code>cat(filename)</code></a></td><td> </td><td>Print the content of text file <code>filename</code> in Lua REPL.</td></tr>
+<tr><td> </td><td><a href=#cc><code>cc(x, I, irange)</code></a></td><td> </td><td>Convert table <code>x</code> into a column vector or return specified column(s) of a Mathly matrix...</td></tr>
+<tr><td> </td><td><a name=cd><code>cd(path)</code></a></td><td> </td><td>Changes the current directory to <code>path</code>.</td></tr>
+<tr><td> </td><td><a href=#circle><code>circle(r, center, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a circle.</td></tr>
+<tr><td> </td><td><a name=clc></a><code>clc()</code></td><td> </td><td>Clear Lua console.</td></tr>
+<tr><td> </td><td><a name=clear></a><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
+<tr><td> </td><td><a href=#contourplot><code>contourplot(f, xdata, ydata, style)</code></a></td><td> </td><td>Prepare a graphics object for <code>plot</code> to plot the contour map of function <code>f(x, y)</code>.</td></tr>
+<tr><td> </td><td><a href=#copy><code>copy(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></a></td><td> </td><td>Make a deep copy of <code>x</code> if <code>B</code> is not provided; otherwise, copy to <code>A</code> from <code>B</code>.</td></tr>
+<tr><td> </td><td><a href=#cross><code>cross(a, b)</code></a></td><td> </td><td>Calculate the cross/vector product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub>}</code>.</td></tr>
+<tr><td> </td><td><a href=#demathly><code>demathly(x)</code></a></td><td> </td><td>Force <code>x</code> not to be a Mathly matrix.</td></tr>
+<tr><td> </td><td><a name=det></a><code>det(A)</code></td><td> </td><td>Calculate the determinant of square matrix <code>A</code>.</td></tr>
+<tr><td> </td><td><a href=#diag><code>diag(A, ...)</code></a></td><td> </td><td>Return a column vector consisting of specified diagonal entries of Mathly matrix <code>A</code> or create a Mathly matrix with vector <code>A</code> as its diagonal entries.</td></tr>
+<tr><td> </td><td><a href=#diff><code>diff</code> (or <code>diff1</code>), <code>diff2</code></a></td><td> </td><td>Calculate numerically the first and second derivatives of <code>f(x)</code> at a point.</td></tr>
+<tr><td> </td><td><a href=#dir><code>dir(path, printq)</code></a></td><td> </td><td>List files in the folder <code>path</code> (the current directory by default).</td></tr>
+<tr><td> </td><td><a href=#directionfield><code>directionfield(f, xrange, yrange, scale)</code></a></td><td> </td><td>Exactly the same as <code>slopefield</code>.</td></tr>
+<tr><td> </td><td><a href=#disp><code>disp(x)</code></a></td><td> </td><td>Print a Mathly matrix.</td></tr>
+<tr><td> </td><td><a href=#display><code>display(x)</code></a></td><td> </td><td>Print a table of any type, including Mathly matrices, with structure.</td></tr>
+<tr><td> </td><td><a href=#dot><code>dot(a, b)</code></a></td><td> </td><td>Calculate the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ..., a<sub>n</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ..., b<sub>n</sub>}</code>.</td></tr>
+<tr><td> </td><td><a href=#dotplot><code>dotplot(x, y, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a dot plot.</td></tr>
+<tr><td> </td><td><a href=#eval><code>eval(str)</code></a></td><td> </td><td>Evaluate the expression in <code>str</code> and return the result.</td></tr>
+<tr><td> </td><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrunk <code>mxn</code> Mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
+<tr><td> </td><td><a name=eye></a><code>eye(n)</code></td><td> </td><td>Return a <code>nxn</code> identity Mathly matrix.</td></tr>
+<tr><td> </td><td><a href=#findroot><code>findroot(func, interval, tolerance)</code></a></td><td> </td><td>Find the zero of a function on specified interval.</td></tr>
+<tr><td> </td><td><a href=#flatten><code>flatten(x)</code></a></td><td> </td><td>Remove the structure of <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</td></tr>
+<tr><td> </td><td><a href=#fliplr><code>fliplr(A)</code></a></td><td> </td><td>Return a matrix with columns of matrix <code>A</code> reversed.</td></tr>
+<tr><td> </td><td><a href=#flipud><code>flipud(A)</code></a></td><td> </td><td>Return a matrix with rows of matrix <code>A</code> reversed.</td></tr>
+<tr><td> </td><td><a href=#format><code>format(fmt)</code></a></td><td> </td><td>Reset or specify the format of the output of <code>disp(...)</code>.</td></tr>
+<tr><td> </td><td><a href=#freqpolygon><code>freqpolygon(x, nbins, style, xrange)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot frequency polygon, where <code>x</code> is a table of numbers.</td></tr>
+<tr><td> </td><td><a href=#fstr2f><code>fstr2f(str)</code></a></td><td> </td><td>Convert a MATLAB-style anonymous function in a string to a Lua function handle.</td></tr>
+<tr><td> </td><td><a href=#findroot><code>fzero(func, interval, tolerance)</code></a></td><td> </td><td>Find the zero of a function on specified interval.</td></tr>
+<tr><td> </td><td><a href=#gcd><code>gcd(x, y)</code></a></td><td> </td><td>Return the greatest common divisor of <code>x</code> and <code>y</code>.</td></tr>
+<tr><td> </td><td><a href=#hasindex><code>hasindex(tbl, index)</code></a></td><td> </td><td>Check if table <code>tbl</code> contains <code>index</code>.</td></tr>
+<tr><td> </td><td><a href=#hist><code>hist(x, nbins, style, xrange)</code></a></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table or a matrix of numbers and <code>nbins</code> is the number of bins (default: 10).</td></tr>
+<tr><td> </td><td><a href=#hist1><code>hist1(x, nbins, style, xrange)</code></a></td><td> </td><td>Return an ordinary graphics object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers.</td></tr>
+<tr><td> </td><td><a href=#histfreqpolygon><code>histfreqpolygon(x, nbins, style, xrange, style1)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a histogram plus a frequency polygon, where <code>x</code> is a table of numbers.</td></tr>
+<tr><td> </td><td><a href=#horzcat><code>horzcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
+<tr><td> </td><td><a href=#input><code>input(prompt, s)</code></a></td><td> </td><td>Input from keyboard, return a string (if <code>s = 's'</code>); otherwise, evaluate the input expression, and return the result.</td></tr>
+<tr><td> </td><td><a href=#integral><code>integral(f, a, b)</code></a></td><td> </td><td>Evaluate numerically the definite integral of <code>f(x)</code> on <code>[a, b]</code>.</td></tr>
+<tr><td> </td><td><a href=#integral2><code>integral2(f, g1, g2, a, b)</code></a></td><td> </td><td>Evaluate numerically the double integral of <code>f(x, y)</code> over a region <code>{(x, y) | x&in;[a, b], y&in;[g1(x), g2(x)]}</code>.</td></tr>
+<tr><td> </td><td><a href=#integral3><code>integral3(f, g1, g2, h1, h2, a, b)</code></a></td><td> </td><td>Evaluate numerically the triple integral of <code>f(x, y, z)</code> over a region <code>{(x, y, z) | x&in;[a, b], y&in;[h1(x), h2(x)], z&in;[g1(x, y), g2(x, y)]}</code>.</td></tr>
+<tr><td> </td><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of square Mathly matrix <code>A</code>.</td></tr>
+<tr><td> </td><td><a name=isdir><code>isdir(filename)</code></a></td><td> </td><td>Check if <code>filename</code> is a directory/folder.</td></tr>
+<tr><td> </td><td><a href=#isfile><code>isfile(filename)</code></a></td><td> </td><td>Check if <code>filename</code> is a file.</td></tr>
+<tr><td> </td><td><a name=isinteger></a><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
+<tr><td> </td><td><a name=iseven></a><code>iseven(x)</code></td><td> </td><td>Check if <code>x</code> is even.</td></tr>
+<tr><td> </td><td><a name=isodd></a><code>isodd(x)</code></td><td> </td><td>Check if <code>x</code> is odd.</td></tr>
+<tr><td> </td><td><a name=ismatrix></a><code>ismatrix(x)</code></td><td> </td><td>Check if <code>x</code> can be a Mathly matrix.</td></tr>
+<tr><td> </td><td><a href=#ismember><code>ismember(x, table)</code></a></td><td> </td><td>Check if <code>x</code> is a member of <code>table</code>.</td></tr>
+<tr><td> </td><td><a name=isvector></a><code>isvector(x)</code></td><td> </td><td>Check if <code>x</code> can be a Mathly table/vector.</td></tr>
+<tr><td> </td><td><a href=#iswindows><code>iswindows()</code></a></td><td> </td><td>Check if the operating system is Microsoft Windows.</td></tr>
+<tr><td> </td><td><a href=#lagrangepoly><code>lagrangepoly(...)</code></a></td><td> </td><td>Return the Lagrange interpolating polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
+<tr><td> </td><td><a name=length></a><code>length(x)</code></td><td> </td><td>Return the length of a table or string.</td></tr>
+<tr><td> </td><td><a href=#line><code>line(point1, point2, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a straight line.</td></tr>
+<tr><td> </td><td><a href=#linsolve><code>linsolve(A, b, opt)</code></a></td><td> </td><td>Solve a linear system <code>Ax = b</code> and return the solution.</td></tr>
+<tr><td> </td><td><a href=#linspace><code>linspace(x, y, n)</code></a></td><td> </td><td>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</td></tr>
+<tr><td> </td><td><a href=#ls><code>ls(path, printq)</code></a></td><td> </td><td>List files in the folder <code>path</code> (the current directory by default).</td></tr>
+<tr><td> </td><td><a href=#lu><code>lu(A)</code></a></td><td> </td><td>Return <code>L</code> and <code>U</code> of LU factorization <code>A = LU</code>.</td></tr>
+<tr><td> </td><td><a href=#manipulate><code>manipulate(fstr, opts)</code></a></td><td> </td><td>Manipulate the graph of function <code>f</code> with controls.</td></tr>
+<tr><td> </td><td><a href=#map><code>map(f, tbl1, tbl2, ...)</code></a></td><td> </td><td>Apply function <code>f</code> to each corresponding atomic element in tables, <code>tbl1, tbl2, ...</code>, and return the result.</td></tr>
+<tr><td> </td><td><a href=#match><code>match(tbl, f)</code></a></td><td> </td><td>Return elements of table <code>tbl</code> that satisfy specified conditions.</td></tr>
+<tr><td> </td><td><a href=#mathly><code>mathly(...)</code></a></td><td> </td><td>Constructor of Mathly matrices.</td></tr>
+<tr><td> </td><td><a href=#max><code>max(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the largest of all elements of the table; if it is a matrix, ...</td></tr>
+<tr><td> </td><td><a href=#mean><code>mean(x)</code></a></td><td> </td><td>Return mean value of numbers in <code>x</code>.</td></tr>
+<tr><td> </td><td><a href=#merge><code>merge(tbl1, tbl2)</code></a></td><td> </td><td>Merge two tables of any structure into one.</td></tr>
+<tr><td> </td><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
+<tr><td> </td><td><a name=mv><code>mv(fname1, fname2)</code></a></td><td> </td><td>Rename file/folder <code>fname1</code> to <code>fname2</code>.</td></tr>
+<tr><td> </td><td><a href=#namedargs><code>namedargs(data, opts)</code></a></td><td> </td><td>Provide support for named arguments.</td></tr>
+<tr><td> </td><td><a href=#newtonpoly><code>newtonpoly(...)</code></a></td><td> </td><td>Return the Newton interpolating polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
+<tr><td> </td><td><a href=#norm><code>norm(x)</code></a></td><td> </td><td>Return the Euclidean norm of a row/column vector <code>x</code>.</td></tr>
+<tr><td> </td><td><a href=#ones><code>ones(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> Mathly matrix of which each element is 1. If <code>m = 1</code>, return a table.</td></tr>
+<tr><td> </td><td><a href=#parametriccurve2d><code>parametriccurve2d({x(t), y(t)}, trange, style, resolution, orientationq)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a parametric curve.</td></tr>
+<tr><td> </td><td><a href=#pareto><code>pareto(data, style, style1)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pareto chart.</td></tr>
+<tr><td> </td><td><a href=#pie><code>pie(x, nbins, style, names, title)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a pie chart.</td></tr>
+<tr><td> </td><td><a href=#plot><code>plot(x, y, ...)</code></a></td><td> </td><td>Plot the graph(s) of functions defined by data points <code>x</code> and <code>y</code> and ...</td></tr>
+<tr><td> </td><td><a href=#plot3d><code>plot3d(f, xrange, yrange, title, resolution)</code></a></td><td> </td><td>Plot the 3D graph of <code>z = f(x, y)</code>.</td></tr>
+<tr><td> </td><td><a href=#plotparametriccurve3d><code>plotparametriccurve3d({x(t), y(t), z(t)}, trange, titl, resolution)</code></a></td><td> </td><td>Plot a space curve defined by <code>{x(t), y(t), z(t)}</code>.</td></tr>
+<tr><td> </td><td><a href=#plotparametricsurface3d><code>plotparametricsurface3d({x(u, v), y(u, v), z(u, v)}, urange, vrange, title, resolution, orientationq)</code></a></td><td> </td><td>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u, v)</code>.</td></tr>
+<tr><td> </td><td><a href=#plotsphericalsurface3d><code>plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)</code></a></td><td> </td><td>Plot a spherical function.</td></tr>
+<tr><td> </td><td><a href=#point><code>point(x, y, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a point.</td></tr>
+<tr><td> </td><td><a href=#polarcurve2d><code>polarcurve2d(r(t), trange, style, resolution, orientationq)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a polar curve.</td></tr>
+<tr><td> </td><td><a href=#polygon><code>polygon(vertices, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a polygon.</td></tr>
+<tr><td> </td><td><a href=#polynomial><code>polynomial(...)</code></a></td><td> </td><td>Return the polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
+<tr><td> </td><td><a href=#polyval><code>polyval(coefs, x)</code></a></td><td> </td><td>Evaluate at <code>x</code> the value of a polynomial of which the coefficients are specified in a table <code>coefs</code>.</td></tr>
+<tr><td> </td><td><a href=#powermod><code>powermod(b, n, m)</code></a></td><td> </td><td>Return <code>b<sup>n</sup> mod m</code>, i.e., the remainder of <code>b<sup>n</sup></code> divided by <code>m</code>.</td></tr>
+<tr><td> </td><td><a href=#printf><code>printf(...)</code></a></td><td> </td><td>Print formatted text like <code>printf</code> in C/C++.</td></tr>
+<tr><td> </td><td><a href=#prod><code>prod(A)</code></a></td><td> </td><td>If <code>A</code> is a table or Mathly row/column vector, return the product of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
+<tr><td> </td><td><a href=#pwd><code>pwd()</code></a></td><td> </td><td>Return present working directory.</td></tr>
+<tr><td> </td><td><a href=#qq><code>qq(c, t, f)</code></a></td><td> </td><td>If <code>c</code> is true, return <code>t</code>; otherwise, return <code>f</code>.</td></tr>
+<tr><td> </td><td><a href=#qr><code>qr(A)</code></a></td><td> </td><td>Return <code>Q</code> and <code>R</code> of QR factorization <code>A = QR</code>.</td></tr>
+<tr><td> </td><td><a href=#rand><code>rand(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> matrix of which each element is a random number in [0, 1]. If <code>m = 1</code>, return a table.</td></tr>
+<tr><td> </td><td><a href=#randi><code>randi(...)</code></a></td><td> </td><td>Return a matrix of which each element is a random integer in a specified range.</td></tr>
+<tr><td> </td><td><a href=#randn><code>randn(...)</code></a></td><td> </td><td>Return a matrix of normally distributed numbers.</td></tr>
+<tr><td> </td><td><a href=#range><code>range(x, y, step), seq(...)</code></a></td><td> </td><td>Return a sequence of numbers on <code>[x, y]</code>, starting at <code>x</code> with increment <code>step</code>.</td></tr>
+<tr><td> </td><td><a href=#remake><code>remake(A, opt)</code></a></td><td> </td><td>Generate a lower, upper, diagonal, symmetrical, or ...  matrix from matrix <code>A</code>.</td></tr>
+<tr><td> </td><td><a href=#repmat><code>repmat(A, m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> block matrix with each entry a copy of matrix <code>A</code>.</td></tr>
+<tr><td> </td><td><a href=#reshape><code>reshape(A, m, n)</code></a></td><td> </td><td>Rearrange existing elements in a table or Mathly matrix <code>A</code> and return a new <code>mxn</code> Mathly matrix.</td></tr>
+<tr><td> </td><td><a href=#reverse><code>reverse(tbl)</code></a></td><td> </td><td>Return a table with order of elements in table <code>tbl</code> reversed.</td></tr>
+<tr><td> </td><td><a href=#rm><code>rm(fname, opt)</code></a></td><td> </td><td>Remove file/folder <code>fname</code>.</td></tr>
+<tr><td> </td><td><a href=#round><code>round(x, n)</code></a></td><td> </td><td>Round <code>x</code> to <code>n</code> decimal places.</td></tr>
+<tr><td> </td><td><a href=#rr><code>rr(x, i, irange)</code></a></td><td> </td><td>Convert table <code>x</code> into a row vector or return specified row(s) of a Mathly matrix...</td></tr>
+<tr><td> </td><td><a href=#rref><code>rref(A, ...)</code></a></td><td> </td><td>Return the reduced row-echelon form of a Mathly matrix <code>A</code>.</td></tr>
+<tr><td> </td><td><a href=#save><code>save(datafile, ...)</code></a></td><td> </td><td>Save specified or all user-defined variables and their values to a Lua or MATLAB script file.</td></tr>
+<tr><td> </td><td><a href=#scatter><code>scatter(x, y, style)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a scatter plot.</td></tr>
+<tr><td> </td><td><a href=#seq><code>seq(x, y, step), range(...)</code></a></td><td> </td><td>Return a sequence of numbers on <code>[x, y]</code>, starting at <code>x</code> with increment <code>step</code>.</td></tr>
+<tr><td> </td><td><a name=size></a><code>size(A)</code></td><td> </td><td>Return the dimensions of a Mathly matrix <code>A</code>.</td></tr>
+<tr><td> </td><td><a href=#slopefield><code>slopefield(f, xrange, yrange, scale)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot the slope field of <code>dy/dx = f(x, y)</code>.</td></tr>
+<tr><td> </td><td><a href=#sort><code>sort(tbl, compf)</code></a></td><td> </td><td>Sort table <code>tbl</code> and return the resulted table.</td></tr>
+<tr><td> </td><td><a href=#printf><code>sprintf(...)</code></a></td><td> </td><td>Return a formatted string, while <code>printf</code> prints one.</td></tr>
+<tr><td> </td><td><a href=#std><code>std(x, opt)</code></a></td><td> </td><td>Return the standard deviation of numbers in <code>x</code>.</td></tr>
+<tr><td> </td><td><a href=#strcat><code>strcat(...)</code></a></td><td> </td><td>Concatenate strings and return the resulted string.</td></tr>
+<tr><td> </td><td><a href=#submatrix><code>submatrix(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></a></td><td> </td><td>Return a Mathly matrix of <code>A</code> if <code>B</code> is not specified; otherwise, copy to the submatrix of <code>A</code> from <code>B</code>.</td></tr>
+<tr><td> </td><td><a href=#subtable><code>subtable(A, irange, B, irange1)</code></a></td><td> </td><td>Return a slice of table <code>A</code> if <code>B</code> is not provided; otherwise, set the slice with <code>B</code>.</td></tr>
+<tr><td> </td><td><a href=#sum><code>sum(A)</code></a></td><td> </td><td>If <code>A</code> is a table or Mathly row/column vector, return the sum of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
+<tr><td> </td><td><a href=#tables><code>tables(expr, opts)</code></a></td><td> </td><td>Generate a table or a table of tables. A wonderful <i>Mathematica</i> tool.</td></tr>
+<tr><td> </td><td><a href=#tblcat><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></a></td><td> </td><td>Flatten and concatenate tables into a single table. Tables here may just be numbers, boolean values, or strings.</td></tr>
+<tr><td> </td><td><a href=#text><code>text(x, y, txt, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to write a text string on a graph.</td></tr>
+<tr><td> </td><td><a href=#tic><code>tic()</code></a></td><td> </td><td>Start a wall-clock timer.</td></tr>
+<tr><td> </td><td><a href=#toc><code>toc</code></a></td><td> </td><td>Print or return elapsed time on a wall-clock timer.</td></tr>
+<tr><td> </td><td><a href=#cc><code>tt(x, irange)</code></a></td><td> </td><td>Convert a Mathly matrix to a table columnwisely or flatten any other table first and return a specified slice of the resulted table.</td></tr>
+<tr><td> </td><td><a href=#unique><code>unique(tbl)</code></a></td><td> </td><td>Return the same data as in table <code>tbl</code> but with no repetitions.</td></tr>
+<tr><td> </td><td><a href=#var><code>var(x, opt)</code></a></td><td> </td><td>Return the variance of numbers in <code>x</code>.</td></tr>
+<tr><td> </td><td><a href=#vectorfield2d><code>vectorfield2d(f, xrange, yrange, scale)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot the vector field of vector function <code>f(x, y)</code>.</td></tr>
+<tr><td> </td><td><a href=#vectorangle><code>vectorangle(a, b)</code></a></td><td> </td><td>Return the angle in radians between two vectors.</td></tr>
+<tr><td> </td><td><a href=#vertcat><code>vertcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order vertically. Matrices must have the same number of columns.</td></tr>
+<tr><td> </td><td><a href=#wedge><code>wedge(r, center, angles, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a wedge of a disk.</td></tr>
+<tr><td> </td><td><a name=who></a><code>who()</code></td><td> </td><td>List all user-defined variables in the memory.</td></tr>
+<tr><td> </td><td><a href=#zeros><code>zeros</code></a></td><td> </td><td>Return a <code>mxn</code> Mathly matrix of which each element is 0. If <code>m = 1</code>, return a table.<hr></td></tr>
+
+<tr><td> </td><td><a href=#axissquare><code>axissquare(), axisnotsquare()</code></a></td><td> </td><td>Force/stop a square axis aspect ratio. <b>Note</b>: This last group of functions are not valid for 3D graphs.</td></tr>
+<tr><td> </td><td><a href=#showaxes><code>showaxes(), shownotaxes()</code></a></td><td> </td><td>Show/hide axes</td></tr>
+<tr><td> </td><td><a href=#showxaxis><code>showxaxis(), shownotxaxis()</code></a></td><td> </td><td>Show/hide the <code>x</code>-axis</td></tr>
+<tr><td> </td><td><a href=#showyaxis><code>showyaxis(), shownotyaxis</code></a></td><td> </td><td>Show/hide the <code>y</code>-axis</td></tr>
+<tr><td> </td><td><a href=#showlegend><code>showlegend(), shownotlegend()</code></a></td><td> </td><td>Show/hide the legend</td></tr>
+<tr><td> </td><td><a href=#showgridlines><code>showgridlines(), shownotgridlines()</code></a></td><td> </td><td>Show/hide gridlines</td></tr>
+</tbody>
+</table>
+
+<h4>&bull; &nbsp; <a name=animate href=#m><code>animate(fstr, opts)</code></a></h4>
+<p>See also: <code><a href=#manipulate>manipulate</a></code>.</p>
+<p>Animate a parametric curve or the graph of a single-variable function <code>f(x)</code> with controls.
+Each control is a single letter, <code>a, b, ..., z, A, B, ...</code>, or <code>Z</code>, except <code>p, t, x, y, T, X</code>,
+and <code>Y</code>. For example, <code>a, h</code>, and <code>k</code> are controls in
+<code>f(x) = a (x - h)^2 + k</code> for exploring the variation of the parabola as they change.</p>
+<p><code>fstr</code> must be a string for <code>y = f(x)</code> or a pair of strings for a parametric curve. The string(s) must be a function in the <a href=#easyf>shortcut string format</a>.</p>
+<p>The <code>opts</code> is a table of tables, used to define the ranges of <code>x, y</code>, and <code>t</code>, etc. You may include optional <code>enhancements</code> in it to improve the effect of an animation. An enhancement is
+actually a simple graphics object here, i.e., a line, a point, a text, or a parametric curve, of which the properties, <code>color, size, width</code>, whenever applicable, can be specified.
+If more properties are needed, define them through field <code>style</code> in a string, such as <code>style = "symbol: 'diamond', line: { color: 'rgb(0, 0, 0)', width: 2 }"</code> for a point. You may search keywords like
+<a href="https://www.google.com/search?q=Plotly+JavaScript+line+style" target="_blank">Plotly JavaScript line style</a>,
+<a href="https://www.google.com/search?q=Plotly+JavaScript+point+style" target="_blank">Plotly JavaScript point style</a>, and
+<a href="https://www.google.com/search?q=Plotly+JavaScript+textfont+style" target="_blank">Plotly JavaScript textfont style</a>
+for more information.</p>
+<p><ol>
+<li><code>(X, Y)</code> are the coordinates of the currently plotted point on the animated curve defined in <code>fstr</code>. If the curve is defined by parametric equations, <code>T</code> refers to the
+value of the parameter <code>t</code> for the currently plotted point; if it is defined like <code>'@(x) ...'</code>, <code>T</code> assumes the same value of <code>X</code> (because <code>y = f(x)</code> can
+naturally be parametrized as <code>{'@(t) t', '@(t) f(t)'}</code> with <code>x = t</code>). They and each control as well can be used in <code>enhancements</code>, and expressions containing them must be in
+a string, such as <code>'2*X - a * Y + k'</code>. They are global variables accessible by JavaScript code.</li>
+<li>While a control is a single letter, its label can be a word or so, defined like in <code>m = {0, 3, 1, label = 'Option'}</code>, where <code>m</code> is a control.</li>
+<li>Each control is a global variable accessible to JavaScript code. In addition, the global variable <code>mthlyTraces</code>, an array of traces to be shown on the graph, and the global constants
+like <code>mthlyxMin, mthlyxMax, mthlyxStep, mthlyyMin, mthlyyMax, mthlytMin, mthlytMax, mthlytStep, mthly&lt;c&gt;Min</code>, <code>mthly&lt;c&gt;Max</code>, and <code>mthly&lt;c&gt;Step</code>,
+the lowest and largest values and the step size of <code>x, y, t</code> and each control <code>&lt;c&gt;</code>, respectively, on the graph, are all accessible to JavaScript code. Note: <code>mthlyyStep</code>
+is not defined.</li>
+<li>All controls can be specified in <code>opts.controls</code> like <code>'ahk'</code>, <code>'a, h, k'</code>, <code>'a h, k'</code>, etc. If the field, <code>controls</code>, is not specified,
+they will be recognized automatically from the string expression of <code>y = f(x)</code> or parametric equations in <code>fstr</code> in the order they occur.</li>
+<li>With a control, field <code>default</code> defines the initial value of the control. If not provided, it defaults to <code>start</code>.<br><br></li>
+
+<li>The parameter of a parametric curve, specified in <code>fstr</code> or <code>enhancements</code>, must be <code>t</code>. The field <code>fill</code> may be specified to fill related regions
+(See <a href=#gobjspecs><code>fill = 'fa'|'ff'|'fn'|'fs'</code></a>).<br><br></li>
+
+<li>The range of a control and the parameter of a parametric curve is of the form <code>{ start, stop, step }</code>. For the parametric curve defined in <code>fstr</code>,
+if the range of <code>t</code> is omitted, it defaults to the range of <code>x</code>, if the latter is specified, or <code>{-5, 5, 0.1}</code>. <em>For a parametric curve defined in
+<code>enhancements</code>, if the range of <code>t</code> is omitted, it defaults to the range of <code>t</code> in <code>fstr</code> (when <code>fstr = {'@(t) ...', '@(t) ...}</code>)
+or <code>x</code> (when <code>fstr = '@(x) ...'</code>), so, the curve is dynamical, i.e., the curve is animated together with the curve defined by <code>fstr</code></em>;
+otherwise, the curve is static.<br><br></li>
+<li>For each graphics object defined in <code>fstr</code> or in <code>enhancements</code>, field <code>style</code> can specify more properties of the object allowed by Plotly. It is a string like
+<code>style = "dash: 'dot'"</code> and <code>style = "dash: 'dot', color: 'red', width: 2"</code> for a curve or a line. Here, <code>dot</code> can be <code>dash, dashdot, longdash,
+longdashdot</code>, etc.</li>
+<li>Field <code>opts.resolution</code> may be needed for smooth parametric curves. It defaults to 500. The larger, the smoother, but more computing power is needed.
+With each parametric curve in <code>enhancements</code>, field <code>resolution</code> can be defined separately, and its default and minimum value is 500.<br><br></li>
+
+<li>Show no title? Add <code>layout = { title = '' }</code>. No square aspect ratio? Add <code>layout = { square = false }</code>.<br><br></li>
+
+<li>The ranges of <code>x</code> and <code>y</code> define their ranges displayed on a graph.</li>
+</ol></p>
+
+<pre><code>mathly = require('mathly')
+
+fstr = '@(x) x^2'
+opts = {
+  x = {-6, 6}, y = {-2, 40},
+  layout = {width = 500, height = 350, square = false}, -- square aspect ratio, square = true, by default
+  enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
+animate(fstr, opts)
+
+fstr = {'@(t) 4*sin(t)', '@(t) 4*cos(t)'}
+opts = {t = {-2*pi, 2*pi},
+  layout = { width = 500, height = 500 },
+  enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
+animate(fstr, opts)
+
+fstr = {'@(t) 6*cos(t)', '@(t) 4*sin(t)'}
+opts = {
+  t = {0, 2*pi}, x = {-6.4, 6.4}, y = { -4.3, 4.3 },
+  layout = { width = 600, height = 400 },
+  enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
+animate(fstr, opts)
+
+-- Lua + Mathly
+fstr = {'@(t) 5 * cos(t)', '@(t) 5 * sin(t)'}
+opts = {
+  p = {0, 1, 0.4}, t = {0, 2 * pi, 0.01}, x = {-10, 10}, width = 0, color = 'darkblue',
+  layout = {
+    width = 500, height = 500,
+    xaxis = { showgrid = false, zeroline = false, showticklabels = false },
+    yaxis = { showgrid = false, zeroline = false, showticklabels = false }},
+  enhancements = {
+    {x = '@(t) 5.5 * cos(t)', y = '@(t) 5.5 * sin(t)', t = {0, 2 * pi}, color = 'darkblue', width = 0, fill = 'fs'},
+    {x = '@(t) 2.2 + 1.6 * cos(t)', y = '@(t) 2.2 + 1.6 * sin(t)', t = {0, 2 * pi}, color = 'white', width = 0, fill = 'fs'},
+    {x = 0, y = 0.7, text = 'Lua', color = 'white', size = 75},
+    {x = '@(t) (5 + 2.9) * cos(t + Math.PI/6)', y = '@(t) (5 + 2.9) * sin(t + Math.PI/6)', color = 'grey', width = 2, style = "dash: 'dash'"},
+    {x = '@(t) (5 + 2.9)*cos(T + Math.PI/4) + 1.6 * cos(t)', y = '@(t) (5 + 2.9)*sin(T + Math.PI/4) + 1.6 * sin(t)', color = 'darkblue', width = 0, t = {0, 2 * pi}, fill = 'fs'},
+    {x = '(5 + 2.9)*cos(T + Math.PI/4)', y = '(5 + 2.9)*sin(T + Math.PI/4) + 0.3', text = 'Mathly', color = 'white', size = 14}
+  }
+}
+animate(fstr, opts)
+
+-- polar curves: the code below may be used as a template
+-- butterfly curve: polar function r(θ) = e^sin(θ) - 2cos(4θ) + sin^5(θ/12)
+-------------------------------------------------------------------------
+r = 'exp(sin(t)) - 2*cos(4*t) + sin(t/12)^5'    -- r(t); change this only
+-------------------------------------------------------------------------
+fstr = {'@(t) (' .. r .. ') * cos(t)', '@(t) (' .. r .. ') * sin(t)'}
+opts = {
+  t = {0, 10 * pi, 0.01},        ----- adjust options if needed
+  x = {-4, 4}, y = {-4, 4},
+  resolution = 1000,
+  layout = {
+    width = 500, height = 500, square = true, title = '',
+    xaxis = { showgrid = false, zeroline = false, showticklabels = false },
+    yaxis = { showgrid = false, zeroline = false, showticklabels = false }},
+  enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
+animate(fstr, opts)
+</code></pre>
+
+<p>See more examples below:</p>
+<ol>
+<li><a href=examples/animate_hypocycloid.lua target="_blank">Animating hypocycloid</a></li>
+<li><a href=examples/animate_epicycloid.lua target="_blank">Animating epicycloid</a></li>
+</ol>
+
+<p>JavaScript code can be added as follows for animations which involve more complicated computing. The <code>enhancements</code> may access
+variables and functions defined in the JavaScript code.</p>
+<ol>
+<li>Names of user-defined variables and functions can NOT be <code>p, t, x, y, T, X, Y</code> where <code>p</code> is reserved for 'play'.</li>
+<li>The title of a graph can be dynamically changed through the interface, <code>displaytitle()</code>, a user-defined JavaScript function that returns a string, the title.</li>
+<li>If needed, an extra message can be displayed through the interface, <code>displaytext()</code>, a user-defined JavaScript function that returns a string, the message.</li>
+</ol>
+<p>See detailed examples below:</p>
+<ol>
+<li><a href=examples/animate_stick_endpoints.lua target="_blank">Animating one end of a stick of which the other end moves along a circle.</a></li>
+<li><a href=examples/animate_osculating_circle_1.lua target="_blank">Animating osculating circle of <code>y = sin(x)</code></a>.</li>
+<li><a href=examples/animate_osculating_circle_2.lua target="_blank">Animating osculating circle of <code>y = x<sup>2</sup></code></a>.</li>
+<li><a href=examples/animate_fixed_point_cobweb.lua target="_blank">Animating the fixed-point method or the generation of a cobweb for x = g(x).</a>
+</ol>
+
+<p>&#x2713; &nbsp; If there are multiple points, lines, and/or curves to be animated, use <code>fstr</code> to animate (the primary) one,
+and implement others through <code>enhancements</code> or in JavaScript.</p>
+<pre><code>mathly = require('mathly')
+
+fstr = '@(x) 4*sin(x)'
+-- fstr = {'@(t) 6*cos(t)', '@(t) 4*sin(t)'} -- try this one and see
+opts = {
+  t = {0, 2*pi}, x = {-6.1, 6.1}, y = { -4.3, 4.3 }, color = 'blue', width = 5, style = "dash: 'dot'",
+  layout = { width = 600, height = 400, square = true, title = 'Demo' },
+  enhancements = {
+    {x = 'X', y = 'Y', color = 'blue', size = 8, point = true},
+    {x = '@(t) -2 + cos(t)', y = '@(t) 1 + sin(t)', t = {0, pi}},                                 -- t's range is given: independent of fstr; static
+    {x = '@(t)  2 + cos(t)', y = '@(t) 1 + sin(t)', t = {0, pi}},                                 --
+    {x = '@(t) 1.5*cos(t)', y = '@(t) -0.5 + 1.5*sin(t)', t = {pi, 2*pi}},                        --
+    {x = '@(t) t', y = '@(t) 3 * sin(t)', color = 'green'},                                       -- t's range is not given: sync with fstr. note: if fstr = '@(x) ...', t = x
+    {x = '@(t) -t', y = '@(t) 3 * cos(t)', color = 'red', style = "dash: 'dashdot'"},           --
+    {x = 'T', y = '3* sin(T)', point = true, color = 'green', style = "symbol: 'circle-open'"}, -- lines, points? use T, X, and Y
+    {x = '-T', y = '3* cos(T)', point = true, color = 'red', style = "symbol: 'star'"},
+    {x = 'X', y = 'Y', text = "(x<sub>0</sub> = ' + X.toFixed(2) + ', y<sub>0</sub> = ' + Y.toFixed(2) + ')", color = '#0fff', size = 10}
+  }}
+animate(fstr, opts)
+</code></pre>
+<p>&#x2713; &nbsp; <b>Note</b>: With <code>text</code> in <code>enhancements</code>, if dynamical evaluation is needed, it must be defined like <code>text =
+<font color='red'>"...'</font> + expr1 + '...' + expr2 + '...' [+ more terms] + <font color='red'>'..."</font></code>, where ... can be any text, expr1, expr2, ...,
+are each a JavaScript expression to be evaluated dynamically. If an expression contains multiple terms, we may have to use parentheses to make them a single term,
+such as <code>(I + 1)</code>.</p>
+<h4>&bull; &nbsp; <a name=any></a><a name=all href=#m><code>all(x, f)</code>, <code>any(x, f)</code></a></h4>
+<ol>
+<li><code>all(x, f)</code>: Test if <code>f(x)</code> is true for every number in <code>x</code>.
+<p>If <code>x</code> is a table or a row/column vector, returns 1 if all elements of the table make <code>f(x)</code> true.</p>
+<p>If <code>x</code> is a Mathly matrix, returns a row vector of 1's and 0's with each element indicating
+if all of the elements of the corresponding column of the matrix make <code>f(x)</code> true.</p></li>
+
+<li><code>any(x, f)</code>: Test if there is any number in <code>x</code> such that <code>f(x)</code> is true.
+<p>If <code>x</code> is a Mathly matrix, it returns a row vector of 1's and 0's with each element indicating
+if there is any element of the corresponding column of the matrix which makes <code>f(x)</code> true.</p>
+<p>If <code>x</code> is a simple table, a row or column vector, return 1 if there is any element of the table which makes <code>f(x)</code> true.</p>
+<p style='margin: 1px 25px'>&#x2713; &nbsp; <code>f(x)</code> returns true or false (default: <code>x ~= 0</code>). It makes the two functions more useful than those in MATLAB.</p></li>
+</ol>
+<pre><code>mathly = require('mathly')
+
+A = mathly{{1, 2, 3}, {2, 3, 4}}
+all(A, isinteger)
+-- 1  1  1
+sum(all(A, isinteger)) == #A[1] -- test if all entries of A are integer
+any(A)
+-- 1  1  1
+any(A, '@(x) x > 2')
+-- 0  1  1
+x = {1, 2, 3, 4, 5, 6}
+any(x, function(x) return x % 2 == 0 end)
+-- 1
+all(x, '@(x) x % 2 == 0')
+-- 0
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=apply href=#m><code>apply(f, ...)</code></a></h4>
+<p>As with some other programming languages like <i>Mathematica</i>, it evaluates function <code>f</code> with provided arguments.</p>
+<pre><code>mathly = require('mathly')
+apply('@(x, y, z) x + y + z', {1, 2, 3})
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=circle></a><a name=line></a><a name=parametriccurve2d></a><a name=point></a><a name=polarcurve2d></a><a name=polygon></a><a name=scatter></a><a name=wedge></a>
+<a name=arc href=#m><code>arc, circle, line, parametriccurve2d, point, polarcurve2d, polygon, scatter, wedge</code></a></h4>
+<table><tbody>
+<tr><td><code>arc(radius, center, angles, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot an arc of a circle, where <code>angles: {angle1, angle2}</code> (default: <code>{0, 2&pi;}</code>).</td></tr>
+<tr><td><code>circle(radius, center, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a circle, where <code>center: {x, y} (default: {0, 0})</code>.</td></tr>
+<tr><td><code>line(point1, point2, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a straight line, where <code>point1 = {x1, y1}</code> and <code>point2 = {x2, y2}</code>.</td></tr>
+<tr><td><code>parametriccurve2d({x(t), y(t)}, trange, style, resolution, orientationq)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a parametric curve, where <code>x(t)</code> and <code>y(t)</code> are parametric functions, and <code>range = {t1, t2}</code> (default: <code>{-5, 5}</code>) indicating <code>t</code> changes from <code>t1</code> to <code>t2</code>.</td></tr>
+<tr><td><code>point(x, y, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a point, where <code>(x, y)</code> are the coordinates of the point. Note: <code>point({x1, x2, ...}, {y1, y2, ...}, style)</code> or <code> point({{x1, y1}, {x2, y2}, ...}, style)</code> is for plotting multiple points.</td></tr>
+<tr><td><code>polarcurve2d(r(&theta;), &theta;range, style, resolution, orientationq)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a polar curve, where <code>r(&theta;)</code> is a polar function, and <code>range = {&theta;1, &theta;2}</code> (default: <code>{0, 2*pi}</code>) indicating <code>&theta;</code> changes from &theta;1 to &theta;2. If <code>r</code> is a number, plot a circle with radius <code>r</code>.</td></tr>
+<tr><td><code>polygon(vertices, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a polygon, where <code>vertices = {{x1, y1}, {x2, y2}, ..., {xn, yn}}</code> specifies the coordinates of each vertex in order so that there is an edge connecting any two consecutive vertices. There is an edge connecting <code>{x1, y1}</code> and <code>{xn, yn}</code>.</td></tr>
+<tr><td><code>scatter(x, y, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a scatter plot. It has similar usage like <code>point</code>.</td></tr>
+<tr><td><code>wedge(radius, center, angles, style)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a wedge of a disk, where <code>angles = {&theta;1, &theta;2}</code> indicating &theta; changes from &theta;1 to &theta;2.</td></tr>
+</tbody></table>
+<a name=gobjspecs></a>
+<p>&#x2713; &nbsp; For most of these graphics objects, you may use the following specifications in <code>style</code>.</p>
+<table><tbody>
+<tr><td><code>'fa'</code></td><td> - </td><td>Fill to the x-Axis</td></tr>
+<tr><td><code>'ff'</code></td><td> - </td><td>Fill to to the previous Function</td></tr>
+<tr><td><code>'fn'</code></td><td> - </td><td>No filling</td></tr>
+<tr><td><code>'fs'</code></td><td> - </td><td>Fill to Self</td></tr>
+</tbody></table>
+<p>Other specification shortcuts, see <a href=#plotspecs><code>plot</code></a>.</p>
+<p>&#x2713; &nbsp; <code><b>resolution</b></code> - <a name=resol></a>Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#plot3d>plot3d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, <a href=#plotparametricsurface3d>plotparametricsurface3d</a>, <a href=#plotsphericalsurface3d><code>plotsphericalsurface3d</code></a>, and <a href=#polarcurve2d>polarcurve2d</a></code>,
+each take an argument, the minimum <code>resolution</code> (default: 100 for a surface, or 500 for a curve), for users to control the smoothness of a plotted curve or surface if needed.
+A larger value means better smoothness and requires more computing time.</p>
+
+<p>&#x2713; &nbsp; <code><b>orientationq</b></code> - Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, and <a href=#polarcurve2d>polarcurve2d</a></code>,
+each take also a last argument, <code>orientationq</code> (default: false). If it is true, a few dots of reducing sizes are plotted together with a curve to show the orientation of the parametric curve. The orientation is from large to small dots (&#10148;).</p>
+
+<p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining an anonymous function.</a></p>
+
+<pre><code>mathly = require('mathly')
+clear()
+plot(sin, point({{-2, 1.5}, {2, -1}, {2.5, 2}}), point(-1, sin(-1), {symbol='circle-open', size=18, color='red'}))
+
+x = 0.5 - rand(1, 100) * 10
+axisnotsquare()
+plot(scatter(x, cos(x)))
+plot(scatter(randi(99, 1, 200), randi(1000, 1, 200)))
+plot(scatter(randi(99, 200, 2)))
+
+data = {{-1.0, -2.0}, {0, -3}, {3, 10}, {7, 6}, {10, -2}}
+xs = linspace(data[1][1], data[#data][1], 100)
+ys = newtonpoly(data, xs)
+plot(scatter(data), xs, ys, "-")
+
+axissquare()
+plot(
+  polygon({{1, 2}, {2, 3}, {5, -1}}),
+  polygon({{-1, 2}, {1, 1}, {3, 1}, {0, -1}}, '-rfn'),
+  circle(1, {0, 0}, '-fs'),
+  point(3, 2, {symbol='circle', size=36, color='red'}),
+  circle(1, {1,1}, '-bfn')
+)
+
+plot(sin, '-rfa')
+
+x = linspace(-2.337, 0.779, 100)
+X = linspace(-5, 5, 200)
+plot(X, cos(X), X, sin(X), '-rff') -- shade regions between two curves
+plot(x, cos(x), x, sin(x), '-rff', X, cos(X), X, sin(X)) -- shade part of  ...
+
+axissquare()
+plot(
+  polarcurve2d(1.5),
+  polarcurve2d('@(t) sqrt(t) * cos(t)', {0, 4*pi}, '-b'),
+  polarcurve2d('@(t) cos(4*t)', {0, 2*pi}, '-rfs'),
+  parametriccurve2d({cos, sin}, {3/4*pi, 5/4*pi}, '-gfs')
+)
+
+do -- https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)
+  local function f(t) return (exp(cos(t)) - 2*cos(4*t) - sin(t/12)^5) end
+  local function x(t) return sin(t) * f(t) end
+  local function y(t) return cos(t) * f(t) end
+  plot(parametriccurve2d({x, y}, {0, 12*pi}), {layout={title = "Butterfly Curve"}})
+end
+
+axisnotsquare()
+r = function(t) return sin(1.6 * t^2) + cos(4 * t)^5 end
+plot(polarcurve2d(r, {0, 8*pi}, '-sfn'), {layout={width=800, height=800}})
+plot(polarcurve2d(r, {0, 8*pi}, '-sfn', 10000), {layout={width=800, height=800}}) -- increase resolution to improve smoothness
+
+gobjs = {}
+for i = 1, 6 do
+  gobjs[i] = polarcurve2d(function(t) return sin(1.6 * t^2) + cos(i * t)^5 end, {0, 8*pi}, '-sfn', 10000)
+end
+plot({layout={width=1300, height=1200, grid={rows=2, columns=3}, title='Example'},
+      names={'i=1', 'i=2', 'i=3', 'i=4', 'i=5', 'i=6'}}, table.unpack(gobjs))
+
+axissquare()
+plot(
+  parametriccurve2d({'@(t) 3*cos(t)', '@(t) 3*sin(t)'}, {0, 2*pi}, {orientationq = true}), -- counter clockwise
+  parametriccurve2d({'@(t) 2*sin(t)', '@(t) cos(t)'}, {0, 2*pi}, {orientationq = true}),   -- clockwise
+  parametriccurve2d({'@(t) 2.5*sin(t)', '@(t) 2.5*cos(t)'}, {0, 2*pi}, {color = 'green'}))
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=showlegend></a><a name=shownotlegend></a><a name=shownotyaxis></a><a name=showyaxis></a><a name=shownotxaxis></a><a name=showxaxis></a><a name=axissquare></a><a name=axisnotsquare></a><a name=showaxes></a><a name=shownotaxes></a><a name=showgridlines></a><a name=shownotgridlines></a><a href=#m><code>axissquare, axisnotsquare; showaxes, shownotaxes ...</code></a></h4>
+<table><tbody>
+<tr><td><code>axissquare(),    axisnotsquare()</code></td><td> &nbsp; </td><td>Force or stop a square axis aspect ratio (default: not square)</td></tr>
+<tr><td><code>showaxes(),      shownotaxes()</code></td><td> &nbsp; </td><td>Show/hide axes (all default: show)</td></tr>
+<tr><td><code>showxaxis(),     shownotxaxis()</code></td><td> &nbsp; </td><td>Show/hide the <code>x</code>-axis</td></tr>
+<tr><td><code>showyaxis(),     shownotyaxis()</code></td><td> &nbsp; </td><td>Show/hide the <code>y</code>-axis</td></tr>
+<tr><td><code>showgridlines(), shownotgridlines()</code></td><td> &nbsp; </td><td>Show/hide gridlines</td></tr>
+<tr><td><code>showlegend(),    shownotlegend()</code></td><td> &nbsp; </td><td>Show/hide the legend</td></tr>
+</tbody></table>
+<p>&#x2713; &nbsp; These functions are not valid for 3D graphs.</p>
+
+<h4>&bull; &nbsp; <a name=bin2dec></a><a name=bin2hex></a><a name=bin2oct></a><a name=dec2bin></a>
+<a name=dec2hex></a><a name=dec2oct></a><a name=hex2bin></a><a name=hex2dec></a>
+<a name=hex2oct></a><a name=oct2bin></a><a name=oct2dec></a>
+<a name=oct2hex href=#m><code>bin2dec, bin2hex, bin2oct; dec2bin, dec2hex, dec2oct; hex2bin, hex2dec, hex2oct; oct2bin, oct2dec, oct2hex</code></a></h4>
+<table><tbody>
+<tr><td><code>dec2bin(x), hex2bin(x), oct2bin(x)</code></td><td> - </td><td>Convert decimal/hexadecimal/octal integer <code>x</code> to binary</td></tr>
+<tr><td><code>bin2dec(x), hex2dec(x), oct2dec(x)</code></td><td> - </td><td>Convert binary/hexadecimal/octal integer <code>x</code> to decimal</td></tr>
+<tr><td><code>bin2oct(x), dec2oct(x), hex2oct(x)</code></td><td> - </td><td>Convert binary/decimal/hexadecimal integer <code>x</code> to octal</td></tr>
+<tr><td><code>bin2hex(x), dec2hex(x), oct2hex(x)</code></td><td> - </td><td>Convert binary/decimal/octal integer <code>x</code> to hexadecimal</td></tr>
+</tbody></table>
+<p>Note: <code>x</code> can be a decimal integer (for all <code>dec2...</code> functions), a string of a valid binary/octal/hexadecimal integer, or a table
+of integers or strings of intgers.</p>
+<p>&#x2713; &nbsp; Not as with all other cases, even if <code>x</code> for function <code>dec2...</code> is a Mathly matrix, the result is a Lua table
+rather than a Mathly matrix. Mathly matrices can only have numerical entries.</p>
+<p>&#x2713; &nbsp; Function <code>...2dec(x)</code> treats input string <code>x</code> as an unsigned integer.</p>
+<pre><code>mathly = require('mathly')
+
+disp(dec2bin(123)) -- '1111011'
+disp(dec2hex(123)) -- '7b'
+disp(dec2oct(123)) -- '173'
+disp(oct2dec('173')) -- 123
+
+disp(dec2bin({123, 124, 125, {126, {127, 128}}}))
+-- {'1111011', '1111100', '1111101', {'1111110', {'1111111', '10000000'}}}
+disp(hex2dec(dec2hex({123, 124, 125, {126, {127, 128}}})))
+-- {123, 124, 125, {126, {127, 128}}}
+
+a = mathly{{75, 28}, {90, 6}}
+display(dec2bin(a))
+-- {{'1001011', '11100'}, {'1011010', '110'}}
+disp(oct2hex(dec2oct(a)))
+disp(dec2hex(a))
+-- {{'4b', '1c'}, {'5a', '6'}}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=cat><code>cat(filename)</code></a></h4>
+<p>Print the content of text file <code>filename</code> in Lua REPL. If no path is specified, the file must be in present working directory.</p>
+<p>See also: <a href=#pwd><code>pwd</code></a>.</p>
+
+<h4>&bull; &nbsp; <a name=cc></a><a name=rr></a><a name=tt href=#m><code>cc, rr, tt</code></a></h4>
+<p>A matrix operation may be applied to an ordinary table. It takes the table as a row or column vector according to the very context.
+If you want full control, you can use <code>cc</code> or <code>rr</code> to tell Mathly whether the table is a column or row vector.</p>
+<p>Each function has an argument, <code>irange</code>, a range of index values. See <a href=#copy>copy</a>.</p>
+<table><tbody>
+<tr><td width=20></td><td><code>cc(x, i, irange)</code></td><td> </td><td width=10> </td><td>Convert table <code>x</code> into a column vector or return specified columns of a Mathly matrix...</td></tr>
+<tr><td></td><td><code>rr(x, i, irange)</code></td><td> </td><td> </td><td>Convert table <code>x</code> into a row vector or return specified rows of a Mathly matrix...</td></tr>
+<tr><td></td><td><code>tt(x, irange)</code></td><td> </td><td> </td><td>Convert <code>x</code> to an ordinary table and return a slice of it.</td></tr>
+</tbody></table>
+<p>&#x2713; &nbsp; Why not <code>cc</code>, <code>rr</code>, and <code>tt</code>? It is because they can easily be used
+as names of variables or so.</p>
+<p>&#x2713; &nbsp; <code>rr</code> and <code>cc</code> have same usage, except that one is about row(s) and the other is about column(s). Take <code>rr</code> as an example:</p>
+<table><tbody>
+<tr><td width=20></td><td><code>rr(x)</code></td><td width=10></td><td>Convert <code>x</code> to a row vector.</td></tr>
+<tr><td width=20></td><td><code>rr(A, i)</code></td><td></td><td>Return a row vector which is the <code>i</code>-th row of matrix <code>A</code>.</td></tr>
+<tr><td width=20></td><td><code>rr(A, i, {start, stop, step})</code></td><td></td><td>Return a row vector which is a slice of the <code>i</code>-th row of matrix <code>A</code> starting from column
+<code>start</code> to <code>stop</code> increasing by <code>step</code>.</td></tr>
+<tr><td width=20></td><td><code>rr(A, {i<sub>1</sub>, i<sub>2</sub>, ...})</code></td><td></td><td>Return a matrix consisting of rows <code>i<sub>1</sub></code>, <code>i<sub>2</sub></code>,
+..., of <code>A</code>.</td></tr>
+<tr><td width=20></td><td><code>rr(A, {i<sub>1</sub>, i<sub>2</sub>, ...}, {start, stop, step})</code></td><td></td><td>Return a matrix consisting of rows <code>i<sub>1</sub></code>, <code>i<sub>2</sub></code>,
+..., of <code>A</code>. Each row is a slice of the very row of <code>A</code> starting from column <code>start</code> to <code>stop</code> increasing by <code>step</code></td></tr>
+<p></p>
+</tbody></table>
+<b><p>Notes:</p></b>
+<ol>
+<li><code>i</code>, <code>i</code><sub>1</sub>, <code>i</code><sub>2</sub>, ..., <code>start</code>, and <code>stop</code> can be negative integers.
+E.g., if <code>i = -1</code>, it refers to the last row/column; if <code>i = -2</code>, it denotes the row/column right before the last row/column;
+... <code><a href=#submatrix>submatrix</a></code> and <code><a href=#subtable>subtable</a></code> allow this usage, too.<p></p></li>
+<li>The default value of <code>step</code> depends on the values of <code>start</code> and <code>stop</code>. If <code>start &le; stop</code>, it
+is <code>1</code>; otherwise, it is <code>-1</code>.
+And the default value of <code>stop</code> is <code>-1</code>, i.e., the index of the last entry of a row/column.<p></p></li>
+<li><code>cc(A)</code> and <code>rr(A)</code> each flatten a matrix <em>rowwisely</em>, but <code>tt(A)</code> does it <em>columnwisely</em>.</li>
+</ol>
+<pre><code>-- use cc or rr to control matrix operations, or let Mathly determine the type of operation
+
+mathly = require('mathly')
+
+a = mathly({1, 2, 3}, 3)
+disp(a)
+-- 1
+-- 2
+-- 3
+a * {2, 3, 4}   -- or a * rr{2, 3, 4} -- (3x1 matrix) * (1x3 matrix) --> 3x3 matrix
+-- 2  3  4
+-- 4  6  8
+-- 6  9  12
+a * cc{2, 3, 4} -- (3x1 matrix) * (3x1 matrix) --> (3x1 matrix) .* (3x1 matrix) in MATLAB
+cc{2, 3, 4} * a
+-- 2
+-- 6
+-- 12
+{2, 3, 4} * a   -- or rr{2, 3, 4} * a -- (1x3 matrix) * (3x1 matrix) --> 1x1 matrix
+-- 20
+
+a = mathly({1, 2, 3})
+disp(a)
+-- 1  2  3
+a * {2, 3, 4}   -- elementwise product --> (1x3 matrix) .* (1x3 matrix) in MATLAB
+-- 2  6  12
+
+-- another basic usage of cc and rr, taking rr as the example
+
+A = mathly{{1, 2, 3, 4}, {2, 3, 4, 5}, {3, 4, 5, 6}}
+disp(A)
+-- 1  2  3  4
+-- 2  3  4  5
+-- 3  4  5  6
+display(rr({1, 2, 3})) -- or rr(cc(A, 1))  -- return a row vector
+-- {{1, 2, 3}}
+display(rr(A))         -- return a row vector with elements of a matrix flattened rowwisely
+--  {{1, 2, 3, 4, 2, 3, 4, 5, 3, 4, 5, 6}}
+display(rr(A[2]))      -- or rr(A, 2); return the 2nd row of A
+display(rr(A, -1))     -- return the last row of A
+rr(A, {1, -2, 1, -1})  -- rows can be rearranged in certain order with repetitions allowed
+-- 1  2  3  4
+-- 2  3  4  5
+-- 1  2  3  4
+-- 3  4  5  6
+
+-- complicated usage that is not needed usually
+
+rr(A, 3, {2, -1}) -- return the 3rd row of A starting from the 2nd column to the last
+-- 4  5  6
+rr(A, 3, {2, 3})  -- return the 3rd row of A starting from the 2nd column to the 3rd one
+-- 4  5
+rr(A, {1, -2, 1, -1}, {2, -1}) -- from the 2nd column to the last
+-- 2  3  4
+-- 3  4  5
+-- 2  3  4
+-- 4  5  6
+rr(A, {1, -2, 1, -1}, {2, -1, 2})
+-- 2  4
+-- 3  5
+-- 2  4
+-- 4  6
+rr(A, {1, -2, 1, -1}, {-1, 2}) -- from the last to the second
+-- 4  3  2
+-- 5  4  3
+-- 4  3  2
+-- 6  5  4
+</code></pre>
+<p>&#x2713; &nbsp; <code>tt(x, irange)</code> may be used to replace <a href=#subtable><code>subtable</code></a>. If <code>x</code> is a Mathly matrix, it is converted to a table columnwisely first;
+if it is any other table, it is flattened first. Comparatively, <code>subtable</code> doesn't carry out any conversion.
+For row wise flattening, see also <a href=#cc><code>cc</code></a>, <a href=#rr><code>rr</code></a>, and <a href=#flatten><code>flatten</code></a>.</p>
+<table><tbody>
+<tr><td width=20></td><td><code>i1</code></td><td> </td><td width=10> </td><td>Initial value of index (default: 1).</td></tr>
+<tr><td></td><td><code>i2</code></td><td> </td><td> </td><td>Terminal value of index (default: size of the converted table of <code>x</code>).</td></tr>
+<tr><td></td><td><code>s</code></td><td> </td><td> </td><td>Step size (default: <code>1</code> or <code>-1</code>, depending on the values of <code>i1</code> an <code>i2</code>).</td></tr>
+</tbody></table>
+<pre><code>
+mathly = require('mathly')
+
+a = mathly{{52, 67, 82}, {82, 15, 70}, {94, 82, 50}}
+-- 52  67  82
+-- 82  15  70
+-- 94  82  50
+display(tt(a)) -- flatten a matrix columnwisely first
+-- {52, 82, 94, 67, 15, 82, 82, 70, 50}
+display(tt(a, {3, -1}))
+-- {94, 67, 15, 82, 82, 70, 50}
+display(tt(a, {-6, -2}))
+-- {67, 15, 82, 82, 70}}
+display(tt(a, {1, -1, 3}))
+-- {52, 67, 82}
+display(tt({1, 2, 3, 4, 5, 6}, {-1, 1, -1}))
+-- {6, 5, 4, 3, 2, 1}
+display(tt({1, 2, 3, 4, 5, 6}, {-1, 1, -2}))
+-- {6, 4, 2}
+
+x = {1, 2, {3}, 4, {{5, 6, {7}}}}
+display(tt(x))
+-- {1, 2, 3, 4, 5, 6, 7}
+display(subtable(x, {2, 4})) -- no flattening
+-- {2, {3}, 4}
+display(tt(x, {2, 4}))       -- flattened first
+-- {2, 3, 4}
+display(tt(x, {2, -1}))
+-- {2, 3, 4, 5, 6, 7}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=contourplot href=#m><code>contourplot(f, xdata, ydata, style)</code></a></h4>
+<P>Prepare a graphics object for <code>plot</code> to plot the contour map of function <code>f(x, y)</code>.</P>
+<p><code>xdata</code> and <code>ydata</code> can be either ranges or tables of numbers. <code>ydata</code>
+defaults to <code>xdata</code>. A range here takes the format of <code>{x1, x2, x3}</code> where x3 (default: 100)
+specifies how many numbers in the range from <code>x1</code> to <code>x2</code> will be generated evenly and used.
+Larger <code>x3</code> means better smoothness of the level/contour curves.</p>
+<pre><code>mathly= require('mathly')
+clear()
+function f(x, y) return x^2 - y^2 end
+plot(contourplot(f, {-5, 5}, {-8, 8}), {layout={width=500, height=600}})
+
+axissquare()
+plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}))
+plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, {style = {}})) -- remove default style
+plot(contourplot('@(x, y) -3*x / (x^2 + y^2 + 1)', {-5, 5, 500}))
+plot(contourplot('@(x, y) -x*y * exp(-x^2 - y^2)', linspace(-1.7, 1.7, 500)))
+
+style = { contours = {
+  coloring = 'heatmap', -- values of coloring: 'lines', 'heatmap', 'fill'
+  -- colorscale = 'reds', -- 'Viridis', -- 'Jet', 'Electric', 'reds'
+  -- dx = 10, x0 = 5, dy = 20, y0 = 10
+  showscale = true, showlabels = true,
+  labelfont = { family = 'Raleway', size = 12, color = 'blue'}
+}}
+plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, {style = style}))
+
+shownotlegend()
+x = linspace(-5, 5, 100)
+style = {line = { color = 'black', width = 1, dash = 'solid', smoothing = 0}}
+plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, {style = style}), x, sin(x), '-r')
+
+style = {colorscale = 'Viridis', contours = { coloring = 'lines'}, showscale = false}
+x = linspace(-5, 1.2, 100)
+y = 1.3*(x + 1.73) + 1.4
+plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, {style = style}), x, y)
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=copy href=#m><code>copy(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></a></h4>
+<table><tbody>
+<tr><td width=20></td><td>Make a deep copy of matrix <code>A</code></td><td width=10> - </td><td><code>copy(A, rowrange,
+columnrange)</code></td></tr>
+<tr><td></td><td>Make a deep copy of table <code>A</code></td><td> - </td><td><code>copy(A, irange)</code></td></tr>
+<tr><td></td><td></td><td> </td><td>&nbsp;</td></tr>
+<tr><td></td><td>Copy to matrix <code>A</code> from matrix <code>B</code></td><td> - </td><td><code>copy(A, rowrange, columnrange,
+B, rowrange1, columnrange1)</code></td></tr>
+<tr><td></td><td>Copy to table <code>A</code> from table <code>B</code></td><td> - </td><td><code>copy(A, irange, B,
+irange1)</code></td></tr>
+</tbody></table>
+
+<P>It is a general tool for making a deep copy of <code>x</code>. If <code>x</code> is a table, <code>rowrange</code> can be
+specified. If it is further a (Mathly) matrix, <code>columnrange</code> can be specified.</P>
+
+<p>Arguments <code>rowrange*</code> and <code>columnrange*</code> are ranges of index values described below.</p>
+<p>&#x2713; &nbsp; A <em>range of index values</em> is denoted in the format of <code>{start, stop[, step]}</code>, where
+<code>start</code> and <code>stop</code> are the starting and terminal index values, respectively, with index increasing by
+<code>step</code>. Both can be negative with <code>-1</code> referring to the last element (row/column) of a table (or
+matrix), <code>-2</code> the next last element, and so on. <code>step</code> defaults to <code>1</code> if <code>start</code>
+is less than <code>stop</code>; otherwise, it defaults to <code>-1</code>. Especially, '*' as a shortcut can be used to
+denote the whole range of index values.</p>
+<p>For example, given that <code>x = {1, 2, 3, 4, 5, 6, 7}</code>, <code>{1, -1}</code> is the same as <code>'*', {1, -1, 1}</code>,
+or <code>{1, 7, 1}</code>, and <code>{-1, 1}</code> is the same as <code>{7, 1}</code> or <code>{7, 1, -1}</code>.
+<p>&raquo; Make a deep copy of any kind of tables</p>
+<pre><code>mathly= require('mathly')
+
+a = {1, 2, {3, 4, x = {5, y = 6, 7}}}
+b = copy(a)
+b[3] = 0
+display(a)
+-- {1, 2, {3, 4, x = {5, 7, y = 6}}}
+display(b)
+-- {1, 2, 0}
+
+A = mathly{{1, 2}, {3, 4}}
+B = copy(A) -- or copy(A, {1, -1, 1}) --or copy(A, {1, -1, 1}, {1, -1, 1})
+B[1][1] = 0
+disp(A)
+-- 1 2
+-- 3 4
+
+x = {1, 2, 3, 4, 5, 6, 7, 'abc'}
+y = copy(x, {5, -1})
+disp(y)
+-- {5, 6, 7, 'abc'}
+y = copy(x, {2, -1, 2})
+disp(y)
+-- {2, 4, 6, 'abc'}
+y = copy(x, {-1, 1, -3})
+disp(y)
+-- {'abc', 5, 2}
+
+x = {1, 2, hi = {2, 3, abc = {1, 2, bcd = 6, 2, 7, 'hello', true, false, cde = 1}}}
+display(x)
+-- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1, bcd = 6}}}
+y = copy(x)
+x.hi.abc.bcd = nil
+display(x)
+-- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1}}}
+display(y)
+-- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1, bcd = 6}}}
+</code></pre>
+<p>&raquo; Make a deep copy of a mxn matrix</p>
+<pre><code>mathly= require('mathly')
+
+a = mathly{{22, 15, 94, 77, 48}, {43, 58, 96, 64,  5},
+           {20, 85, 90, 37, 92}, {16, 67,  9, 56, 33}}
+disp(a)
+-- 22  15  94  77  48
+-- 43  58  96  64   5
+-- 20  85  90  37  92
+-- 16  67   9  56  33
+
+display(copy(a, 2)) -- or rr(a, 2); MATLAB: a(2, :)
+-- {{43, 58, 96, 64, 5}}
+
+display(copy(a, 2, {1, 3})) -- MATLAB: a(2, 1:3)
+-- {{43, 58, 96}}
+
+copy(a, '*', 2) -- or cc(a, 2); MATLAB: a(:, 2)
+-- 15
+-- 58
+-- 85
+-- 67
+
+copy(a, {1, 3}, 2) -- MATLAB: a(1:3, 2)
+-- 15
+-- 58
+-- 85
+
+copy(a, '*', {1, 3}) -- or copy(a, nil, {1, 3}) -- MATLAB: a(:, 1:3)
+-- 22  15  94
+-- 43  58  96
+-- 20  85  90
+-- 16  67   9
+
+copy(a, {2, -2}) -- or copy(a, {2, -2}, '*') -- MATLAB: a(2:end-1, :)
+-- 43  58  96  64   5
+-- 20  85  90  37  92
+
+copy(a, {1, -2, 2}, {1, 4}) -- MATLAB: a(1:2:end-1, 1:4)
+-- 22  15  94  77
+-- 20  85  90  37
+</code></pre>
+<p>&raquo; Copy to matrix <code>A</code> from another matrix <code>B</code></p>
+&#x2713; &nbsp; Be careful that <code>A</code> is modified!</P>
+<pre><code>mathly= require('mathly')
+
+a = mathly{{22, 15, 94, 77, 48, 31}, {43, 58, 96, 64,  5, 12},
+           {20, 85, 90, 37, 92, 7}, {16, 67,  9, 56, 33, 10}}
+disp(a)
+-- 22  15  94  77  48  31
+-- 43  58  96  64   5  12
+-- 20  85  90  37  92   7
+-- 16  67   9  56  33  10
+
+b = copy(a)
+copy(b, 3, {2, 4}, {1, 2, 3}) -- MATLAB: b(3, 2:4) = [1, 2, 3]
+-- 22  15  94  77  48  31
+-- 43  58  96  64   5  12
+-- 20   1   2   3  92   7
+-- 16  67   9  56  33  10
+
+b = copy(a)
+copy(b, {3, -1}, {4, -1}, {{1, 2, 3}, {4, 5, 6}}) -- MATLAB: b(3:end, 4:end) = [1, 2, 3; 4, 5, 6]
+-- 22  15  94  77  48  31
+-- 43  58  96  64   5  12
+-- 20  85  90   1   2   3
+-- 16  67   9   4   5   6
+
+b = copy(a)
+copy(b, {3, 4}, {4, -1, 2}, {{1, 2, 3, 4, 5, 6}, {4, 5, 6, 7, 8, 9}}, '*', {1, -1, 3})
+-- 22  15  94  77  48  31
+-- 43  58  96  64   5  12
+-- 20  85  90   1  92   4
+-- 16  67   9   4  33   7
+
+b = copy(a)
+copy(b, {3, 4}, {2, 4}, 100)
+-- 22   15   94   77   48   31
+-- 43   58   96   64    5   12
+-- 20  100  100  100   92    7
+-- 16  100  100  100   33   10
+
+b = copy(a)
+copy(b, {1, -1, 2}, '*', 0) -- '*' can be replaced with nil or {1, -1, 1}
+--  0   0   0   0   0   0
+-- 43  58  96  64   5  12
+--  0   0   0   0   0   0
+-- 16  67   9  56  33  10
+
+b = copy(a)
+copy(b, '*', {1, -1, 2}, 0)
+-- 0  15   0  77   0  31
+-- 0  58   0  64   0  12
+-- 0  85   0  37   0   7
+-- 0  67   0  56   0  10
+
+b = copy(a)
+copy(b, 1, {1, -1, 2}, {100, 200, 300})
+-- 100   15  200   77  300   31
+--  43   58   96   64    5   12
+--  20   85   90   37   92    7
+--  16   67    9   56   33   10
+
+b = copy(a)
+copy(b, '*', 2, {-1, -2, -3, -4, -5})
+-- 22  -1  94  77  48  31
+-- 43  -2  96  64   5  12
+-- 20  -3  90  37  92   7
+-- 16  -4   9  56  33  10
+
+b = copy(a)
+copy(b, '*', 2, {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10}, {2, -1, 2})
+-- 22  -2  94  77  48  31
+-- 43  -4  96  64   5  12
+-- 20  -6  90  37  92   7
+-- 16  -8   9  56  33  10
+</code></pre>
+<p>&raquo; Copy to table <code>A</code> from another table <code>B</code> - usage: copy(A, irange, B, irange1)</p>
+&#x2713; &nbsp; Be careful that <code>A</code> is modified!</P>
+<pre><code>mathly= require('mathly')
+
+a = mathly{{22, 15, 94, 77, 48, 31}, {43, 58, 96, 64,  5, 12}}
+disp(a)
+-- 22  15  94  77  48  31
+-- 43  58  96  64   5  12
+copy(a[1], {2, -1}, {1, 2, 3, 4, 5})
+disp(a)
+-- 22   1   2   3   4   5
+-- 43  58  96  64   5  12
+
+copy(a, '*', {2, 4}, {{0, 1, 2}, {0, -1, -2}})
+disp(a)
+-- 22   0   1   2   4   5
+-- 43   0  -1  -2   5  12
+
+a = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+b = copy(a)
+copy(b, {2, -1, 2}, {-1, -2, -3, -4, -5, -6, -7, -8})
+disp(b)
+-- 1  -1   3  -2   5  -3   7  -4   9
+
+b = copy(a)
+copy(b, {2, -1, 2}, {-1, -2, -3, -4, -5, -6, -7, -8, -9}, {2, -1, 2})
+disp(b)
+-- 1  -2   3  -4   5  -6   7  -8   9
+
+b = copy(a)
+copy(b, {3, -3}, 100)
+disp(b)
+-- 1    2  100  100  100  100  100    8    9
+</code></pre>
+<p>For MATLAB users, the following comparison may be helpful.</p>
+<pre><code>-- copy or set a submatrix
+A = randi(99, 4, 5)
+disp(A)
+
+MATLAB: B = randi([-100, 100], 5, 7)
+Mathly: B = randi({-100, 100}, 5, 7)
+
+MATLAB: x = A(1:2:end, 2)
+Mathly: x = copy(A, {1, -1, 2}, 2) -- end ==> -1
+
+MATLAB: x = A(2:end, 1:3:end)
+Mathly: x = copy(A, {2, -1}, {1, -1, 3})
+
+MATLAB: A(:, 2) = [1, 2, 3, 4]
+Mathly: copy(A, '*', 2, {1, 2, 3, 4})
+
+MATLAB: A(2, :) = [1, 2, 3, 4, 5]
+Mathly: copy(A, 2, '*', {1, 2, 3, 4, 5})
+
+MATLAB: A(1:2, 2:4) = [-1, -2, -3; 0, 1, 2]
+Mathly: copy(A, {1, 2}, {2, 4}, {{-1, -2, -3}, {0, 1, 2}})
+
+MATLAB: A(1:2:end, 4:-1:2) = B(1:3:end, 5:-1:3)
+Mathly: copy(A, {1, -1, 2}, {4, 2, -1}, B, {1, -1, 3}, {5, 3, -1})
+
+-- copy or set a slice of a table/vector
+A = randi(99, 1, 5)
+disp(A)
+
+MATLAB: B = randi([-100, 100], 1, 7)
+Mathly: B = randi({-100, 100}, 1, 7)
+
+MATLAB: x = A(1:2:end)
+Mathly: x = copy(A, {1, -1, 2})
+
+MATLAB: x = A(end:-1:1)
+Mathly: x = copy(A, {-1, 1})
+
+MATLAB: A(1:end-1) = [1, 2, 3, 4]
+Mathly: copy(A, {1, -2}, {1, 2, 3, 4})
+
+MATLAB: A(1:2:end) = [-1, -2, -3]
+Mathly: copy(A, {1, -1, 2}, {-1, -2, -3})
+
+MATLAB: A(1:2:end) = B(1:3:end)
+Mathly: copy(A, {1, -1, 2}, B, {1, -1, 3})
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=cross href=#m><code>cross(a, b)</code></a></h4>
+<P>Return the cross/vector product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>}</code>
+and <code>b = {b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub>}</code>.</P>
+<pre><code>mathly = require('mathly')
+display(cross({1, 2, 3}, {3, 4, 5}))
+-- {-2, 4, -2}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=demathly href=#m><code>demathly(x)</code></a></h4>
+<p>Force <code>x</code> to be an ordinary Lua table. It is not a Mathly matrix now.</p>
+<p>It is provided for special purposes. If no matrix operations are needed/allowed or the structure of a
+matrix is damaged (on purpose), you had better call it.</p>
+<p>See also: <a href=#mathly>mathly</a>.</p>
+<pre><code>mathly = require('mathly')
+
+A = mathly{{1, 2}, {3, 4}}
+A[1][2] = {5, 6, 7}
+A[3] = 10
+demathly(A) -- A is no longer a Mathly matrix
+-- A^T, A*A, 3*A, det(A), inv(A), ... -- not allowed
+disp(A)
+disp(map('@(x) 2*x', A)) -- map is still a great tool
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=diff1></a><a name=diff2></a><a name=diff href=#m><code>diff</code> (or <code>diff1</code>), <code>diff2</code></a></h4>
+<p>Calculate numerically the first (<code>diff</code> or <code>diff1</code>) and the second (<code>diff2</code>) derivatives of <code>f(x)</code>
+at a point.</p>
+<p>Mathly doesn't have any plan for symbolic computing. These commands are provided simply for certain convenience. 12-point and 13-point central
+finite difference formulas, generated by <a href=https://github.com/fdformula/FiniteDifferenceFormula.jl target="_blank">Finite Difference Formula
+Toolkit</a>, are used for <code>f'</code> and <code>f''</code>, respectively.
+<pre><code>mathly = require('mathly')
+
+disp(diff(sin, 1))
+disp(diff1(sin, 1))
+-- 0.54030230586815 (exact: 0.54030230586814)
+disp(diff2(sin, 1))
+-- -0.84147098480964 (exact: -0.8414709848079)
+
+f = fstr2f('@(x) 0.5*x^2')
+x0 = 2
+plot(f, '@(x) f(x0) + diff(f, x0)*(x - x0)')
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=diag href=#m><code>diag(A, ...)</code></a></h4>
+<ol>
+<li><code>diag( A, k )</code>, where <code>A</code> is a Mathly <code>mxn</code> matrix, <code>m &ne; 1</code> and <code>n &ne; 1</code>.
+<p>Return the table of all entries of the <code>k</code>-th diagonal as a column vector.</p>
+<p>The second argument <code>k</code> is optional. Its default value is 0.</p>
+<p>Which diagonal? If <code>k = 0</code>, the main diagonal; if <code>k = j</code>, the diagonal <code>j</code> rows above (if <code>j &gt; 0</code>)
+or <code>-j</code> rows below the main diagonal (if <code>j &lt; 0</code>). E.g., if <code>k = 1</code>, the diagonal right above the main
+diagonal; if <code>k = -1</code>, the diagonal right below the main diagonal.</p></li>
+
+<li><code>diag(v)</code>, where <code>v</code> is a table or a row/column vector.
+<p>Return a <code>nxn</code> matrix with <code>v</code> as its main diagonal, where <code>n = length(v)</code>.</p></li>
+
+<li><code>diag(v, k)</code>, where <code>v</code> is a table or a row/column vector.
+<p>If <code>k &gt; 0</code>, return a matrix with <code>v</code> as the diagonal <code>k</code> rows above the main diagonal.</p>
+<p><code>If k &lt; 0</code>, return a matrix with <code>v</code> as the diagonal <code>-k</code> rows below the main diagonal</p>
+<p>If <code>k = 0</code>, same as <code>diag(v)</code>.</p></li>
+
+<li><code>diag(v, m, n)</code>, where <code>v</code> is a table or a row/column vector.</p>
+<p>Return a <code>mxn</code> matrix with vector v (or first elements in it) as its main diagonal.</p></li>
+</ol>
+<p>See also: <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>,
+<a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>,
+<a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>,
+<a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>,
+<a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <code><a href=#match>match</a></code>.</p>
+<pre><code>mathly = require('mathly')
+
+a = mathly{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
+disp(a)
+-- 1  2  3
+-- 2  3  4
+-- 3  4  5
+-- 4  5  6
+disp(diag(a))
+-- 1
+-- 3
+-- 5
+disp(diag(a, 1))
+-- 2
+-- 4
+disp(diag(a, -2))
+-- 3
+-- 5
+diag({1, 2, 3})
+-- 1  0  0
+-- 0  2  0
+-- 0  0  3
+diag({1, 2, 3, 4}, 3, 2)
+-- 1  0
+-- 0  2
+-- 0  0
+diag({1, 2, 3},2)
+-- 0  0  1  0  0
+-- 0  0  0  2  0
+-- 0  0  0  0  3
+-- 0  0  0  0  0
+-- 0  0  0  0  0
+diag({1, 2, 3},-1)
+-- 0  0  0  0
+-- 1  0  0  0
+-- 0  2  0  0
+-- 0  0  3  0
+diag({2,3,4,5}, 1) + diag({1,2,3,4,5}) + diag({3,4,5,6}, -1) -- See also: <a name=diag1></a><a href=#remake1>remake</a>
+-- 1  2  0  0  0
+-- 3  2  3  0  0
+-- 0  4  3  4  0
+-- 0  0  5  4  5
+-- 0  0  0  6  5
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=disp></a><a name=display href=#m><code>disp(A), display(x)</code></a></h4>
+<table>
+<tr><td><code>disp(x)</code></td><td> - </td><td>Print a Mathly matrix. If <code>x</code> is not a Mathly matrix, <code>display</code> is called to print it.</td></tr>
+<tr><td><code>display(x)</code></td><td> - </td><td>Print a table, including any Mathly matrix, with structure.</td></tr>
+</table>
+<p>&#x2713; &nbsp; You can always use <code>disp</code> in all cases (except that you want to know the structure of a Mathly matrix).</p>
+<pre><code>mathly = require('mathly')
+
+a = eye(3)
+disp(a)
+-- 1 0 0
+-- 0 1 0
+-- 0 0 1
+display(a)
+-- {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
+
+x = {1, 2, {3, 4, {5, 6, {7, 8, {9}}}}}
+disp(x) -- or display(x)
+
+x = {1, 2, hi = {2, 3, my = {1, 2, 3, you = 6, 5, 4, 2, 7, 'hello', true, false, 5, yes = 1}}}
+disp(x) -- or display(x)
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=dot href=#m><code>dot(a, b)</code></a></h4>
+<P>Return the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ...}</code>
+and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ...}</code>.</P>
+<pre><code>mathly = require('mathly')
+disp(dot({1, 2, 3}, {3, 4, 5}))
+-- 26
+dot({1, 2}, {3, 4})
+-- 11
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=dotplot href=#m><code>dotplot(x, y, style)</code></a></h4>
+<p>Return a graphics object for <a href=#plot><code>plot</code></a> to plot a dot plot.</p>
+<p>Here, <code>x = {x<sub>1</sub>, x<sub>2</sub>, ..., x<sub>n</sub>}</code> and
+<code>y = {y<sub>1</sub>, y<sub>2</sub>, ..., y<sub>n</sub>}</code> define the x and
+y-coordinates of the dots to be plotted, and <code>style</code> is optional.
+The configuration of <code>style</code> looks like <code>{ color = 'red', size = 8,
+symbol = 'circle', opacity = 0.7, line = { color = 'rgb(#, #, #)', width = 1} }</code>,
+where <code>symbol</code> can be <code>circle, square, diamond</code>, etc. See <a href=#plot><code>plot</code></a>.</p>
+
+<pre><code>mathly = require('mathly')
+x = range(0, 2*pi, 0.3)
+y = map('@(x) sin(x)', x)
+plot(dotplot(x, y, {size = 10, color = 'red', opacity = 0.5, symbol = 'star', line = {color = 'blue', width = 0.5}}))
+plot(dotplot(x, y), cos, {range = {0, 2*pi}})
+
+x = tables('i', {i = {1, 100}})
+y = tables('(-1)^i * i / (i + 1)', {i = {1, 100}})
+axisnotsquare()
+plot(dotplot(x, y, {size = 3}))
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=eval href=#m><code>eval(str)</code></a></h4>
+<p>Evaluate the expression in <code>str</code> and return the result.</p>
+<pre><code>mathly = require('mathly')
+
+x = eval('    2 * 3 - 4   ')
+print(x)
+-- 2
+
+x = eval(' 3 * x^3 + pi -exp(x) + 5   ')
+print(x * 2)
+-- 49.505073109318
+
+x = eval('cos{0, pi/6, pi/4, pi/3, pi/2, pi}')
+disp(x)
+-- 1.0000   0.8660   0.7071   0.5000   0.0000  -1.0000
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=expand href=#m><code>expand(A, m, n, v)</code></a></h4>
+<p>Return an expanded/shrunk Mathly matrix with value <code>v</code>'s added or entries dropped.</p>
+<p>The default value of <code>v</code> is 0, and the default value of <code>n</code> is <code>m</code>.</p>
+<p>See also: <a href=#diag><code>diag</code></a>, <a href=#flipud><code>flipud</code></a>,
+<a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>,
+<a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>,
+<a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <code><a href=#match>match</a></code>.</p>
+<pre><code>mathly = require('mathly')
+
+a = mathly{{52, 67, 82}, {82, 15, 70}, {94, 82, 50}}
+disp(a)
+-- 52  67  82
+-- 82  15  70
+-- 94  82  50
+disp(expand(a, 2, 4))
+-- 52  67  82  0
+-- 82  15  70  0
+disp(expand(a, 4, 5, -1))
+-- 52  67  82  -1 -1
+-- 82  15  70  -1 -1
+-- 94  82  50  -1 -1
+-- -1  -1  -1  -1 -1
+disp(expand(a, 2))
+-- 52  67
+-- 82  15
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=fzero></a><a name=findroot href=#m><code>findroot(f, interval, accuracy), fzero(f, interval, accuracy)</code></a></h4>
+<p>Find and return the zero of function <code>f</code> on the specified interval.</p>
+<p>If <code>interval</code> is a single number, say, 1.5, it is set to be the interval, 1.5 &plusmn; 1, i.e., [0.5, 2.5].</p>
+<p>If <code>accuracy</code> is not provided, it defaults to <a href=#eps><code>eps</code></a>.</p>
+<p><code>findroot</code> is a name for <i>Mathematica</i> users. It is an alias for <code>fzero</code>.</p>
+<pre><code>mathly = require('mathly')
+
+print(findroot(sin, 0.3))
+-- 0.0
+
+print(fzero('@(x) x^2 -2*x + 1', {-1, 1}))
+-- 0.99999999254942
+
+print(fzero('@(x) x^2 -2*x + 1', {-1, 1}, 0.01)) -- accurate to 2 decimal places
+-- 0.9921875
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=flatten href=#m><code>flatten(x)</code></a></h4>
+<p>Remove the structure of table <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</p>
+<p>If <code>x</code> is a Mathly matrix, it does rowwisely. For columnwise flattening, see <a href=#tt><code>tt</code></a>.</p>
+<pre><code>mathly = require('mathly')
+
+x = {1, 2, {3, 4, {5, 6, {7, 8, {9}}}}}
+y = flatten(x)
+display(y)
+-- {1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+A = mathly{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
+-- 1 2 3
+-- 4 5 6
+-- 7 8 9
+a = flatten(A) -- or a = tt(A^T)
+display(a)
+-- {1, 2, 3, 4, 5, 6, 7, 8, 9} -- row wise
+b = flatten(A^T) -- or b = tt(A)
+display(b)
+-- {1, 4, 7, 2, 5, 8, 3, 6, 9} -- column wise
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=fliplr></a><a name=flipud href=#m><code>flipud(A), fliplr(A)</code></a></h4>
+<table>
+<tr><td><code>flipud(A)</code></td><td> - </td><td>Return a matrix with rows of matrix <code>A</code> reversed. (ud: upside down)</td></tr>
+<tr><td><code>fliplr(A)</code></td><td> - </td><td>Return a matrix with columns of matrix <code>A</code> reversed. (lr: from left to right)</td></tr>
+</table>
+<p>See also: <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#remake><code>remake</code></a>,
+<a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>, <a href=#submatrix><code>submatrix</code></a>,
+<a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <code><a href=#match>match</a></code>.</p>
+<pre><code>mathly = require('mathly')
+
+a = mathly{{1, 2, 3}, {2, 3, 4}}
+disp(a)
+-- 1  2  3
+-- 2  3  4
+disp(flipud(a))
+-- 2  3  4
+-- 1  2  3
+disp(fliplr(a))
+-- 3  2  1
+-- 4  3  2
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=format href=#m><code>format(fmt)</code></a></h4>
+<p>Reset or specify the format of the output of <code>disp(...)</code>. <code>fmt</code> can be any of the following options.</p>
+<table><tbody>
+<tr><td width=20></td><td><code>'bank'</code></td><td> </td><td width=10> </td><td>2 decimal places</td></tr>
+<tr><td width=20></td><td><code>'short'</code></td><td> </td><td width=10> </td><td>4 decimal places (default).</td></tr>
+<tr><td width=20></td><td><code>'long'</code></td><td> </td><td width=10> </td><td>15 decimal places</td></tr>
+</tbody></table>
+
+<h4>&bull; &nbsp; <a name=boxplot></a><a name=pareto></a><a name=freqpolygon></a><a name=histfreqpolygon></a><a name=hist></a><a name=hist1></a>
+<a name=pie href=#m><code>freqpolygon, hist, hist1, histfreqpolygon, pareto, pie</code></a></h4>
+<table><tbody>
+<tr><td><code>boxplot(x, names)</code></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a box (or box-and-whisker) plot, where <code>x</code> is a table or a matrix of numbers. <code>names = {'name1', 'name2', ...}</code> is optional. If <code>x</code> is a matrix or a table of tables/rows, each row is a data set and thus has a box plot.</td></tr>
+<tr><td><code>freqpolygon(x, nbins, style, xrange)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a frequency polygon.</td></tr>
+<tr><td><code>hist(x, nbins, style, xrange)</code></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a histogram. If <code>x</code> is a matrix or a table of tables/rows, each row is a data set and each bin of the histogram contains one bar per row of the matrix.</td></tr>
+<tr><td><code>hist1(x, nbins, style, xrange)</code></td><td> </td><td>Return an ordinary graphics object for <code><a href=#plot>plot</a></code> to plot a histogram.</td></tr>
+<tr><td><code>histfreqpolygon(x, nbins, style, xrange, style1)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a histogram plus a frequency polygon, where <code>style</code> defines the style of the histogram while <code>style1</code> specifies the style of the frequency polygon.</td></tr>
+<tr><td><code>pareto(data, style, style1)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pareto chart.</td></tr>
+<tr><td><code>pie(x, nbins, style, names, title)</code></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pie chart. Note: <code>pie({bins = {freq1, freq2, ...}}...)</code> is for plotting a pie chart for bins with frequences <code>freq1, freq2, ..., in order</code>.</td></tr>
+</tbody></table>
+<p>With this group of functions,</p>
+<table><tbody>
+<tr><td><code>x</code></td><td> &nbsp; </td><td>The data, a table of numbers</td></tr>
+<tr><td><code>nbins</code></td><td> &nbsp; </td><td>The number of bins (default: 10)</td></tr>
+<tr><td><code>style</code></td><td> &nbsp; </td><td>E.g., <code>'-r', '-rfs'. </code>See also: <a href=#gobjspecs><code>'fa', 'ff', 'fn', 'fs'</code></a></td></tr>
+<tr><td><code>xrange</code></td><td> &nbsp; </td><td>In the format <code>{xmin, xmax}</code>, specifying the range of data values in <code>x</code>. If not provided, it is determined by the lowest and largest values in <code>x</code>.</td></tr>
+</tbody></table>
+<p>See also: <a href=#arc><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a></p>
+<p>Note: Named arguments are allowed for this group of functions. See <a href=#namedargs>named arguments</a>.</p>
+<p>Take <code>pie</code> as an example. It's the only function of this group that doesn't use the <code>style</code> described above.</p>
+<pre><code>mathly = require('mathly')
+clear()
+data = {1, 11, 4, 7, 6, 5, 10, 4, 3, 15, 13, 1, 4, 10, 9}
+plot(pie(data, 5))
+plot(pie(data, 5, {names={'A', 'B', 'C', 'D', 'E'}, style={pull={0, 0.1, 0, 0, 0}}, title='Demo'}))
+
+-- insidetextorientation: auto, horizontal, radial, tangential
+-- textposition: auto, inside, outside
+plot(pie({5, 6, 1, 10, 7, 6}, {names={'A', 'B', 'C', 'D', 'E', 'F'}, title='Demo',
+         style={textposition='outside', outsidetextfont={color={'blue', 'red', 'green'}, family="Raleway", size={12, 16, 20, 24, 28, 32}}}}))
+plot(pie({x={5, 6, 1, 10, 7, 6}, names={'A', 'B', 'C', 'D', 'E', 'F'}, title='Demo',
+         style={textposition='inside', insidetextfont={color='white', family = "Droid Serif", size = 16},
+                pull={0.1, 0, 0, 0, 0}, insidetextorientation='radial'}}))
+plot(pie(randi({-100, 100}, 1, 200),
+         {style={textposition='inside', insidetextfont={color='white', family = "Courier New", size = 16}, pull={0.1, 0, 0, 0, 0}}}))
+</code></pre>
+
+<p>More examples,</p>
+<pre><code>mathly = require('mathly')
+clear()
+data1 = {1, 2, 3, 4, 2, 12, 3, 4, 2, 12, 9, 9, 9, 8, 5, 3, 3, 2, 1, 5, 3, 2}
+data2 = {2, 1, 2, 4, 5, 7, 11}
+data3 = {3, 2, 3, 4, 2, 2, 9, 11}
+axisnotsquare(); shownotlegend()
+plot(boxplot(data1), {layout={width=500, height=400}})
+plot(boxplot({data1, data2}, {"name 1", "name 2"}))
+plot(boxplot({data1, data2, data3, {2, 3, 5, 7, 11, 20, 1, 2, 3}}))
+
+mu, sigma = 72.11, 13.36
+x = flatten(randn(1, 5000, mu, sigma))
+
+function n(x, mu, sigma)
+  local z = (x - mu) / sigma
+  return exp(-0.5 * z^2) / (sqrt(2 * pi) * sigma)
+end
+
+X = linspace(mu - 4 * sigma, mu + 4 * sigma, 5000)
+Y = n(X, mu, sigma) * 7.8
+
+gobj = hist1(x, 12)
+axisnotsquare(); shownotlegend()
+plot(gobj, X, Y, '--r')   -- <font color=blue>example of hist1</font>
+gobj = hist1(x, 12, {color='blue', fill='toself'}, {20, 120}, true, {color='red'})
+plot(gobj)
+gobj = hist1(x, {xrange={20,120}, nbins=12, freqpolygonq=true, style='bfs', style1={color='red'}})
+plot(gobj)
+
+showaxes()
+axisnotsquare()
+plot(hist(randn(1, 100))) -- <font color=blue>examples of hist</font>
+A = randi({0, 99}, 3, 50)
+plot(hist(A), {layout={width=800, height=600}})
+plot(hist(A, {xrange = {0, 99}})) -- run multiple times, the two can produce different results
+
+axisnotsquare()
+plot(freqpolygon(x))
+plot(freqpolygon(x, {style='--r*'}))
+plot(histfreqpolygon(x))
+plot(histfreqpolygon(x, {style='-bfs', style1='--r*'}))
+
+x = {{'A', 382}, {'B', 22}, {'C', 91}, {'D', 53}, {'E', 19}, {'F', 35}}
+plot(pareto(x))
+plot(pareto(x, '-bfs', '--r')) -- or: plot(pareto(x, {style='-bfs', style1='--r'}))
+plot(pareto(x, '-fs'))
+</code></pre>
+<p>&#x2713; &nbsp; From the above examples, we can tell the major difference between <code>hist</code> and <code>hist1</code>.</p>
+<ol>
+<li>We can plot other graphs together with the graphics object returned by <code>hist1</code> on a single figure.</li>
+<li>It is not very meaningful to plot a function together with the graphics object returned by <code>hist</code> on a single figure (because of the x-axis).</li>
+</ol>
+<h4>&bull; &nbsp; <a name=fstr2f href=#m><code>fstr2f(str)</code></a></h4>
+<p>Convert a MATLAB-style anonymous function in a string to a Lua function handle.</p>
+<p>See also: <a href=#easyf>Shortcut for defining an anonymous function.</a></p>
+<pre><code>mathly = require('mathly')
+clear()
+f = fstr2f('@(x) x*x - 2*x + 1')
+disp(f(1)) -- 0
+plot(f, sin, {range = {0, 2}})
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=gcd href=#m><code>gcd(x, y)</code></a></h4>
+<p>Return the greatest common divisor of <code>x</code> and <code>y</code> which can be nonnegative integers of tables of nonnegative integers with the same structure.</p>
+<pre><code>mathly = require('mathly')
+gcd(126, 12)
+disp(gcd({126, 35}, {12, 5}))
+disp(gcd({126, {35, 12}}, {12, {5, 36}}))
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=hasindex href=#m><code>hasindex(tbl, idx)</code></a></h4>
+<p>Check if table <code>tbl</code> contains index <code>idx</code>.</p>
+<pre><code>mathly = require('mathly')
+
+opt = {layout={width=900, height=400, grid={rows=2, columns=2}, title='Example'}}
+print(hasindex(opt, 'grid'))
+-- true
+print(hasindex(opt, 'rows'))
+-- true
+print(hasindex(opt, 'color'))
+-- false
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=horzcat href=#m><code>horzcat(A, B, ...)</code></a></h4>
+<P>Concatenate matrices A, B, ... in order horizontally. Matrices must have the same number of rows.</P>
+<p><em>Operator <code>..</code> can be used to replace <code>horzcat</code>.</em></p>
+<p>See also: <a href=#vertcat><code>vertcat</code></a>; <a href=#diag><code>diag</code></a>,
+<a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>,
+<a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>,
+<a href=#submatrix><code>submatrix</code></a>; <code><a href=#match>match</a></code>.</p>
+<pre><code>mathly = require('mathly')
+
+A = mathly{{1, 2}, {3, 4}}
+disp(A)
+-- 1  2
+-- 3  4
+B = mathly{{5}, {6}}
+disp(B)
+-- 5
+-- 6
+C = mathly{{7, 8, 9}, {10, 11, 12}}
+disp(C)
+--  7  8  9
+-- 10 11 12
+D = A .. B .. C -- same as horzcat(A, B, C)
+disp(D)
+-- 1  2  5  7  8  9
+-- 3  4  6 10 11 12
+disp(rr{1, 2, 3} .. rr{4, 5})
+--  1  2  3  4  5
+
+b = {5, 6}
+disp(A .. cc(b)) -- augmented coefficient matrix for Ax = b
+-- 1  2  5
+-- 3  4  6
+</code></pre>
+
+<h4>&bull; &nbsp; <a href=#m name=input><code>input(prompt, s)</code></a></h4>
+<p>Take user's input from keyboard and return a string if <code>s = 's'</code>; otherwise, evaluate the input expression and return the result.</p>
+<p><code>prompt</code> is the text displayed to user. <code>s</code> defaults to <code>nil</code>.</p>
+<pre><code>mathly = require('mathly')
+
+x = input('Please enter a number: ')
+print(x * 10)
+
+x = input('Do you want to continue (Y/N)? ', 's')
+s = string.match(x, "^%s*(%w+)")
+if s == nil then
+  print("No valid input was entered.")
+else
+  printf("You entered %s.", string.upper(s))
+end
+
+x = input('Expression to evaluate: ') -- you may enter sin(pi/2), {1, {2, {3}}}, 1 + 2 * 3, etc.
+print(x)
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=integral href=#m><code>integral(f(x), a, b)</code></a></h4>
+<p>Apply <a href=examples/gauss_quadrature_by_legendre_polynomial.lua target="_blank">Gauss quadrature</a>
+of 12 nodes to numerically evaluate the definite integral of <code>f(x)</code> on <code>[a,b]</code>. A
+large interval <code>[a,b]</code> is divided evenly into multiple subintervals, <code>[a<sub>i</sub>,b<sub>i</sub>],
+i=1,2,3,...</code>, where <code>b<sub>i</sub>-a<sub>i</sub></code> is at most <code>_MaxIntegralIntervalSize</code>,
+a predetermined constant defined in mathly.lua, and Gauss quadrature method is applied to each subintervals.</p>
+<p>&#x2713; &nbsp; Theoretically, the smaller the value of the parameter <code>_MaxIntegralIntervalSize</code> is,
+the better approximation can be obtained. Please be advised that the accuracy of an approximation depends
+on the integrand, too; in addition, a small value of the parameter requires more computing time, and round-off
+errors can be an issue.</p>
+<pre><code>mathly = require('mathly')
+
+disp(integral(10, 1, 20))
+-- 190 (exact)
+
+disp(integral('@(theta) 0.5 * cos(2*theta)^2', -pi/4, pi/4))
+-- 0.39269908169872 (exact: pi/8 = 0.39269908169872)
+
+-- &int;e<sup>-x<sup>2</sup></sup>dx on (-&infin;,&infin;) = sqrt(&pi;) &asymp; 1.7724538509055
+-- the results below show the effect of round-off errors
+disp(integral('@(x) exp(-x^2)', -5, 5))
+-- 1.7724538509028
+disp(integral('@(x) exp(-x^2)', -10, 10))
+-- 1.7724538509044
+disp(integral('@(x) exp(-x^2)', -10000, 10000)) -- theoretically, it should be closer to sqrt(&pi;)
+-- 1.7724538509022
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=integral2 href=#m><code>integral2(f, g<sub>1</sub>, g<sub>2</sub>, a, b)</code></a></h4>
+<p>Apply <a href=examples/gauss_quadrature_by_legendre_polynomial.lua target="_blank">Gauss quadrature</a> of
+12 nodes to numerically evaluate the double integral, <code>∫∫f(x,y)dydx</code>
+over a region <code>{(x,y) | y&in;[g<sub>1</sub>(x),g<sub>2</sub>(x)], x&in;[a,b]}</code>.</p>
+<p>For better accuracy, a large interval in both the <code>x</code> and <code>y</code> directions is
+divided evenly into multiple subintervals, and Gauss quadrature method is applied to each one.
+See <a href=#integral><code>integral</code></a>.</p>
+
+<p>&#x2713; &nbsp;The order of the arguments of the integrand, <code>f(x,y)</code>, <em>from right to left</em>,
+defines the order of integration. By rearranging the order of these arguments, we can handle double integrals
+over all x and y-simple regions.
+<p>&#x2713; &nbsp;Especially, with polar coordinates, the integrand will be like <code>f(θ,r)</code> due to
+<code>∫∫f(θ,r)drdθ</code>.</p>
+<pre><code>mathly = require('mathly')
+
+-- ∫∫f(x,y)dydx:
+disp(integral2('@(x, y) x + y', 0, 1, 0, 1))
+-- 1.0 (exact: 1)
+disp(integral2('@(x, y) x * y', '@(x) x', '@(x) 2*x', 0, 1))
+-- 0.375 (exact: 3/8 = 0.375)
+disp(integral2('@(x, y) x + 2*y', '@(x) 2 * x^2', '@(x) 1 + x^2', -1, 1))
+-- 2.1333333333333 (exact: 32/15 = 2.1333333333333)
+
+-- ∫∫f(y,x)dxdy: here, z = 2x + 3y should be '@(y, x) 2*x + y' instead of '@(x, y) 2*x + y'
+disp(integral2('@(y, x) x^2 + y^2', '@(y) 0.5 * y', '@(y) sqrt(y)', 0, 4))
+-- 6.1714280951756 (exact: 216/35 = 6.1714285714286)
+
+-- with polar coordinates: ∫∫f(θ,r)drdθ
+disp(integral2('@(theta, r) r^3', 0, '@(theta) 2*cos(theta)', -pi/2, pi/2))
+-- 4.7123889803847 (exact: 3*pi/2 = 4.7123889803847)
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=integral3 href=#m><code>integral3(f, g1, g2, h1, h2, a, b)</code></a></h4>
+<p>Apply <a href=examples/gauss_quadrature_by_legendre_polynomial.lua target="_blank">Gauss quadrature</a>
+of 12 nodes to numerically evaluate the triple integral, <code>∫∫∫f(x,y,z)dzdydx</code> over a region
+<code>{(x,y,z) | z&in;[g<sub>1</sub>(x,y), g<sub>2</sub>(x,y)], y&in;[h<sub>1</sub>(x),h<sub>2</sub>(x)],
+x&in;[a,b]}</code>.</p>
+<p>For better accuracy, a large interval in all <code>x, y</code>, and <code>z</code> directions is
+divided evenly into multiple subintervals, and Gauss quadrature method is applied to each one.
+See <a href=#integral><code>integral</code></a>.</p>
+<p>&#x2713; &nbsp;The order of the arguments of the integrand, <code>f(x,y,z)</code>, <em>from right to left</em>,
+defines the order of integration. By rearranging the order of these arguments, we can handle triple integrals over
+all x, y, and z-simple solids.</p>
+<p>&#x2713; &nbsp;Especially, with spherical coordinates, the integrand will be like <code>f(θ,φ,ρ)</code> due to
+<code>∫∫∫f(θ,φ,ρ)dρdφdθ</code>.</p>
+<pre><code>mathly = require('mathly')
+
+--- ∫∫∫f(x,y,z)dzdydx
+disp(integral3('@(x, y, z) 2*(x + y + z)', '@(x, y) x - y', '@(x, y) x + y', '@(x) x', '@(x) 2 * x', 0, 1))
+-- 5.3333333333333 (exact value 16/3 = 5.3333333333333)
+disp(integral3('@(x, y, z) y*sin(x) + z*cos(x)', -1, 1, 0, 1, 0, pi))
+-- 2.0 (exact value 2)
+
+-- ∫∫∫f(z,y,x)dxdydz: f(z,y,x) rather than f(x,y,z), i.e., f(x,y,z) = 2x - y + z should be written as f(z,y,x) = 2x - y + z.
+disp(integral3('@(z, y, x) 2*x - y', 0, '@(z, y) y - z', 0, '@(z) z^2', 0, 2))
+-- 1.0666666666667 (exact: 16/15 = 1.0666666666667)
+
+-- with spherical coordinates: f(θ,φ,ρ): ∫∫∫f(θ,φ,ρ)dρdφdθ
+disp(integral3('@(theta, phi, rho) rho^2 * sin(phi)', 0, '@(theta, phi) cos(phi)', 0, pi/4, 0, 2*pi))
+-- 0.39269908169872 (exact: pi/8 = 0.39269908169872)
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=inv href=#m><code>inv(A)</code></a></h4>
+<p>Return the inverse of square Mathly matrix <code>A</code>.</p>
+<pre><code>mathly = require('mathly')
+
+I = eye(3)
+A = mathly{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
+inv(A) * A - I
+</code></pre>
+
+
+<h4>&bull; &nbsp; <a name=rm href=#m><code>rm(fname, opt)</code></a></h4>
+<p>Remove file/folder <code>fname</code>.</p>
+<pre><code>mathly = require('mathly')
+
+rm('_tmp-mathly_plot-6_4.html')
+
+if iswindows() then
+  rm('_tmp-*6_4.html', '/F /S')
+else
+  rm('_tmp-*6_4.html', '-fr')
+end
+</code></pre>
+
+
+<h4>&bull; &nbsp; <a name=isfile href=#m><code>isfile(fname)</code></a></h4>
+<p>Return true if <code>fname</code> is a file.</p>
+<pre><code>mathly = require('mathly')
+
+-- explore a folder and all subfolders for files specified in 'patterns'
+--
+-- e.g., explore('/usr/share/', '*.lua'), explore('/', {'*.lua', 'fd*.jl'})
+clear()
+function explore(path, patterns)
+  local sep = qq(iswindows(), '\\', '/')
+  if type(patterns) == 'string' then
+    patterns = { patterns }
+  elseif patterns == nil then
+    patterns = { '*' }
+  end
+  local fcount, dcount = 0, 0
+  local function _explore(path)
+    local files, folders = {}, {}
+    for i = 1, #patterns do
+      local x, p, f = ls(path, patterns[i], false)
+      files = tblcat(files, x)
+      if i == 1 then folders = f end
+    end
+    for i = 1, #files do
+      if i == 1 then print(path) end
+      fcount = fcount + 1
+      local fname = path .. qq(path:sub(-1) == sep, '', sep) .. files[i]
+      --↓↓↓↓↓↓ process each file with filename stored in fname ↓↓↓↓↓↓--
+      print('    ' .. files[i])
+      --↑↑↑↑↑↑ process each file with filename stored in fname ↑↑↑↑↑↑--
+    end
+    files = nil
+    for i = 1, #folders do
+      local fname = path .. qq(path:sub(-1) == sep, '', sep) .. folders[i]
+      dcount = dcount + 1
+      _explore(fname)
+    end
+  end
+  _explore(path)
+  printf("\n%d files in %d subfolders processed\n", fcount, dcount)
+  return fcount, dcount
+end
+
+if iswindows() then
+  explore('C:\\cygwin', {'*.lua', 'mathly*'})
+else
+  explore('/usr/share/cudatext', 'ins*.*')
+end
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=ismember href=#m><code>ismember(x, table)</code></a></h4>
+<p>Check if <code>x</code> is a member of <code>table</code>.</p>
+<pre><code>mathly = require('mathly')
+
+x = {1, 2, 3, {4, 5, {6}}}
+print(ismember(3, x))
+-- true
+print(ismember(4, x))
+-- false
+</code></pre>
+
+
+<h4>&bull; &nbsp; <a name=iswindows href=#m><code>iswindows()</code></a></h4>
+<p>Return true if the operating system is Microsoft Windows.</p>
+
+<h4>&bull; &nbsp; <a name=lagrangepoly href=#m><code>lagrangepoly({x1, x2, ...}, {y1, y2, ...}, xx), lagrangepoly({{x1, y1}, {x2, y2}, ...}, xx)</code></a></h4>
+<p>Return the Lagrange interpolating polynomial, defined by data <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>, or the value(s) of the polynomial at <code>xx</code>.</p>
+<p>If <code>xx</code> is provided, return the value(s) of the polynomial at <code>xx</code>;
+otherwise, return the string of the polynomial.</p>
+<p>See also: <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polynomial><code>polynomial</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
+<pre><code>mathly = require('mathly')
+
+clear()
+x, y = {0, 1, 2}, {3, 1, 4}
+disp(lagrangepoly(x, y)) -- or: lagrangepoly({{0, 3}, {1, 1}, {2, 4}})
+-- '1.5*(x - 1)*(x - 2) - x*(x - 2) + 2.0*x*(x - 1)'
+disp(lagrangepoly(x, y, 5)) -- or: lagrangepoly({{0, 3}, {1, 1}, {2, 4}}, 5)
+-- 43.0
+disp(lagrangepoly(x, y, {5, -6, 100}))
+-- 43.0000    120.0000  24553.0000
+
+s = lagrangepoly({1, 0, 2}, {-4, -2, -3})
+disp(s)
+-- '4.0*x*(x - 2) - (x - 1)*(x - 2) - 1.5*(x - 1)*x'
+load('function f(x) return ' .. s .. ' end')() -- activate the function
+f(10)
+-- 113.0
+g = fstr2f('@(x) ' .. s) -- a simpler way
+g(10)
+-- 113.0
+
+xs = linspace(-2, 5, 100)
+plot(xs, lagrangepoly(x, y, xs))
+plot(xs, newtonpoly(x, y, xs))
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=linsolve href=#m><code>linsolve(A, b, opt)</code></a></h4>
+<p>Solve a linear system <code>Ax = b</code> and return the solution.</p>
+<p>If <code>b</code> is a matrix with multiple columns, <code>b = [b<sub>1</sub> | b<sub>2</sub> | ... | b<sub>m</sub>]</code>, it returns a solution matrix <code>[x<sub>1</sub> | x<sub>2</sub> | ... | x<sub>m</sub>]</code>, where <code>Ax<sub>i</sub> = b<sub>i</sub>, i = 1, 2, ..., m</code>.</p>
+<p>The argument <code>opt</code> is optional:</p>
+<ol>
+<li><code>'LT'</code>: <code>A</code> is lower triangular</li>
+<li><code>'UT'</code>: <code>A</code> is upper triangular</li>
+</ol>
+<p>If <code>A</code> is neither upper nor lower triangular, <a href=#rref><code>rref(A, b)</code></a> is called.</p>
+<pre><code>mathly = require('mathly')
+
+a = mathly{{58, 18, 88}, {68, 30, 71}, {14, 75, 49}}
+b = mathly({89, 6, 4}, 3, 1)
+x = linsolve(a, b) -- or x = linsolve(a, {89, 6, 4})
+disp(x)
+-- -2.1499  -1.3064   2.6955
+
+b = mathly{{89, 6, 4}, {21, 1, 6}}^T
+disp(b)
+-- 89 21
+--  6  1
+--  4  6
+x = linsolve(a, b)
+disp(x)
+-- -2.1499  -0.5706
+-- -1.3064  -0.2483
+--  2.6955   0.6655
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=linspace href=#m><code>linspace(x, y, n)</code></a></h4>
+<p>Return a table of <code>n</code> evenly spaced numbers starting at <code>x</code> and ending at <code>y</code>.</p>
+<p>See also: <a href=#range><code>range</code></a> (or <a href=#seq><code>seq</code></a>), <a href=#tables><code>tables</code></a>.</p>
+<pre><code>mathly = require('mathly')
+clear()
+x = linspace(0, 2*pi, 500)
+y = cos(x)
+plot(x, y, '-r')
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=dir></a><a name=ls href=#m><code>ls(path, printq)</code> or <code>dir(path, printq)</code></a></h4>
+<p>Return a list of files and subfolders in the folder <code>path</code> (the current directory by default).
+If <code>printq = true</code> (default), it prints the list in Lua REPL.</p>
+<p>Characters ? and * are allowed in a file name, where ? matches any single character, and * zero or more consecutive characters.</p>
+<p>See also: <a href=#isfile><code>isfile</code></a></p>
+<pre><code>mathly = require('mathly')
+
+x = dir('*.lua') -- a list of all Lua code files in current folder
+disp(x)
+
+x = ls('b?o*g.lua') -- a list of all Lua code files in current folder of which file names start with 'b', their 3rd letter is 'o', and all end with 'g.lua'.
+disp(x)
+
+folder = qq(iswindows(), 'c:\\cygwin\\cudatext', '/usr/share/cudatext/')
+x = ls(folder, '*.txt', false)
+disp(x)
+
+files, path, subfolders = ls(qq(iswindows(), 'c:\\cygwin\\cudatext\\*.txt', '/usr/share/cudatext/*.txt'))
+disp(files)
+path
+disp(subfolders)
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=lu href=#m><code>lu(A)</code></a></h4>
+<p>Return <code>L</code> and <code>U</code> of LU factorization <code>A = LU</code>, where <code>L</code> and <code>U</code> are lower and upper triangular matrices, respectively.</p>
+<pre><code>mathly = require('mathly')
+
+A = mathly{{1, 2, 3}, {2, 3, 4}, {-1, 0, 2}}
+L, U = lu(A)
+disp(L)
+--  1       0       0
+--  2 -1.0000       0
+-- -1  2.0000  1.0000
+disp(U)
+-- 1  2.0000  3.0000
+-- 0       1  2.0000
+-- 0       0       1
+disp(L * U - A)
+--      0  0.0000  0.0000
+-- 0.0000  0.0000  0.0000
+-- 0.0000  0.0000  0.0000
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=manipulate href=#m><code>manipulate(f, ...)</code></a></h4>
+<p>Manipulate a parametric curve or the graph of a single-variable function <code>f(x)</code> with controls.</p>
+<p>&#x2713; &nbsp; Both <code>manipulate</code> and <code>animate</code> have
+the same usage. While <code>manipulate</code> displays a curve, <code>animate</code> shows how the curve
+is dynamically generated.</p>
+<p>&#x2713; &nbsp; See <code><a href=#animate>animate</a></code> for more information.</p>
+<pre><code>mathly = require('mathly')
+
+-- Lissajous curves
+fstr = {'@(t) a*sin(m * t)', '@(t) b*sin(n * t)'}
+opts = {
+  t = {0, 2*pi, 0.01},
+  a = {0.1, 5, 0.1, default = 1}, m = {1, 20, 1, default = 2},
+  b = {0.1, 5, 0.1, default = 2}, n = {1, 20, 1, default = 1},
+  x = {-5.1, 5.1},
+  resolution = 2000,
+  layout = { width = 640, height = 540, title = '&lt;h3&gt;Lissajous Curves&lt;/h3&gt;' }}
+manipulate(fstr, opts)
+
+fstr = {'@(t) cos(t) + 1/m * cos(a*t) + 1/n * cos(b*t+3.1416/2)',
+        '@(t) sin(t) + 1/m * sin(a*t) + 1/n * sin(b*t+3.1416/2)'}
+opts = {
+  t = {0, 2 * pi, 0.01},         ----- adjust options if needed
+  m = {1, 20, 1, default = 2}, n = {1, 20, 1, default = 2},
+  a = {-10, 10, 1, default = 8}, b = {-20, 20, 1, default = -13},
+  x = {-4, 4},
+  resolution = 2000,
+  layout = {width = 500, height = 500, square = true}}
+manipulate(fstr, opts)
+-- m = 2, (n = 5 | 9), a = 9, b = -15
+-- m = 2, n = 2, a = 8, b = -6
+
+-- polar curves: the code below may be used as a template
+---------------------------------------------------------
+r = 'sin(n*t)'        -- r(θ) = sin(nθ); change this only
+---------------------------------------------------------
+fstr = {'@(t) (' .. r .. ') * cos(t)', '@(t) (' .. r .. ') * sin(t)'}
+disp(fstr)
+opts = {
+  t = {0, 2 * pi, 0.01}, x = {-1.2, 1.2}, n = {1, 24, 1}, -- adjust options if needed
+  resolution = 2000,
+  fill = 'fs',
+  layout = {width = 500, height = 500, square = true, title = '&lt;h3&gt;Polar curve: r(t) = sin(nt)&lt;/h3&gt;'}}
+manipulate(fstr, opts)
+
+r = 'm + 1/n * sin(a*t)'
+s = 't + sin(b*t)/c'
+---------------------------------------------------------
+fstr = {'@(t) (' .. r .. ') * cos(' .. s .. ')',
+        '@(t) (' .. r .. ') * sin(' .. s .. ')'}
+opts = {
+  t = {0, 2 * pi, 0.01},         ----- adjust options if needed
+  m = {-10, 10, 1, default = 3}, n = {1, 10, 1},
+  a = {-10, 10, 1, default = -9}, b = {-20, 20, 1, default = 9}, c = {1, 20, 1},
+  x = {-5, 5},
+  resolution = 2000,
+  layout = {
+    width = 500, height = 500, square = true, title = '',
+    xaxis = { showgrid = false, zeroline = false, showticklabels = false },
+    yaxis = { showgrid = false, zeroline = false, showticklabels = false }}}
+manipulate(fstr, opts)
+-- m = -2, n = 7, a = -9, b = -2, c = 1
+-- m = n = c = 1, (a = -1, b = -10) | (a = +-10, b = 4)
+-- m = 3, n = 1, a = 8, b = 16, c = ...
+-- m = n = 3, a = 7, b = -14, c = 6
+-- m = 3, n = 1, a = -9, b = 15, c = 6
+-- m = n = 3, a = 8, b = -2, c = 1
+
+-- polar curves: r(θ) = sin(1.6θ)^2 + cos(nθ)^5
+r = 'sin(1.6 * t)^2 + cos(n*t)^5'
+fstr = {'@(t) (' .. r .. ') * cos(t)', '@(t) (' .. r .. ') * sin(t)'}
+opts = {
+  t = {0, 10*pi, 0.01}, x = {-2, 2}, n = {1, 12, 1},
+  resolution = 6000,
+  layout = {
+    width = 640, height = 540,
+    title = '&lt;font size=5&gt;Polar curve: r(t) = sin(1.6t)&lt;sup&gt;2&lt;/sup&gt; + cos(nt)&lt;sup&gt;5&lt;/sup&gt;&lt;/font&gt;',
+    xaxis = { showgrid = false, zeroline = false, showticklabels = false },
+    yaxis = { showgrid = false, zeroline = false, showticklabels = false }}}
+manipulate(fstr, opts)
+</code></pre>
+
+<p>JavaScript and enhancements are allowed as with <code>animate</code>.</p>
+<pre><code>mathly = require('mathly')
+
+jcode = [[
+  function displaytitle() { // dynamically update the title nicely
+    let op1 = '-', op2 = '+', h1 = h, k1 = k, x = 'x', t = '', ax = ''
+    if (h < 0) { op1 = '+'; h1 = -h; }
+    if (k < 0) { op2 = '-'; k1 = -k; }
+    if (h != 0) { x = '(x ' + op1 + ' ' + h1 + ')'; }
+    if (k != 0) { t = op2 + ' ' + k1; }
+    if (a != 0) {
+      ax = '' + ((a == 1)? '' : ((a == -1)? '-' : a)) + x + '&lt;sup&gt;2&lt;/sup&gt; ';
+    } else {
+      t = k;
+    }
+    return '&lt;h3&gt;y = ' + ax + t + '&lt;/h3&gt;'
+  }
+]]
+
+fstr = '@(x) a * (x - h)^2 + k' -- a, h, and k are each a control here
+opts = {
+  a = {-3, 3, 0.02, default = 3}, h = {-10, 10, 0.5, default = 0}, k = {-90, 90, default = 0},
+  x = {-10, 10}, y = {-100, 100},
+  javascript = jcode,
+  layout = { width = 600, height = 400, square = false }}
+manipulate(fstr, opts)
+</code></pre>
+
+<p>See more animation examples:</p>
+<ol>
+<li><a href=examples/newton_method_for_root.lua target="_blank">Newton's method for solving <code>f(x) = 0</code>.</a></li>
+<li><a href=examples/secant_method_for_root.lua target="_blank">Secant method for solving <code>f(x) = 0</code>.</a></li>
+<li><a href=examples/midpoint_method_for_root.lua target="_blank">Midpoint method for solving <code>f(x) = 0</code>.</a></li>
+<li><a href=examples/regula_falsi_method_for_root.lua target="_blank">Regula falsi method for solving <code>f(x) = 0</code>.</a></li>
+<li><a href=examples/regula_falsi_method_for_root_modified.lua target="_blank">Modified regula falsi method for solving <code>f(x) = 0</code>.</a><br><br></li>
+<li><a href=examples/animate_derivative.lua target="_blank">Derivative of <code>y = f(x)</code> at <code>x = x<sub>0</sub></code>.</a></li>
+<li><a href=examples/animate_definite_integral.lua target="_blank">Definite integral of <code>f(x)</code> on <code>[a, b]</code>.</a></li>
+<li><a href=examples/animate_double_integral.lua target="_blank">Double integral of <code>f(x, y)</code> over <code>[a, b] x [c, d]</code>.</a></li>
+<li><a href=examples/animate_euler's_method_for_y'=f(x,y),y(x0)=y0.lua target="_blank">Euler's method for first-order initial-value problems.</a></li>
+<li><a href=examples/animate_matrix_operators_on_graph.lua target="_blank">Matrix operators on the graph of <code>f(x)</code>.</a></li>
+</ol>
+
+<h4>&bull; &nbsp; <a name=map href=#m><code>map(f, tbl1, tbl2, ...)</code></a></h4>
+<p>Apply function <code>f</code> to each group of corresponding atomic elements in tables, <code>tbl1, tbl2, ...</code>, and return the result.</p>
+<p>&#x2713; &nbsp; <code>tbl1</code> must be a table; <code>tbl2, ...</code> must be tables of the same structure of <code>tbl1</code> or a number or a string.
+If, say, <code>tbl2</code> is not a table, it is treated as a table of the same structure of <code>tbl1</code> with each entry equaling to <code>tbl2</code>.</p>
+<p>See also: <a href=#easyf>Shortcut for defining an anonymous function.</a></p>
+<pre><code>mathly = require('mathly')
+
+a = range(1, 10) -- seq(1, 10) or seq(10)
+-- {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+function f(x) return x * x end  -- or b = a * a
+b = map(f, a)                   --
+display(b)
+-- {1, 4, 9, 16, 25, 36, 49, 64, 81, 100}
+
+display(map('@(x, y) x + y', a, b)) -- or a + b; x and y are taken from a and b, respectively
+-- {2, 6, 12, 20, 30, 42, 56, 72, 90, 110}
+
+x = {1, 2, {3, 4, {5, 6, {7}}}}
+display(map(f, x))
+-- {1, 4, {9, 16, {25, 36, {49}}}}
+
+A = mathly{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
+map(f, A) -- A is a Mathly matrix, the result of map(f, A) is a Mathly matrix, too.
+-- 1   4   9
+-- 9  16  25
+-- 1   4   0
+
+A = {{1, 2, 3}, {2, 3, 4}}
+B = {{3, 4, 5}, {5, 6, 7}}
+C = map('@(x, y) x * y', A, B) -- MATHLAB: A .* B
+disp(C)
+--  3   8  15
+-- 10  18  28
+disp(map('@(x, y, z) x + y - z', A, B, C)) -- x, y, and z are taken from A, B, and C, respectively
+--  1   -2   -7
+-- -3   -9  -17
+
+x1 = {1, 2, 3, 4, A = 5, 6, {0, 1, 2, B = 3}}
+disp(x1)
+-- {1, 2, 3, 4, 6, {0, 1, 2, B = 3}, A = 5}
+x2 = map('@(x) x*x', x1)
+disp(x2)
+-- {1, 4, 9, 16, 36, {0, 1, 4, B = 9}, A = 25}
+disp(map('@(x, y) x + y', x1, x2))
+-- {2, 6, 12, 20, 42, {0, 2, 6, B = 12}, A = 30}
+
+disp(map('@(x, y) x + y', {1, 2, 3}, 10)) -- 10 is treated as {10, 10, 10}
+-- 11, 12, 13
+
+disp(map('@(x, y, z) x + y + z', {1, 2, 3}, 10, 100)) -- 10 is treated as {10, 10, 10}, and 100 as {100, 100, 100}
+-- 111, 112, 113
+
+disp(map('@(x, y, z) x + y + z', {1, 2, 3}, 10, {100, 200, 300}))
+-- 111, 212, 313
+
+disp(map('@(x, y) x .. y', {'1', '2', '3'}, '10')) -- '10' is treated as {'10', '10', '10'}
+-- {'110', '210', '310'}
+
+disp(map('@(x, y) 2 * x * y + 1', {1, {2, {3, {4}}}}, 10)) -- 10 is treated as {10, {10, {10, {10}}}}
+-- {21, {41, {61, {81}}}}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=match href=#m><code>match(tbl, f)</code></a></h4>
+<p>Return elements of table <code>tbl</code> that satisfy specified conditions. (<code>f</code> defaults to <code>tbl</code>.)</p>
+<p>If <code>f</code> is a boolean function, return 1) a table of elements of <code>tbl</code> (row wise) that satisfy <code>f(x)</code>
+and 2) a table of elements of <code>tbl</code> with those elements replaced by 0 when they fail to satisfy <code>f(x)</code>.</p>
+<p>If <code>f</code> is a table/matrix, return 1) a table of elements of <code>tbl</code> (row wise) that correspond to nonzero
+elements of <code>f</code> and 2) <code>tbl</code> with entries replaced with corresponding zero elements of <code>f</code>.</p>
+<p>See also: <a href=#easyf>Shortcut for defining an anonymous function.</a></p>
+<pre><code>mathly = require('mathly')
+
+#match(seq(1000), '@(x) x % 5 == 0 or x % 6 == 0')
+-- 333 -- the number of positive integers not exceeding 1000 and divisible by either 5 or 6
+A = mathly{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
+disp(A)
+-- 1  2  3
+-- 4  5  6
+-- 7  8  9
+x, C = match(A, '@(x) x > 4 and x % 2 == 0')
+disp(x)
+-- {6, 8}
+disp(C)
+-- 0  0  0
+-- 0  0  6
+-- 0  8  0
+B = match(A, C)
+disp(B)
+-- {6, 8}
+A =  mathly{{2, 3, 4}, {5, 6, 7}, {8, 9, 10}}
+disp(A)
+-- 2  3  4
+-- 5  6  7
+-- 8  9 10
+x, D = match(A, C)
+disp(x)
+-- {7, 9}
+disp(D)
+-- 0  0  0
+-- 0  0  7
+-- 0  9  0
+
+A = mathly{{1, 0, 3}, {0, 5, 0}, {7, 8, 0}}
+disp(A)
+-- 1  0  3
+-- 0  5  0
+-- 7  8  0
+disp(match(A))
+-- {1, 3, 5, 7, 8}
+
+x = {0, 1, 2, 0, 0, 3, 0, 4, 0, 0}
+disp(match(x))
+-- {1, 2, 3, 4}
+
+x = {1, 2, {3, 4, 5, {6, 7, 8, {9, 10}}, 11, 12}, 13, 14}
+y, A = match(x, '@(x) x % 2 == 0')
+disp(y)
+-- {2, 4, 6, 8, 10, 12, 14}
+disp(A)
+-- {0, 2, {0, 4, 0, {6, 0, 8, {0, 10}}, 0, 12}, 0, 14}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=mathly href=#m><code>mathly(...)</code></a></h4>
+<p>It is the constructor of mathly matrices.</p>
+<p>&#x2713; &nbsp; The command, <code>mathly = require('mathly')</code>, must be executed first.</p>
+<table><tbody>
+<tr><td width=18%><code>mathly(m, n, val)</code></td><td>Create a <code>mxn</code> Mathly matrix of which each element assumes the value <code>val</code> (default: random numbers from 0 to 1).</td></tr>
+<tr><td><code>mathly(A, m, n)</code></td><td>Create a <code>mxn</code> Mathly matrix using elements of table/matrix <code>A</code> columnwisely; if <code>A</code> can't provide enough numbers, 0 is used; if <code>n</code> is not provided, it is so determined that least number of 0's are used.</td></tr>
+</tbody></table>
+<p>See also: <a href=#demathly><code>demathly</code></a>; <a href=#ones><code>ones, rand, randi, randn, zeros</code></a>; <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>; <a href=#repmat><code>repmat</code></a>.</p>
+<pre><code>mathly = require('mathly')
+
+A = mathly(3, 4)
+disp(A)
+
+disp(mathly(2, 5, -1))
+-- -1  -1  -1  -1  -1
+-- -1  -1  -1  -1  -1
+
+mathly(1, 5, 0)
+-- 0  0  0  0  0
+
+mathly({1, 2, 3, 4, 5, 6, 7}, 2)
+-- 1  3  5  7
+-- 2  4  6  0
+
+mathly({1, 2, 3, 4, 5, 6, 7}, 2, 5)
+-- 1  3  5  7  0
+-- 2  4  6  0  0
+
+a = mathly{{1, 2}, {3, 4}}
+disp(a)
+-- 1  2
+-- 3  4
+
+mathly(a, 3, 4)
+-- 1  4  0  0
+-- 3  0  0  0
+-- 2  0  0  0
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=max></a><a name=min href=#m><code>max(x)</code>, <code>min(x))</code></a></h4>
+<p>If <code>x</code> is an array or row/column vector, return the largest/smallest of all elements in it; if it is a matrix, return a table consisting of the largest/smallest of each column of <code>x</code>.</p>
+<table><tbody>
+<pre><code>mathly = require('mathly')
+
+x = {1, -10, 2, 31, 4, 7}
+print(min(x), max(x))
+-- -10  31
+
+a = mathly{{-12, -19, -15,  6, -11}, {3,  43,  36, 29, -26}, {-38,  -9, -16, 20,  16}}
+disp(a)
+-- -12  -19   -15    6  -11
+--   3   43    36   29  -26
+-- -38   -9   -16   20   16
+display(min(a))
+-- {-38, -19, -16, 6, -26}
+disp(max(a))
+-- {3, 43, 36, 29, 16}
+sum(max(a))
+-- 127
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=mean href=#m><code>mean(x)</code></a></h4>
+<ol>
+<li>If <code>x</code> is a table or Mathly row/column vector, return the mean value of its elements.</li>
+<li>If <code>x</code> is a <code>mxn</code> matrix, return a row vector of which the <code>i</code>-th element is the mean value of
+the <code>i</code>-th column of <code>x</code>.</p></li>
+</ol>
+<pre><code>mathly = require('mathly')
+
+disp(mean({1,2,3}))
+-- 2.0
+A = mathly{{1, 2, 3}, {2, 3, 4}, {3, 1, 2}}
+disp(A)
+-- 1  2  3
+-- 2  3  4
+-- 3  1  2
+disp(mean(A))
+-- 2.0000  2.0000  3.0000
+print(mean('abc')) -- 'abc' --> {97, 98, 99}, string.byte('a') ...
+-- 98.0
+print(mean({'abc', 'de'})) --> strcat first: 'abcde' --> mean('abcde')
+-- 99.0
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=merge href=#m><code>merge(tbl1, tbl2)</code></a></h4>
+<p>This is a general tool. It merges two tables of any structure into one.</p>
+<p>If <code>tbl1</code> and <code>tbl2</code> are flatten tables, it functions like finding the union of two sets.</p>
+<p>&#x2713; &nbsp; If two same "named" items are not both tables, the one in the second table overwrites the one in the first table.
+If both are tables, they are merged into one.</p>
+<pre><code>mathly = require('mathly')
+
+-- 1) no argument is a table
+display(merge(1, 1))
+-- {1}
+display(merge(1, 2))
+-- {1, 2}
+
+-- 2) one argument is a table, and the other one is not
+disp(merge('a', {2, 3, 4, p = {10, 9}}))
+-- {2, 3, 4, 'a', p = {10, 9}}
+disp(merge({2, 3, 4, p = {10, 9}}, 12))
+-- {2, 3, 4, 12, p = {10, 9}}
+disp(merge({2, 3, 4, p = {10, 9}}, 2))
+-- {2, 3, 4, p = {10, 9}}
+
+-- 3) both arguments are tables
+disp(merge({5, 2, 3, 4}, {2, 4, 5, 6, 7}))
+-- 5 2 3 4 6 7
+disp(merge({1, 2, 3, x={3, 1, 5, w=180}}, {2, 3, 5, y=8, x={5, 1, 'abc', w=100, z={4, 5, 6}}}))
+-- {1, 2, 3, 5, x = {3, 1, 5, 'abc', z = {4, 5, 6}, w = 100}, y = 8} -- named item w is overwritten
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=namedargs href=#m><code>namedargs(data, opts)</code></a></h4>
+<p>It provides support for named arguments. If you want your function to accept named arguments, it helps.</p>
+<pre><code>mathly = require('mathly')
+
+function f(x, y, z)
+  local args = namedargs({x, y, z}, {'x', 'y', 'z'}) -- these two lines are the usage of namedargs[...]
+  x, y, z = args[1], args[2], args[3]                -- table.unpack(args) doesn't work well
+
+  -- do something
+  x = x or 1000 -- x defaults to 1000
+  y = y or 10000
+  z = z or 100000
+  printf('You input: x = %.2f, y = %.2f, z = %.2f\n', x, y, z)
+  return x + y + z
+end
+
+f(1, 10, 100)
+f(1, 10, {z = 100})
+f(1, {z = 100, y = 10})
+f({y = 10, z = 100, x = 1}) -- or simply: f{y = 10, z = 100, x = 1}
+
+f(1, {z = 100}) -- same as f(1, nil, 100)
+f({z = 100})    -- same as f(nil, nil, 100)
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=newtonpoly href=#m><code>newtonpoly({x1, x2, ...}, {y1, y2, ...}, xx), newtonpoly({{x1, y1}, {x2, y2}, ...}, xx)</code></a></h4>
+<p>Return the Newton interpolating polynomial, defined by data <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>, or the value(s) of the polynomial at <code>xx</code>.</p>
+<p>If <code>xx</code> is provided, return the value(s) of the polynomial at <code>xx</code>;
+otherwise, return the string of the polynomial.</p>
+<p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#polynomial><code>polynomial</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
+<pre><code>mathly = require('mathly')
+
+clear()
+x = {-1.0, 0, 7, 10}
+y = {1, -1, 6, -2}
+disp(newtonpoly(x, y))
+-- '1 - 2.0*(x + 1.0) + 0.375*(x + 1.0)*x - 0.067424242424242*(x + 1.0)*x*(x - 7)'
+
+xs = linspace(x[1], x[length(x)], 100)
+ys = newtonpoly(x, y, xs)
+axissquare()
+plot(x, y, "*", xs, ys, "-")
+
+axisnotsquare()
+data = {{-1.0, -2.0}, {0, -3}, {3, 10}, {7, 6}, {10, -2}}
+xs = linspace(data[1][1], data[#data][1], 100)
+ys = newtonpoly(data, xs)
+plot(scatter(data), xs, ys, "-", {layout={width=350, height=400}})
+
+x = {1.0, 2, 4, 5, 7, 10, 20, 22, 30}
+y = {52.0, 5, -50, -40, 10, 9, 22, 23, 65}
+str = newtonpoly(x, y)
+f = fstr2f('@(x) ' .. str) -- or load('function f(x) return ' .. str .. ' end')()
+xs = linspace(x[1], x[length(x)], 100)
+ys = f(xs)
+axisnotsquare()
+plot(x, y, "*", xs, ys, "-")
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=norm href=#m><code>norm(x)</code></a></h4>
+<p>Return the Euclidean/Frobenius norm of a vector/matrix.</p>
+<p>Note: With MATLAB, if <code>x</code> is a mxn matrix with <code>m, n ≥ 2</code>, call <code>norm(x, "fro")</code>.</p>
+<pre><code>mathly = require('mathly')
+
+norm{1, 2, 3, 4, 5}
+
+A = randi({-100, 100}, 7)
+norm(A)
+
+norm(A * inv(A) - eye(7)) < 10*eps -- check if two vectors/matrices are equal
+
+norm({1, 2, {3, {4, 5}}, 6}) -- flattened first; same as norm({1, 2, 3, 4, 5, 6})
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=zeros></a><a name=rand></a><a name=randi></a><a name=randn></a><a name=ones href=#m><code>ones</code>, <code>zeros</code>, <code>rand</code>, <code>randi</code>, <code>randn</code></a></h4>
+<p>The usage of these functions is the same except randi that can take more arguments.</p>
+<table><tbody>
+<tr><td width=20></td><td><code>ones(m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> Mathly matrix of which each element is 1.</td></tr>
+<tr><td width=20></td><td><code>randi(x, m, n)</code></a></td><td> </td><td width=10> </td><td>Return a Mathly matrix of which each element is a random integer in a specified range.</td></tr>
+<tr><td width=20></td><td><code>zeros(m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> Mathly matrix of which each element is 0.</td></tr>
+<tr><td width=20></td><td><code>rand(m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> Mathly matrix of which each element is a random number in [0, 1].</td></tr>
+<tr><td width=20></td><td><code>randn(m, n, &mu;, &sigma;)</code></a></td><td> </td><td width=10> </td><td>Return a Mathly matrix of normally distributed numbers (&mu; and &sigma; default to 0 and 1, respectively).</td></tr>
+<tr><td width=20></td><td> </td><td> </td><td width=10> </td><td> </td></tr>
+<tr><td width=20></td><td> </td><td> </td><td width=10> </td><td><u>Note</u>: Each function returns a table rather than a Mathly column vector if <code>m = 1</code>.</td></tr>
+</tbody></table>
+<pre><code>
+mathly = require('mathly')
+
+A = ones(2) -- or ones(2, 2)
+disp(A)
+-- 1 1
+-- 1 1
+B = zeros(2, 3) + 5
+disp(B)
+-- 5 5 5
+-- 5 5 5
+disp(A * B)
+-- 10 10 10
+-- 10 10 10
+
+C = zeros(1, 5)  -- return a Mathly table
+display(C + 10)
+-- {10, 10, 10, 10, 10}
+
+D = zeros(3, 1)  -- a Mathly column vector
+disp(D)
+-- 0
+-- 0
+-- 0
+display(D)
+-- {{0}, {0}, {0}}
+disp(2*D + 3)
+-- 3
+-- 3
+-- 3
+
+A = randi({0, 100}, 2, 3) -- each element is a random integer in [0, 100]
+disp(A)
+A = randi({50, 90}, 3, 1) -- each element is a random integer in [50, 90]
+display(A)
+A = randi({50, 90}, 1, 5) -- return a table rather than a Mathly matrix
+display(A)
+
+disp(randn(3, 5))
+disp(randn(3, 5, 70, 12.55))
+</code></pre>
+<table><tbody>
+<p>&#x2713; &nbsp; The usage of <code>randi(...)</code> is different.</p>
+<tr><td><code>randi(imax)</code></td><td> </td><td width=10> </td><td>Return a random integer in <code>[1, imax]</code>.</tr>
+<tr><td><code>randi({imin, imax})</code></td><td> </td><td width=10> </td><td>Return a random integer in <code>[imin, imax]</code>.</tr>
+<tr><td><code>randi(imax, m, n)</code></td><td> </td><td width=10> </td><td>Return a <code>mxn</code> Mathly matrix of which each element is in <code>[1, imax]</code>. (<code>n</code> is optional. The default is <code>m</code>.)</tr>
+<tr><td><code>randi({imin, imax}, m, n)</code></td><td> </td><td width=10> </td><td>Return a mxn Mathly matrix of which each element is in <code>[imin, imax]</code>. (<code>n</code> is optional. The default is <code>m</code>.)</tr>
+</tbody></table>
+
+<h4>&bull; &nbsp; <a name=plot href=#m><code>plot(...)</code></a></h4>
+<p>Plot the graph(s) of functions defined by data points, using specifications/options.</p>
+<p><b>Some specifications:</b></p>
+<ol>
+<li>of a line, i.e., the graph of a function:<p><code>width</code> = 5</p><p><code>style</code> = <code>'-'</code> [solid, <code>':'</code> (dot), or <code>'--'</code> (dash)]</p>
+<p><code>mode</code> = <code>'lines+markers'</code>, <code>'lines'</code>, or <code>'markers'</code></p></li><p></p>
+<li>of a marker:<p><code>size</code> = 10</p><p><code>symbol</code> = <code>'circle'</code></p>
+Some possible symbols are <code>bowtie, circle, circle-open, circle-open-dot, cross, diamond, hexagram, hourglass,
+pentagon, square, square-open, star, triangle-left, triangle-right, triangle-up, triangle-down, x,</code> etc.</li><p></p>
+<li>of a plot:<p><code>layout</code> = {<code>width</code> = 500, <code>height</code> = 400, <code>grid</code> = {<code>rows</code> = 2, <code>columns</code> = 2}, <code>title</code> = 'Demo'}</p></li>
+</ol>
+<p><a name=plotspecs></a>Shortcuts for specifications like <code>'--ro'</code>:</p>
+<table><tbody>
+<thead><tr><td>shortcut</td><td> &nbsp; <td>symbol</td></tr></thead>
+<tr><td><code>o</code></td><td> &nbsp; <td>circle</td></tr>
+<tr><td><code>*</code></td><td> &nbsp; <td>star</td></tr>
+<tr><td><code>x</code></td><td> &nbsp; <td>cross</td></tr>
+<tr><td><code>^</code></td><td> &nbsp; <td>triangle-up</td></tr>
+<tr><td><code>v</code></td><td> &nbsp; <td>triangle-down</td></tr>
+<tr><td><code>></code></td><td> &nbsp; <td>triagle-right</td></tr>
+<tr><td><code><</code></td><td> &nbsp; <td>triagle-left</td></tr>
+</tbody></table>
+<p></p>
+<table><tbody>
+<thead><tr><td>shortcut</td><td> &nbsp; <td>color</td></tr></thead>
+<tr><td><code>r</code></td><td> &nbsp; <td>red</td></tr>
+<tr><td><code>b</code></td><td> &nbsp; <td>blue</td></tr>
+<tr><td><code>g</code></td><td> &nbsp; <td>green</td></tr>
+<tr><td><code>c</code></td><td> &nbsp; <td>cyan</td></tr>
+<tr><td><code>m</code></td><td> &nbsp; <td>magenta</td></tr>
+<tr><td><code>y</code></td><td> &nbsp; <td>yellow</td></tr>
+<tr><td><code>k</code></td><td> &nbsp; <td>black</td></tr>
+<tr><td><code>w</code></td><td> &nbsp; <td>white</td></tr>
+</tbody></table>
+<p></p>
+<p>As per filling regions, see <a href=#gobjspecs><code>arc, circle, line, parametriccurve2d, point, polygon, wedge</code></a>.</p>
+<p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining an anonymous function</a>; <a href=#layout>Plotly JavaScript Figure Reference: <code>layout</code></a>.</p>
+<p></p>
+<p><b>Some examples</b></p>
+<pre><code>mathly = require('mathly')
+
+clear()
+x = linspace(0, pi, 100)
+y1 = sin(x)
+y2 = cos(x)
+y3 = x^2 * sin(x)
+
+specs1 = {layout={width=600, height=600, grid={rows=2, columns=2}, title='Example'}}
+specs2 = {color='blue', name='cos <i>x</i>', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
+specs3 = {width=3, name='x<sup>2</sup>', style=':', color='cyan', symbol='circle-open', size=4}
+
+plot(sin)
+plot('@(x) x^2', {range={-6, 6}})
+plot(sin, '-r',
+     '@(x) x^2', {color='blue'},
+     {range = {-0.5, 1}},
+     {layout = {title = 'Demo', xaxis = {title = 'x'}, yaxis = {title = 'y'},
+                margin = {l = 40, r = 40, t = 40, b = 40, pad = 40}}})
+shownotlegend()
+plot(x, y1, '--xr',
+     x, y2, ':g',
+     text(0.79, 0.71 - 0.08, 'A'),
+     point(0.79, 0.71, {symbol='circle', size=10, color='blue'}))
+plot(x, y1, x, y2, specs1, sin, '--r')
+showlegend()
+plot(x, y1, specs3,
+     x, y2, specs2,
+     sin, {name = 'sin <i>x</i>'},
+     x, y3, {name = 'x<sup>2</sup> sin <i>x</i>'},
+     specs1) -- multiple layouts are merged into one with the last one overwriting others
+
+axisnotsquare()
+plot(rand(125, 4), specs1, {names={'f1', 'f2', 'f3', 'g'}}) -- each column of a matrix defines a function with x changing from 0 to # of rows
+plot(rand(100,3), specs1, {layout={grid={rows=3, columns=2}}}, rand(100,2))
+</code></pre>
+<p>See: <a href=#layout>More complicated examples of grids and subplots</a>.</p>
+
+<p>&#x2713; &nbsp; <code>range = {start, stop, step}</code>: A smaller step can improve the smoothness/resolution of a curve.</p>
+<pre><code>mathly = require('mathly')
+
+fs = tables('!@(x) cos(i * x) * sin(i - x)', {i = {1, 4}, controls = 'i'})
+disp(fs)
+plot({range = {-6, 6}}, table.unpack(fs)) -- same as {-6, 6, 1}
+plot({range = {-6, 6, 0.01}}, table.unpack(fs))
+</code></pre>
+<p>&#x2713; &nbsp; In CudaText, press Ctrl-P P to insert a <code>plot</code> template. See <a href=#cudatext>CudaText</a>.
+
+<h4>&bull; &nbsp; <a name=plot3d href=#m><code>plot3d(f, xrange, yrange, title, resolution)</code></a></h4>
+<p>Plot a surface defined by <code>z = f(x, y)</code>. It is not designed as complicated as <code>plot(...)</code> for 2D graphs. It can only plot one surface at a time.</p>
+<p>If <code>f</code> is a function, <code>xrange = {xstart, xstop}</code> and <code>y = {ystart, ystop}</code> define the ranges
+for <code>x</code> and <code>y</code> (each default: <code>{-5, 5}</code>), respectively; otherwise, the first 3 arguments are tables of <code>x, y</code>, and <code>z</code> values,
+which allows users to set up data and use this function to display a graph. Given that <code>x = {x1, x2, ..., xn}</code> and
+<code>y = {y1, y2, ..., yn}</code>, the data passed to <code>plot3(X, Y, Z, title)</code> are as follows:</p>
+<code><pre style="color:black">
+X = {{x1, x1, ..., x1}, {x2, x2, ..., x2}, ..., {xn, xn, ..., xn}}
+Y = {{y1, y2, ..., yn}, {y1, y2, ..., yn}, ..., {y1, y2, ..., yn}}
+Z = {{z11,  ...,  z1n}, {z21,  ...,  z2n}, ..., {zn1,  ...,  zn2}}
+</pre></code>
+<p>where <code>zij = f(xi, yj)</code>, if a surface is defined by <code>z = f(x, y)</code>.</p>
+<p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
+<p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
+<pre><code>mathly = require('mathly')
+
+clear()
+plot3d('@(x, y) x^2 - y^2')
+
+n = 100
+x = linspace(0, 2*pi, n)
+y = linspace(-pi, pi, n)
+X, Y = {}, {}
+for i = 1, n do
+  X[i] = mathly(1, n, x[i])
+  Y[i] = y
+end
+Z = sin(X) * cos(Y)
+plot3d(X, Y, Z, 'Demo 2')
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=plotparametriccurve3d href=#m><code>plotparametriccurve3d({x(t), y(t), z(t)}, trange, title, resolution, orientationq)</code></a></h4>
+<p>Plot a space curve defined by <code>{x(t), y(t), z(t)}</code>.</p>
+<p><code>resolution</code> and <code>orientationq</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
+<p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
+<pre><code>mathly = require('mathly')
+plotparametriccurve3d({cos, sin, '@(t) t'}, {0,6*pi}, "Helix")
+plotparametriccurve3d({'@(t) t*cos(t)', '@(t) t*sin(t)', '@(t) t'}, {0, 8*pi})
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=plotparametricsurface3d href=#m><code>plotparametricsurface3d({x(u, v), y(u, v), z(u,v)}, urange, vrange, title, resolution, orientationq)</a></code></h4>
+<p>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u,v)</code>.</p>
+<p><code>resolution</code> and <code>orientationq</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
+<p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
+<pre><code>mathly = require('mathly')
+
+plotparametricsurface3d({'@(u,v) u', '@(u,v) v', '@(u,v) sqrt(u^2 + v^2)'}, {-3, 3}, {-3, 3}, 'Demo')
+
+R = 5
+r = 2
+plotparametricsurface3d({ -- torus
+  '@(s,t) (R + r * cos(t)) * cos(s)',
+  '@(s,t) (R + r * cos(t)) * sin(s)',
+  '@(s,t) r * sin(t)'})
+
+do -- https://plotly.com/python/3d-surface-plots/
+  local a, b, d = 1.32, 1, 0.8
+  local c = a^2 - b^2
+  local function x(u, v) return (d * (c - a * cos(u) * cos(v)) + b^2 * cos(u)) / (a - c * cos(u) * cos(v)) end
+  local function y(u, v) return b * sin(u) * (a - d*cos(v)) / (a - c * cos(u) * cos(v)) end
+  local function z(u, v) return b * sin(v) * (c*cos(u) - d) / (a - c * cos(u) * cos(v)) end
+  plotparametricsurface3d({x, y, z}, {0, 2*pi}, {0, 2*pi})
+end
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=plotsphericalsurface3d href=#m><code>plotsphericalsurface3d(ρ(θ,φ), θrange, φrange, title, resolution)</code></a></h4>
+<p>Plot spherical function <code>ρ(θ, φ)</code>, where <code>θ</code> is in the range <code>θrange = {θ1, θ2}</code> (default: <code>{0, 2*pi}</code>)
+and <code>φ</code> in the range <code>φrange = {φ1, φ2}</code> (default: <code>{0, pi}</code>). If <code>ρ(θ, φ)</code> is a number, the radius of a sphere centered at the origin, plot the sphere.</p>
+<p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
+<pre><code>mathly = require('mathly')
+plotsphericalsurface3d(1)
+plotsphericalsurface3d('@(theta, phi) theta + 2 * phi', {0, 4*pi}, nil, 'Demo')
+plotsphericalsurface3d(function(t, p) return 2 + sin(5*p + 7*t) end)
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=polynomial href=#m><code>polynomial({x1, x2, ...}, {y1, y2, ...}, xx), polynomial({{x1, y1}, {x2, y2}, ...}, xx)</code></a></h4>
+<p>Construct a polynomial, defined by data <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>.</p>
+<p>If <code>xx</code> is provided, return the value(s) of the polynomial at (each of) <code>xx</code>;
+otherwise, return the string and the coefficients of the polynomial.</p>
+<p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
+<pre><code>mathly = require('mathly')
+
+disp(polynomial({1, 2}, {3, 4}))
+-- 'x + 2.0'
+disp(polynomial({1, 2}, {3, 4}, 5))
+-- 7.0
+disp(polynomial({1, 2}, {3, 4}, {5, -6, 100}))
+-- {7.0, -4.0, 102.0}
+
+s, coefs = polynomial({1, 2, 3}, {3, 1, 4})
+disp(s)
+-- '2.5*x^2 - 9.5*x + 10.0'
+p = fstr2f('@(x) ' .. s) -- or load('function p(x) return ' .. s .. ' end')() -- activate the function
+p(10)
+-- 165.0
+polyval(coefs, 10)
+-- 165.0
+
+disp(polynomial({1, 2, 3}, {3, 1, 4}, {10, 1, -5}))
+-- 165.0000    3.0000  120.0000
+
+s, coefs = polynomial({{1, 3}, {2, 1}, {3, 4}})
+disp(s)
+disp(polyval(coefs, {10, 1, -5}))
+-- 165.0000    3.0000  120.0000
+disp(polynomial({{1, 3}, {2, 1}, {3, 4}}, {10, 1, -5}))
+-- 165.0000    3.0000  120.0000
+
+-- test of polynomials generated in various ways
+-- note: higher-order polynomials may deviate significantly over small intervals and thus are not reliable
+n = 15 -- n - 1 is the degree of the polynomials to be generated; how about n = 20, 30, 40, ...?
+x = linspace(-10, 10, n)
+y = rand(1, n) * 100 - 50
+xs = linspace(-10, 10, 50)
+ys1 =   polynomial(x, y, xs)
+ys2 = lagrangepoly(x, y, xs)
+ys3 =   newtonpoly(x, y, xs)
+norm(ys1 - ys2)
+norm(ys1 - ys3)
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=polyval href=#m><code>polyval(coefs, x)</code></a></h4>
+<p>Evaluate at <code>x</code> the value of a polynomial of which the coefficients are specified
+in a table <code>coefs</code>.</p>
+<p>For a polynomial of <code>p(x) = a<sub>n</sub>x<sup>n</sup> + a<sub>n-1</sub>x<sup>n-1</sup> + ... +
+a<sub>1</sub>x + a<sub>0</sub></code>,
+<code>coefs = {a<sub>n</sub>, a<sub>n-1</sub>, ..., a<sub>0</sub>}</code>.
+For example, <code>p(x) = -2x<sup>4</sup> + 4x<sup>2</sup> - 5x</code>, <code>coef = {-2, 0, 4, -5, 0}.</code></p>
+<p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polynomial><code>polynomial</code></a>.</p>
+<pre><code>mathly = require('mathly')
+polyval({1, 2, 1}, 0) -- evaluate x<sup>2</sup> + 2x + 1 at x = 0
+-- 1.0000
+display(polyval({1, 2, 1}, {0, 5, 9, 100})) -- evaluate at x = 0, 5, 9, 100
+-- {1.0, 36.0, 100.0, 10201.0}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=powermod href=#m><code>powermod(b, n, m)</code></a></h4>
+<p>Return <code>b<sup>n</sup> mod m</code>, i.e., the remainder of <code>b<sup>n</sup></code> divided by <code>m</code>.</p>
+<p>Note: <code>b, n</code>, and <code>m</code> are nonnegative integers with <code>m &gt; 0</code>.</p>
+<pre><code>mathly = require('mathly')
+powermod(211, 410, 19) -- 6
+</pre></code>
+
+<h4>&bull; &nbsp; <a name=sprintf></a><a name=printf href=#m><code>printf(...)</code>, <code>sprintf(...)</code></a></h4>
+<p>This kind of functions is a commonly used tool for printing or preparing a formatted string in many programming languages like C/C++ and MATLAB. They print or prepare a formatted string.</p>
+<p>These two functions depend on <a href="manual.html#pdf-string.format"><code>string.format</code></a>.</p>
+<table><tbody>
+<tr><td width=20></td><td><code>printf</code></td><td> </td><td width=10> </td><td>Print a formatted string.</td></tr>
+<tr><td width=20></td><td><code>sprintf</code></td><td> </td><td width=10> </td><td>Prepare a formatted string.</td></tr>
+</tbody></table>
+
+<h4>&bull; &nbsp; <a name=sum></a><a name=prod href=#m><code>prod(A)</code>, <code>sum(A)</code></a></h4>
+<ol>
+<li>If <code>A</code> is a table or Mathly row/column vector, return the product/sum of its elements;</li>
+<li>If <code>A</code> is a <code>mxn</code> matrix, return a row vector of which the <code>i</code>-th element is the product/sum of
+the <code>i</code>-th column of <code>A</code>.</p></li>
+</ol>
+<pre><code>mathly = require('mathly')
+
+a = {1, 2, 3}
+print(sum(a))
+-- 6
+
+a = {{1}, {2}, {3}}
+print(sum(a))
+-- 6
+
+a = mathly{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}}
+disp(a)
+--  1  2  3
+--  2  3  4
+--  3  4  5
+disp(sum(a))
+-- 6   9  12
+disp(prod(a))
+-- 6  24  60
+</code></pre>
+
+
+<h4>&bull; &nbsp; <a name=pwd href=#m><code>pwd()</code></a></h4>
+<p>Return present working directory.</p>
+
+
+<h4>&bull; &nbsp; <a name=qq href=#m><code>qq(c, t, f)</code></a></h4>
+<p>It is like the ternary operator in C/C++: <code>c? t : f</code>. If <code>c</code> is true, return <code>t</code>; otherwise, return <code>f</code>.</p>
+<p>Its existence is first for implementing complicated logic in the <a href=#easyf>shortcut for defining an anonymous function</a>.</p>
+<p>Note: <code>x = qq(c, expr1, expr2)</code> might be a worse choice than <code>if c then x = expr1 else x = expr2 end</code> when the evaluation of <code>expr1</code>
+and/or <code>expr2</code> is time-consuming because both <code>expr1</code> and <code>expr2</code> must be evaluated before passed to <code>qq(...)</code>.</p>
+<pre><code>mathly = require('mathly')
+x = 10
+-- the following two statements are equivalent.
+if isodd(x) then
+  y = 'odd'
+else
+  y = 'even'
+end
+
+y = qq(isodd(x), 'odd', 'even')
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=qr href=#m><code>qr(A)</code></a></h4>
+<p>Return <code>Q</code> and <code>R</code> of QR factorization <code>A = QR</code>, where <code>A</code> is a <code>mxn</code> matrix, <code>Q</code> is a <code>mxn</code> matrix with orthonormal
+column vectors, and <code>R</code> is an invertible upper triangular <code>nxn</code> matrix.</p>
+<p>&#x2713; &nbsp; Mathly applies the Gram-Schmidt process and requires that <code>m &ge; n</code>.
+<pre><code>mathly = require('mathly')
+
+A = mathly{{1, 2, 3}, {2, 3, 4}, {-1, 0, 2}}
+Q, R = qr(A)
+disp(Q)
+--  0.4082  0.4364  -0.8018
+--  0.8165  0.2182   0.5345
+-- -0.4082  0.8729   0.2673
+disp(R)
+-- 2.4495  3.2660  3.6742
+--      0  1.5275  3.9280
+--      0       0  0.2673
+disp(Q * R - A)
+--  0.0000   0.0000   0.0000
+--  0.0000   0.0000  -0.0000
+-- -0.0000  -0.0000  -0.0000
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=seq></a><a name=range href=#m><code>range(x, y, s), seq(x, y, s)</code></a></h4>
+<p>They are the same and return a sequence of numbers starting at <code>x</code>, on <code>[x, y]</code>, and incrementing by <code>s</code> (<code>1</code> by default if <code>x</code> &lt; <code>y</code>; <code>-1</code>, otherwise).</p>
+<p>See also: <a href=#linspace><code>linspace</code></a>, <a href=#tables><code>tables</code></a>.</p>
+<pre><code>mathly = require('mathly')
+
+x = range(1, 10) -- or range(10), seq(10)
+disp(x)
+-- 1   2   3   4   5   6   7   8   9  10
+
+x = range(-1, -10) -- or range(-10), seq(-10)
+display(x)
+-- {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10}
+
+x = seq(-2, 3)
+disp(x)
+-- -2  -1   0   1   2   3
+
+x = seq(10, 5)
+disp(x)
+-- 10   9   8   7   6   5
+
+display(range(0, 5, 0.6))
+-- {0, 0.6, 1.2, 1.8, 2.4, 3.0, 3.6, 4.2, 4.8}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=remake href=#m><code>remake(A, opt)</code></a></h4>
+<p>Generate a lower (opt = 'LT'), upper (opt = 'UT'), diagonal (opt = 'DIAG'), or symmetrical (opt = 'SYM') matrix from matrix <code>A</code>.</p>
+<p>If, say, <code>opt = {k<sub>1</sub>, k<sub>2</sub>, ..., k<sub>m</sub>}</code>, generate from matrix <code>A</code> a matrix which keeps the
+diagonal entries <code>k<sub>i</sub></code> rows above (<code>k<sub>i</sub> > 0</code>) or <code>-k<sub>i</sub></code> rows below (<code>k<sub>i</sub>
+< 0</code>) the main diagonal, <code>i = 1, 2, ..., m</code>.</p>
+<p>See also: <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>,
+<a href=#fliplr><code>fliplr</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>,
+<a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code>
+(or <code>horzcat</code>)</a>; <code><a href=#match>match</a></code>.</p>
+<pre><code>mathly = require('mathly')
+
+A = reshape(seq(1, 25), 5, 5)
+disp(A)
+-- 1   6  11  16  21
+-- 2   7  12  17  22
+-- 3   8  13  18  23
+-- 4   9  14  19  24
+-- 5  10  15  20  25
+remake(A, 'UT')
+-- 1   6  11  16  21
+-- 0   7  12  17  22
+-- 0   0  13  18  23
+-- 0   0  0   19  24
+-- 0   0  0   0   25
+remake(A, 'SYM')
+-- 1   6  11  16  21
+-- 6   7  12  17  22
+-- 11  12 13  18  23
+-- 16  17 18  19  24
+-- 21  22 23  24  25
+remake(A, {-1, 0, 1}) -- or remake(A, seq(-1,1)) -- See also: <a name=remake1></a><a href=#diag1>diag</a>
+-- 1  6   0   0   0
+-- 2  7  12   0   0
+-- 0  8  13  18   0
+-- 0  0  14  19  24
+-- 0  0   0  20  25
+remake(A, {-1, seq(1,3)})
+-- 0  6  11  16   0
+-- 2  0  12  17  22
+-- 0  8   0  18  23
+-- 0  0  14   0  24
+-- 0  0   0  20   0
+remake(randi({-100, 100}, 6), 'LT') -- generate randomly a lower triangular matrix
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=repmat href=#m><code>repmat(A, m, n)</code></a></h4>
+<p>Return a <code>mxn</code> block matrix with each entry a copy of matrix <code>A</code>. The default value of <code>n</code> is <code>m</code>.</p>
+<p>See also: <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>,
+<a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>,
+<a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code>
+(or <code>horzcat</code>)</a>; <code><a href=#match>match</a></code>.</p>
+<pre><code>mathly = require('mathly')
+
+a = mathly{{1, 2, 3}, {2, 3, 4}}
+disp(a)
+-- 1  2  3
+-- 2  3  4
+disp(repmat(a, 2))
+-- 1  2  3  1  2  3
+-- 2  3  4  2  3  4
+-- 1  2  3  1  2  3
+-- 2  3  4  2  3  4
+disp(repmat(a, 2, 3))
+-- 1  2  3  1  2  3  1  2  3
+-- 2  3  4  2  3  4  2  3  4
+-- 1  2  3  1  2  3  1  2  3
+-- 2  3  4  2  3  4  2  3  4
+disp(repmat(5, 2, 3)) -- same as mathly(2, 3, 5)
+-- 5  5  5
+-- 5  5  5
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=reshape href=#m><code>reshape(A, m, n)</code></a></h4>
+<p>Rearrange columnwisely existing elements in a table or Mathly matrix <code>A</code> and return a new <code>mxn</code> Mathly matrix.</p>
+<p>See also: <a href=#diag><code>diag</code></a>, <a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>,
+<a href=#fliplr><code>fliplr</code></a>, <a href=#remake><code>remake</code></a>, <a href=#repmat><code>repmat</code></a>,
+<a href=#submatrix><code>submatrix</code></a>, <a href=#vertcat><code>vertcat</code></a>, <a href=#horzcat><code>..</code>
+(or <code>horzcat</code>)</a>; <code><a href=#match>match</a></code>.</p>
+<pre><code>mathly = require('mathly')
+
+reshape({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 3) -- return a 3x4 Mathly matrix, where 4 is automatically determined
+-- 1  4  7  10
+-- 2  5  8  0
+-- 3  6  9  0
+
+reshape({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 3, 5) -- no enough numbers in a table? fill with 0
+-- 1  4  7  10  0
+-- 2  5  8  0   0
+-- 3  6  9  0   0
+
+a = mathly{{1, 2, 3}, {-1, -2, -3}, {6, 7, 8}}
+disp(a)
+--  1  2  3
+-- -1 -2 -3
+--  6  7  8
+b = reshape(a, 2)
+disp(b)
+--  1  6 -2  3  8
+-- -1  2  7 -3  0
+c = reshape(a, 2, 7)
+disp(c)
+--  1  6 -2  3  8  0  0
+-- -1  2  7 -3  0  0  0
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=reverse href=#m><code>reverse(tbl)</code></a></h4>
+<p>Return a table with order of elements in table <code>tbl</code> reversed.</p>
+<p>&#x2713; &nbsp; If <code>tbl</code> is a matrix, it is flattened columnwisely first to a table and then reversed.</p>
+<pre><code>mathly = require('mathly')
+
+a = seq(10)
+disp(a)
+-- 1   2   3   4   5   6   7   8   9  10
+disp(reverse(a)) -- or tt(a, {-1, 1})
+-- 10   9   8   7   6   5   4   3   2   1
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=round href=#m><code>round(x, n)</code></a></h4>
+<p>Round <code>x</code> to <code>n</code> decimal places (default: 0).</p>
+<pre><code>mathly = require('mathly')
+
+a = mathly({{117.37826, 696.56562}, {-594.53232, 636.11108}})
+round(a)
+--  117  697
+-- -595  636
+
+round(a, 2)
+--  117.3800  696.5700
+-- -594.5300  636.1100
+
+round(pi, 4)
+-- 3.1416
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=rref href=#m><code>rref(A, ...)</code></a></h4>
+<p>If there is one more argument, i.e., <code>rref(A, B)</code>, <code>A</code> and <code>B</code> will be merged horizontally into A.
+<p><code>A</code> and <code>B</code> must be Mathly matrices with the same row number.</p>
+<p>Return the reduced row-echelon form of a Mathly matrix <code>A</code>.</p>
+<p>To solve <code>Ax = b</code>, call <code>rref(A, b)</code> which returns the reduced row-echelon form of <code>A</code> and the solution.</p>
+<p>See also: <a href=#linsolve><code>linsolve</code></a></p>
+<pre><code>mathly = require('mathly')
+
+a = mathly{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}, {4, 5, 6}}
+disp(a)
+--  1  2  3
+--  2  3  4
+--  3  4  5
+--  4  5  6
+rref(a)
+-- 1  0.0000 -1.0000
+-- 0       1  2.0000
+-- 0  0.0000  0.0000
+-- 0  0.0000  0.0000
+
+-- To solve Ax = b<sub>1</sub>, Ax = b<sub>2</sub>, and Ax = b<sub>3</sub>:
+A = mathly{{1, 2, 3}, {2, 3, 4}, {0, -1, 2}}
+b1 = mathly{{1},{2},{3}}
+b2 = mathly{{1},{0},{5}}
+b3 = mathly{{-2},{1},{2}}
+
+B = horzcat(b1, b2, b3)
+a, b = rref(A, B)
+disp(b)
+--  1.7500  -1.2500   7.2500
+-- -1.5000  -1.5000  -3.5000
+--  0.7500   1.7500  -0.7500
+-- the solutions are
+disp((b^T)[1]) -- solution for Ax = b<sub>1</sub>
+-- 1.7500  -1.5000   0.7500
+disp((b^T)[2]) -- solution for Ax = b<sub>2</sub>
+-- -1.2500  -1.5000   1.7500
+disp((b^T)[3]) -- solution for Ax = b<sub>3</sub>
+-- 7.2500  -3.5000  -0.7500
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=save href=#m><code>save(datafile, ...)</code></a></h4>
+<p>Save specified or all user-defined variables and their values to Lua or MATLAB script file, <code>datafile</code>.</p>
+<p>&#x2713; &nbsp; If the name of <code>datafile</code> ends in <code>.m</code>, the data is saved in the format of MATLAB
+scripts. Note: Data like <code>x = {1, true, 'abc', c = {2, {3}, d = 'bcd'}}</code> are undefined in MATLAB.</p>
+<p>&#x2713; &nbsp; <b>If no path is specified, the data file will be saved in the present working directory.</b></p>
+<pre><code>mathly = require('mathly')
+
+a = randi(100, 3, 2)
+disp(a)
+b = {1, 2, {3, {4, {5, 6, {7}}}}}
+c = 100
+save('data_1.lua')            -- save all user-defined variables and their values to a file,
+                              -- data_1.lua, in present working directory
+                              -- to save to different place? e.g., 'D:/Workspace/data_1.lua'
+save('data_2.lua', 'a', 'b')  -- save variables a, b, and their values to a file, data_2.lua,
+                              -- in present working directory
+
+save('data.m', {'a', 'b'})    -- save variables a, b, and their values to a file, data.m, in the format
+                              -- of MATLAB scripts
+
+clear()
+print(a, b, c)
+-- nil nil nil -- not defined
+
+dofile('data_2.lua') -- load/recover the data
+disp(a)
+disp(b)
+
+print(c) -- nil
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=directionfield></a><a name=slopefield href=#m><code>slopefield(f, xrange, yrange, scale), directionfield(f, xrange, yrange, scale)</code></a></h4>
+<p>They are the same function. Return a graphics object for <code><a href=#plot>plot</a></code> to plot the slope field of <code>dy/dx = f(x, y)</code>.</p>
+<p><code>scale</code> (default to 1) controls the length of the dash line segments in a slope field.</p>
+<p><code>xrange</code> and <code>yrange</code> (default to <code>xrange</code>) take the format of <code>{initial value, terminal value, step (default: 1)}</code>.</p>
+<pre><code>mathly = require('mathly')
+
+clear()
+axissquare()
+plot(slopefield(function(x, y) return x + y end, {-3, 3, 0.2}), {layout={width=600, height=600}})
+plot(directionfield('@(x, y) x^2 - y', {-3.5, 3.5, 0.5}, {-3.5, 3.5, 0.5}, 2), {layout={width=600, height=600}})
+
+x = linspace(-3, 2.7, 100)
+y1 = x^2 - 2*x + 2 - exp(-x)
+y2 = x^2 - 2*x + 2 - 2*exp(-x -1)
+y3 = x^2 - 2*x + 2 - 8*exp(-x -2)
+xa = linspace(-2.77, 2.7, 90)
+ya = xa^2 - 2*xa + 2 - 1.2607*exp(-xa)
+axissquare()
+plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
+     x, y1, '-r', point(0, 1, {symbol='x', size=7, color='red'}),
+     x, y2, '-b', point(-1, 3, {symbol='circle', size=7, color='blue'}),
+     x, y3, '-g', point(-2, 2, {symbol='square', size=7, color='green'}),
+     xa, ya, '-n', point(-1.5, 1.6, {symbol='circle', size=7, color='purple'}),
+     {layout={width=400, height=600, title="y' = x<sup>2</sup> - y"}})
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=sort href=#m><code>sort(tbl, compf)</code></a></h4>
+<p>Sort table <code>tbl</code> and return the resulted table.</p>
+<p>Provided for convenience, it is almost exactly the same as <a href="manual.html#pdf-table.sort"><code>table.sort(tbl, compf)</code></a>.</p>
+<p>For <code>table.sort(tbl)</code>, <code>tbl</code> must be a variable rather than a specific table. Otherwise, say, <code>table.sort({2, 0, 2, 4})</code> does nothing.</p>
+<p>&#x2713; &nbsp; <code>tbl</code> is changed if it is a variable.</p>
+<pre><code>mathly = require('mathly')
+
+a = seq(10)
+disp(a)
+-- 1   2   3   4   5   6   7   8   9  10
+sort(a, '@(x, y) x > y')
+disp(a)
+-- 10   9   8   7   6   5   4   3   2   1
+disp(sort(a, function(x, y) return x < y end)) -- same as sort(a)
+-- 1   2   3   4   5   6   7   8   9  10
+disp(sort({2, 0, 2, 4}))
+-- 0  2  2  4
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=var></a><a name=std href=#m><code>std(x, opt)</code>, <code>var(x, opt)</code></a></h4>
+<ol>
+<li>If <code>x</code> is a table or Mathly row/column vector, return the standard deviation of its elements;</li>
+<li>If <code>x</code> is a <code>mxn</code> matrix, return a row vector of which the <code>i</code>-th element is the standard deviation of
+the <code>i</code>-th column of <code>x</code>.</p></li>
+</ol>
+<p>If <code>opt = 0</code> (default), calculate for a population; otherwise, calculate for a sample.</p>
+<pre><code>mathly = require('mathly')
+
+disp(std({1,2,3}))
+-- 1.0
+disp(std({1,2,3}, 1))
+-- 0.81649658092773
+A = mathly{{1, 2, 3}, {2, 3, 4}, {4, 7, 9}}
+disp(A)
+-- 1  2  3
+-- 2  3  4
+-- 4  7  9
+disp(std(A))
+-- 1.5275  2.6458  3.2146
+disp(var(A))
+-- 2.3333  7.0000  10.3333
+disp(var(A, 1))
+-- 1.5556  4.6667  6.8889
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=strcat href=#m><code>strcat(...)</code></a></h4>
+<p>Concatenate strings and return the resulted string.</p>
+<p>See also: <a href=#tblcat><code>tblcat</code></a></p>
+<pre><code>mathly = require('mathly')
+
+print(strcat('Good', ' ', 'morning', '!'))
+-- Good morning!
+display(strcat({'1', '0', '0','1'}))
+-- '1001'
+print(strcat(34,'Hello, ', {'the ', 'world', '!'}, 34)) -- 34? ascii code for "
+-- "Hello, the world!"
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=submatrix href=#m><code>submatrix(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></a></h4>
+<p>It is an alias of <a href=#copy>copy</a> when <code>A</code> is a Mathly matrix.</p>
+
+<h4>&bull; &nbsp; <a name=subtable href=#m><code>subtable(A, irange, B, irange1)</code></a></h4>
+<p>It is an alias of <a href=#copy>copy</a> when <code>A</code> is a table but not a mxn matrix.</p>
+
+<h4>&bull; &nbsp; <a name=tables href=#m><code>tables(expr, opts)</code></a></h4>
+<p>It generates a table or a table of tables like the powerful <i>Mathematica</i> tool, <code>Table</code>.
+It must be the most frequently used <i>Mathematica</i> command.</p>
+<p>The concept, controls, is used here. It is borrowed from <a href=#animate><code>animate</code></a> and <a href=#manipulate><code>manipulate</code></a>
+which were implemented first.</p>
+<p>To see how multiple controls work, use <code>printcode = true</code> to print the dynamically generated Lua code
+for input passed to the function, and explore the code.</p>
+<p>See also: <a href=#animate><code>animate</code></a>; <a href=#linspace><code>linspace</code></a>, <a href=#range><code>range</code></a> (or <a href=#seq><code>seq</code></a>).</p>
+<pre><code>mathly = require('mathly')
+x = tables(5, {i = {1, 10}}); disp(x)
+-- {5, 5, 5, 5, 5, 5, 5, 5, 5, 5}
+
+-- If the values of elements in the resulted table vary, i.e., dynamic
+-- evaluation is needed, expr must be a mathematical expression in a string.
+-- It can access values of the controls and variables defined in the context.
+-- It can also call user-defined functions and functions provided by Lua and
+-- Mathly.
+--
+x = tables('i', {i = {1, 20, 2}}); disp(x)
+-- {1, 3, 5, 7, 9, 11, 13, 15, 17, 19}
+
+x = tables('1 / i^2', {i = {1, 10}}); disp(x)
+-- {1.0, 0.25, 0.1111, 0.0625, 0.04, 0.0278, 0.0204, 0.0156, 0.0123, 0.01}
+
+x = tables('qq(mod(i, 5) == 0 and mod(i, 6) == 0, i, nil)', {i = {0, 100}}); disp(x)
+-- {0, 30, 60, 90}
+</code></pre>
+<p>The order of controls in <code>opts.controls</code> matters. If <code>opts.controls</code> is not
+specified, controls will be automatically recognized from <code>expr</code> if <code>expr</code>
+is a string, otherwise from <code>opts</code>. The order of recognized controls is
+the order in which they appear in <code>expr</code> if <code>expr</code> is a string. It is good
+to specify <code>opts.controls</code> if multiple controls are used.</p>
+<pre><code>mathly = require('mathly')
+
+x = tables('m / (n + 1)', { n = {1, 4}, m = {1, 3}}); disp(x) -- same as: controls = "mn"
+-- {{0.5, 0.3333, 0.25, 0.2}, {1.0, 0.6667, 0.5, 0.4}, {1.5, 1.0, 0.75, 0.6}}
+
+x = tables('m / (n + 1)', { n = {1, 4}, m = {1, 3}, controls = "nm"}); disp(x)
+-- {{0.5, 1.0, 1.5}, {0.3333, 0.6667, 1.0}, {0.25, 0.5, 0.75}, {0.2, 0.4, 0.6}}
+
+x = tables('m / n', { n = {1, 4}, m = {1, 3}, k = {0, 1}, controls = "nmk", printcode = true}); disp(x)
+-- local t1 = {}
+-- local t2 = {}
+-- local t3 = {}
+-- for n = 1, 4, 1 do
+--   for m = 1, 3, 1 do
+--     for k = 0, 1, 1 do
+--       t3[#t3 + 1] = m / n
+--     end
+--     t2[#t2 + 1] = t3; t3 = {}
+--   end
+--   t1[#t1 + 1] = t2; t2 = {}
+-- end
+-- return t1
+-- {{{1.0, 1.0}, {2.0, 2.0}, {3.0, 3.0}},
+--  {{0.5, 0.5}, {1.0, 1.0}, {1.5, 1.5}},
+--  {{0.3333, 0.3333}, {0.6667, 0.6667}, {1.0, 1.0}},
+--  {{0.25, 0.25}, {0.5, 0.5}, {0.75, 0.75}}}
+
+-- We can't use a table to create a table of tables, but the job can still be done.
+x = tables('{1, 5, i}', { i = {1, 5}}); disp(x)
+-- {{1, 5, 1}, {1, 5, 2}, {1, 5, 3}, {1, 5, 4}, {1, 5, 5}}
+
+x = tables('{1, i, {2, i * j, j - 1}}', { i = {0, 1}, j = {4, 5}}); disp(x)
+-- {{{1, 0, {2, 0, 3}}, {1, 0, {2, 0, 4}}},
+--  {{1, 1, {2, 4, 3}}, {1, 1, {2, 5, 4}}}}
+
+p, q = 2, 3
+x = tables("{p*q, sin(i), 'abc', 2*p >= q}", { i = {1, 3}, controls = 'i'}); disp(x)
+-- {{6, 0.8415, 'abc', true}, {6, 0.9093, 'abc', true}, {6, 0.1411, 'abc', true}}
+
+x = tables('i', {i = {0, 2*pi, 0.01}})
+plot(x, sin(x))
+sum(tt(x) * x)
+</code></pre>
+
+<p>&#x2713; &nbsp; When <code>expr</code> is a string starting with '!', if <code>opts.controls</code> is specified, each specified control in <code>expr</code>
+will be replaced with its instantaneous value; otherwise, no evaluation will occur.</p>
+<pre><code>mathly = require('mathly')
+
+x = tables('!i + j', {i = {1, 5}}); disp(x) -- no evaluation at all
+-- {'i + j', 'i + j', 'i + j', 'i + j', 'i + j'}
+
+fs = tables('!@(x) sin(x + i)', {i = {1, 10}, controls = 'i'})
+disp(fs)
+-- {'@(x) sin(x + 1)', '@(x) sin(x + 2)', '@(x) sin(x + 3)', ..., '@(x) sin(x + 10)'}
+plot(table.unpack(fs))
+
+fs = tables('!@(x) i*sin(x + j) + k', {i = {1, 5}, j = {-1, 1}, k = {0, 2}, controls = 'ikj', printcode = true})
+disp(fs)
+plot({range = {-6, 6}}, table.unpack(flatten(fs)))
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=tblcat href=#m><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></code></a></h4>
+<p>Flatten and concatenate tables <code>t<sub>1</sub></code>, <code>t<sub>2</sub></code>, ... and return the resulted table. The tables here may just be numbers, boolean values, or strings.</p>
+<p>See also: <a href=#strcat><code>strcat</code></a></p>
+<pre><code>mathly = require('mathly')
+
+x = {1, 2}
+y = {3, 4, {5}}
+disp(tblcat(0, x, y, 10))
+-- 0   1   2   3   4   5  10
+
+z = mathly{{6}, {7}, {8}, {9}}
+display(tblcat(x, z, 11)) -- a column vector is automatically converted into a row vector
+-- {1, 2, 6, 7, 8, 9, 11}
+
+disp(tblcat(1, {c = 2, a = {3, 4}}, true, {ab = {5, 6, 'OK'}, aa = 7}))
+-- {1, 3, 4, 2, true, 5, 6, 'OK', 7}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=text href=#m><code>text(x, y, txt, style)</code></a></h4>
+<p>Return a text object for <code><a href=#plot>plot</a></code> to write a text string <code>txt</code> at the point <code>(x, y)</code> on a graph.</p>
+<p><code>style</code> (default: <code>{color='black'}</code>): e.g., <code>{family = 'Arial Black', size = 18, color = '#ff0000'}</code>.</p>
+<pre><code>mathly = require('mathly')
+
+clear()
+x = linspace(-pi, pi, 200)
+plot(x, cos(x), point(-pi/3, cos(-pi/3)), text(-pi/3+0.3, cos(-pi/3) - 0.1, 'Point A'), point(pi/3, cos(pi/3)), text(1.6, cos(pi/3) - 0.1, 'Point B'))
+plot(x, cos(x), text(0, -0.2, 'Demo', {family = 'Sans Serif', size = 28, color = '#00aaff'}))
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=toc></a><a name=tic href=#m><code>tic()</code>, <code>toc()</code></a></h4>
+<table><tbody>
+<tr><td width=20></td><td><code>tic()</code></td><td> </td><td width=10> </td><td>Start a wall-clock timer.</td></tr>
+<tr><td width=20></td><td><code>toc()</code></td><td> </td><td width=10> </td><td>Print or return elapsed time on a wall-clock timer. Note: The measurement on Linux can't be in milliseconds.</td></tr>
+</tbody></table>
+<pre><code>
+mathly = require('mathly')
+
+tic() -- start recording the time
+for i = 1, 1000000 do
+  x = cos(i) * sin(i)
+end
+x = toc()
+printf("The loop took %.2f seconds.", x)
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=unique href=#m><code>unique(tbl)</code></a></h4>
+<p>Return the same data as in table <code>tbl</code> but with no repetitions. Data is sorted.</p>
+<pre><code>mathly = require('mathly')
+display(unique({4,5,2,1,-2,2,4,2,7,6,19}))
+-- {-2, 1, 2, 4, 5, 6, 7, 19}
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=vectorfield2d><code>vectorfield2d(f, xrange, yrange, scale)</code></a></h4>
+<p>Return a graphics object for <code><a href=#plot>plot</a></code> to plot the vector field of vector function <code>f(x, y)</code>.</p>
+<p><code>scale</code> (default to 1) controls the length of the arrows in the vector field.</p>
+<p><code>xrange</code> and <code>yrange</code> (default to <code>xrange</code>) take the format of <code>{initial value, terminal value, step (default: 1)}</code>.</p>
+<p>&#x2713; &nbsp; Note: How to know the vector at a point in a generated vector field? The point is the <em>head</em> of an arrow, and the arrow denotes the vector at that point.</p>
+
+<pre><code>mathly = require('mathly')
+
+clear()
+axissquare()
+plot(vectorfield2d('@(x,y) {sin(y), sin(x)}', {-pi, pi, pi/8}, {-pi, pi, pi/8}, 20))
+
+plot(vectorfield2d('@(x,y) {x, y}'))
+plot(vectorfield2d('@(x,y) {-x, -y}'))
+
+plot(vectorfield2d('@(x,y) {-x, y}'))
+plot(vectorfield2d('@(x,y) {-y, x}'))
+plot(vectorfield2d('@(x,y) {-y^2, 2*x^2}', {-5, 5, 0.5}, {-5, 5, 0.5}, 0.8))
+plot(vectorfield2d('@(x,y) {y, -x}'))
+plot(vectorfield2d('@(x,y) {y, x}'))
+plot(vectorfield2d('@(x,y) {-y, -x}', {scale=10}), {layout={width=800, height=600, title='<b>F</b>(x, y) = {-y, -x}'}})
+
+plot(vectorfield2d('@(x,y) {y, sin(x)}', {xrange={-2*pi, 2*pi, pi/8}, scale=7}))
+plot(vectorfield2d('@(x,y) {3*cos(3*x), 2*cos(2*y)}', {-1, 1, 1/10}, {-1.5, 1.5, 1/10}, 15), {layout={width=600, height=700}})
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=vectorangle href=#m><code>vectorangle(a, b)</code></a></h4>
+<p>Return the angle in radians between two vectors.</p>
+<pre><code>mathly = require('mathly')
+
+vectorangle({1, 3}, {-3, 1})
+-- 1.5707963267949 (90.0 degree)
+
+x = vectorangle({1, 3}, {-3, 1})
+disp(x + 1)
+-- 2.5707963267949
+
+vectorangle({1, 0, 1}, {0, 1, 1})
+-- 1.0471975511966 (60.0 degree)
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=vertcat href=#m><code>vertcat(A, B, ...)</code></a></h4>
+<P>Concatenate matrices <code>A</code>, <code>B</code>, ... in order vertically. Matrices must have the same number of columns.</P>
+<p>See also: <a href=#horzcat><code>..</code> (or <code>horzcat</code>)</a>; <a href=#diag><code>diag</code></a>,
+<a href=#expand><code>expand</code></a>, <a href=#flipud><code>flipud</code></a>, <a href=#fliplr><code>fliplr</code></a>,
+<a href=#remake><code>remake</code></a>, <a href=#reshape><code>reshape</code></a>, <a href=#repmat><code>repmat</code></a>,
+<a href=#submatrix><code>submatrix</code></a>; <code><a href=#match>match</a></code>.</p>
+<pre><code>mathly = require('mathly')
+
+A = rr{1, 2, 3}
+display(A)
+-- {{1, 2, 3}}
+B = mathly{{4, 5, 6}, {7, 8, 9}}
+disp(B)
+-- 4 5 6
+-- 7 8 9
+C = rr{10, 11, 12}
+disp(C)
+-- 10 11 12
+D = vertcat(A, B)
+disp(D)
+-- 1 2 3
+-- 4 5 6
+-- 7 8 9
+E = vertcat(A, B, C)
+disp(E)
+-- 1   2  3
+-- 4   5  6
+-- 7   8  9
+-- 10 11 12
+</code></pre>
+
+<h2><a name=easyf href=#top>Shortcut for defining an anonymous function</a></h2>
+<P>Whenever a function (or function handle) is passed to another function as an argument, <b>if it can be
+expressed by an algebraic or logical expression</b>, it can be defined in a string of the the format,
+<code>'@(variabls) expression'</code>. It is a MATLAB-style anonymous function but in a string.</p>
+<p>Many Mathly functions accept such an argument, including <code>all, any, apply, map, match, plot, plot3d,
+parametriccurve2d, plotparametriccurve3d, polarcurve2d, plotparametricsurface3d, plotsphericalsurface3d,
+sort,</code> etc. The function, <a href=#fstr2f><code>fstr2f(str)</code></a>, is called to convert an
+anonymous function in a string to a Lua function.</p>
+<pre><code>mathly = require('mathly')
+
+clear()
+disp(all({1, 2, 3, {4, {5}}}, '@(x) x > 0'))      -- 1
+disp(any({1, 2, 3, {4, {5}}}, '@(x) x % 3 == 0')) -- 1
+disp(apply('@(x, y, z) x + y + z', {1, 2, 3}))    -- 6
+disp(map('@(x) x*x', {1, 2, 3, {4, {5}}}))        -- {1, 4, 9, {16, {25}}}
+plot(sin, '@(x) 0.5*x^2 - 5', '-r', '@(t) cos(t)*t-3', '--g', {range={-pi, pi}})
+plot(parametriccurve2d({'@(t) t', '@(t) t^2'}))   -- x(t) = t, y(t) = t^2, i.e., y = x^2
+plot(polarcurve2d('@(t) cos(t) + 2*t'))           -- r(θ) = cos(θ) + 2*θ
+plot3d('@(x, y) x^2 - y^2')                       -- f(x, y) = x^2 - y^2
+plotparametriccurve3d({'@(t) 10*sin(t)', '@(t) t^2 - 10*t + 2', '@(t) t^3'})           -- x(t) = 10 * sin(t), ...
+plotparametricsurface3d({'@(u, v) sin(u)*v', '@(u, v) cos(u)*v - 2', '@(u, v) u + v'}) -- x(u, v) = sin(u)*v, ...
+plotsphericalsurface3d('@(t, p) sin(t) + 5*p')    -- ρ(θ, φ) = sin(θ) + 5*φ
+disp(sort({2, 5, 1, -3}, '@(x, y) x > y'))
+
+x = {1, 2, 3, 4, 5}
+disp(map('@(x) (iseven(x) and 2*x) or 0', x))
+-- or
+disp(map('@(x) qq(iseven(x), 2*x, 0)', x))
+-- {0, 4, 0, 8, 0}
+
+-- to pass a function to another function not defined in Mathly
+a = {2, 5, 1, -3}
+x = sort(a, fstr2f('@(x, y) x > y')) -- or table.sort(a, function(x, y) return x > y end)
+disp(x)
+disp(x * 5 - 10)
+</code></pre>
+<p>The shortcut for defining a function here might not work if <code>local</code> objects are accessed. For example,</p>
+<pre><code>mathly = require('mathly')
+
+clear()
+axissquare()
+do
+  local a = 5
+  plot(polarcurve2d(function(t) return cos(a*t) end, {0, 2*pi}))
+end
+</code></pre>
+<p>Here, <code>function(t) return cos(a*t) end</code> can't be replaced with <code>'@(t) cos(a*t)'</code> because <code>a</code>
+is supposed to be a <code>global</code> variable, which is why the following code works.
+<pre><code>mathly = require('mathly')
+clear()
+axissquare()
+a = 5
+plot(polarcurve2d('@(t) cos(a*t)', {0, 2*pi}))
+</code></pre>
+
+<p>The function, <a href=#qq><code>qq</code></a>, allows more complicated expressions to be defined through this shortcut.</p>
+
+<h2><a name=namedargs0 href=#top>Named arguments</a></h2>
+<p>Functions for plotting graphs or providing <a href=#plot><code>plot</code></a> with graphics objects allow "named" arguments, including
+<a href=#plot3d><code></code>plot3d</code></a>, <a href=#plotsphericalsurface3d><code></code>plotsphericalsurface3d</code></a>,
+<a href=#plotparametricsurface3d><code></code>plotparametricsurface3d</code></a>, <a href=#plotparametriccurve3d><code></code>plotparametriccurve3d</code></a>,
+<a href=#parametriccurve2d><code></code>parametriccurve2d</code></a>, <a href=#polarcurve2d><code></code>polarcurve2d</code></a>,
+<a href=#contourplot><code></code>contourplot</code></a>, <a href=#scatter><code></code>scatter</code></a>,
+<a href=#slopefield><code></code>slopefield</code></a>, <a href=#vectorfield2d><code></code>vectorfield2d</code></a>,
+<a href=#hist><code></code>hist</code></a>, <a href=#hist1><code></code>hist1</code></a>, <a href=#pareto><code></code>pareto</code></a>,
+<a href=#freqpolygon><code></code>freqpolygon</code></a>, <a href=#histfreqpolygon><code></code>histfreqpolygon</code></a>,
+<a href=#boxplot><code></code>boxplot</code></a>, <a href=#pie><code></code>pie</code></a>, <a href=#wedge><code></code>wedge</code></a>,
+<a href=#arc><code></code>arc</code></a>, <a href=#circle><code></code>circle</code></a>, <a href=#polygon><code></code>polygon</code></a>,
+<a href=#line><code></code>line</code></a>, <a href=#point><code></code>point</code></a>, and <a href=#text><code></code>text</code></a>.</p>
+
+<p>The basic rule is that <b>unnamed arguments go first and are in specific order, and all named arguments
+must be put in a single list</b>. In the list, each item is named, and the order of items doesn't matter.</p>
+<p>See also: <a href=#namedargs><code>function namedargs(data, opts)</code></a>.</p>
+<pre><code>mathly = require('mathly')
+
+-- the following commands generate each the same graphics object
+vectorfield2d('@(x, y) {-y, x}', {-5, 5}, nil, 3)             -- unnamed arguments
+
+vectorfield2d('@(x, y) {-y, x}', {-5, 5}, nil, {scale=3})     -- unnamed and named arguments
+vectorfield2d('@(x, y) {-y, x}', {xrange={-5, 5}, scale=3})
+vectorfield2d('@(x, y) {-y, x}', {scale=3, xrange={-5, 5}})
+
+vectorfield2d({f='@(x, y) {-y, x}', xrange={-5, 5}, scale=3}) -- named arguments
+vectorfield2d({scale=3, xrange={-5, 5}, f='@(x, y) {-y, x}'})
+vectorfield2d{scale=3, xrange={-5, 5}, f='@(x, y) {-y, x}'}
+</code></pre>
+<p>Note: Since <a href=#plot><code>plot</code></a> is so basic and general a tool, it is designed to treat arguments differently.
+It can take two or more "named" arguments which can occur before an unnamed argument. For instance,</p>
+<pre><code>mathly = require('mathly')
+clear()
+plot({layout={width=600, height=400}}, sin, {range={0, 2*pi}})
+</code></pre>
+
+<h2><a name=layout href=#top>Plotly JavaScript Figure Reference: <code>layout</code> and <code>grid</code></a></h2>
+<P>You can find the basic usage of the figure option, <code>layout</code>, in examples of this documentation. For more information
+about the option and more control of your figure, you may refer to the official website of Plotly Javascript Figure Reference
+at <a href=https://plotly.com/javascript/reference/layout/ target="_blank">https://plotly.com/javascript/reference/layout/</a>.</p>
+<p>For simplicity and the small size of Mathly, we just cover a very small subset of the features provided by Plotly JavaScript
+graphing library. However, it doesn't set limitations for you to experiment with various options/properties supported by Plotly.</p>
+<p>A summary of the option seen in our examples is as follows.</p>
+<pre><code>{layout = {
+  width = 600, height = 450, -- Mathly default setting, 4x3
+  title = "&lt;b&gt;Demo:&lt;/b&gt; y = x&lt;sup&gt;2&lt;/sup&gt;", -- HTML tags may be used here: <b>Demo:</b> y = x<sup>2</sup>
+  xaxis = {title = "Your x label"}, yaxis = {title = "Your y label"},
+  grid = {rows = 2, columns = 3},
+  margin = {l = 40, r = 40, t = 40, b = 40, pad = 10},
+  autosize = false
+}}
+</code></pre>
+<p>You may use it as a template, remove some options, and fine-tune some others for your needs. For example,</p>
+<pre><code>plot(sin, '-r', {layout = {
+  title = "Example",
+  xaxis = {title = "x"}, yaxis = {title = "sin &lt;i&gt;x&lt;/i&gt;"},
+  margin = {l = 70, r = 40, t = 40, b = 40, pad = 5},
+  autosize = false
+}})
+</code></pre>
+<p>&#x2713; &nbsp; In CudaText, press Ctrl-P P to insert such a <code>plot</code> template. See <a href=#cudatext>CudaText</a>.
+<p>If axis labels are needed for multiple graphs on a figure, <code>gridaxes</code> and <code>gridaxisnames</code> can be used as follows.</p>
+<pre><code>mathly = require('mathly')
+
+plot(
+  sin, cos, '@(x) x', '@(x) x^2',
+  {layout = {
+     width = 800, height = 500, title = "Example",
+     grid = {rows = 2, columns = 2},
+     gridaxes = {
+       xaxis  = {title = "x label 1"},
+       yaxis  = {title = "y label 1"},
+
+       xaxis2 = {title = "x label 2"},
+       yaxis2 = {title = "y label 2"},
+
+       xaxis3 = {title = "x label 3"},
+       yaxis3 = {title = "y label 3"},
+
+       xaxis4 = {title = "x label 4"},
+       yaxis4 = {title = "y label 4"}
+     },
+     margin = {l = 58, r = 50, t = 40, b = 45, pad = 10},
+     autosize = false
+    }
+  }
+)
+
+-- <a href=https://plotly.com/javascript/axes/ target = "_blank">An example on Plotly.com</a>
+x1 = {0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3}; y1 = {0, 0, 1, 1, 3, 3, 2, 2, 3, 3, 1, 1, 0, 0}
+x2 = {0, 1, 2, 3}; y2 = {1, 2, 4, 8}
+x3 = {1, 10, 100, 10, 1}; y3 = {0, 1, 2, 3, 4}
+x4 = {1, 100, 30, 80, 1}; y4 = {1, 1.5, 2, 2.5, 3}
+
+plot(
+  x1, y1, '-o', x2, y2, '-o', x3, y3, '-o', x4, y4, '-o',
+  {layout = {
+     width = 650, height = 500,
+     title = "fixed-ratio axes",
+     grid = {rows = 2, columns = 2},
+     gridaxisnames = {
+       -- xaxis  = "x", yaxis  = "y", -- default values
+       yaxis2 = "y2",
+       xaxis3 = "x2",
+       yaxis3 = "y3",
+       xaxis4 = "x2",
+       yaxis4 = "y4"
+     },
+     gridaxes = {
+       xaxis  = {nticks = 10, domain = {0, 0.45}, title = "shared X axis"},
+       yaxis  = {scaleanchor = "x", domain = {0, 0.45}, title = "1:1"},
+       yaxis2 = {scaleanchor = "x", scaleratio = 0.2, domain = {0.55, 1}, title = "1:5"},
+       xaxis2 = {type = "log", domain = {0.55, 1}, anchor = "y3", title = "unconstrained log X"},
+       yaxis3 = {domain = {0, 0.45}, anchor = "x2", title = "Scale matches ->"},
+       yaxis4 = {scaleanchor = "y3", domain = {0.55, 1}, anchor = "x2", title = "Scale matches <-"}
+     },
+     margin = {l = 58, r = 50, t = 40, b = 45, pad = 10},
+     autosize = false
+    }
+  }
+)
+</code></pre>
+<p></p>
+<hr>
+<h2 style="margin-left: 20px;">Note</h2>
+<ol>
+<li>Part of modules <a href=http://dkolf.de/dkjson-lua>dkjson.lua</a> and <a href=https://github.com/kenloen/plotly.lua>plotly.lua</a>
+is merged into this project to reduce dependencies and make it easier for users to download and use Mathly. Though
+some changes have been made, full credit belongs to the original authors for whom the author of Mathly
+is very grateful.</li>
+<p></p>
+<li>This project was started first right in the downloaded code of the Lua module,
+<a href="https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua">matrix.lua</a>, to see if Lua is good
+for numerical computing. However, it failed to solve numerically a boundary value problem. The solution
+was obviously wrong because the boundary condition at one endpoint is not satisfied, but I could not find
+anything wrong in both the algorithm and the code. I had to wonder if there were bugs in the module. In many
+cases, it is easier to start a small project from scratch than using and debugging others' code. In
+addition, matrix.lua addresses a column vector like a[i][1] and a row vector a[1][i], rather than a[i]
+in both cases, which is quite ugly and unnatural. Furthermore, no basic graphics capabilities are provided in
+matrix.lua. Therefore, this Mathly module was developed. But anyway, I appreciate the work in matrix.lua.
+Actually, you may find some similarities in the code of matrix.lua and mathly.lua, e.g., m1, m2 are used
+to name arguments of some functions.</li>
+</ol>
+<p style="margin-left: 40px;">David Wang</p>
+<p style="margin-left: 40px;">December 25, 2024</p>
+</div>
+</body>
+</html>
