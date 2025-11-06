@@ -38,7 +38,7 @@ a, b = x0, 5
 ------------------------------------------------------
 opts = {
   x = {a, b}, y = {0, 10}, -- make adjustments here for your initial-value problem
-  I = {1, 50, 1}, n = {1, 50, 1, default =10}, controls = 'In',
+  I = {1, 50, 1, default = 15}, n = {1, 50, 1, default =17}, controls = 'In',
   width = 2, color = 'green',
   layout = {width = 500, height = 500},
   javascript = string.format(jscode, _to_jscript_expr(fexpr), a, b, x0, y0),
