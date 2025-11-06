@@ -96,14 +96,11 @@ function mthlyUpdateTraces() {
   function plotsolu() {
     var xs = [0.000000], ys = [1.000000];
     h = (b - a) / n;
-
+    let style = {'color': 'red', 'width': 1}
     var xi = xs[0], yi = ys[0];
-    for (let i = 1; i <= n; i++) {
+    for (let i = 1; i < Math.min(I, n); i++) {
       yi = yi + f(xi, yi)*h; ys.push(yi);
       xi = xi + h; xs.push(xi);
-    }
-    let style = {'color': 'red', 'width': 1}
-    for (let i = 1; i < I; i++) {
       mthlyTraces.push({x: [xs[i-1], xs[i] ], y: [ys[i-1], ys[i] ], mode: 'lines+markers', line: style});
     }
 
