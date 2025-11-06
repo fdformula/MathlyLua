@@ -28,14 +28,14 @@ input:focus {outline: none;}
 <div id="mathlyDiv" style="width:500px;height:500px;display:inline-block;top:50px;position:absolute;"></div>
 <span id='title' style="width:500px;left:0px;display:block;text-align:center;">&nbsp;</span>
 <!-- controls -->
-<button type="button" title="Previous value" onclick="mthlyINext(-1)" style="width:48px;left:348px;top:60px;position:absolute">Prev</button>
-<button type="button" title="Next value" onclick="mthlyINext(1)" style="width:48px;left:399px;top:60px;position:absolute">Next</button>
-<label for="mthlySldrI" style='top:60px;'>I:</label>
-<input type="range" id="mthlySldrI" min="1" max="50" value="1" style='left:72px;top:60px;' step="1"></input><span id="mthlySldrIvalue" style="left:293px;top:60px;position:absolute">&nbsp;</span>
-<button type="button" title="Previous value" onclick="mthlynNext(-1)" style="width:48px;left:348px;top:90px;position:absolute">Prev</button>
-<button type="button" title="Next value" onclick="mthlynNext(1)" style="width:48px;left:399px;top:90px;position:absolute">Next</button>
-<label for="mthlySldrn" style='top:90px;'>n:</label>
-<input type="range" id="mthlySldrn" min="1" max="50" value="1" style='left:72px;top:90px;' step="1"></input><span id="mthlySldrnvalue" style="left:293px;top:90px;position:absolute">&nbsp;</span>
+<button type="button" title="Previous value" onclick="mthlyINext(-1)" style="width:48px;left:436px;top:60px;position:absolute">Prev</button>
+<button type="button" title="Next value" onclick="mthlyINext(1)" style="width:48px;left:487px;top:60px;position:absolute">Next</button>
+<label for="mthlySldrI" style='top:60px;'>Iterations:</label>
+<input type="range" id="mthlySldrI" min="1" max="50" value="1" style='left:160px;top:60px;' step="1"></input><span id="mthlySldrIvalue" style="left:381px;top:60px;position:absolute">&nbsp;</span>
+<button type="button" title="Previous value" onclick="mthlynNext(-1)" style="width:48px;left:436px;top:90px;position:absolute">Prev</button>
+<button type="button" title="Next value" onclick="mthlynNext(1)" style="width:48px;left:487px;top:90px;position:absolute">Next</button>
+<label for="mthlySldrn" style='top:90px;'>Subintervals:</label>
+<input type="range" id="mthlySldrn" min="1" max="50" value="1" style='left:160px;top:90px;' step="1"></input><span id="mthlySldrnvalue" style="left:381px;top:90px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:120px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
 function displaytext() { return ""; } // to be overwritten
