@@ -367,7 +367,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#scatter><code>scatter(x, y, style)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a scatter plot.</td></tr>
 <tr><td> </td><td><a href=#seq><code>seq(x, y, step), range(...)</code></a></td><td> </td><td>Return a sequence of numbers on <code>[x, y]</code>, starting at <code>x</code> with increment <code>step</code>.</td></tr>
 <tr><td> </td><td><a name=size></a><code>size(A)</code></td><td> </td><td>Return the dimensions of a Mathly matrix <code>A</code>.</td></tr>
-<tr><td> </td><td><a name=#sleep></a><code>sleep(n)</code></td><td> </td><td>Pause program execution for <code>n</code> seconds.</td></tr>
+<tr><td> </td><td><a href=#sleep><code>sleep(n)</code></a></td><td> </td><td>Pause program execution for <code>n</code> seconds.</td></tr>
 <tr><td> </td><td><a href=#slopefield><code>slopefield(f, xrange, yrange, scale)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot the slope field of <code>dy/dx = f(x, y)</code>.</td></tr>
 <tr><td> </td><td><a href=#sort><code>sort(tbl, compf)</code></a></td><td> </td><td>Sort table <code>tbl</code> and return the resulted table.</td></tr>
 <tr><td> </td><td><a href=#printf><code>sprintf(...)</code></a></td><td> </td><td>Return a formatted string, while <code>printf</code> prints one.</td></tr>
@@ -2004,9 +2004,9 @@ opts = {
     xaxis = { showgrid = false, zeroline = false, showticklabels = false },
     yaxis = { showgrid = false, zeroline = false, showticklabels = false }}}
 manipulate(fstr, opts)
--- to view how the curves are dynamically drawn, replace 'manipulate' with 'animate'. adding a red "pen tip" works even better.
-sleep(1.2) -- without this, 'animate' and 'manipulate' may function the same because their output is the same temporay file
-opts.enhancements = {{x = 'X', y = 'Y', point = true, color = 'red'}}
+-- to view how the curves are dynamically drawn, replace 'manipulate' with 'animate'.
+sleep(1.2) -- see <a href=#sleep>sleep</a>
+opts.enhancements = {{x = 'X', y = 'Y', point = true, color = 'red'}} -- add a red "pen tip"
 animate(fstr, opts)
 </code></pre>
 
@@ -2961,7 +2961,20 @@ print(c) -- nil
 
 <h4>&bull; &nbsp; <a name=sleep href=#m><code>sleep(n)</code></a></h4>
 <p>Pause program execution for <code>n</code> seconds. Note: It consumes CPU cycles unnecessarily and is not recommended for long pauses.</p>
-<p>See: <a href=#anmt_sleep>Example</a></p>
+<p>See also: <a href=#anmt_sleep>Example</a></p>
+<pre><code>mathly = require('mathly')
+
+plot(sin)
+sleep(0.5)
+plot(cos)
+</code></pre>
+<p>Assume that your internet browser can automatically open two web pages with each for a graph.
+In this example, if <code>sleep(...)</code> is dropped, the two graphs can be the same one for
+<code>cos(x)</code>. Why? It is because the two <code>plot</code> commands plot to the same
+HTML file. On slow computers, <code>sleep(...)</code> may not be needed.</p>
+<p>&#x2713; &nbsp; Tips: If your internet browser doesn't open multiple web pages automatically
+with Mathly plots and animations, you may start the browser before running Mathly plotting
+commands. This shall work with Firefox, Pale Moon, etc., by default.</p>
 
 <h4>&bull; &nbsp; <a name=directionfield></a><a name=slopefield href=#m><code>slopefield(f, xrange, yrange, scale), directionfield(f, xrange, yrange, scale)</code></a></h4>
 <p>They are the same function. Return a graphics object for <code><a href=#plot>plot</a></code> to plot the slope field of <code>dy/dx = f(x, y)</code>.</p>
