@@ -23,9 +23,9 @@ FUNCTIONS PROVIDED IN THIS MODULE
   ismatrix, ismember, isodd, isvector, lagrangepoly, length, linsolve, linspace, lu,
   map, match, max, mean, merge, min, tables, namedargs, newtonpoly, norm, ones,
   polynomial, polyval, printf, prod, qq, qr, rand, randi, range, remake, repmat,
-  reshape, round, rr, rref, save, seq, size, sort, sprintf, std, strcat, submatrix,
-  subtable, sum, tables, tblcat, text, tic, toc, transpose, tt, unique, var,
-  vectorangle, vertcat, who, zeros
+  reshape, round, rr, rref, save, seq, size, sleep, sort, sprintf, std, strcat,
+  submatrix, subtable, sum, tables, tblcat, text, tic, toc, transpose, tt, unique,
+  var, vectorangle, vertcat, who, zeros
 
   dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
   oct2hex, hex2bin, hex2dec, hex2oct
@@ -1807,6 +1807,13 @@ function toc()
     return 0, ''
   end
   return _elapsed_time() - elapsed_time, 'secs.'
+end
+
+function sleep(n)
+  local clock
+  if __is_windows then clock = os.clock else clock = os.time end
+  local t = clock()
+  while clock() - t <= n do end
 end
 
 -- remove the structure of a table and returns the resulted table.
