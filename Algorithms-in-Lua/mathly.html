@@ -26,7 +26,7 @@ pre {color: green}
 <li><a href=#m><u>Table of Mathly functions</u></a></li>
 <li><a href=#easyf>Shortcut for defining an anonymous function</a></li>
 <li><a href=#namedargs0>Named arguments</a></li>
-<li><a href=#layout>Plotly JavaScript Figure Reference: <code>layout</code></a></li>
+<li><a href=#layout>Plotly JavaScript Figure Reference: <code>layout</code> and <code>grid</code></a></li>
 </ol>
 <h2><a name=intro></a>Introduction</h2>
 <p>Mathly for <a href=https://www.lua.org target="_blank">Lua</a> is a Lua module which turns Lua into a tiny, free, but powerful MATLAB.
@@ -223,6 +223,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <a href=#top name=m><h2>Table of Functions Provided by Mathly</h2></a>
 <code><p><a href=#horzcat>.. (or horzcat)</a>, <a href=#all>all</a>, <a href=#any>any</a>, <a href=#apply>apply</a>, <a href=#cc>cc</a>, <a href=#clc>clc</a>,
 <a href=#clear>clear</a>, <a href=#copy>copy</a>, <a href=#cross>cross</a>, <a href=#demathly>demathly</a>, <a href=#det>det</a>, <a href=#diag>diag</a>,
+<a href=#diff>diff</a> (or <a href=#diff1>diff1</a>), <a href=#diff2>diff2</a>,
 <a href=#disp>disp</a>, <a href=#display>display</a>, <a href=#div>div</a>, <a href=#dot>dot</a>, <a href=#eval>eval</a>, <a href=#expand>expand</a>,
 <a href=#eye>eye</a>, <a href=#findroot>findroot</a>, <a href=#flatten>flatten</a>, <a href=#fliplr>fliplr</a>, <a href=#flipud>flipud</a>,
 <a href=#format>format</a>, <a href=#fstr2f>fstr2f</a>, <a href=#fzero>fzero</a>, <a href=#gcd>gcd</a>, <a href=#hasindex>hasindex</a>, <a href=#input>input</a>,
@@ -272,6 +273,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#demathly><code>demathly(x)</code></a></td><td> </td><td>Force <code>x</code> not to be a Mathly matrix.</td></tr>
 <tr><td> </td><td><a name=det></a><code>det(A)</code></td><td> </td><td>Calculate the determinant of square matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a href=#diag><code>diag(A, ...)</code></a></td><td> </td><td>Return a column vector consisting of specified diagonal entries of Mathly matrix <code>A</code> or create a Mathly matrix with vector <code>A</code> as its diagonal entries.</td></tr>
+<tr><td> </td><td><a href=#diff><code>diff</code> (or <code>diff1</code>), <code>diff2</code></a></td><td> </td><td>Calculate numerically the first and second derivatives of <code>f(x)</code> at a point.</td></tr>
 <tr><td> </td><td><a href=#dir><code>dir(path, printq)</code></a></td><td> </td><td>List files in the folder <code>path</code> (the current directory by default).</td></tr>
 <tr><td> </td><td><a href=#directionfield><code>directionfield(f, xrange, yrange, scale)</code></a></td><td> </td><td>Exactly the same as <code>slopefield</code>.</td></tr>
 <tr><td> </td><td><a href=#disp><code>disp(x)</code></a></td><td> </td><td>Print a Mathly matrix.</td></tr>
@@ -517,10 +519,10 @@ variables and functions defined in the JavaScript code.</p>
 </ol>
 <p>See detailed examples below:</p>
 <ol>
-<li><a href=examples/animate_stick_endpoints.lua target="_blank">Animating one end of a stick of which the other end moves along a circle.</a></li>
-<li><a href=examples/animate_osculating_circle_1.lua target="_blank">Animating osculating circle of <code>y = sin(x)</code></a>.</li>
-<li><a href=examples/animate_osculating_circle_2.lua target="_blank">Animating osculating circle of <code>y = x<sup>2</sup></code></a>.</li>
-<li><a href=examples/animate_fixed_point_cobweb.lua target="_blank">Animating the fixed-point method or the generation of a cobweb for x = g(x).</a>
+<li><a href=examples/animate_stick_endpoints.lua target="_blank">Animating one end of a stick of which the other end moves along a circle</a></li>
+<li><a href=examples/animate_osculating_circle_1.lua target="_blank">Animating osculating circle of <code>y=sin(x)</code></a></li>
+<li><a href=examples/animate_osculating_circle_2.lua target="_blank">Animating osculating circle of <code>y=x<sup>2</sup></code></a></li>
+<li><a href=examples/animate_fixed_point_cobweb.lua target="_blank">Animating the fixed-point method or the generation of a cobweb for <code>x=g(x)</code></a>
 </ol>
 
 <p>&#x2713; &nbsp; If there are multiple points, lines, and/or curves to be animated, use <code>fstr</code> to animate (the primary) one,
@@ -671,7 +673,7 @@ gobjs = {}
 for i = 1, 6 do
   gobjs[i] = polarcurve2d(function(t) return sin(1.6 * t^2) + cos(i * t)^5 end, {0, 8*pi}, '-sfn', 10000)
 end
-plot({layout={width=1900, height=1300, grid={rows=2, columns=3}, title='Example'},
+plot({layout={width=1300, height=1200, grid={rows=2, columns=3}, title='Example'},
       names={'i=1', 'i=2', 'i=3', 'i=4', 'i=5', 'i=6'}}, table.unpack(gobjs))
 
 axissquare()
@@ -1195,6 +1197,25 @@ disp(A)
 disp(map('@(x) 2*x', A)) -- map is still a great tool
 </code></pre>
 
+<h4>&bull; &nbsp; <a name=diff1></a><a name=diff2></a><a name=diff href=#m><code>diff</code> (or <code>diff1</code>), <code>diff2</code></a></h4>
+<p>Calculate numerically the first (<code>diff</code> or <code>diff1</code>) and the second (<code>diff2</code>) derivatives of <code>f(x)</code>
+at a point.</p>
+<p>Mathly doesn't have any plan for symbolic computing. These commands are provided simply for certain convenience. 12-point and 13-point central
+finite difference formulas, generated by <a href=https://github.com/fdformula/FiniteDifferenceFormula.jl target="_blank">Finite Difference Formula
+Toolkit</a>, are used for <code>f'</code> and <code>f''</code>, respectively.
+<pre><code>mathly = require('mathly')
+
+disp(diff(sin, 1))
+disp(diff1(sin, 1))
+-- 0.54030230586815 (exact: 0.54030230586814)
+disp(diff2(sin, 1))
+-- -0.84147098480964 (exact: -0.8414709848079)
+
+f = fstr2f('@(x) 0.5*x^2')
+x0 = 2
+plot(f, '@(x) f(x0) + diff(f, x0)*(x - x0)')
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=diag href=#m><code>diag(A, ...)</code></a></h4>
 <ol>
 <li><code>diag( A, k )</code>, where <code>A</code> is a Mathly <code>mxn</code> matrix, <code>m &ne; 1</code> and <code>n &ne; 1</code>.
@@ -1609,28 +1630,44 @@ print(x)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=integral href=#m><code>integral(f(x), a, b)</code></a></h4>
-<p>Apply Gauss quadrature of 12 nodes to numerically evaluate the definite integral of <code>f(x)</code> on <code>[a, b]</code>. A large interval <code>[a, b]</code> is
-automatically divided into multiple subintervals, and Gauss quadrature method is applied to each one.</p>
+<p>Apply <a href=examples/gauss_quadrature_by_legendre_polynomial.lua target="_blank">Gauss quadrature</a>
+of 12 nodes to numerically evaluate the definite integral of <code>f(x)</code> on <code>[a,b]</code>. A
+large interval <code>[a,b]</code> is divided evenly into multiple subintervals, <code>[a<sub>i</sub>,b<sub>i</sub>],
+i=1,2,3,...</code>, where <code>b<sub>i</sub>-a<sub>i</sub></code> is at most <code>_MaxIntegralIntervalSize</code>,
+a predetermined constant defined in mathly.lua, and Gauss quadrature method is applied to each subintervals.</p>
+<p>&#x2713; &nbsp; Theoretically, the smaller the value of the parameter <code>_MaxIntegralIntervalSize</code> is,
+the better approximation can be obtained. Please be advised that the accuracy of an approximation depends
+on the integrand, too; in addition, a small value of the parameter requires more computing time, and round-off
+errors can be an issue.</p>
 <pre><code>mathly = require('mathly')
 
 disp(integral(10, 1, 20))
 -- 190 (exact)
-disp(integral('@(x) exp(-x^2)', -10, 10))
--- 1.7725140943124 (exact: about sqrt(pi) = 1.7724538509055)
 
 disp(integral('@(theta) 0.5 * cos(2*theta)^2', -pi/4, pi/4))
 -- 0.39269908169872 (exact: pi/8 = 0.39269908169872)
+
+-- &int;e<sup>-x<sup>2</sup></sup>dx on (-&infin;,&infin;) = sqrt(&pi;) &asymp; 1.7724538509055
+-- the results below show the effect of round-off errors
+disp(integral('@(x) exp(-x^2)', -5, 5))
+-- 1.7724538509028
+disp(integral('@(x) exp(-x^2)', -10, 10))
+-- 1.7724538509044
+disp(integral('@(x) exp(-x^2)', -10000, 10000)) -- theoretically, it should be closer to sqrt(&pi;)
+-- 1.7724538509022
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=integral2 href=#m><code>integral2(f, g1, g2, a, b)</code></a></h4>
-<p>Apply Gauss quadrature of 12 nodes to numerically evaluate the double integral, <code>∫∫f(x,y)dydx</code>
-over a region <code>{(x,y) | x&in;[a,b], y&in;[g1(x),g2(x)]}</code>.</p>
+<h4>&bull; &nbsp; <a name=integral2 href=#m><code>integral2(f, g<sub>1</sub>, g<sub>2</sub>, a, b)</code></a></h4>
+<p>Apply <a href=examples/gauss_quadrature_by_legendre_polynomial.lua target="_blank">Gauss quadrature</a> of
+12 nodes to numerically evaluate the double integral, <code>∫∫f(x,y)dydx</code>
+over a region <code>{(x,y) | y&in;[g<sub>1</sub>(x),g<sub>2</sub>(x)], x&in;[a,b]}</code>.</p>
 <p>For better accuracy, a large interval in both the <code>x</code> and <code>y</code> directions is
-automatically divided into multiple subintervals, and Gauss quadrature method is applied to each one.</p>
+divided evenly into multiple subintervals, and Gauss quadrature method is applied to each one.
+See <a href=#integral><code>integral</code></a>.</p>
 
 <p>&#x2713; &nbsp;The order of the arguments of the integrand, <code>f(x,y)</code>, <em>from right to left</em>,
 defines the order of integration. By rearranging the order of these arguments, we can handle double integrals
-over either x or y-simple regions.
+over all x and y-simple regions.
 <p>&#x2713; &nbsp;Especially, with polar coordinates, the integrand will be like <code>f(θ,r)</code> due to
 <code>∫∫f(θ,r)drdθ</code>.</p>
 <pre><code>mathly = require('mathly')
@@ -1645,21 +1682,24 @@ disp(integral2('@(x, y) x + 2*y', '@(x) 2 * x^2', '@(x) 1 + x^2', -1, 1))
 
 -- ∫∫f(y,x)dxdy: here, z = 2x + 3y should be '@(y, x) 2*x + y' instead of '@(x, y) 2*x + y'
 disp(integral2('@(y, x) x^2 + y^2', '@(y) 0.5 * y', '@(y) sqrt(y)', 0, 4))
--- 6.1714261003907 (exact: 216/35 = 6.1714285714286)
+-- 6.1714280951756 (exact: 216/35 = 6.1714285714286)
 
 -- with polar coordinates: ∫∫f(θ,r)drdθ
 disp(integral2('@(theta, r) r^3', 0, '@(theta) 2*cos(theta)', -pi/2, pi/2))
--- 4.7123889803824 (exact: 3*pi/2 = 4.7123889803847)
+-- 4.7123889803847 (exact: 3*pi/2 = 4.7123889803847)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=integral3 href=#m><code>integral3(f, g1, g2, h1, h2, a, b)</code></a></h4>
-<p>Apply Gauss quadrature of 12 nodes to numerically evaluate the triple integral, <code>∫∫∫f(x,y,z)dzdydx</code>
-over a region <code>{(x,y,z) | x&in;[a,b], y&in;[h1(x),h2(x)], z&in;[g1(x,y), g2(x,y)]}</code>.</p>
-<p>For better accuracy, a large interval in all <code>x, y</code>, and <code>z</code> directions is automatically
-divided into multiple subintervals, and Gauss quadrature method is applied to each one.</p>
+<p>Apply <a href=examples/gauss_quadrature_by_legendre_polynomial.lua target="_blank">Gauss quadrature</a>
+of 12 nodes to numerically evaluate the triple integral, <code>∫∫∫f(x,y,z)dzdydx</code> over a region
+<code>{(x,y,z) | z&in;[g<sub>1</sub>(x,y), g<sub>2</sub>(x,y)], y&in;[h<sub>1</sub>(x),h<sub>2</sub>(x)],
+x&in;[a,b]}</code>.</p>
+<p>For better accuracy, a large interval in all <code>x, y</code>, and <code>z</code> directions is
+divided evenly into multiple subintervals, and Gauss quadrature method is applied to each one.
+See <a href=#integral><code>integral</code></a>.</p>
 <p>&#x2713; &nbsp;The order of the arguments of the integrand, <code>f(x,y,z)</code>, <em>from right to left</em>,
 defines the order of integration. By rearranging the order of these arguments, we can handle triple integrals over
-all x, y, or z-simple solids.</p>
+all x, y, and z-simple solids.</p>
 <p>&#x2713; &nbsp;Especially, with spherical coordinates, the integrand will be like <code>f(θ,φ,ρ)</code> due to
 <code>∫∫∫f(θ,φ,ρ)dρdφdθ</code>.</p>
 <pre><code>mathly = require('mathly')
@@ -1747,7 +1787,7 @@ function explore(path, patterns)
 end
 
 if iswindows() then
-  explore('C:\\cygwin', {'*.lua', '*.cs*', 'so*'})
+  explore('C:\\cygwin', {'*.lua', 'mathly*'})
 else
   explore('/usr/share/cudatext', 'ins*.*')
 end
@@ -1991,17 +2031,18 @@ opts = {
 manipulate(fstr, opts)
 </code></pre>
 
-<p>See more examples:</p>
+<p>See more animation examples:</p>
 <ol>
-<li><a href=examples/newton_method_for_root.lua target="_blank">Newton's method for solving <code>f(x) = 0</code>.</a></li>
-<li><a href=examples/secant_method_for_root.lua target="_blank">Secant method for solving <code>f(x) = 0</code>.</a></li>
-<li><a href=examples/midpoint_method_for_root.lua target="_blank">Midpoint method for solving <code>f(x) = 0</code>.</a></li>
-<li><a href=examples/regula_falsi_method_for_root.lua target="_blank">Regula falsi method for solving <code>f(x) = 0</code>.</a></li>
-<li><a href=examples/regula_falsi_method_for_root_modified.lua target="_blank">Modified regula falsi method for solving <code>f(x) = 0</code>.</a><br><br></li>
-<li><a href=examples/animate_derivative.lua target="_blank">Derivative of <code>y = f(x)</code> at <code>x = x<sub>0</sub></code>.</a></li>
-<li><a href=examples/animate_definite_integral.lua target="_blank">Definite integral of <code>f(x)</code> on <code>[a, b]</code>.</a></li>
-<li><a href=examples/animate_double_integral.lua target="_blank">Double integral of <code>f(x, y)</code> over <code>[a, b] x [c, d]</code>.</a></li>
-<li><a href=examples/animate_matrix_operators_on_graph.lua target="_blank">Matrix operators on the graph of <code>f(x)</code>.</a></li>
+<li><a href=examples/newton_method_for_root.lua target="_blank">Newton's method for solving <code>f(x) = 0</code></a></li>
+<li><a href=examples/secant_method_for_root.lua target="_blank">Secant method for solving <code>f(x) = 0</code></a></li>
+<li><a href=examples/midpoint_method_for_root.lua target="_blank">Midpoint method for solving <code>f(x) = 0</code></a></li>
+<li><a href=examples/regula_falsi_method_for_root.lua target="_blank">Regula falsi method for solving <code>f(x) = 0</code></a></li>
+<li><a href=examples/regula_falsi_method_for_root_modified.lua target="_blank">Modified regula falsi method for solving <code>f(x) = 0</code></a><br><br></li>
+<li><a href=examples/animate_derivative.lua target="_blank">Derivative of <code>y = f(x)</code> at <code>x = x<sub>0</sub></code></a></li>
+<li><a href=examples/animate_definite_integral.lua target="_blank">Definite integral of <code>f(x)</code> on <code>[a, b]</code></a></li>
+<li><a href=examples/animate_double_integral.lua target="_blank">Double integral of <code>f(x, y)</code> over <code>[a, b] x [c, d]</code></a></li>
+<li><a href=examples/animate_euler's_method_for_y'=f(x,y),y(x0)=y0.lua target="_blank">Euler's method for first-order initial-value problems</a></li>
+<li><a href=examples/animate_matrix_operators_on_graph.lua target="_blank">Matrix operators on the graph of <code>f(x)</code></a></li>
 </ol>
 
 <h4>&bull; &nbsp; <a name=map href=#m><code>map(f, tbl1, tbl2, ...)</code></a></h4>
@@ -2446,6 +2487,7 @@ axisnotsquare()
 plot(rand(125, 4), specs1, {names={'f1', 'f2', 'f3', 'g'}}) -- each column of a matrix defines a function with x changing from 0 to # of rows
 plot(rand(100,3), specs1, {layout={grid={rows=3, columns=2}}}, rand(100,2))
 </code></pre>
+<p>See: <a href=#layout>More complicated examples of grids and subplots</a>.</p>
 
 <p>&#x2713; &nbsp; <code>range = {start, stop, step}</code>: A smaller step can improve the smoothness/resolution of a curve.</p>
 <pre><code>mathly = require('mathly')
@@ -3005,8 +3047,8 @@ print(strcat(34,'Hello, ', {'the ', 'world', '!'}, 34)) -- 34? ascii code for "
 It must be the most frequently used <i>Mathematica</i> command.</p>
 <p>The concept, controls, is used here. It is borrowed from <a href=#animate><code>animate</code></a> and <a href=#manipulate><code>manipulate</code></a>
 which were implemented first.</p>
-<p>To see how to dynamically generate Lua code and run it, explore Mathly source code. Use <code>opts.printcode = true</code>
-to print the generated code for input passed to the function.</p>
+<p>To see how multiple controls work, use <code>printcode = true</code> to print the dynamically generated Lua code
+for input passed to the function, and explore the code.</p>
 <p>See also: <a href=#animate><code>animate</code></a>; <a href=#linspace><code>linspace</code></a>, <a href=#range><code>range</code></a> (or <a href=#seq><code>seq</code></a>).</p>
 <pre><code>mathly = require('mathly')
 x = tables(5, {i = {1, 10}}); disp(x)
@@ -3310,13 +3352,12 @@ clear()
 plot({layout={width=600, height=400}}, sin, {range={0, 2*pi}})
 </code></pre>
 
-<h2><a name=layout href=#top>Plotly JavaScript Figure Reference: <code>layout</code></a></h2>
+<h2><a name=layout href=#top>Plotly JavaScript Figure Reference: <code>layout</code> and <code>grid</code></a></h2>
 <P>You can find the basic usage of the figure option, <code>layout</code>, in examples of this documentation. For more information
 about the option and more control of your figure, you may refer to the official website of Plotly Javascript Figure Reference
 at <a href=https://plotly.com/javascript/reference/layout/ target="_blank">https://plotly.com/javascript/reference/layout/</a>.</p>
 <p>For simplicity and the small size of Mathly, we just cover a very small subset of the features provided by Plotly JavaScript
 graphing library. However, it doesn't set limitations for you to experiment with various options/properties supported by Plotly.</p>
-<p>Given time, Plotly shall prevail and hopefully dominate in Python, Julia, and many other programming languages.</p>
 <p>A summary of the option seen in our examples is as follows.</p>
 <pre><code>{layout = {
   width = 600, height = 450, -- Mathly default setting, 4x3
@@ -3327,7 +3368,7 @@ graphing library. However, it doesn't set limitations for you to experiment with
   autosize = false
 }}
 </code></pre>
-<p>You may use it as a template, drop some options, and fine-tune some others for your needs. For example,</p>
+<p>You may use it as a template, remove some options, and fine-tune some others for your needs. For example,</p>
 <pre><code>plot(sin, '-r', {layout = {
   title = "Example",
   xaxis = {title = "x"}, yaxis = {title = "sin &lt;i&gt;x&lt;/i&gt;"},
@@ -3336,6 +3377,67 @@ graphing library. However, it doesn't set limitations for you to experiment with
 }})
 </code></pre>
 <p>&#x2713; &nbsp; In CudaText, press Ctrl-P P to insert such a <code>plot</code> template. See <a href=#cudatext>CudaText</a>.
+<p>If axis labels are needed for multiple graphs on a figure, <code>gridaxes</code> and <code>gridaxisnames</code> can be used as follows.</p>
+<pre><code>mathly = require('mathly')
+
+plot(
+  sin, cos, '@(x) x', '@(x) x^2',
+  {layout = {
+     width = 800, height = 500, title = "Example",
+     grid = {rows = 2, columns = 2},
+     gridaxes = {
+       xaxis  = {title = "x label 1"},
+       yaxis  = {title = "y label 1"},
+
+       xaxis2 = {title = "x label 2"},
+       yaxis2 = {title = "y label 2"},
+
+       xaxis3 = {title = "x label 3"},
+       yaxis3 = {title = "y label 3"},
+
+       xaxis4 = {title = "x label 4"},
+       yaxis4 = {title = "y label 4"}
+     },
+     margin = {l = 58, r = 50, t = 40, b = 45, pad = 10},
+     autosize = false
+    }
+  }
+)
+
+-- <a href=https://plotly.com/javascript/axes/ target = "_blank">An example on Plotly.com</a>
+x1 = {0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3}; y1 = {0, 0, 1, 1, 3, 3, 2, 2, 3, 3, 1, 1, 0, 0}
+x2 = {0, 1, 2, 3}; y2 = {1, 2, 4, 8}
+x3 = {1, 10, 100, 10, 1}; y3 = {0, 1, 2, 3, 4}
+x4 = {1, 100, 30, 80, 1}; y4 = {1, 1.5, 2, 2.5, 3}
+
+plot(
+  x1, y1, '-o', x2, y2, '-o', x3, y3, '-o', x4, y4, '-o',
+  {layout = {
+     width = 650, height = 500,
+     title = "fixed-ratio axes",
+     grid = {rows = 2, columns = 2},
+     gridaxisnames = {
+       -- xaxis  = "x", yaxis  = "y", -- default values
+       yaxis2 = "y2",
+       xaxis3 = "x2",
+       yaxis3 = "y3",
+       xaxis4 = "x2",
+       yaxis4 = "y4"
+     },
+     gridaxes = {
+       xaxis  = {nticks = 10, domain = {0, 0.45}, title = "shared X axis"},
+       yaxis  = {scaleanchor = "x", domain = {0, 0.45}, title = "1:1"},
+       yaxis2 = {scaleanchor = "x", scaleratio = 0.2, domain = {0.55, 1}, title = "1:5"},
+       xaxis2 = {type = "log", domain = {0.55, 1}, anchor = "y3", title = "unconstrained log X"},
+       yaxis3 = {domain = {0, 0.45}, anchor = "x2", title = "Scale matches ->"},
+       yaxis4 = {scaleanchor = "y3", domain = {0.55, 1}, anchor = "x2", title = "Scale matches <-"}
+     },
+     margin = {l = 58, r = 50, t = 40, b = 45, pad = 10},
+     autosize = false
+    }
+  }
+)
+</code></pre>
 <p></p>
 <hr>
 <h2 style="margin-left: 20px;">Note</h2>

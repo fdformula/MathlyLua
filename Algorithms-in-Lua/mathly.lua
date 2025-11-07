@@ -17,31 +17,31 @@ DESCRIPTION
 
 FUNCTIONS PROVIDED IN THIS MODULE
 
-    all, any, apply, cc, clc, clear, copy, cross, det, diag, disp, display, dot,
-    expand, eye, findroot, flatten, fliplr, flipud, format, fstr2f, fzero, hasindex,
-    horzcat, integral, integral2, integral3, inv, iseven, isinteger, ismatrix,
-    ismember, isodd, isvector, lagrangepoly, length, linsolve, linspace, lu, map,
-    match, max, mean, merge, min, tables, namedargs, newtonpoly, norm, ones,
-    polynomial, polyval, printf, prod, qq, qr, rand, randi, range, remake, repmat,
-    reshape, round, rr, rref, save, seq, size, sort, sprintf, std, strcat,
-    submatrix, subtable, sum, tables, tblcat, text, tic, toc, transpose, tt,
-    unique, var, vectorangle, vertcat, who, zeros
+  all, any, apply, cc, clc, clear, copy, cross, det, diag, diff (or diff1), diff2,
+  disp, display, dot, expand, eye, findroot, flatten, fliplr, flipud, format, fstr2f,
+  fzero, hasindex, horzcat, integral, integral2, integral3, inv, iseven, isinteger,
+  ismatrix, ismember, isodd, isvector, lagrangepoly, length, linsolve, linspace, lu,
+  map, match, max, mean, merge, min, tables, namedargs, newtonpoly, norm, ones,
+  polynomial, polyval, printf, prod, qq, qr, rand, randi, range, remake, repmat,
+  reshape, round, rr, rref, save, seq, size, sort, sprintf, std, strcat, submatrix,
+  subtable, sum, tables, tblcat, text, tic, toc, transpose, tt, unique, var,
+  vectorangle, vertcat, who, zeros
 
-    dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
-    oct2hex, hex2bin, hex2dec, hex2oct
+  dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
+  oct2hex, hex2bin, hex2dec, hex2oct
 
-    cat, cd, dir, isdir, isfile, iswindows, ls, mv, pwd, rm
+  cat, cd, dir, isdir, isfile, iswindows, ls, mv, pwd, rm
 
-    arc, circle, contourplot, directionfield, dotplot, line, parametriccurve2d, point,
-    polarcurve2d, polygon, scatter, text, wedge; boxplot, freqpolygon, hist, hist1,
-    histfreqpolygon, pareto, pie, slopefield, vectorfield2d ← Graphics objects passed to 'plot'.
+  arc, circle, contourplot, directionfield, dotplot, line, parametriccurve2d, point,
+  polarcurve2d, polygon, scatter, text, wedge; boxplot, freqpolygon, hist, hist1,
+  histfreqpolygon, pareto, pie, slopefield, vectorfield2d ← Graphics objects passed to 'plot'.
 
-    animate, manipulate, plot; plot3d, plotparametriccurve3d, plotparametricsurface3d,
-    plotsphericalsurface3d
+  animate, manipulate, plot; plot3d, plotparametriccurve3d, plotparametricsurface3d,
+  plotsphericalsurface3d
 
-    axissquare, axisnotsquare; showaxes, shownotaxes; showxaxis, shownotxaxis;
-    showyaxis, shownotyaxis; showgridlines, shownotgridlines;
-    showlegend, shownotlegend
+  axissquare, axisnotsquare; showaxes, shownotaxes; showxaxis, shownotxaxis;
+  showyaxis, shownotyaxis; showgridlines, shownotgridlines;
+  showlegend, shownotlegend
 
   See code and mathly.html.
 
@@ -93,24 +93,32 @@ function mod(a, d) return a % d  end
 function  printf(...) io.write(string.format(table.unpack{...})) end
 function sprintf(...) return string.format(table.unpack{...}) end
 
-function demathly(x) return setmetatable(x, nil) end -- force x not to be a mathly matrix
+function demathly(x) return setmetatable(x, nil) end -- x is no more a mathly matrix
 
-function eval(str)
-  local stats, val = pcall(load, 'return ' .. str)
-  if stats then stats, val = pcall(val) end
-  if stats then
-    return val
+function eval(str, msg)
+  local s, v = pcall(load, 'return ' .. str)
+  if s then s, v = pcall(v) end
+  if s then
+    return v
   else
-    error('[string "' .. string.sub(val, 17))
+    if msg ~= nil then
+      error(msg)
+    else
+      v = string.sub(v, 17)
+      if #v < 12 then
+        error('eval("' .. str .. '"): ' .. v)
+      else
+        error('["' .. v)
+      end
+    end
   end
 end
 
--- if s = 's', return input as a string; otherwise, evaluate the input expression and return the result
 function input(prompt, s)
   local ans
   io.write(prompt)
   ans = io.read()
-  if s == 's' then -- no evaluation
+  if s == 's' then
     return ans
   else
     return eval(ans)
@@ -308,13 +316,13 @@ function min(x) return _max_min_shared(math.min, x) end
 
 -- convert a MATLAB-style anonymous function in string to a function handle
 -- e.g., fstr2f('@(x) x^2 - 2*x + 1') returns an anonymous function, function(x) return x^2 -2*x + 1 end.
-function fstr2f(str)
-  str = string.gsub(str, '%s+', ' ')
-  local head, body = string.match(str, '^%s*@%s*(%(%s*[%w,%s]*%))%s*(.+)%s*$')
+function fstr2f(s)
+  s = string.gsub(s, '%s+', ' ')
+  local head, body = string.match(s, '^%s*@%s*(%(%s*[%w,%s]*%))%s*(.+)%s*$')
   if head ~= nil then
-    return eval('function' .. head .. ' return ' .. body .. ' end')
+    return eval('function' .. head .. ' return ' .. body .. ' end', '"' .. s .. '": ' .. body .. ', poor expression')
   else
-    error('Poor function: ' ..  str .. ". Example: '@(x) 3*x^2 - 5 * sin(x) + 1'")
+    error('Poor function: ' ..  s .. ". Example: '@(x) 3*x^2 - 5*x + 1'")
   end
 end
 
@@ -648,13 +656,13 @@ end
 --// calculate the (64-bit) binary expansion of signed decimal integer x
 function dec2bin(x)
   local function _dec2bin(x)
-    local str = ''
+    local s = ''
     while x ~= 0 do
-      str = (x & 1) .. str
+      s = (x & 1) .. s
       x = x >> 1
     end
-    if str == '' then str = '0' end
-    return str
+    if s == '' then s = '0' end
+    return s
   end
   return _dec2bho(x, 'dec2bin', _dec2bin)
 end
@@ -849,7 +857,7 @@ end
 
 -- list all user defined variables (some may be defined by some loaded modules)
 -- if a list of variables are needed by other code, pass false to it: who(false)
-function who(userq) -- ~R
+function who(userq) -- R
   if userq == nil then userq = true end
   local list = {}
   for k,v in pairs(_G) do
@@ -1389,8 +1397,7 @@ function range(start, stop, step) -- Python, but inclusive
   end
   return setmetatable(v, mathly_meta)
 end -- range
-
-function seq(from, to, by) return range(from, to, by) end -- ~R
+seq = range -- R
 
 --// find and return the zero/root of function f on specified interval
 function fzero(f, intv, tol) -- matlab
@@ -1863,23 +1870,51 @@ local _axis_equalq       = false
 local _xaxis_visibleq    = true
 local _yaxis_visibleq    = true
 local _gridline_visibleq = true
+local _specific_gridq    = false
 local _showlegendq       = false
 local _vecfield_annotations = nil
 
--- Gauss quadrature of 12 nodes: https://pomax.github.io/bezierinfo/legendre-gauss.html
+-- 12-point and 13-point central finite difference formulas for f'(x) and f''(x)
+-- generated by https://github.com/fdformula/FiniteDifferenceFormula.jl
+function diff(f, x0)
+  if type(f) == 'string' then f = fstr2f(f) end
+  local h = 0.01
+  local x = linspace(x0 - 6*h, x0 + 6*h, 13)
+  return (
+   0.0001803751803752*f(x[1])  - 0.0025974025974026*f(x[2])  + 0.0178571428571429*f(x[3])  -
+   0.0793650793650794*f(x[4])  + 0.2678571428571428*f(x[5])  - 0.8571428571428571*f(x[6])  +
+   0.8571428571428571*f(x[8])  - 0.2678571428571428*f(x[9])  + 0.0793650793650794*f(x[10]) -
+   0.0178571428571429*f(x[11]) + 0.0025974025974026*f(x[12]) - 0.0001803751803752*f(x[13])) / h
+end
+diff1 = diff
+
+function diff2(f, x0)
+  if type(f) == 'string' then f = fstr2f(f) end
+  local h = 0.01
+  local x = linspace(x0 - 6*h, x0 + 6*h, 13)
+  return (
+   -0.0000601250601251*f(x[1])  + 0.0010389610389610*f(x[2])  - 0.0089285714285714*f(x[3])  +
+    0.0529100529100529*f(x[4])  - 0.2678571428571428*f(x[5])  + 1.7142857142857142*f(x[6])  -
+    2.9827777777777778*f(x0) +
+    1.7142857142857142*f(x[8])  - 0.2678571428571428*f(x[9])  + 0.0529100529100529*f(x[10]) -
+    0.0089285714285714*f(x[11]) + 0.0010389610389610*f(x[12]) - 0.0000601250601251*f(x[13])) / h^2
+end
+
+-- Gauss quadrature of 12 nodes
+-- generated by https://github.com/fdformula/MathlyLua/blob/main/examples/gauss_quadrature_by_legendre_polynomial.lua
 local _Gw = {
   0.2491470458134028, 0.2491470458134028, 0.2334925365383548, 0.2334925365383548,
-  0.2031674267230659, 0.2031674267230659, 0.1600783285433462, 0.1600783285433462,
-  0.1069393259953184, 0.1069393259953184, 0.0471753363865118, 0.0471753363865118
+  0.2031674267230658, 0.2031674267230658, 0.1600783285433463, 0.1600783285433463,
+  0.1069393259953186, 0.1069393259953186, 0.0471753363865122, 0.0471753363865122
 }
 
 local _Gx = {
  -0.1252334085114689, 0.1252334085114689, -0.3678314989981802, 0.3678314989981802,
  -0.5873179542866175, 0.5873179542866175, -0.7699026741943047, 0.7699026741943047,
- -0.9041172563704749, 0.9041172563704749, -0.9815606342467192, 0.9815606342467192
+ -0.9041172563704748, 0.9041172563704748, -0.9815606342467191, 0.9815606342467191
 }
 
-local _MaxIntegIntervSiz = 10
+local _MaxIntegralIntervalSize = 3 -- see mathly.html#integral
 
 -- ∫f(x)dx on [a, b]
 function integral(f, a, b)
@@ -1891,8 +1926,8 @@ function integral(f, a, b)
   local sign = 1
   if a > b then a, b = b, a; sign = -1 end
   local n, A, B, s, siz = 1, a, b, 0, b - a
-  if b - a > _MaxIntegIntervSiz then
-    n = ceil((b - a) / _MaxIntegIntervSiz)
+  if b - a > _MaxIntegralIntervalSize then
+    n = ceil((b - a) / _MaxIntegralIntervalSize)
     siz = (b - a) / n
     B = A + siz
   end
@@ -1903,11 +1938,11 @@ function integral(f, a, b)
     A, B = B, B + siz
   end
   return m * s
-end
+end -- integral
 
-local function _integral_func(f)
+local function _integralF(f)
   if type(f) == 'number' then
-    local v = f; return function(x, y, z) return v end -- extra arguments do not matter
+    local v = f; return function(x, y, z) return v end -- extra args don't matter
   elseif type(f) == 'string' then
     return fstr2f(f)
   else
@@ -1915,17 +1950,17 @@ local function _integral_func(f)
   end
 end
 
--- double integral ∫∫f(x,y)dydx over a region:
---   y in [g1(x), g2(x)]
---   x in [a, b]
+-- ∫∫f(x,y)dydx over D:
+--  y in [g1(x), g2(x)]
+--  x in [a, b]
 function integral2(f, g1, g2, a, b)
-  f, g1, g2 = table.unpack(map(_integral_func, {f, g1, g2}))
+  f, g1, g2 = table.unpack(map(_integralF, {f, g1, g2}))
   local function prep(a, b)
     local sign = 1
     if a > b then a, b = b, a; sign = -1 end
     local n, A, B, s, siz = 1, a, b, 0, b - a
-    if b - a > _MaxIntegIntervSiz then
-      n = ceil((b - a) / _MaxIntegIntervSiz)
+    if b - a > _MaxIntegralIntervalSize then
+      n = ceil((b - a) / _MaxIntegralIntervalSize)
       siz = (b - a) / n
       B = A + siz
     end
@@ -1950,20 +1985,20 @@ function integral2(f, g1, g2, a, b)
     A, B = B, B + siz
   end
   return m * s
-end
+end -- integral2
 
--- triple integral ∫∫∫f(x,y,z)dzdydx over a solid:
---   z in [g1(x, y), g2(x, y)]
---   y in [h1[x], h2[y]]
---   x in [a, b]
+-- ∫∫∫f(x,y,z)dzdydx over E:
+--  z in [g1(x, y), g2(x, y)]
+--  y in [h1[x], h2[y]]
+--  x in [a, b]
 function integral3(f, g1, g2, h1, h2, a, b)
-  f, g1, g2, h1, h2 = table.unpack(map(_integral_func, {f, g1, g2, h1, h2}))
+  f, g1, g2, h1, h2 = table.unpack(map(_integralF, {f, g1, g2, h1, h2}))
   local function prep(a, b)
     local sign = 1
     if a > b then a, b = b, a; sign = -1 end
     local n, A, B, siz = 1, a, b, b - a
-    if b - a > _MaxIntegIntervSiz then
-      n = ceil((b - a) / _MaxIntegIntervSiz)
+    if b - a > _MaxIntegralIntervalSize then
+      n = ceil((b - a) / _MaxIntegralIntervalSize)
       siz = (b - a) / n
       B = A + siz
     end
@@ -1999,7 +2034,7 @@ function integral3(f, g1, g2, h1, h2, a, b)
     A, B = B, B + siz
   end
   return m * s
-end
+end -- integral3
 
 -- plot the graphs of functions in a way like in MATLAB with more features
 local plotly = {}
@@ -2009,6 +2044,7 @@ function plot(...)
   local yaxis_visibleq = _yaxis_visibleq
   local gridline_visibleq = _gridline_visibleq
   local showlegendq = _showlegendq
+  _specific_gridq    = false
 
   _3d_plotq = false
   plotly.layout = {}
@@ -2297,6 +2333,22 @@ function plot(...)
               plotly.layout[k_] = v_
               if k_ == 'grid' then
                 plotly.layout[k_]['pattern'] = 'independent'
+              end
+            elseif v.grid ~= nil then
+              if k_ == 'gridaxes' then
+                for j = 1, #traces do
+                  local s = qq(j == 1, '', j)
+                  local x, y = 'xaxis' .. s, 'yaxis' .. s
+                  plotly.layout[x] = v_[x]
+                  plotly.layout[y] = v_[y]
+                end
+              elseif k_ =='gridaxisnames' then
+                _specific_gridq = true
+                for j = 1, #traces do
+                  local s = qq(j == 1, '', j)
+                  traces[j]['xaxis'] = v_['xaxis' .. s]
+                  traces[j]['yaxis'] = v_['yaxis' .. s]
+                end
               end
             end
           end
@@ -2917,8 +2969,8 @@ var x = [], t = [], X, Y, T, p;
 ]], title or ''))
   for i = qq(_anmt_animateq, 2, 1), #cs do
     file:write(fmt([[
-function mthly%sNext(d) {
-  let x = %s + d*mthly%sStep;
+function mthly%sNext(x) {
+  x = %s + x*mthly%sStep;
   if (x < mthly%sMin) {
     x = mthly%sMax;
   } else if (x > mthly%sMax) {
@@ -5069,10 +5121,11 @@ function figure.toplotstring(self)
     -- plotly-2.9.0.min.js, hopefully all versions, determines if grid options are used
     -- by checking whether the texts of xaxis and yaxis are different for traces
     for i = 1,#self['data'] do
-      local s = tostring(i)
-      self['data'][i]['xaxis'] = 'x' .. s -- they are different :-)
-      self['data'][i]['yaxis'] = 'y' .. s
-      if _3d_plotq then self['data'][i]['zaxis'] = 'z' .. s end
+      if not _specific_gridq then
+        self['data'][i]['xaxis'] = 'x' .. i -- they are different :-)
+        self['data'][i]['yaxis'] = 'y' .. i
+      end
+      if _3d_plotq then self['data'][i]['zaxis'] = 'z' .. i end
     end
   end
 
