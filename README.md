@@ -75,8 +75,8 @@ package.path = "./?.luac;;"
 `eval`, `expand`, `eye`, `findroot`, `flatten`,  `fliplr`, `flipud`, `format`, `fstr2f`, `fzero`, `gcd`, `hasindex`, `input`, `integral`, `integral2`, `integral3`, `inv`,
 `isinteger`, `iseven`, `isodd`, `ismatrix`, `ismember`, `isvector`, `lagrangepoly`, `length`, `linsolve`, `linspace`, `lu`, `map`, `match`, `mathly`, `max`, `mean`, `merge`,
 `min`, `mod`, `namedargs`, `newtonpoly`, `norm`, `ones`, `polynomial`, `polyval`, `powermod`, `printf`, `prod`, `qq`, `qr`, `rand`, `randi`, `randn`, `range`, `remake`,
-`repmat`, `reshape`, `reverse`, `round`, `rr`, `rref`, `save`, `seq`, `size`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`, `tables`, `tblcat`, `tic`,
-`toc`, `transpose`, `tt`, `unique`, `var`, `vectorangle`, `vertcat`, `who`, `zeros`; `bin2dec`, `oct2hex`, ...
+`repmat`, `reshape`, `reverse`, `round`, `rr`, `rref`, `save`, `seq`, `size`, `sleep`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`, `tables`, `tblcat`,
+`tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vectorangle`, `vertcat`, `who`, `zeros`; `bin2dec`, `oct2hex`, ...
 
 `cat`, `cd`, `dir`, `isdir`, `isfile`, `iswindows`, `ls`, `mv`, `pwd`, `rm`
 
