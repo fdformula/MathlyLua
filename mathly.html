@@ -2960,19 +2960,19 @@ print(c) -- nil
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=sleep href=#m><code>sleep(n)</code></a></h4>
-<p>Pause program execution for <code>n</code> seconds. Note: It consumes CPU cycles unnecessarily and is not recommended for long pauses.</p>
+<p>Pause program execution for <code>n</code> seconds. <b>Note</b>: It consumes CPU cycles unnecessarily and is not recommended for long pauses.</p>
 <p>See also: <a href=#anmt_sleep>Example</a></p>
 <pre><code>mathly = require('mathly')
 
 plot(sin)
-sleep(0.5)
+sleep(1.5)
 plot(cos)
 </code></pre>
-<p>Assume that your internet browser can automatically open two web pages with each for a graph.
-In this example, if <code>sleep(...)</code> is dropped, the two graphs can be the same one for
-<code>cos(x)</code>. Why? It is because the two <code>plot</code> commands plot to the same
-HTML file. On slow computers, <code>sleep(...)</code> may not be needed.</p>
-<p>&#x2713; &nbsp; Tips: If your internet browser doesn't open multiple web pages automatically
+<p>Assume that your internet browser can automatically open two webpages with each for a graph.
+If <code>sleep(...)</code> is dropped, the two graphs can be the same because the two
+<code>plot</code> commands plot to the same HTML file. On slow computers, <code>sleep(...)</code>
+may not be needed.</p>
+<p>&#x2713; &nbsp; Tips: If your internet browser doesn't open multiple webpages automatically
 with Mathly plots and animations, you may start the browser before running Mathly plotting
 commands. This shall work with Firefox, Pale Moon, etc., by default.</p>
 
