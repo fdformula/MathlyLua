@@ -1792,26 +1792,21 @@ function randi(imax, m, n)
 end
 
 --// tic()
--- start a time stamp to measure elapsed time
-local elapsed_time = nil
+local _tictime = nil
 -- os.clock() behaves differently in various platforms!!!
-function _elapsed_time()
-  if __is_windows then return os.clock() else return os.time() end
-end
-function tic() elapsed_time = _elapsed_time() end
+local clock = qq(__is_windows, os.clock, os.time)
+function tic() _tictime = clock() end
 
 -- return elapsed time from last calling tic()
 function toc()
-  if elapsed_time == nil then
+  if _tictime == nil then
     print("Please call tic() first.")
     return 0, ''
   end
-  return _elapsed_time() - elapsed_time, 'secs.'
+  return round((clock() - _tictime)*1000)/1000, 'secs.'
 end
 
 function sleep(n)
-  local clock
-  if __is_windows then clock = os.clock else clock = os.time end
   local t = clock()
   while clock() - t <= n do end
 end
@@ -5137,8 +5132,8 @@ function figure.toplotstring(self)
   end
 
   -- Converting input
-  local data_str = json.encode (self["data"])
-  local layout_str = json.encode (self["layout"])
+  local data_str = json.encode(self["data"])
+  local layout_str = json.encode(self["layout"])
   local div_id
   if not self.div_id then div_id = "plot" .. plotly.id_count end
   plotly.id_count = plotly.id_count+1
@@ -5217,9 +5212,9 @@ local _dk_gsub, _dk_strsub, _dk_strbyte, _dk_strfind, _dk_strformat =
 local _dk_strmatch = string.match
 local _dk_concat = table.concat
 
-local function _dk_isarray (t)
+local function _dk_isarray(t)
   local max, n, arraylen = 0, 0, 0
-  for k,v in _dk_pairs (t) do
+  for k,v in _dk_pairs(t) do
     if k == 'n' and _dk_type(v) == 'number' then
       arraylen = v
       if v > max then
@@ -5246,12 +5241,12 @@ local _dk_escapecodes = {
   ["\n"] = "\\n",  ["\r"] = "\\r",  ["\t"] = "\\t"
 }
 
-local function _dk_escapeutf8 (uchar)
+local function _dk_escapeutf8(uchar)
   local value = _dk_escapecodes[uchar]
   if value then
     return value
   end
-  local a, b, c, d = _dk_strbyte (uchar, 1, 4)
+  local a, b, c, d = _dk_strbyte(uchar, 1, 4)
   a, b, c, d = a or 0, b or 0, c or 0, d or 0
   if a <= 0x7f then
     value = a
@@ -5265,47 +5260,47 @@ local function _dk_escapeutf8 (uchar)
     return ""
   end
   if value <= 0xffff then
-    return _dk_strformat ("\\u%.4x", value)
+    return _dk_strformat("\\u%.4x", value)
   elseif value <= 0x10ffff then
     -- encode as UTF-16 surrogate pair
     value = value - 0x10000
-    local highsur, lowsur = 0xD800 + _dk_floor (value/0x400), 0xDC00 + (value % 0x400)
-    return _dk_strformat ("\\u%.4x\\u%.4x", highsur, lowsur)
+    local highsur, lowsur = 0xD800 + _dk_floor(value/0x400), 0xDC00 + (value % 0x400)
+    return _dk_strformat("\\u%.4x\\u%.4x", highsur, lowsur)
   else
     return ""
   end
 end -- _dk_escapeutf8
 
-local function _dk_fsub (str, pattern, repl)
+local function _dk_fsub(str, pattern, repl)
   -- gsub always builds a new string in a buffer, even when no match
   -- exists. First using find should be more efficient when most strings
   -- don't contain the pattern.
-  if _dk_strfind (str, pattern) then
-    return _dk_gsub (str, pattern, repl)
+  if _dk_strfind(str, pattern) then
+    return _dk_gsub(str, pattern, repl)
   else
     return str
   end
 end -- _dk_fsub
 
-local function _dk_quotestring (value)
+local function _dk_quotestring(v)
   -- based on the regexp "escapable" in https://github.com/douglascrockford/JSON-js
-  value = _dk_fsub (value, "[%z\1-\31\"\\\127]", _dk_escapeutf8)
-  if _dk_strfind (value, "[\194\216\220\225\226\239]") then
-    value = _dk_fsub (value, "\194[\128-\159\173]", _dk_escapeutf8)
-    value = _dk_fsub (value, "\216[\128-\132]", _dk_escapeutf8)
-    value = _dk_fsub (value, "\220\143", _dk_escapeutf8)
-    value = _dk_fsub (value, "\225\158[\180\181]", _dk_escapeutf8)
-    value = _dk_fsub (value, "\226\128[\140-\143\168-\175]", _dk_escapeutf8)
-    value = _dk_fsub (value, "\226\129[\160-\175]", _dk_escapeutf8)
-    value = _dk_fsub (value, "\239\187\191", _dk_escapeutf8)
-    value = _dk_fsub (value, "\239\191[\176-\191]", _dk_escapeutf8)
+  v = _dk_fsub(v, "[%z\1-\31\"\\\127]", _dk_escapeutf8)
+  if _dk_strfind(v, "[\194\216\220\225\226\239]") then
+    v = _dk_fsub(v, "\194[\128-\159\173]", _dk_escapeutf8)
+    v = _dk_fsub(v, "\216[\128-\132]", _dk_escapeutf8)
+    v = _dk_fsub(v, "\220\143", _dk_escapeutf8)
+    v = _dk_fsub(v, "\225\158[\180\181]", _dk_escapeutf8)
+    v = _dk_fsub(v, "\226\128[\140-\143\168-\175]", _dk_escapeutf8)
+    v = _dk_fsub(v, "\226\129[\160-\175]", _dk_escapeutf8)
+    v = _dk_fsub(v, "\239\187\191", _dk_escapeutf8)
+    v = _dk_fsub(v, "\239\191[\176-\191]", _dk_escapeutf8)
   end
-  return "\"" .. value .. "\""
+  return "\"" .. v .. "\""
 end -- _dk_quotestring
 json._dk_quotestring = _dk_quotestring
 
 local function _dk_replace(str, o, n)
-  local i, j = _dk_strfind (str, o, 1, true)
+  local i, j = _dk_strfind(str, o, 1, true)
   if i then
     return _dk_strsub(str, 1, i-1) .. n .. _dk_strsub(str, j+1, -1)
   else
@@ -5316,7 +5311,7 @@ end
 -- locale independent _dk_num2str functions
 local _dk_decpoint, _dk_numfilter
 
-local function _dk_updatedecpoint ()
+local function _dk_updatedecpoint()
   _dk_decpoint = _dk_strmatch(_dk_tostring(0.5), "([^05+])")
   -- build a filter that can be used to remove group separators
   _dk_numfilter = "[^0-9%-%+eE" .. _dk_gsub(_dk_decpoint, "[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%0") .. "]+"
@@ -5324,14 +5319,14 @@ end
 
 _dk_updatedecpoint()
 
-local function _dk_num2str (num)
+local function _dk_num2str(num)
   return _dk_replace(_dk_fsub(_dk_tostring(num), _dk_numfilter, ""), _dk_decpoint, ".")
 end
 
 local _dk_encode2 -- forward declaration
 
-local function _dk_addpair (key, value, prev, level, buffer, buflen, tables, globalorder, state)
-  local kt = _dk_type (key)
+local function _dk_addpair(key, value, prev, level, buffer, buflen, tables, globalorder, state)
+  local kt = _dk_type(key)
   if kt ~= 'string' and kt ~= 'number' then
     return nil, "type '" .. kt .. "' is not supported as a key by JSON."
   end
@@ -5343,14 +5338,14 @@ local function _dk_addpair (key, value, prev, level, buffer, buflen, tables, glo
   -- numbers are mixed into the keys of the table. JSON keys are always
   -- strings, so this would be an implicit conversion too and the failure
   -- is intentional.
-  buffer[buflen+1] = _dk_quotestring (key)
+  buffer[buflen+1] = _dk_quotestring(key)
   buffer[buflen+2] = ":"
-  return _dk_encode2 (value, level, buffer, buflen + 2, tables, globalorder, state)
+  return _dk_encode2(value, level, buffer, buflen + 2, tables, globalorder, state)
 end -- _dk_addpair
 
 local function _dk_appendcustom(res, buffer, state)
   local buflen = state.bufferlen
-  if _dk_type (res) == 'string' then
+  if _dk_type(res) == 'string' then
     buflen = buflen + 1
     buffer[buflen] = res
   end
@@ -5364,14 +5359,14 @@ local function _dk_exception(reason, value, state, buffer, buflen, defaultmessag
     return nil, defaultmessage
   else
     state.bufferlen = buflen
-    local ret, msg = handler (reason, value, state, defaultmessage)
+    local ret, msg = handler(reason, value, state, defaultmessage)
     if not ret then return nil, msg or defaultmessage end
     return _dk_appendcustom(ret, buffer, state)
   end
 end -- _dk_exception
 
-_dk_encode2 = function (value, level, buffer, buflen, tables, globalorder, state)
-  local valtype = _dk_type (value)
+_dk_encode2 = function(value, level, buffer, buflen, tables, globalorder, state)
+  local valtype = _dk_type(value)
   if value == nil then
     buflen = buflen + 1
     buffer[buflen] = "null"
@@ -5381,7 +5376,7 @@ _dk_encode2 = function (value, level, buffer, buflen, tables, globalorder, state
       -- This is the behaviour of the original JSON implementation.
       s = "null"
     else
-      s = _dk_num2str (value)
+      s = _dk_num2str(value)
     end
     buflen = buflen + 1
     buffer[buflen] = s
@@ -5390,20 +5385,20 @@ _dk_encode2 = function (value, level, buffer, buflen, tables, globalorder, state
     buffer[buflen] = value and "true" or "false"
   elseif valtype == 'string' then
     buflen = buflen + 1
-    buffer[buflen] = _dk_quotestring (value)
+    buffer[buflen] = _dk_quotestring(value)
   elseif valtype == 'table' then
     if tables[value] then
       return _dk_exception('reference cycle', value, state, buffer, buflen)
     end
     tables[value] = true
     level = level + 1
-    local isa, n = _dk_isarray (value)
+    local isa, n = _dk_isarray(value)
     local msg
     if isa then -- JSON array
       buflen = buflen + 1
       buffer[buflen] = "["
       for i = 1, n do
-        buflen, msg = _dk_encode2 (value[i], level, buffer, buflen, tables, globalorder, state)
+        buflen, msg = _dk_encode2(value[i], level, buffer, buflen, tables, globalorder, state)
         if not buflen then return nil, msg end
         if i < n then
           buflen = buflen + 1
@@ -5425,21 +5420,21 @@ _dk_encode2 = function (value, level, buffer, buflen, tables, globalorder, state
           local v = value[k]
           if v ~= nil then
             used[k] = true
-            buflen, msg = _dk_addpair (k, v, prev, level, buffer, buflen, tables, globalorder, state)
+            buflen, msg = _dk_addpair(k, v, prev, level, buffer, buflen, tables, globalorder, state)
             if not buflen then return nil, msg end
             prev = true -- add a seperator before the next element
           end
         end
-        for k,v in _dk_pairs (value) do
+        for k,v in _dk_pairs(value) do
           if not used[k] then
-            buflen, msg = _dk_addpair (k, v, prev, level, buffer, buflen, tables, globalorder, state)
+            buflen, msg = _dk_addpair(k, v, prev, level, buffer, buflen, tables, globalorder, state)
             if not buflen then return nil, msg end
             prev = true -- add a seperator before the next element
           end
         end
       else -- unordered
-        for k,v in _dk_pairs (value) do
-          buflen, msg = _dk_addpair (k, v, prev, level, buffer, buflen, tables, globalorder, state)
+        for k,v in _dk_pairs(value) do
+          buflen, msg = _dk_addpair(k, v, prev, level, buffer, buflen, tables, globalorder, state)
           if not buflen then return nil, msg end
           prev = true -- add a seperator before the next element
         end
@@ -5449,29 +5444,29 @@ _dk_encode2 = function (value, level, buffer, buflen, tables, globalorder, state
     end
     tables[value] = nil
   else
-    return _dk_exception ('unsupported type', value, state, buffer, buflen,
+    return _dk_exception('unsupported type', value, state, buffer, buflen,
       "type '" .. valtype .. "' is not supported by JSON.")
   end
   return buflen
 end -- _dk_encode2
 
-function json.encode (value, state)
+function json.encode(value, state)
   state = state or {}
   local oldbuffer = state.buffer
   local buffer = oldbuffer or {}
   state.buffer = buffer
   _dk_updatedecpoint()
-  local ret, msg = _dk_encode2 (value, state.level or 0,
+  local ret, msg = _dk_encode2(value, state.level or 0,
                    buffer, state.bufferlen or 0, state.tables or {}, state.keyorder, state)
   if not ret then
-    _dk_error (msg, 2)
+    _dk_error(msg, 2)
   elseif oldbuffer == buffer then
     state.bufferlen = ret
     return true
   else
     state.bufferlen = nil
     state.buffer = nil
-    return _dk_concat (buffer)
+    return _dk_concat(buffer)
   end
 end -- json.encode
 
