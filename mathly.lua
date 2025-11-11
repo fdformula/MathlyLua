@@ -203,8 +203,7 @@ function rr(x, I, irange)
     if type(I) ~= 'table' then I = { I } end
     local X = qq(matrixq, x, {x})
     for m = 1, #I do
-      local i = I[m]
-      local siz = #X
+      local i, siz = I[m], #X
       if i < 0 then i = siz + i + 1 end -- i = -1, -2, ...
       if i > 0 and i <= siz then
         local y = {}
@@ -233,11 +232,9 @@ function cc(x, I, irange)
     assert(getmetatable(x) == mathly_meta, 'cc(x, i...): x must be a mathly matrix.')
     irange = _index_range(irange, x)
     if type(I) ~= 'table' then I = { I } end
-    local abs = math.abs
-    local cols = mathly(math.ceil((abs(irange[2] - irange[1]) + 1) / abs(irange[3])), #I, 0)
+    local cols = mathly(math.ceil((math.abs(irange[2] - irange[1]) + 1) / math.abs(irange[3])), #I, 0)
     for jj = 1, #I do
-      local j = I[jj]
-      local siz = #x[1]
+      local j, siz = I[jj], #x[1]
       if j < 0 then j = siz + j + 1 end -- j = -1, -2, ...
       if j > 0 and j <= siz then
         local ii = 1
@@ -293,9 +290,7 @@ local function _max_min_shared(f, x) -- column wise if x is a matrix
       local maxs = {}
       for j = 1, #x[1] do
         local col = {}
-        for i = 1, #x do
-          col[i] = x[i][j]
-        end
+        for i = 1, #x do col[i] = x[i][j] end
         maxs[j] = f(table.unpack(col))
       end
       if #maxs == 1 then
@@ -751,8 +746,7 @@ function powermod(b, n, m)
          isinteger(m) and m > 0,
          'powermod(b, n, m): b, n, and m must be nonnegative integers with m > 0.')
   if b == 0 or m == 1 then return 0 end
-  local x = 1
-  local power = b % m
+  local x, power = 1, b % m
   local a = dec2bin(n) --  binary modular exponentiation
   for i = #a, 1, -1 do
     if string.sub(a, i, i) == '1' then x = (x * power) % m end
@@ -1118,12 +1112,15 @@ function ls(path, re, printq)
   re = re:gsub('%*', '.*')
   re = '^' .. re
 
-  for f in io.popen(qq(__is_windows, "dir /b ", "ls -pa ") .. '"'.. path .. '"'):lines() do
-    if f == './' or f == '../' then -- linux
-    elseif isdir(path .. sep .. f) then
-      folders[#folders + 1] = f
-    elseif f:match('^%.+/$') == nil and f:match(re) ~= nil then
-      files[#files + 1] = f
+  local lst = io.popen(qq(__is_windows, "dir /b ", "ls -pa ") .. '"'.. path .. '"'):lines()
+  if lst ~= nil then
+    for f in lst do
+      if f == './' or f == '../' then -- linux
+      elseif isdir(path .. sep .. f) then
+        folders[#folders + 1] = f
+      elseif f:match('^%.+/$') == nil and f:match(re) ~= nil then
+        files[#files + 1] = f
+      end
     end
   end
   if printq then
@@ -1131,7 +1128,7 @@ function ls(path, re, printq)
   end
   return files, path, folders
 end
-function dir(path) return ls(path) end
+dir = ls
 
 function cat(file)
   local f = io.open(file, "r")
@@ -1194,9 +1191,7 @@ function prod(x)
       local prods = {}  -- column wise
       for j = 1,#x[1] do
         prods[j] = 1
-        for i = 1,#x do
-          prods[j] = prods[j] * x[i][j]
-        end
+        for i = 1,#x do prods[j] = prods[j] * x[i][j] end
       end
       return setmetatable(prods, mathly_meta)
     else
@@ -1222,9 +1217,7 @@ function sum(x)
       local s = {}  -- column wise
       for j = 1,#x[1] do
         s[j] = 0
-        for i = 1,#x do
-          s[j] = s[j] + x[i][j]
-        end
+        for i = 1,#x do s[j] = s[j] + x[i][j] end
       end
       if #s == 1 then
         return s[1]
@@ -1282,15 +1275,13 @@ function mean(x)
       local means = {}  -- column wise
       for j = 1, n do
         means[j] = 0
-        for i = 1, m do
-          means[j] = means[j] + x[i][j]
-        end
+        for i = 1, m do means[j] = means[j] + x[i][j] end
         means[j] = means[j] / #x
       end
       return setmetatable(means, mathly_meta)
     end
   end
-end -- mean
+end
 
 local function _stdvar(x, opt, sqrtq)
   opt = opt or 0
@@ -1435,8 +1426,7 @@ local function _poly_input(data) -- {{x1, y1}, {x2, y2}, ...}
   local x, y = {}, {}
   if type(data) == 'table' and type(data[1]) == 'table' then
     for i = 1, #data do
-      x[i] = data[i][1]
-      y[i] = data[i][2]
+      x[i], y[i] = data[i][1], data[i][2]
     end
   end
   return x, y
@@ -1451,16 +1441,12 @@ function lagrangepoly(x, y, xx)
   local X, Y = _poly_input(x)
   if #X ~= 0 then xx = y; x, y = X, Y end
   assert(type(x) == 'table' and type(y) == 'table' and #x == #y, 'lagrangepoly(x, y ...): x and y must be tables of the same size.')
-  local coefs = {}
-  local k = 1
-  local abs = math.abs -- it's faster to access to local variables
+  local coefs, k, abs = {}, 1, math.abs
   for i = 1, #x do
     local tmp = y[i]
     if abs(tmp) > 10*eps then -- tmp ~= 0
       for j = 1, #x do
-        if j ~= i then
-          tmp = tmp / (x[i] - x[j])
-        end
+        if j ~= i then tmp = tmp / (x[i] - x[j]) end
       end
     else
       tmp = 0
@@ -1468,12 +1454,10 @@ function lagrangepoly(x, y, xx)
     coefs[k] = tmp; k = k + 1
   end
 
-  local s = ''
-  local non1stq = false
+  local s, non1stq = '', false
   for i = 1, #x do
     if coefs[i] ~= 0 then
-      local op = ' + '
-      local coef = coefs[i]
+      local op, coef = ' + ', coefs[i]
       if abs(coef) > 10*eps then
          if coef < 0 then
           if non1stq then s = s .. ' - ' else s = s .. ' -' end
@@ -1515,7 +1499,6 @@ function newtonpoly(x, y, xx)
 
   local n = length(x)
   local a = zeros(1, n)
-
   -- calculate coefs a(i) as in a1 + a2(x -x1) + a3(x-x1)(x-x2) + ... + an(x-x1)...
   a[1] = y[1]
   local f = copy(y)
@@ -1530,8 +1513,7 @@ function newtonpoly(x, y, xx)
   end
 
   -- prepare the string of the polynomial: a1 + a2(x -x1) + a3(x-x1)(x-x2) + ... + an(x-x1)...
-  local s = ''
-  local abs = math.abs
+  local s, abs = '', math.abs
   for i = 1, n do -- coef a[i]
     local skipq = false -- Lua 5.4.6 doesn't provide 'continue'
     if i == 1 then
@@ -1584,14 +1566,10 @@ function polynomial(x, y, xx)
     for j = 1, #x-2 do
       A[i][j] = x[i] ^ (#x - j)
     end
-    A[i][#x - 1] = x[i]
-    A[i][#x] = 1
+    A[i][#x - 1], A[i][#x] = x[i], 1
   end
   local B = linsolve(mathly(A), y) -- coefs of polynomial
-
-  local s = ''
-  local not1stq = false
-  local abs = math.abs
+  local s, not1stq, abs = '', false, math.abs
   for i = 1, #B do
     if abs(B[i]) > 10*eps then -- B[i] ~= 0
       local coef = B[i]
@@ -1625,7 +1603,6 @@ end -- polynomial
 -- example: polyval({6, -3, 4}, 5) -- evalue 6 x^2 - 3 x + 4 at x = 5
 function polyval(p, x)
   local msg = 'polyval(p, x): invalid p. It must be a table of the coefficients of a polynomial.'
-
   if p == nil or type(p) ~= 'table' then
     error(msg)
   end
@@ -1645,7 +1622,7 @@ function polyval(p, x)
     vs[#vs + 1] = v
   end
   return _set_matrix_meta(vs)
-end -- polyval
+end
 
 -- calculate the Euclidean/Frobenius norm of a vector/matrix
 -- if x is a mxn matrix with m, n ≥ 2, MATLAB: norm(x, "fro")
@@ -1666,11 +1643,8 @@ local function _gaussian_rand()
     return tmp
   end
 
-  local theta, rho, x, y
-  theta = 2 * pi * math.random()
-  rho = math.sqrt(-2 * math.log(1 - math.random()))
-  x = rho * math.cos(theta)
-  y = rho * math.sin(theta)
+  local theta, rho = 2 * pi * math.random(), math.sqrt(-2 * math.log(1 - math.random()))
+  local x, y = rho * math.cos(theta), rho * math.sin(theta)
   _next_gaussian_rand = y
   return x
 end
@@ -1815,8 +1789,7 @@ end
 -- if t is a mathly matrix, the result is row wise (rather than column wise)
 -- want column wise? use tt(t)
 function flatten(x)
-  local y = {}
-  local j = 1
+  local y, j = {}, 1
   local function flat(x)
     if type(x) == 'table' then
       for k, v in pairs(x) do
@@ -1868,13 +1841,9 @@ function ismember(x, v)
   return false
 end
 
-local _axis_equalq       = false
-local _xaxis_visibleq    = true
-local _yaxis_visibleq    = true
-local _gridline_visibleq = true
-local _specific_gridq    = false
-local _showlegendq       = false
-local _vecfield_annotations = nil
+local _axis_equalq, _xaxis_visibleq, _yaxis_visibleq = false, true, true
+local _gridline_visibleq, _specific_gridq = true, false
+local _showlegendq, _vecfield_annotations = false, nil
 
 -- 12-point and 13-point central finite difference formulas for f'(x) and f''(x)
 -- generated by https://github.com/fdformula/FiniteDifferenceFormula.jl
@@ -1940,7 +1909,7 @@ function integral(f, a, b)
     A, B = B, B + siz
   end
   return m * s
-end -- integral
+end
 
 local function _integralF(f)
   if type(f) == 'number' then
@@ -2042,29 +2011,18 @@ end -- integral3
 local plotly = {}
 function plot(...)
   local axis_equalq = _axis_equalq
-  local xaxis_visibleq = _xaxis_visibleq
-  local yaxis_visibleq = _yaxis_visibleq
-  local gridline_visibleq = _gridline_visibleq
-  local showlegendq = _showlegendq
-  _specific_gridq    = false
+  local xaxis_visibleq, yaxis_visibleq = _xaxis_visibleq, _yaxis_visibleq
+  local gridline_visibleq, showlegendq = _gridline_visibleq, _showlegendq
+  _specific_gridq, _3d_plotq, plotly.layout = false, false, {}
 
-  _3d_plotq = false
-  plotly.layout = {}
-
-  local args = {}
-  local x_start = nil -- range of x for a plot
-  local x_stop
-  local adjustxrangeq = false
-  local traces = {}
-  local layout_arg = {}
+  local args, x_start, x_stop = {}, nil -- range of x for a plot
+  local adjustxrangeq, traces, layout_arg = false, {}, {}
   for _, v in pairs{...} do
     if type(v) == 'function' then
-      args[#args + 1] = v
-      adjustxrangeq = true
+      args[#args + 1], adjustxrangeq = v, true
       goto end_for
     elseif type(v) == 'string' and string.sub(v, 1, 1) == '@' then -- @ is followed by expr in terms of x
-      args[#args + 1] = fstr2f(v)
-      adjustxrangeq = true
+      args[#args + 1], adjustxrangeq = fstr2f(v), true
       goto end_for
     end
 
@@ -2101,20 +2059,15 @@ function plot(...)
         traces[#traces + 1] = v
       elseif v[1] == 'graph-hist' then -- group histogram graph object: {'graph-hist', x, y}
         for i = 2, #v, 2 do
-          local trace = {}
-          trace[1] = v[i]
-          trace[2] = v[i + 1]
-          trace['type'] = 'bar'
-          traces[#traces + 1] = trace
+          traces[#traces + 1] = {v[i], v[i + 1], type = 'bar'}
         end
         layout_arg[#layout_arg + 1] = {layout = {barmode = 'group', bargap = 0.01}}
       elseif v[1] == 'graph-box' then -- boxplot: {'graph-box', 'x', data}, 'x' or 'y'
         local count = #v
         if type(v[count][1]) == 'string' then count = count - 1 end -- it is names
         for i = 3, count do
-          local trace = {}
+          local trace = {type = 'box'}
           if v[2] == 'x' then trace['x'] = v[i] else trace['y'] = v[i] end
-          trace['type'] = 'box'
           traces[#traces + 1] = trace
         end
         if count < #v then args[#args + 1] = {names = v[#v]} end
@@ -2195,8 +2148,7 @@ function plot(...)
 
           traces_tmp[#traces_tmp + 1] = trace
           for j = 1, #traces_tmp do
-            traces[#traces + 1] = traces_tmp[j]
-            traces_tmp[j] = nil
+            traces[#traces + 1], traces_tmp[j] = traces_tmp[j], nil
           end
         else
           trace[1] = flatten(args[i]); i = i + 1
@@ -2211,14 +2163,11 @@ function plot(...)
             if type(args[i]) == 'string' then -- options
               local specs = string.lower(args[i]); i = i + 1
               if string.find(specs, '%-%-') then
-                trace['mode'] = 'lines'
-                trace['style'] = '--'
+                trace['mode'], trace['style'] = 'lines', '--'
               elseif string.find(specs, '%-') then
-                trace['mode'] = 'lines'
-                trace['style'] = '-'
+                trace['mode'], trace['style'] = 'lines', '-'
               elseif string.find(specs, '%:') then
-                trace['mode'] = 'lines'
-                trace['style'] = ':'
+                trace['mode'], trace['style'] = 'lines', ':'
               end
 
               if string.find(specs, 'r') then
@@ -2267,12 +2216,7 @@ function plot(...)
               end
 
               if symbol ~= '' then
-                trace['symbol'] = symbol
-                if trace['mode'] == '' then
-                  trace['mode'] = 'markers'
-                else
-                  trace['mode'] = 'lines+markers'
-                end
+                trace['symbol'], trace['mode'] = symbol, qq(trace['mode'] == '', 'markers', 'lines+markers')
               end
             elseif type(args[i]) == 'table' then -- is it options?
               local optq = false
@@ -2341,15 +2285,13 @@ function plot(...)
                 for j = 1, #traces do
                   local s = qq(j == 1, '', j)
                   local x, y = 'xaxis' .. s, 'yaxis' .. s
-                  plotly.layout[x] = v_[x]
-                  plotly.layout[y] = v_[y]
+                  plotly.layout[x], plotly.layout[y] = v_[x], v_[y]
                 end
               elseif k_ =='gridaxisnames' then
                 _specific_gridq = true
                 for j = 1, #traces do
                   local s = qq(j == 1, '', j)
-                  traces[j]['xaxis'] = v_['xaxis' .. s]
-                  traces[j]['yaxis'] = v_['yaxis' .. s]
+                  traces[j]['xaxis'], traces[j]['yaxis'] = v_['xaxis' .. s], v_['yaxis' .. s]
                 end
               end
             end
@@ -2380,8 +2322,7 @@ function plot(...)
         x_start, x_stop = -5, 5
       end
     end
-    x_start = x_start - 0.1
-    x_stop = x_stop + 0.1
+    x_start, x_stop = x_start - 0.1, x_stop + 0.1
     for i = 1, #traces do
       if #traces[i] > 0 and #traces[i][1] >= 2 and type(traces[i][1][2]) == 'function' then
         local f = traces[i][1][2]
@@ -2405,8 +2346,7 @@ end -- plot
 local function _plot_interval(start, stop, step)
   local tq = type(start) == 'table'
   if tq then
-    stop = start[2]
-    step = start[3]
+    stop, step = start[2], start[3]
     start = start[1]
   end
   if step == nil then
@@ -2468,9 +2408,7 @@ end -- merge
 
 --// #data == #opts
 function namedargs(dat, opts)
-  local x = {}
-  local options = nil
-  local k = #dat + 1
+  local x, OPTS, k = {}, nil, #dat + 1
   for i = 1, #dat do
     local optq = false
     if type(dat[i]) == 'table' and dat[i][1] == nil then -- more test
@@ -2480,25 +2418,25 @@ function namedargs(dat, opts)
       end
     end
     if optq then -- a = {x=1, y=2}: a[1] == nil
-      options = dat[i]; k = i; break
+      OPTS = dat[i]; k = i; break
     else
       x[i] = dat[i]
     end
   end
-  if options == nil then return x end
+  if OPTS == nil then return x end
   if k == #opts then
-    if options[opts[k]] ~= nil then
-      x[k] = options[opts[k]]
+    if OPTS[opts[k]] ~= nil then
+      x[k] = OPTS[opts[k]]
     else
-      x[k] = options
+      x[k] = OPTS
     end
   else
     while k <= #opts do
-      x[k] = options[opts[k]]; k = k + 1
+      x[k] = OPTS[opts[k]]; k = k + 1
     end
   end
   return x -- table.unpack(results) -- Lua 5.4.6&5.4.7: doesn't work well
-end -- namedargs
+end
 
 local _3d_plotq = false
 
@@ -2525,34 +2463,26 @@ function plot3d(f, xrange, yrange, title, resolution)
   local X, Y, Z = {}, {}, {}
   if type(f) == 'string' then f = fstr2f(f) end
   if type(f) == 'function' then
-    xrange = _plot_interval(xrange)
-    yrange = _plot_interval(yrange)
+    xrange, yrange = _plot_interval(xrange), _plot_interval(yrange)
     resolution = _set_resolution(resolution, 100)
     local n = max(math.ceil(max(xrange[2] - xrange[1], yrange[2] - yrange[1])) * 10, resolution)
-    local x = linspace(xrange[1], xrange[2], n)
-    local y = linspace(yrange[1], yrange[2], n)
+    local x, y = linspace(xrange[1], xrange[2], n), linspace(yrange[1], yrange[2], n)
     for i = 1, #x do
-      local xtmp, ztmp = {}, {}
-      for j = 1, #y do xtmp[j] = x[i]; ztmp[j] = f(x[i], y[j]) end -- xtmp = mathly(1, #y, x[i])
-      X[i] = xtmp
-      Y[i] = y
-      Z[i] = ztmp
+      local xs, zs = {}, {}
+      for j = 1, #y do xs[j] = x[i]; zs[j] = f(x[i], y[j]) end -- xs = mathly(1, #y, x[i])
+      X[i], Y[i], Z[i] = xs, y, zs
     end
   else
-    X = f
-    Y = xrange
-    Z = yrange
+    X, Y, Z = f, xrange, yrange
   end
 
-  _3d_plotq = true
-  plotly.layout = {}
+  plotly.layout, _3d_plotq = {}, true
   if title ~= nil then plotly.layout.title = title end
   plotly.layout.margin = { l = 20, r = 20, b = 20, t = 40}
 
   local trace = {x = X, y = Y, z = Z, type = 'surface'}
   plotly.plots({trace}):show()
-  plotly.layout = {}
-  _3d_plotq = false
+  plotly.layout, _3d_plotq = {}, false
 end -- plot3d
 
 -- plot rho, a spherical function of theta and phi, where theta is in the range thetarange = {θ1, θ2}
@@ -2569,8 +2499,7 @@ function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
   elseif type(rho) == 'string' then
     rho = fstr2f(rho)
   end
-  thetarange = _plot_interval(thetarange or {0, 2*pi})
-  phirange = _plot_interval(phirange or {0, pi})
+  thetarange, phirange = _plot_interval(thetarange or {0, 2*pi}), _plot_interval(phirange or {0, pi})
   resolution = _set_resolution(resolution, 100)
 
   local X, Y, Z = {}, {}, {}
@@ -2578,7 +2507,6 @@ function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
   local n = max(math.ceil(max((phirange[2] - phirange[1]) * 10)), resolution)
   local theta = linspace(thetarange[1], thetarange[2], m)
   local phi = linspace(phirange[1], phirange[2], n)
-
   for i = 1, m do
     local x, y, z = {}, {}, {}
     for j = 1, n do
@@ -2586,12 +2514,10 @@ function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
       y[j] = rho(theta[i], phi[j]) * math.sin(phi[j]) * math.sin(theta[i])
       z[j] = rho(theta[i], phi[j]) * math.cos(phi[j])
     end
-    X[i] = x
-    Y[i] = y
-    Z[i] = z
+    X[i], Y[i], Z[i] = x, y, z
   end
   plot3d(X, Y, Z, title)
-end -- plotsphericalsurface3d
+end
 
 -- Plot a surface defined by xyz = {x(u, v), y(u, v), z(u,v)}.
 function plotparametricsurface3d(xyz, urange, vrange, title, resolution)
@@ -2607,26 +2533,19 @@ function plotparametricsurface3d(xyz, urange, vrange, title, resolution)
   local x, y, z = {}, {}, {}
   local m = max(math.ceil(max((urange[2] - urange[1]) * 20)), resolution)
   local n = max(math.ceil(max((vrange[2] - vrange[1]) * 20)), resolution)
-  local u = linspace(urange[1], urange[2], m)
-  local v = linspace(vrange[1], vrange[2], n)
-
+  local u, v = linspace(urange[1], urange[2], m), linspace(vrange[1], vrange[2], n)
   for i = 1, 3 do
     if type(xyz[i]) == 'string' then xyz[i] = fstr2f(xyz[i]) end
   end
-
   for i = 1, m do
-    local xtmp, ytmp, ztmp = {}, {}, {}
+    local xs, ys, zs = {}, {}, {}
     for j = 1, n do
-      xtmp[j] = xyz[1](u[i], v[j])
-      ytmp[j] = xyz[2](u[i], v[j])
-      ztmp[j] = xyz[3](u[i], v[j])
+      xs[j], ys[j], zs[j] = xyz[1](u[i], v[j]), xyz[2](u[i], v[j]), xyz[3](u[i], v[j])
     end
-    x[i] = xtmp
-    y[i] = ytmp
-    z[i] = ztmp
+    x[i], y[i], z[i] = xs, ys, zs
   end
   plot3d(x, y, z, title)
-end -- plotparametricsurface3d
+end
 
 -- xyz = { ... }, the parametric equations, x(t), y(t), z(t), in order, of a space curve,
 -- trange is the range of t
@@ -2636,10 +2555,7 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
     {'xyz', 'trange', 'title', 'resolution', 'orientationq'})
   xyz, trange, title, resolution, orientationq = args[1], args[2], args[3], args[4], args[5]
 
-  trange = _plot_interval(trange or {0, 2 * pi})
-  resolution = _set_resolution(resolution)
-
-  local x, y, z
+  trange, resolution = _plot_interval(trange or {0, 2 * pi}), _set_resolution(resolution)
   local n = math.max(math.ceil((trange[2] - trange[1]) * 50), resolution)
   local t = linspace(trange[1], trange[2], n)
 
@@ -2647,12 +2563,8 @@ function plotparametriccurve3d(xyz, trange, title, resolution, orientationq)
     if type(xyz[i]) == 'string' then xyz[i] = fstr2f(xyz[i]) end
   end
 
-  x = map(xyz[1], t)
-  y = map(xyz[2], t)
-  z = map(xyz[3], t)
-
-  _3d_plotq = true
-  plotly.layout = {}
+  local x, y, z = map(xyz[1], t), map(xyz[2], t), map(xyz[3], t)
+  plotly.layout, _3d_plotq = {}, true
   if title ~= nil then plotly.layout.title = title end
   plotly.layout.margin = { l = 20, r = 20, b = 20, t = 40}
 
@@ -2733,8 +2645,7 @@ end
 
 local function _anmt_parse_args(fstr, opts)
   _anmt_cs_labels = {} -- ~[i], label of ith control
-  local cs = {} -- ~[i], ith control
-  local rs = {} -- ~[i], ranges of ith control
+  local cs, rs = {}, {} -- ~[i], ith control, range of ith control
   if opts == nil then opts = {} end
   if _anmt_animateq == true then
     cs[1] = 'p'; _anmt_cs_labels[1] = 'Play'; rs[1] = {0, 1, 1/100} -- 'p' (play), reserved for animation
@@ -2878,7 +2789,7 @@ local function _amnt_write_traces(cs, opts, tr, file, xexpr, jxexpr, jyexpr, enh
   if type(enhancements) == 'table' then
     _amnt_write_subtraces(enhancements, tr, file, resolution)
   end
-end -- _amnt_write_traces
+end
 
 local function _anmt_layout_opts(axis, fmt, file) -- axis = layout.xaxis & yaxis
   if axis ~= nil then
@@ -3267,46 +3178,46 @@ function tables(str, opts) -- Mathematica
     if #cs == 0 then print("No controls are specified."); return end
   end
   -- generate Lua code
-  local code, idx = '', 1
-  for i = 1, #cs do code = code .. fmt('local t%d = {}\n', i) end
+  local c, idx = '', 1 -- c: code
+  for i = 1, #cs do c = c .. fmt('local t%d = {}\n', i) end
   local function luacode(i)
     local head = ''; for j = 2, i do head = head .. '  ' end
     local t = fmt('t%d', idx); idx = idx + 1
     local T = fmt('t%d', idx)
-    code = code .. head .. 'for ' .. cs[i] .. ' = ' .. tostring(rs[i][1]) .. ', ' .. tostring(rs[i][2]) ..', ' .. tostring(rs[i][3]) .. ' do\n'
+    c = c .. head .. 'for ' .. cs[i] .. ' = ' .. tostring(rs[i][1]) .. ', ' .. tostring(rs[i][2]) ..', ' .. tostring(rs[i][3]) .. ' do\n'
     if i == #rs then
-      code = code .. head .. fmt("  %s[#%s + 1] = ", t, t)
+      c = c .. head .. fmt("  %s[#%s + 1] = ", t, t)
       local ty = type(str)
       if ty == 'number' then
-        code = code .. tostring(str)
+        c = c .. tostring(str)
       elseif ty == 'string' then
         if str:sub(1, 1) == '!' then -- '!a+b' will be "a+b" without evaluation
           if type(opts.controls) == 'string' then
             local cstr, vstr = cs_values_str()
-            code = code .. "_tables_replace('" .. str:sub(2) .. "', " .. cstr .. ", " .. vstr .. ")"
+            c = c .. "_tables_replace('" .. str:sub(2) .. "', " .. cstr .. ", " .. vstr .. ")"
           else
-            code = code .. "'" .. str:sub(2) .. "'"
+            c = c .. "'" .. str:sub(2) .. "'"
           end
         else
-          code = code .. str
+          c = c .. str
         end
       elseif ty == 'boolean' then
-        code = code .. qq(str, 'true', 'false')
+        c = c .. qq(str, 'true', 'false')
       else
         error("mytable(expr, ...): expr can't be a table, but you may use a string, e.g., '{1, 2, 3}' and '{1, i, {3, {j - 1}}, 5}'.")
       end
-      code = code .. '\n'
+      c = c .. '\n'
     else
       luacode(i + 1)
-      code = code .. head .. fmt('  %s[#%s + 1] = %s; %s = {}\n', t, t, T, T)
+      c = c .. head .. fmt('  %s[#%s + 1] = %s; %s = {}\n', t, t, T, T)
     end
-    code = code .. head .. "end\n"
+    c = c .. head .. "end\n"
   end
   luacode(1)
-  code = code .. "return t1\n"
-  if opts.printcode == true then print(code) end
+  c = c .. "return t1\n"
+  if opts.printcode == true then print(c) end
   -- run generated Lua code dynamically
-  local stat, v = pcall(load, code)
+  local stat, v = pcall(load, c)
   if stat then stat, v = pcall(v) end
   return v
 end -- tables
@@ -3314,9 +3225,7 @@ end -- tables
 local function _freq_distro(x, nbins, xmin, xmax, width)
   nbins = nbins or 10
   x = sort(x)
-  local freqs = {}
-  local x1 = xmin
-  local j = 1
+  local freqs, x1, j = {}, xmin, 1
   for k = 1, nbins do
     freqs[k] = 0
     local x2 =  x1 + width
@@ -3332,7 +3241,7 @@ local function _freq_distro(x, nbins, xmin, xmax, width)
     x1 = x2
   end
   return freqs
-end -- _freq_distro
+end
 
 -- if x is a table of tables/rows, each row is a data set; otherwise, x is a table and a single data set.
 function hist(x, nbins, style, xrange)
@@ -3348,8 +3257,7 @@ function hist(x, nbins, style, xrange)
   end
 
   local xmin, xmax, width
-  local g = {'graph-hist'} -- special graph object, https://plotly.com/javascript/bar-charts/
-  local freqs = {}
+  local g, freqs = {'graph-hist'}, {} -- special graph object, https://plotly.com/javascript/bar-charts/
   local allintq = all(x, isinteger, false) == 1
   nbins = nbins or 10
 
@@ -3416,9 +3324,7 @@ function hist1(x, nbins, style, xrange, freqpolygonq, style1, histq) -- style1: 
   x = sort(flatten(x))
   local xmin, xmax, width = _xmin_xmax_width(x, xrange, nbins, all(x, isinteger) == 1)
   local freqs = _freq_distro(x, nbins, xmin, xmax, width)
-  local g = {'graph'}
-  local x1 = xmin
-  local freqp_xy = {{xmin - width / 2}, {0}}
+  local g, x1, freqp_xy = {'graph'}, xmin, {{xmin - width / 2}, {0}}
   for i = 1, nbins do
     local x2 = x1 + width
     if histq then
@@ -3428,8 +3334,7 @@ function hist1(x, nbins, style, xrange, freqpolygonq, style1, histq) -- style1: 
       g[#g + 1] = gobj[4]
     end
     if freqpolygonq then
-      freqp_xy[1][i + 1] = x1 + width / 2
-      freqp_xy[2][i + 1] = freqs[i]
+      freqp_xy[1][i + 1], freqp_xy[2][i + 1] = x1 + width / 2, freqs[i]
     end
     x1 = x2
   end
@@ -3482,10 +3387,7 @@ function pareto(data, style, style1) -- style1: for freq curve
     freqs[i] = dat[i][2] -- / total
   end
 
-  local g = {'pareto'}
-  local x1 = 0
-  local freqxy = {{0}, {0}}
-  local width = 20
+  local g, x1, freqxy, width = {'pareto'}, 0, {{0}, {0}}, 20
   for i = 1, #dat do
     local x2 = x1 + width
     local gobj = polygon({{x1, 0}, {x1, freqs[i]}, {x2, freqs[i]}, {x2, 0}}, style)
@@ -3506,8 +3408,7 @@ function pareto(data, style, style1) -- style1: for freq curve
     g[#g + 1] = style1 -- {symbol='circle', size=8, color='red'}
   end
 
-  -- 'plot' the names
-  x1 = 0
+  x1 = 0 -- 'plot' the names
   local texts = {}
   local shiftx, shifty = width * 0.4, dat[1][2]*0.04
   for i = 1, #dat do
@@ -3540,7 +3441,6 @@ function freqpolygon(x, nbins, style, xrange)
     {x, nbins, style, xrange},
     {'x', 'nbins', 'style', 'xrange'})
   x, nbins, style, xrange = args[1], args[2], args[3], args[4]
-
   return hist1(x, nbins, nil, xrange, true, style, false)
 end
 
@@ -3577,12 +3477,7 @@ function pie(x, nbins, style, names, title)
   local args = namedargs({x, nbins, style, names, title}, {'x', 'nbins', 'style', 'names', 'title'})
   x, nbins, style, names, title = args[1], args[2], args[3], args[4], args[5]
 
-  _axis_equalq       = true
-  _xaxis_visibleq    = false
-  _yaxis_visibleq    = false
-  _gridline_visibleq = false
-  _showlegendq       = false
-
+  _axis_equalq, _xaxis_visibleq, _yaxis_visibleq, _gridline_visibleq, _showlegendq = true, false, false, false, false
   local freqs, xmin, xmax, width
   local binsq = x['bins'] ~= nil -- x = {bins = {freq1, freq2, ...}}
   local namesq = type(names) == 'table'
@@ -3644,38 +3539,25 @@ function wedge(r, center, angles, style, wedgeq)
   if wedgeq == nil then wedgeq = true end
   local theta = angles[2] - angles[1]
   local arcpts = math.ceil(300 * theta/(2*pi))
-  local inc = theta / arcpts
-  local x = {}
-  local y = {}
-  local k = 1
+  local inc, x, y, k = theta / arcpts, {}, {}, 1
   theta =  angles[1]
   if wedgeq then
-    x[1] = center[1]
-    y[1] = center[2]
+    x[1], y[1] = center[1], center[2]
     k = k + 1
   end
   for i = 1, arcpts + 1 do
-    x[k] = center[1] + r * math.cos(theta)
-    y[k] = center[2] + r * math.sin(theta)
+    x[k], y[k] = center[1] + r * math.cos(theta), center[2] + r * math.sin(theta)
     k = k + 1
     theta = theta + inc
   end
-  local data = {'graph'}
-  local opt = '-'
+  local data, opt = {'graph'}, '-'
   if wedgeq then
-    x[k] = center[1]
-    y[k] = center[2]
+    x[k], y[k] = center[1], center[2]
     opt = '-fs'
   end
-  data[2] = x
-  data[3] = y
-  if style == nil then
-    data[4] = opt
-  else
-    data[4] = style
-  end
+  data[2], data[3], data[4] = x, y, qq(style == nil, opt, style)
   return data
-end -- wedge
+end
 
 --// plot an arc of a circle
 -- radius: r
@@ -3750,7 +3632,7 @@ function point(x, y, style)  -- plot a point at (x, y)
     end
   end
   return data
-end -- point
+end
 
 -- write text txt at (x, y) on a graph)
 --
@@ -4188,7 +4070,7 @@ function repmat(A, m, n)
     end
   end
   return _set_matrix_meta(C)
-end -- repmat
+end
 
 -- flipud - Return a matrix with rows of matrix A reversed (upside down)
 -- fliplr - Return a matrix with columns of matrix A reversed (from left to right)
@@ -4422,9 +4304,8 @@ function expand(A, m, n, v)
   if n == nil then n = m end
   if v == nil then v = 0 end
 
-  local rows, columns = size(A)
-  local row = math.min(m, rows)
-  local col = math.min(n, columns)
+  local rows, cols = size(A)
+  local row, col = math.min(m, rows), math.min(n, cols)
   local z = {}
   for i = 1, row do
     z[i] = {}
@@ -4442,7 +4323,7 @@ function expand(A, m, n, v)
     end
   end
   return setmetatable(z, mathly_meta)
-end -- expand
+end
 
 -- extract a submatrix of matrix A if B is not specified, or set the submatrix of A with B (A is modified!)
 -- 1. make a COPY of A, or
@@ -4464,11 +4345,7 @@ function lu(A) -- by Crout's method
   assert(getmetatable(A) == mathly_meta, 'lu(A): A must be a mathly square matrix.')
   local s, n = size(A)
   assert(n == s and n > 1, "lu(A): A is not square.\n")
-  local abs = math.abs
-
-  local L = zeros(n, n)
-  local U = zeros(n, n)
-
+  local abs, L, U = math.abs, zeros(n, n), zeros(n, n)
   for i = 1, n do -- calculate L[i][1 : i]
     for j = 1, i do
       s = 0
@@ -4491,7 +4368,7 @@ function lu(A) -- by Crout's method
     end
   end
   return L, U
-end -- lu
+end
 
 -- Return QR factorization A=QR, where mxn matrix A = mxn matrix Q * nxn matrix R, Q has orthonormal
 -- column vectors, and R is an invertible upper triangular matrix.
@@ -4501,8 +4378,7 @@ function qr(A)  -- by Gram-Schmidt process
   local m, n = size(A)
   assert(m >= n, 'qr(A): A is a mxn matrix, where m >= n.')
 
-  -- constructing Q
-  local Q = copy(A, '*', 1) -- A(:, 1)
+  local Q = copy(A, '*', 1) -- A(:, 1) -- construct Q
   Q = Q * (1 / norm(Q))
   for i = 2, n do
     local u = copy(A, '*', i) -- A(:, i)
@@ -4511,27 +4387,26 @@ function qr(A)  -- by Gram-Schmidt process
       local vj = copy(Q, '*', j) -- Q(:, j)
       v = v - (sum(u * vj) / sum(vj * vj)) * vj -- u .* vj, vj .* vj
     end
-    v = v * (1 / norm(v))  -- normalizing the column vector
+    v = v * (1 / norm(v))  -- normalize it
     Q = horzcat(Q, v)
   end
 
-  -- calculating R
-  local R = zeros(n, n)
+  local R = zeros(n, n) -- calculate R
   for i = 1, n do
     for j = i, n do
       R[i][j] = sum(copy(A, '*', j) * copy(Q, '*', i)) -- A(:, j) .* Q(:, i)
     end
   end
   return Q, R
-end -- qr
+end
 
 -- Calculate the determinant of a matrix
 function det(B)
   assert(getmetatable(B) == mathly_meta, 'det(A): A must be a mathly matrix.')
   local m, n = size(B)
   if m ~= n then
-      print('det(A): A must be square.')
-      return 0
+    print('det(A): A must be square.')
+    return 0
   end
   local A = copy(B)
 
@@ -4611,9 +4486,9 @@ function vertcat(...)
   end
   if #args == 0 then return {} end
 
-  local columns = #args[1][1]
+  local cols = #args[1][1]
   for i = 2, #args do
-    assert(columns == #args[i][1], "The column numbers are not the same.")
+    assert(cols == #args[i][1], "The column numbers are not the same.")
   end
 
 	local t = {}
@@ -4628,13 +4503,13 @@ function vertcat(...)
   	for i = 1, #args[k] do
   		local _i = i + offset
   		t[_i] = {}
-  		for j = 1, columns do
+  		for j = 1, cols do
   			t[_i][j] = args[k][i][j]
   		end
   	end
   end
   return _set_matrix_meta(t)
-end -- vertcat
+end
 
 -- merge elements and FLATTENED tables into a single table
 -- e.g., tblcat(1, {2, {3, 4}}, {{5, 6}, 7})
@@ -4906,7 +4781,6 @@ function mathly.pow(m1, n)
 end
 
 --[[
-  Set power "^" behaviour
   if opt is any integer number will do t^opt (returning nil if answer doesn't exist)
   if opt is 'T' then it will return the transpose of a mathly matrix
 
@@ -5166,7 +5040,7 @@ function figure.tofile(self, filename)
     print(string.format("Failed to create %s. The very device might not be writable.", filename))
   end
   return self
-end -- figure.tofile
+end
 
 ---Opens/shows the plot in the browser
 function figure.show(self)
@@ -5217,16 +5091,12 @@ local function _dk_isarray(t)
   for k,v in _dk_pairs(t) do
     if k == 'n' and _dk_type(v) == 'number' then
       arraylen = v
-      if v > max then
-        max = v
-      end
+      if v > max then max = v end
     else
       if _dk_type(k) ~= 'number' or k < 1 or _dk_floor(k) ~= k then
         return false
       end
-      if k > max then
-        max = k
-      end
+      if k > max then max = k end
       n = n + 1
     end
   end
@@ -5234,7 +5104,7 @@ local function _dk_isarray(t)
     return false -- don't create an array with too many holes
   end
   return true, max
-end -- _dk_isarray
+end
 
 local _dk_escapecodes = {
   ["\""] = "\\\"", ["\\"] = "\\\\", ["\b"] = "\\b", ["\f"] = "\\f",
@@ -5280,7 +5150,7 @@ local function _dk_fsub(str, pattern, repl)
   else
     return str
   end
-end -- _dk_fsub
+end
 
 local function _dk_quotestring(v)
   -- based on the regexp "escapable" in https://github.com/douglascrockford/JSON-js
@@ -5296,7 +5166,7 @@ local function _dk_quotestring(v)
     v = _dk_fsub(v, "\239\191[\176-\191]", _dk_escapeutf8)
   end
   return "\"" .. v .. "\""
-end -- _dk_quotestring
+end
 json._dk_quotestring = _dk_quotestring
 
 local function _dk_replace(str, o, n)
@@ -5341,7 +5211,7 @@ local function _dk_addpair(key, value, prev, level, buffer, buflen, tables, glob
   buffer[buflen+1] = _dk_quotestring(key)
   buffer[buflen+2] = ":"
   return _dk_encode2(value, level, buffer, buflen + 2, tables, globalorder, state)
-end -- _dk_addpair
+end
 
 local function _dk_appendcustom(res, buffer, state)
   local buflen = state.bufferlen
@@ -5350,7 +5220,7 @@ local function _dk_appendcustom(res, buffer, state)
     buffer[buflen] = res
   end
   return buflen
-end -- _dk_appendcustom
+end
 
 local function _dk_exception(reason, value, state, buffer, buflen, defaultmessage)
   defaultmessage = defaultmessage or reason
@@ -5363,7 +5233,7 @@ local function _dk_exception(reason, value, state, buffer, buflen, defaultmessag
     if not ret then return nil, msg or defaultmessage end
     return _dk_appendcustom(ret, buffer, state)
   end
-end -- _dk_exception
+end
 
 _dk_encode2 = function(value, level, buffer, buflen, tables, globalorder, state)
   local valtype = _dk_type(value)
@@ -5456,8 +5326,8 @@ function json.encode(value, state)
   local buffer = oldbuffer or {}
   state.buffer = buffer
   _dk_updatedecpoint()
-  local ret, msg = _dk_encode2(value, state.level or 0,
-                   buffer, state.bufferlen or 0, state.tables or {}, state.keyorder, state)
+  local ret, msg =
+    _dk_encode2(value, state.level or 0, buffer, state.bufferlen or 0, state.tables or {}, state.keyorder, state)
   if not ret then
     _dk_error(msg, 2)
   elseif oldbuffer == buffer then
@@ -5468,7 +5338,7 @@ function json.encode(value, state)
     state.buffer = nil
     return _dk_concat(buffer)
   end
-end -- json.encode
+end
 
 --[[ The above code is obtained from URL: http://dkolf.de/dkjson-lua
      Names are changed to _dk_ and some functions or so have been removed.
