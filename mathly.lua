@@ -171,14 +171,14 @@ local function _index_range(R, x)
   end
   if r[1] < 0 then r[1] = #x + r[1] + 1 end
   if r[2] < 0 then r[2] = #x + r[2] + 1 end
-  if r[1] < 0 or r[1] > #x or r[2] < 0 or r[2] > #x then
+  if r[1] < 0 or r[2] < 0 or (#x > 0 and (r[1] > #x or r[2] > #x)) then -- #x>0 new!!!
     error('Invalid range {start, stop, step}: start or stop are out of boundary.')
   end
   if r[3] == nil then
     if r[1] < r[2] then r[3] = 1 else r[3] = -1 end
   elseif r[1] < r[2] and r[3] < 0 then
     error('Invalid range {start, stop, step}: if start < stop, step must be positive.')
-  elseif r[1] > r[2] and r[3] > 0 then
+  elseif #x > 0 and r[1] > r[2] and r[3] > 0 then -- #x>0, new!!!
     error('Invalid range {start, stop, step}: if start > stop, step must be negative.')
   end
   assert(isinteger(r[1]) and isinteger(r[2]) and isinteger(r[3]), 'Invalid range {start, stop, step}: start, stop, and step must be all integers.')
@@ -481,10 +481,9 @@ function unique(t)
   local x = copy(t)
   table.sort(x)
   local y
-  local abs = math.abs
   if #x > 0 then y = {x[1]} else return {} end
   for i = 2, #x do
-    if abs(x[i] - x[i - 1]) > eps then -- not equal
+    if math.abs(x[i] - x[i - 1]) > eps then -- not equal
       y[#y + 1] = x[i]
     end
   end
@@ -1140,17 +1139,9 @@ function cat(file)
   end
 end
 
-function cd(path) os.execute('cd "' .. fname .. '"') end
-
-function mv(fname1, fname2)
-  os.execute(qq(__is_windows, 'ren "', 'mv "') .. fname1 .. '" "' .. fname2 .. '"')
-end
-
--- e.g., linux: rm(fname, '-fr'); windows: rm(fname, '/F /S')
-function rm(fname, opt)
-  if opt == nil then opt = '' end
-  os.execute(qq(__is_windows, 'del ', 'rm ') .. opt .. ' "'.. fname .. '"')
-end
+-- function cd(path) -- doesn't work
+mv = os.rename
+rm = os.remove
 --↑↑↑↑↑↑ basic file system commands ↑↑↑↑↑↑--
 
 -- clear user-defined variables
@@ -2364,47 +2355,27 @@ local function _set_resolution(r, n)
   return r
 end
 
--- merge two tables of any structure into a single one
-function merge(t1, t2)
-  local t = {}
-  if type(t1) ~= 'table' then
-    if type(t2) ~= 'table' then
-      if t1 ~= t2 then
-        t = {t1, t2}
-      else
-        t = {t1}
-      end
-      goto endmerge
-    end
-  else
-    if type(t2) ~= 'table' then t1, t2 = t2, t1 end
-  end
-  if type(t1) ~= 'table' then -- t2 is a table
-    t = copy(t2)
-    if not ismember(t1, t) then t[#t + 1] = t1 end
-    goto endmerge
-  end
-
-  t = copy(t1)
-  for k2, v2 in pairs(t2) do
-    if type(k2) == 'string' then
-      if t1[k2] == nil then
-        t[k2] = copy(t2[k2])
+-- merge two tables, t and t2, of any structure into t
+function merge(t, t2)
+  if type(t) ~= 'table' then t = {t} end
+  if type(t2) ~= 'table' then t2 = {t2} end
+  for k, v in pairs(t2) do
+    if type(k) == 'string' then
+      if t[k] == nil then
+        t[k] = copy(t2[k])
       else -- merge
-        if type(t1[k2]) == 'table' and type(v2) == 'table' then
-          t[k2] = merge(t1[k2], t2[k2]) -- merge
+        if type(t[k]) == 'table' and type(v) == 'table' then
+          t[k] = merge(t[k], t2[k]) -- merge
         else
-          t[k2] = copy(v2) -- t2 overwrites t1
+          t[k] = copy(v) -- t2 overwrites t
         end
       end
     else -- it's a number index
-      if not ismember(v2, t) then t[#t + 1] = v2 end
+      if not ismember(v, t) then t[#t + 1] = v end
     end
   end
-::endmerge::
-  if isvector(t) or ismatrix(t) then t = _set_matrix_meta(t) end
   return t
-end -- merge
+end
 
 --// #data == #opts
 function namedargs(dat, opts)

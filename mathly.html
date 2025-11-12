@@ -163,20 +163,21 @@ plot(x, y, '-r', x, -3 * x ^ 2 + 2 * x + 3, '--b')
 
 <h2><a name=math href=#top>Basic mathematical functions and elementwise operations</a></h2>
 <p>&#x2713; &nbsp; Basic mathematical functions</p>
-<p>Basic math functions are each now able to work <em>elementwisely</em> on Lua tables, including Mathly objects. They are
-<code>abs</code>, <code>acos</code>, <code>asin</code>, <code>atan</code>, <code>ceil</code>, <code>cos</code>,
-<code>deg</code>, <code>exp</code>, <code>floor</code>, <code>log</code>, <code>rad</code>, <code>random</code>,
-<code>sin</code>, <code>sqrt</code>, and <code>tan</code>. They evaluate a function at every number in a
-table and keep the structure of the table.</p>
+<p>Basic math functions are each now able to work <em>elementwisely</em> on Lua tables, including Mathly objects.
+They are <code>abs</code>, <code>acos</code>, <code>asin</code>, <code>atan</code>, <code>ceil</code>,
+<code>cos</code>, <code>deg</code>, <code>exp</code>, <code>floor</code>, <code>log</code>, <code>log10</code>,
+<code>rad</code>, <code>random</code>, <code>sin</code>, <code>sqrt</code>, and <code>tan</code>. They evaluate
+a function at every number in a table and keep the structure of the table.</p>
 <pre><code>mathly = require('mathly')
 
 A = randi(100, 5, 6)
 disp(cos(A))
 
-x = {-1, 2, -3, {4, -5, {6}}}
+x = {-10, 12, -3, {4, -5, {6}}}
 disp(abs(x))
--- {1, 2, 3, {4, 5, {6}}}
-disp(log(abs(x)))
+-- {10, 12, 3, {4, 5, {6}}}
+disp(log10(abs(x)))
+-- {1.0, 1.0791812460476, 0.47712125471966, {0.60205999132796, 0.69897000433602, {0.77815125038364}}}
 </code></pre>
 
 <p>&#x2713; &nbsp; With each of these functions, should we use, say, <code>sin(x)</code> or <code>math.sin(x)</code>?
@@ -2034,13 +2035,13 @@ disp(map('@(x, y) x + y', x1, x2))
 -- {2, 6, 12, 20, 42, {0, 2, 6, B = 12}, A = 30}
 
 disp(map('@(x, y) x + y', {1, 2, 3}, 10)) -- 10 is treated as {10, 10, 10}
--- 11, 12, 13
+-- 11  12  13
 
 disp(map('@(x, y, z) x + y + z', {1, 2, 3}, 10, 100)) -- 10 is treated as {10, 10, 10}, and 100 as {100, 100, 100}
--- 111, 112, 113
+-- 111  112  113
 
 disp(map('@(x, y, z) x + y + z', {1, 2, 3}, 10, {100, 200, 300}))
--- 111, 212, 313
+-- 111  212  313
 
 disp(map('@(x, y) x .. y', {'1', '2', '3'}, '10')) -- '10' is treated as {'10', '10', '10'}
 -- {'110', '210', '310'}
