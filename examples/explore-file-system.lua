@@ -56,7 +56,7 @@ function explore(dir, specs, process, opt)
   while i <= #fnames do
     local j = i + 1
     while j <= #fnames and fnames[j] == fnames[i] do table.remove(fnames, j) end
-    i = i + 1
+    i = j
   end
 
   local n = #fnames
