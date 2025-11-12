@@ -78,7 +78,7 @@ package.path = "./?.luac;;"
 `repmat`, `reshape`, `reverse`, `round`, `rr`, `rref`, `save`, `seq`, `size`, `sleep`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`, `sum`, `tables`, `tblcat`,
 `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vectorangle`, `vertcat`, `who`, `zeros`; `bin2dec`, `oct2hex`, ...
 
-`cat`, `dir`, `isdir`, `isfile`, `iswindows`, `ls`, `mv`, `pwd`, `rm`
+`cat`, `isdir`, `isfile`, `iswindows`, `ls` (or `dir`), `mv`, `pwd`, `rm`
 
 `animate`, `manipulate`, `plot`; `plot3d`, `plotparametriccurve3d`, `plotparametricsurface3d`, `plotsphericalsurface3d`
 
