@@ -70,6 +70,7 @@ function random(x) return map(math.random, x) end
 function sqrt(x)   return map(math.sqrt, x) end
 function exp(x)    return map(math.exp, x) end
 function log(x)    return map(math.log, x) end
+function log10(x)  return map(function(x) return log(x) / log(10) end, x) end
 function ceil(x)   return map(math.ceil, x) end
 function floor(x)  return map(math.floor, x) end
 function cos(x)    return map(math.cos, x) end
