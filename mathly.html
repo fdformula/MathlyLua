@@ -241,7 +241,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <a href=#var>var</a>, <a href=#vectorangle>vectorangle</a>, <a href=#vertcat>vertcat</a>, <a href=#who>who</a>, <a href=#zeros>zeros</a>;
 <a href=#bin2dec>bin2dec</a>, <a href=#oct2hex>oct2hex, ...</a></p>
 
-<p><a href=#cat>cat</a>, <a href=#cd>cd</a>, <a href=#dir>dir</a>, <a href=#isdir>isdir</a>, <a href=#isfile>isfile</a>, <a href=#iswindows>iswindows</a>,
+<p><a href=#cat>cat</a>, <a href=#dir>dir</a>, <a href=#isdir>isdir</a>, <a href=#isfile>isfile</a>, <a href=#iswindows>iswindows</a>,
 <a href=#ls>ls</a>, <a href=#mv>mv</a>, <a href=#pwd>pwd</a>, <a href=#rm>rm</a></p>
 
 <p><a href=#animate>animate</a>, <a href=#manipulate>manipulate</a>, <a href=#plot>plot</a>; <a href=#plot3d>plot3d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>,
@@ -264,7 +264,6 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#boxplot><code>boxplot(x, names)</code></a></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a box plot (or box-and-whisker plot), where <code>x</code> is a table or a matrix of numbers. <code>names = {'name1', 'name2', ...}</code> is optional.</td></tr>
 <tr><td> </td><td><a href=#cat><code>cat(filename)</code></a></td><td> </td><td>Print the content of text file <code>filename</code> in Lua REPL.</td></tr>
 <tr><td> </td><td><a href=#cc><code>cc(x, I, irange)</code></a></td><td> </td><td>Convert table <code>x</code> into a column vector or return specified column(s) of a Mathly matrix...</td></tr>
-<tr><td> </td><td><a name=cd><code>cd(path)</code></a></td><td> </td><td>Changes the current directory to <code>path</code>.</td></tr>
 <tr><td> </td><td><a href=#circle><code>circle(r, center, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a circle.</td></tr>
 <tr><td> </td><td><a name=clc></a><code>clc()</code></td><td> </td><td>Clear Lua console.</td></tr>
 <tr><td> </td><td><a name=clear></a><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
@@ -303,8 +302,8 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#integral2><code>integral2(f, g1, g2, a, b)</code></a></td><td> </td><td>Evaluate numerically the double integral of <code>f(x, y)</code> over a region <code>{(x, y) | x&in;[a, b], y&in;[g1(x), g2(x)]}</code>.</td></tr>
 <tr><td> </td><td><a href=#integral3><code>integral3(f, g1, g2, h1, h2, a, b)</code></a></td><td> </td><td>Evaluate numerically the triple integral of <code>f(x, y, z)</code> over a region <code>{(x, y, z) | x&in;[a, b], y&in;[h1(x), h2(x)], z&in;[g1(x, y), g2(x, y)]}</code>.</td></tr>
 <tr><td> </td><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of square Mathly matrix <code>A</code>.</td></tr>
-<tr><td> </td><td><a name=isdir><code>isdir(filename)</code></a></td><td> </td><td>Check if <code>filename</code> is a directory/folder.</td></tr>
-<tr><td> </td><td><a href=#isfile><code>isfile(filename)</code></a></td><td> </td><td>Check if <code>filename</code> is a file.</td></tr>
+<tr><td> </td><td><a name=isdir><code>isdir(f)</code></a></td><td> </td><td>Check if <code>f</code> is a directory/folder.</td></tr>
+<tr><td> </td><td><a name=isfile><code>isfile(f)</code></a></td><td> </td><td>Check if <code>f</code> is a file.</td></tr>
 <tr><td> </td><td><a name=isinteger></a><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
 <tr><td> </td><td><a name=iseven></a><code>iseven(x)</code></td><td> </td><td>Check if <code>x</code> is even.</td></tr>
 <tr><td> </td><td><a name=isodd></a><code>isodd(x)</code></td><td> </td><td>Check if <code>x</code> is odd.</td></tr>
@@ -325,9 +324,9 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#mathly><code>mathly(...)</code></a></td><td> </td><td>Constructor of Mathly matrices.</td></tr>
 <tr><td> </td><td><a href=#max><code>max(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the largest of all elements of the table; if it is a matrix, ...</td></tr>
 <tr><td> </td><td><a href=#mean><code>mean(x)</code></a></td><td> </td><td>Return mean value of numbers in <code>x</code>.</td></tr>
-<tr><td> </td><td><a href=#merge><code>merge(tbl1, tbl2)</code></a></td><td> </td><td>Merge two tables of any structure into one.</td></tr>
+<tr><td> </td><td><a href=#merge><code>merge(t1, t2)</code></a></td><td> </td><td>Merge two tables of any structure into one.</td></tr>
 <tr><td> </td><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
-<tr><td> </td><td><a name=mv><code>mv(fname1, fname2)</code></a></td><td> </td><td>Rename file/folder <code>fname1</code> to <code>fname2</code>.</td></tr>
+<tr><td> </td><td><a name=mv><code>mv(fname1, fname2)</code></a></td><td> </td><td>Rename file/folder <code>fname1</code> to <code>fname2</code>. Same as <code>os.rename</code>.</td></tr>
 <tr><td> </td><td><a href=#namedargs><code>namedargs(data, opts)</code></a></td><td> </td><td>Provide support for named arguments.</td></tr>
 <tr><td> </td><td><a href=#newtonpoly><code>newtonpoly(...)</code></a></td><td> </td><td>Return the Newton interpolating polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
 <tr><td> </td><td><a href=#norm><code>norm(x)</code></a></td><td> </td><td>Return the Euclidean norm of a row/column vector <code>x</code>.</td></tr>
@@ -348,7 +347,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#powermod><code>powermod(b, n, m)</code></a></td><td> </td><td>Return <code>b<sup>n</sup> mod m</code>, i.e., the remainder of <code>b<sup>n</sup></code> divided by <code>m</code>.</td></tr>
 <tr><td> </td><td><a href=#printf><code>printf(...)</code></a></td><td> </td><td>Print formatted text like <code>printf</code> in C/C++.</td></tr>
 <tr><td> </td><td><a href=#prod><code>prod(A)</code></a></td><td> </td><td>If <code>A</code> is a table or Mathly row/column vector, return the product of its elements; if A is a <code>mxn</code> matrix, ...</td></tr>
-<tr><td> </td><td><a href=#pwd><code>pwd()</code></a></td><td> </td><td>Return present working directory.</td></tr>
+<tr><td> </td><td><a name=pwd><code>pwd()</code></a></td><td> </td><td>Return present working directory.</td></tr>
 <tr><td> </td><td><a href=#qq><code>qq(c, t, f)</code></a></td><td> </td><td>If <code>c</code> is true, return <code>t</code>; otherwise, return <code>f</code>.</td></tr>
 <tr><td> </td><td><a href=#qr><code>qr(A)</code></a></td><td> </td><td>Return <code>Q</code> and <code>R</code> of QR factorization <code>A = QR</code>.</td></tr>
 <tr><td> </td><td><a href=#rand><code>rand(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> matrix of which each element is a random number in [0, 1]. If <code>m = 1</code>, return a table.</td></tr>
@@ -359,7 +358,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#repmat><code>repmat(A, m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> block matrix with each entry a copy of matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a href=#reshape><code>reshape(A, m, n)</code></a></td><td> </td><td>Rearrange existing elements in a table or Mathly matrix <code>A</code> and return a new <code>mxn</code> Mathly matrix.</td></tr>
 <tr><td> </td><td><a href=#reverse><code>reverse(tbl)</code></a></td><td> </td><td>Return a table with order of elements in table <code>tbl</code> reversed.</td></tr>
-<tr><td> </td><td><a href=#rm><code>rm(fname, opt)</code></a></td><td> </td><td>Remove file/folder <code>fname</code>.</td></tr>
+<tr><td> </td><td><a name=rm><code>rm(fname)</code></a></td><td> </td><td>Remove a file. Same as <code>os.remove</code>.</td></tr>
 <tr><td> </td><td><a href=#round><code>round(x, n)</code></a></td><td> </td><td>Round <code>x</code> to <code>n</code> decimal places.</td></tr>
 <tr><td> </td><td><a href=#rr><code>rr(x, i, irange)</code></a></td><td> </td><td>Convert table <code>x</code> into a row vector or return specified row(s) of a Mathly matrix...</td></tr>
 <tr><td> </td><td><a href=#rref><code>rref(A, ...)</code></a></td><td> </td><td>Return the reduced row-echelon form of a Mathly matrix <code>A</code>.</td></tr>
@@ -1731,70 +1730,6 @@ inv(A) * A - I
 </code></pre>
 
 
-<h4>&bull; &nbsp; <a name=rm href=#m><code>rm(fname, opt)</code></a></h4>
-<p>Remove file/folder <code>fname</code>.</p>
-<pre><code>mathly = require('mathly')
-
-rm('_tmp-mathly_plot-6_4.html')
-
-if iswindows() then
-  rm('_tmp-*6_4.html', '/F /S')
-else
-  rm('_tmp-*6_4.html', '-fr')
-end
-</code></pre>
-
-
-<h4>&bull; &nbsp; <a name=isfile href=#m><code>isfile(fname)</code></a></h4>
-<p>Return true if <code>fname</code> is a file.</p>
-<pre><code>mathly = require('mathly')
-
--- explore a folder and all subfolders for files specified in 'patterns'
---
--- e.g., explore('/usr/share/', '*.lua'), explore('/', {'*.lua', 'fd*.jl'})
-clear()
-function explore(path, patterns)
-  local sep = qq(iswindows(), '\\', '/')
-  if type(patterns) == 'string' then
-    patterns = { patterns }
-  elseif patterns == nil then
-    patterns = { '*' }
-  end
-  local fcount, dcount = 0, 0
-  local function _explore(path)
-    local files, folders = {}, {}
-    for i = 1, #patterns do
-      local x, p, f = ls(path, patterns[i], false)
-      files = tblcat(files, x)
-      if i == 1 then folders = f end
-    end
-    for i = 1, #files do
-      if i == 1 then print(path) end
-      fcount = fcount + 1
-      local fname = path .. qq(path:sub(-1) == sep, '', sep) .. files[i]
-      --↓↓↓↓↓↓ process each file with filename stored in fname ↓↓↓↓↓↓--
-      print('    ' .. files[i])
-      --↑↑↑↑↑↑ process each file with filename stored in fname ↑↑↑↑↑↑--
-    end
-    files = nil
-    for i = 1, #folders do
-      local fname = path .. qq(path:sub(-1) == sep, '', sep) .. folders[i]
-      dcount = dcount + 1
-      _explore(fname)
-    end
-  end
-  _explore(path)
-  printf("\n%d files in %d subfolders processed\n", fcount, dcount)
-  return fcount, dcount
-end
-
-if iswindows() then
-  explore('C:\\cygwin', {'*.lua', 'mathly*'})
-else
-  explore('/usr/share/cudatext', 'ins*.*')
-end
-</code></pre>
-
 <h4>&bull; &nbsp; <a name=ismember href=#m><code>ismember(x, table)</code></a></h4>
 <p>Check if <code>x</code> is a member of <code>table</code>.</p>
 <pre><code>mathly = require('mathly')
@@ -1884,7 +1819,7 @@ plot(x, y, '-r')
 <p>Return a list of files and subfolders in the folder <code>path</code> (the current directory by default).
 If <code>printq = true</code> (default), it prints the list in Lua REPL.</p>
 <p>Characters ? and * are allowed in a file name, where ? matches any single character, and * zero or more consecutive characters.</p>
-<p>See also: <a href=#isfile><code>isfile</code></a></p>
+<p>See also: <a href=#isdir><code>isdir, isfile</code></a>; <a href=tools/explore-file-system.lua target="_blank">tools/explore-file-system.lua</a>.</p>
 <pre><code>mathly = require('mathly')
 
 x = dir('*.lua') -- a list of all Lua code files in current folder
@@ -2257,11 +2192,10 @@ print(mean({'abc', 'de'})) --> strcat first: 'abcde' --> mean('abcde')
 -- 99.0
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=merge href=#m><code>merge(tbl1, tbl2)</code></a></h4>
-<p>This is a general tool. It merges two tables of any structure into one.</p>
-<p>If <code>tbl1</code> and <code>tbl2</code> are flatten tables, it functions like finding the union of two sets.</p>
-<p>&#x2713; &nbsp; If two same "named" items are not both tables, the one in the second table overwrites the one in the first table.
-If both are tables, they are merged into one.</p>
+<h4>&bull; &nbsp; <a name=merge href=#m><code>merge(t1, t2)</code></a></h4>
+<p>This is a general tool. It merges two tables, <code>t1</code> and <code>t2</code>, of any structure into <code>t1</code>.</p>
+<p>If <code>t1</code> and <code>t2</code> are flatten tables, it functions like finding the union of two sets.</p>
+<p>&#x2713; &nbsp; If two same "named" items are not both tables, the one in the second table overwrites the one in the first table.</p>
 <pre><code>mathly = require('mathly')
 
 -- 1) no argument is a table
@@ -2272,7 +2206,7 @@ display(merge(1, 2))
 
 -- 2) one argument is a table, and the other one is not
 disp(merge('a', {2, 3, 4, p = {10, 9}}))
--- {2, 3, 4, 'a', p = {10, 9}}
+-- {'a', 2, 3, 4, p = {10, 9}}
 disp(merge({2, 3, 4, p = {10, 9}}, 12))
 -- {2, 3, 4, 12, p = {10, 9}}
 disp(merge({2, 3, 4, p = {10, 9}}, 2))
@@ -2280,9 +2214,27 @@ disp(merge({2, 3, 4, p = {10, 9}}, 2))
 
 -- 3) both arguments are tables
 disp(merge({5, 2, 3, 4}, {2, 4, 5, 6, 7}))
--- 5 2 3 4 6 7
+-- {5, 2, 3, 4, 6, 7}
 disp(merge({1, 2, 3, x={3, 1, 5, w=180}}, {2, 3, 5, y=8, x={5, 1, 'abc', w=100, z={4, 5, 6}}}))
 -- {1, 2, 3, 5, x = {3, 1, 5, 'abc', z = {4, 5, 6}, w = 100}, y = 8} -- named item w is overwritten
+
+A = tt{1, 2, 3} -- Mathly table
+B = {9, 3, 6, 2}
+merge(A, B)
+-- 1 2 3 9 6
+A * 2 -- A is modified and is still a Mathly table
+-- 2 4 6 18 12
+
+A = randi({1, 100}, 2, 3)
+B = randi({1, 100}, 4, 1)
+merge(A, B) -- like vertcat, but A's structure is here damaged!
+-- 41  70   9
+-- 37  35  57
+-- 36
+-- 64
+-- 62
+-- 71
+demathly(A)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=namedargs href=#m><code>namedargs(data, opts)</code></a></h4>
@@ -2685,10 +2637,6 @@ disp(prod(a))
 </code></pre>
 
 
-<h4>&bull; &nbsp; <a name=pwd href=#m><code>pwd()</code></a></h4>
-<p>Return present working directory.</p>
-
-
 <h4>&bull; &nbsp; <a name=qq href=#m><code>qq(c, t, f)</code></a></h4>
 <p>It is like the ternary operator in C/C++: <code>c? t : f</code>. If <code>c</code> is true, return <code>t</code>; otherwise, return <code>f</code>.</p>
 <p>Its existence is first for implementing complicated logic in the <a href=#easyf>shortcut for defining an anonymous function</a>.</p>
@@ -2965,7 +2913,7 @@ print(c) -- nil
 <pre><code>mathly = require('mathly')
 
 plot(sin)
-sleep(1.5)
+sleep(0.5)
 plot(cos)
 </code></pre>
 <p>Assume that your internet browser can automatically open two webpages with each for a graph.
@@ -3054,7 +3002,7 @@ disp(var(A, 1))
 
 print(strcat('Good', ' ', 'morning', '!'))
 -- Good morning!
-display(strcat({'1', '0', '0', '1'}))
+display(strcat({'1', '0', '0','1'}))
 -- '1001'
 print(strcat(34,'Hello, ', {'the ', 'world', '!'}, 34)) -- 34? ascii code for "
 -- "Hello, the world!"
