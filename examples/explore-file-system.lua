@@ -2,29 +2,37 @@ mathly = require('mathly')
 
 clear()
 
--- explore a folder and all subfolders for files specified in 'specs'
--- opts.process(fname, i, n) is a function that defines how to process the i-th
--- one of all n files
+-- explore a folder and its subfolders for files/folders specified in opts.patterns
 --
 -- 1. no change is needed for function explore(...)
 -- 2. edit function process(...) at the bottom of this file for your task
 --
-function explore(dir, specs, opts)
+-- opts.objects    = 'files'         process matched files only (default)
+-- opts.objects    = 'folders'       process matched (sub)folders only
+-- opts.objects    = 'files+folders' process matched files and (sub)folders
+--
+-- opts.subfolders = 'included'      find items in subfolders (default)
+-- opts.subfolders = 'excluded'      find items in 'dir' only
+--
+-- opts.task = function(fname, i, n) define how to process 'fname', the i-th
+--                                   one of all n matched files/folders
+--
+function explore(dir, opts)
   if opts == nil then opts = {} end
-  if opts.folder == nil then opts.folder = false end
-  if opts.subfolder == nil then opts.subfolder = true end
+  if opts.objects == nil then opts.objects = 'files' end
+  if opts.subfolders == nil then opts.subfolders = 'included' end
 
-  if type(specs) == 'string' then
-    specs = {specs}
-  elseif specs == nil then
-    specs = {'*'}
+  if type(opts.patterns) == 'string' then
+    opts.patterns = {opts.patterns}
+  elseif opts.patterns == nil then
+    opts.patterns = {'*'}
   end
   local fname, cmd = tmp_plot_html_file .. 'XpL'
   if iswindows() then -- dir /s /b /a-d /on *.lua mathly*
     cmd = 'dir /b /on '
-    if opts.subfolder then cmd = cmd .. '/s ' end
-    cmd = cmd .. qq(opts.folder, '/ad', '/a-d')
-    for i = 1, #specs do cmd = cmd .. ' "' .. specs[i] .. '"' end
+    if opts.subfolders == 'included' then cmd = cmd .. '/s ' end
+    cmd = cmd .. qq(opts.objects == 'folders', '/ad', qq(opts.objects == 'files', '/a-d', ''))
+    for i = 1, #opts.patterns do cmd = cmd .. ' "' .. opts.patterns[i] .. '"' end
     cmd = cmd .. ' > ' .. fname
 
     local batfname = fname .. '.bat'
@@ -36,12 +44,12 @@ function explore(dir, specs, opts)
     rm(batfname)
   else -- find . -type f \( -name "*.lua" -o -name "mathly*" \)
     cmd = 'find "' .. dir .. '" '
-    if opts.subfolder == false then cmd = cmd .. '-maxdepth 1 ' end
-    cmd = cmd .. '-type ' .. qq(opts.folder, 'd', 'f')
+    if opts.subfolders == 'excluded' then cmd = cmd .. '-maxdepth 1 ' end
+    cmd = cmd .. qq(opts.objects == 'files+folders', '', '-type ' .. qq(opts.objects == 'folders', 'd', 'f'))
     cmd = cmd .. ' \\( -name'
-    for i = 1, #specs do
+    for i = 1, #opts.patterns do
       if i > 1 then cmd = cmd .. ' -o -name' end
-      cmd = cmd .. ' "' .. specs[i] .. '"'
+      cmd = cmd .. ' "' .. opts.patterns[i] .. '"'
     end
     cmd = cmd .. ' \\) > ' .. fname
   end
@@ -64,8 +72,11 @@ function explore(dir, specs, opts)
   end
 
   local n = #fnames
-  for i = 1, n do
-    if type(opts.task) == 'function' then opts.task(fnames[i], i, n) end
+  if type(opts.task) == 'function' then
+    print()
+    for i = 1, n do
+      opts.task(fnames[i], i, n)
+    end
   end
   fnames = nil
   printf("\n%d items processed\n", n)
@@ -99,21 +110,39 @@ end
 function process(fname, i, n)
   local k, fmt = n, 1
   while k // 10 > 0 do fmt = fmt + 1; k = k // 10 end
-  fmt = string.format('No. %%%dd of %%d: %%s\n', fmt)
+  fmt = string.format('%%%dd/%%d: %%s\n', fmt)
   printf(fmt, i, n, fname)
 
-  -- process fname here ...
+  -- process fname below ...
+
 end
 
 -- examples
 if iswindows() then
-  explore('C:\\cygwin', {'*.lua', 'mathly*'},
-          {task = process, folder = false, subfolder = true})  -- process files, including those in subfolders
-  explore('C:\\cygwin', {'doc*', 'cuda*'},
-          {task = process, folder = true, subfolder = true})   -- process folder and subfolders only
+  explore('C:\\cygwin',
+          { patterns = {'doc*', 'cuda*'},
+            task = process,
+            objects = 'files',
+            subfolders = 'included'})
+  explore('C:\\cygwin',
+          { patterns = {'doc*', 'cuda*'},
+            task = process,
+            objects = 'folders',
+            subfolders = 'included'})
+  explore('C:\\cygwin',
+          { patterns = {'doc*', 'cuda*'},
+            task = process,
+            objects = 'files+folders',
+            subfolders = 'included'})
 else
-  explore('/usr/share/doc', {'mathly*', 's*', '*.html'},
-          {task = process, folder = false, subfolder = false}) -- process files only, excluding those in subfolders
-  explore('/usr/share/cudatext', 'cuda_*',
-          {task = process, folder = true, subfolder = true})   -- process folder and subfolders only
+  explore('/usr/share/cudatext',
+          { patterns = {'mathly*', 'c*', '*.txt'},
+            task = process,
+            objects = 'files',
+            subfolders = 'excluded'})
+  explore('/usr/share/cudatext',
+          { patterns = 'cuda*',
+            task = process,
+            objects = 'files+folders',
+            subfolders = 'included'})
 end
