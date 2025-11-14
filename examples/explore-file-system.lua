@@ -94,7 +94,6 @@ function parse_filename(fname)
   end
   local c = string.sub(fname, 1, 1)
   if c == "/" or c == "\\" then fname = string.sub(fname, 2) end
-
   local basename = fname
   pos = string.find(fname, "%.[^%.]*$", 1)
   if pos then
@@ -107,11 +106,11 @@ end
 --
 -- define how to process fname, the i-th one of all n files/folders
 --
--- need temporary files? you may create their names like:
+-- need temporary files? you may use tmp_plot_html_file, a filename
+-- provided by Mathly with full path, or use it to create filenames like:
 --
---   tmpfname1 = tmp_plot_html_file .. 'fprcssTmP.1'
+--   tmpfname1 = tmp_plot_html_file .. 'fPrcss.1'
 --
--- where tmp_plot_html_file is a filename with full path, provided by Mathly
 function process(fname, i, n)
   local k, fmt = n, 1
   while k // 10 > 0 do fmt = fmt + 1; k = k // 10 end
