@@ -1124,7 +1124,7 @@ function ls(path, re, printq)
     end
   end
   if printq then
-    for i = 1, #files   do print('   ' ..  files[i]) end
+    for i = 1, #files do print('   ' ..  files[i]) end
   end
   return files, path, folders
 end
@@ -4793,12 +4793,6 @@ mathly_meta.__concat = function(...)
 	return horzcat(...)
 end
 
--- Set tostring "tostring(t)" behaviour
-mathly_meta.__tostring = function(...)
-	return mathly.tostring(...)
-end
-
---// mathly.tostring (t)
 function mathly.tostring(t)
   _set_disp_format(t)
 	if type(t[1]) == 'table' then
@@ -4810,6 +4804,11 @@ function mathly.tostring(t)
   else -- a row vector
     return table.concat(_map(_tostring1, t), " ")
   end
+end
+
+-- Set tostring "tostring(t)" behaviour
+mathly_meta.__tostring = function(...)
+	return mathly.tostring(...)
 end
 
 --// mathly (rows [, comlumns [, value]])
