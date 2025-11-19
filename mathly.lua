@@ -1881,6 +1881,7 @@ local _MaxIntegralIntervalSize = 3 -- see mathly.html#integral
 
 -- ∫f(x)dx on [a, b]
 function integral(f, a, b)
+  if type(a) == 'table' then b, a = a[2], a[1] end
   if type(f) == 'string' then
     f = fstr2f(f)
   elseif type(f) == 'number' then
@@ -1916,7 +1917,8 @@ end
 -- ∫∫f(x,y)dydx over D:
 --  y in [g1(x), g2(x)]
 --  x in [a, b]
-function integral2(f, g1, g2, a, b)
+function integral2(f, g, x)
+  local g1, g2, a, b = g[1], g[2], x[1], x[2]
   f, g1, g2 = table.unpack(map(_integralF, {f, g1, g2}))
   local function prep(a, b)
     local sign = 1
@@ -1954,7 +1956,8 @@ end -- integral2
 --  z in [g1(x, y), g2(x, y)]
 --  y in [h1[x], h2[y]]
 --  x in [a, b]
-function integral3(f, g1, g2, h1, h2, a, b)
+function integral3(f, g, h, x)
+  local g1, g2, h1, h2, a, b = g[1], g[2], h[1], h[2], x[1], x[2]
   f, g1, g2, h1, h2 = table.unpack(map(_integralF, {f, g1, g2, h1, h2}))
   local function prep(a, b)
     local sign = 1

@@ -299,9 +299,9 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#histfreqpolygon><code>histfreqpolygon(x, nbins, style, xrange, style1)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a histogram plus a frequency polygon, where <code>x</code> is a table of numbers.</td></tr>
 <tr><td> </td><td><a href=#horzcat><code>horzcat(A, B, ...)</code></a></td><td> </td><td>Concatenate matrices <code>A</code>, <code>B</code>, ... in order horizontally. Matrices must have the same number of rows.</td></tr>
 <tr><td> </td><td><a href=#input><code>input(prompt, s)</code></a></td><td> </td><td>Input from keyboard, return a string (if <code>s = 's'</code>); otherwise, evaluate the input expression, and return the result.</td></tr>
-<tr><td> </td><td><a href=#integral><code>integral(f, a, b)</code></a></td><td> </td><td>Evaluate numerically the definite integral of <code>f(x)</code> on <code>[a, b]</code>.</td></tr>
-<tr><td> </td><td><a href=#integral2><code>integral2(f, g1, g2, a, b)</code></a></td><td> </td><td>Evaluate numerically the double integral of <code>f(x, y)</code> over a region <code>{(x, y) | x&in;[a, b], y&in;[g1(x), g2(x)]}</code>.</td></tr>
-<tr><td> </td><td><a href=#integral3><code>integral3(f, g1, g2, h1, h2, a, b)</code></a></td><td> </td><td>Evaluate numerically the triple integral of <code>f(x, y, z)</code> over a region <code>{(x, y, z) | x&in;[a, b], y&in;[h1(x), h2(x)], z&in;[g1(x, y), g2(x, y)]}</code>.</td></tr>
+<tr><td> </td><td><a href=#integral><code>integral(f, a, b)</code> or <code>integral(f, {a, b})</code></a></td><td> </td><td>Evaluate numerically the definite integral of <code>f(x)</code> on <code>[a, b]</code>.</td></tr>
+<tr><td> </td><td><a href=#integral2><code>integral2(f, {g1, g2}, {a, b})</code></a></td><td> </td><td>Evaluate numerically the double integral of <code>f(x, y)</code> over a region <code>{(x, y) | x&in;[a, b], y&in;[g1(x), g2(x)]}</code>.</td></tr>
+<tr><td> </td><td><a href=#integral3><code>integral3(f, {g1, g2}, {h1, h2}, {a, b})</code></a></td><td> </td><td>Evaluate numerically the triple integral of <code>f(x, y, z)</code> over a region <code>{(x, y, z) | x&in;[a, b], y&in;[h1(x), h2(x)], z&in;[g1(x, y), g2(x, y)]}</code>.</td></tr>
 <tr><td> </td><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of square Mathly matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a name=isdir><code>isdir(f)</code></a></td><td> </td><td>Check if <code>f</code> is a directory/folder.</td></tr>
 <tr><td> </td><td><a name=isfile><code>isfile(f)</code></a></td><td> </td><td>Check if <code>f</code> is a file.</td></tr>
@@ -1631,9 +1631,9 @@ x = input('Expression to evaluate: ') -- you may enter sin(pi/2), {1, {2, {3}}},
 print(x)
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=integral href=#m><code>integral(f(x), a, b)</code></a></h4>
-<p>Apply <a href=examples/gauss_quadrature_by_legendre_polynomial.lua target="_blank">Gauss quadrature</a>
-of 12 nodes to numerically evaluate the definite integral of <code>f(x)</code> on <code>[a,b]</code>. A
+<h4>&bull; &nbsp; <a name=integral href=#m><code>integral(f(x), a, b)</code> or <code>integral(f(x), {a, b})</code></a></h4>
+<p>Apply 12-point <a href=examples/gauss_quadrature_by_legendre_polynomial.lua target="_blank">Gauss quadrature</a>
+to numerically evaluate the definite integral of <code>f(x)</code> on <code>[a,b]</code>. A
 large interval <code>[a,b]</code> is divided evenly into multiple subintervals, <code>[a<sub>i</sub>,b<sub>i</sub>],
 i=1,2,3,...</code>, where <code>b<sub>i</sub>-a<sub>i</sub></code> is at most <code>_MaxIntegralIntervalSize</code>,
 a predetermined constant defined in mathly.lua, and Gauss quadrature method is applied to each subintervals.</p>
@@ -1643,25 +1643,22 @@ on the integrand, too; in addition, a small value of the parameter requires more
 errors can be an issue.</p>
 <pre><code>mathly = require('mathly')
 
-disp(integral(10, 1, 20))
--- 190 (exact)
-
 disp(integral('@(theta) 0.5 * cos(2*theta)^2', -pi/4, pi/4))
 -- 0.39269908169872 (exact: pi/8 = 0.39269908169872)
 
 -- &int;e<sup>-x<sup>2</sup></sup>dx on (-&infin;,&infin;) = sqrt(&pi;) &asymp; 1.7724538509055
 -- the results below show the effect of round-off errors
-disp(integral('@(x) exp(-x^2)', -5, 5))
+disp(integral('@(x) exp(-x^2)', {-5, 5}))
 -- 1.7724538509028
-disp(integral('@(x) exp(-x^2)', -10, 10))
+disp(integral('@(x) exp(-x^2)', {-10, 10}))
 -- 1.7724538509044
-disp(integral('@(x) exp(-x^2)', -10000, 10000)) -- theoretically, it should be closer to sqrt(&pi;)
+disp(integral('@(x) exp(-x^2)', {-10000, 10000})) -- theoretically, it should be closer to sqrt(&pi;)
 -- 1.7724538509022
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=integral2 href=#m><code>integral2(f, g<sub>1</sub>, g<sub>2</sub>, a, b)</code></a></h4>
-<p>Apply <a href=examples/gauss_quadrature_by_legendre_polynomial.lua target="_blank">Gauss quadrature</a> of
-12 nodes to numerically evaluate the double integral, <code>∫∫f(x,y)dydx</code>
+<h4>&bull; &nbsp; <a name=integral2 href=#m><code>integral2(f, {g<sub>1</sub>, g<sub>2</sub>}, {a, b})</code></a></h4>
+<p>Apply 12-point <a href=examples/gauss_quadrature_by_legendre_polynomial.lua target="_blank">Gauss quadrature</a>
+to numerically evaluate the double integral, <code>∫∫f(x,y)dydx</code>
 over a region <code>{(x,y) | y&in;[g<sub>1</sub>(x),g<sub>2</sub>(x)], x&in;[a,b]}</code>.</p>
 <p>For better accuracy, a large interval in both the <code>x</code> and <code>y</code> directions is
 divided evenly into multiple subintervals, and Gauss quadrature method is applied to each one.
@@ -1675,25 +1672,25 @@ over all x and y-simple regions.
 <pre><code>mathly = require('mathly')
 
 -- ∫∫f(x,y)dydx:
-disp(integral2('@(x, y) x + y', 0, 1, 0, 1))
+disp(integral2('@(x, y) x + y', {0, 1}, {0, 1}))
 -- 1.0 (exact: 1)
-disp(integral2('@(x, y) x * y', '@(x) x', '@(x) 2*x', 0, 1))
+disp(integral2('@(x, y) x * y', {'@(x) x', '@(x) 2*x'}, {0, 1}))
 -- 0.375 (exact: 3/8 = 0.375)
-disp(integral2('@(x, y) x + 2*y', '@(x) 2 * x^2', '@(x) 1 + x^2', -1, 1))
+disp(integral2('@(x, y) x + 2*y', {'@(x) 2 * x^2', '@(x) 1 + x^2'}, {-1, 1}))
 -- 2.1333333333333 (exact: 32/15 = 2.1333333333333)
 
 -- ∫∫f(y,x)dxdy: here, z = 2x + 3y should be '@(y, x) 2*x + y' instead of '@(x, y) 2*x + y'
-disp(integral2('@(y, x) x^2 + y^2', '@(y) 0.5 * y', '@(y) sqrt(y)', 0, 4))
+disp(integral2('@(y, x) x^2 + y^2', {'@(y) 0.5 * y', '@(y) sqrt(y)'}, {0, 4}))
 -- 6.1714280951756 (exact: 216/35 = 6.1714285714286)
 
 -- with polar coordinates: ∫∫f(θ,r)drdθ
-disp(integral2('@(theta, r) r^3', 0, '@(theta) 2*cos(theta)', -pi/2, pi/2))
+disp(integral2('@(theta, r) r^3', {0, '@(theta) 2*cos(theta)'}, {-pi/2, pi/2}))
 -- 4.7123889803847 (exact: 3*pi/2 = 4.7123889803847)
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=integral3 href=#m><code>integral3(f, g1, g2, h1, h2, a, b)</code></a></h4>
-<p>Apply <a href=examples/gauss_quadrature_by_legendre_polynomial.lua target="_blank">Gauss quadrature</a>
-of 12 nodes to numerically evaluate the triple integral, <code>∫∫∫f(x,y,z)dzdydx</code> over a region
+<h4>&bull; &nbsp; <a name=integral3 href=#m><code>integral3(f, {g1, g2}, {h1, h2}, {a, b})</code></a></h4>
+<p>Apply 12-point <a href=examples/gauss_quadrature_by_legendre_polynomial.lua target="_blank">Gauss quadrature</a>
+to numerically evaluate the triple integral, <code>∫∫∫f(x,y,z)dzdydx</code> over a region
 <code>{(x,y,z) | z&in;[g<sub>1</sub>(x,y), g<sub>2</sub>(x,y)], y&in;[h<sub>1</sub>(x),h<sub>2</sub>(x)],
 x&in;[a,b]}</code>.</p>
 <p>For better accuracy, a large interval in all <code>x, y</code>, and <code>z</code> directions is
@@ -1707,17 +1704,17 @@ all x, y, and z-simple solids.</p>
 <pre><code>mathly = require('mathly')
 
 --- ∫∫∫f(x,y,z)dzdydx
-disp(integral3('@(x, y, z) 2*(x + y + z)', '@(x, y) x - y', '@(x, y) x + y', '@(x) x', '@(x) 2 * x', 0, 1))
+disp(integral3('@(x, y, z) 2*(x + y + z)', {'@(x, y) x - y', '@(x, y) x + y'}, {'@(x) x', '@(x) 2 * x'}, {0, 1}))
 -- 5.3333333333333 (exact value 16/3 = 5.3333333333333)
-disp(integral3('@(x, y, z) y*sin(x) + z*cos(x)', -1, 1, 0, 1, 0, pi))
+disp(integral3('@(x, y, z) y*sin(x) + z*cos(x)', {-1, 1}, {0, 1}, {0, pi}))
 -- 2.0 (exact value 2)
 
 -- ∫∫∫f(z,y,x)dxdydz: f(z,y,x) rather than f(x,y,z), i.e., f(x,y,z) = 2x - y + z should be written as f(z,y,x) = 2x - y + z.
-disp(integral3('@(z, y, x) 2*x - y', 0, '@(z, y) y - z', 0, '@(z) z^2', 0, 2))
+disp(integral3('@(z, y, x) 2*x - y', {0, '@(z, y) y - z'}, {0, '@(z) z^2'}, {0, 2}))
 -- 1.0666666666667 (exact: 16/15 = 1.0666666666667)
 
 -- with spherical coordinates: f(θ,φ,ρ): ∫∫∫f(θ,φ,ρ)dρdφdθ
-disp(integral3('@(theta, phi, rho) rho^2 * sin(phi)', 0, '@(theta, phi) cos(phi)', 0, pi/4, 0, 2*pi))
+disp(integral3('@(theta, phi, rho) rho^2 * sin(phi)', {0, '@(theta, phi) cos(phi)'}, {0, pi/4}, {0, 2*pi}))
 -- 0.39269908169872 (exact: pi/8 = 0.39269908169872)
 </code></pre>
 
