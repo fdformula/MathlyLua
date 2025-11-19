@@ -30,7 +30,7 @@ FUNCTIONS PROVIDED IN THIS MODULE
   dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
   oct2hex, hex2bin, hex2dec, hex2oct
 
-  cat, cd, dir, isdir, isfile, iswindows, ls, mv, pwd, rm
+  cat, isdir, isfile, iswindows, ls (or dir), mv, pwd, rm
 
   arc, circle, contourplot, directionfield, dotplot, line, parametriccurve2d, point,
   polarcurve2d, polygon, scatter, text, wedge; boxplot, freqpolygon, hist, hist1,
