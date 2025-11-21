@@ -57,6 +57,9 @@ opts = {
     width = 600, height = 500, square = false,
     title = 'Shooting method for y\\" = y + x(x - y), y(0) = 5, y(4) = -2 on [0, 4]<br>&rArr; Solved as w\' = y + x(x - y), w(0) = w<sub>0</sub> and y\' = w, y(0) = 5'
   },
-  enhancements = {{x = b, y = Yb, point = true, color = 'red', size = 8}}
+  enhancements = {
+    {x = b, y = Yb, point = true, color = 'red', size = 8},
+    {x = 1.2, y = -15, text = 'Note: The red point is the target.', size = 12}
+  }
 }
 manipulate(fstr, opts)
