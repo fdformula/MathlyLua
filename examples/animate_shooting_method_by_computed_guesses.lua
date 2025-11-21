@@ -1,8 +1,6 @@
 --
 -- animate solving y'' = y + x(x-y), y(0) = 5, y(4) = -2, x on [0, 4] by shooting method
 --
--- for demonstration only
---
 -- dwang@liberty.edu, 11/19/2014
 --
 a, b, Ya, Yb = 0.0, 4.0, 5.0, -2.0
