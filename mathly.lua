@@ -2639,7 +2639,7 @@ local function _anmt_parse_args(fstr, opts)
   local xr = opts.x or {-5, 5, 0.1}
   if type(xr) ~= 'table' or xr[1] >= xr[2] then error('Range of x is invalid.') end
 
-  local xexpr, yexpr, s
+  local xexpr, yexpr, s = nil, nil, ''
   if type(fstr) == 'string' then
     s = fstr
     xexpr = nil
@@ -2658,7 +2658,7 @@ local function _anmt_parse_args(fstr, opts)
     elseif type(fstr[1]) == 'table' then -- fstr = {{...}, {...}, ...}
       error(_anmt_act .. "(fstr, ...): fstr can't be a table of tables.")
     end
-  else
+  elseif fstr ~= nil then
     error(_anmt_act .. "(fstr, ...): fstr must be a string or a pair of strings.")
   end
   if type(opts.controls) == 'string' then
@@ -2672,7 +2672,7 @@ local function _anmt_parse_args(fstr, opts)
   end
 
   local jxexpr, jyexpr, tr = nil, nil, nil
-  jyexpr = _to_jscript_expr(yexpr)
+  if fstr ~= nil then jyexpr = _to_jscript_expr(yexpr) end
   if xexpr ~= nil then
     jxexpr = _to_jscript_expr(xexpr)
     if opts.t == nil or type(opts.t) ~= 'table' then
@@ -2748,19 +2748,20 @@ local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces =
 end -- _amnt_write_subtraces
 
 local function _amnt_write_traces(cs, opts, tr, file, xexpr, jxexpr, jyexpr, enhancements, resolution)
-  local fmt, trace = string.format, '{ '
-  if xexpr == nil then
-    trace = trace .. fmt("x: x, y: x.map(x => %s),", jyexpr)
-  else -- parametric eqs
-    trace = trace .. fmt("x: t.map(t => %s), y: t.map(t => %s),", jxexpr, jyexpr)
+  if jyexpr ~= nil then -- fstr is nil
+    local fmt, s = string.format, '{ '
+    if xexpr == nil then
+      s = s .. fmt("x: x, y: x.map(x => %s),", jyexpr)
+    else -- parametric eqs
+      s = s .. fmt("x: t.map(t => %s), y: t.map(t => %s),", jxexpr, jyexpr)
+    end
+    s = s .. " mode: 'lines', line: { simplify: false"
+    if opts.color ~= nil then s = s .. ", color: '" .. opts.color .. "'" end
+    if opts.width ~= nil then s = s .. ", width: " .. opts.width end
+    if opts.style ~= nil then s = s .. ", " .. opts.style end
+    s = s .. " }" .. _anmt_fill(opts.fill) .. " }"
+    file:write(fmt("  mthlyTraces.push(%s);\n", s))
   end
-  trace = trace .. " mode: 'lines', line: { simplify: false"
-  if opts.color ~= nil then trace = trace .. ", color: '" .. opts.color .. "'" end
-  if opts.width ~= nil then trace = trace .. ", width: " .. opts.width end
-  if opts.style ~= nil then trace = trace .. ", " .. opts.style end
-  trace = trace .. " }" .. _anmt_fill(opts.fill) .. " }" -- color: 'red'}
-  file:write(fmt("  mthlyTraces.push(%s);\n", trace))
-
   if type(enhancements) == 'table' then
     _amnt_write_subtraces(enhancements, tr, file, resolution)
   end
