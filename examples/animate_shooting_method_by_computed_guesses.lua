@@ -1,23 +1,23 @@
 --
--- animate solving y'' = y + x(x-y), y(0) = 5, y(4) = -2, x on [0, 4] by shooting method
+-- animate solving y'' = -2y + 5sqrt(x) + 2x - 5, y(0) = 1, y(5) = 2, x on [0, 5] by shooting method
 --
 -- dwang@liberty.edu, 11/19/2014
 --
-a, b, Ya, Yb = 0.0, 4.0, 5.0, -2.0
+a, b, Ya, Yb = 0.0, 5.0, 1.0, 2.0
 
 jcode = [[
 const a = %f, b = %f, Ya = %f, Yb = %f;
-const n = 100;
-const h = (b - a) / n, tol = 1e-14;
+const n = 300;
+const h = (b - a) / n, tol = 1e-15;
 
-function fw(x, y, w) { return y + x * (x - y); } // dw/dx = y + x(x-y); w(a) = ?
+function fw(x, y, w) { return -2*y + 5*Math.sqrt(x) + 2*x - 5; } // dw/dx = -2y + 5sqrt(x) + 2x - 5; w(a) = ?
 function fy(x, y, w) { return w; }       // dy/dx = w;      y(a) = Ya
 
 const x = []; // shared data x
 {var v = a; for (let i = 1; i <= n + 1; i++) { x.push(v); v += h; }}
 
 var w, y, E1, E2;
-var W1 = -5, W2 = 14; // the first 2 guesses of w(a)
+var W1 = -5, W2 = 0; // the first 2 guesses of w(a)
 
 function iterate() {
   for(let j = 0; j < I; j++) { // I? control
@@ -51,7 +51,7 @@ function iterate() {
       E1 = E2; E2 = E;
       W1 = W2; W2 = W;
     }
-    if (Math.abs(E) < tol) { return [W, j + 1, 0]; }
+    if (Math.abs(E) < tol) { return [W, y[n], j + 1]; }
   }
   // plot enough extra objects outside the graph so that no old traces will stay - ugly, but works!
   for (i = 0; i < 2*(mthlyIMax - mthlyIMin + 1) / mthlyIStep; i++) {
@@ -63,26 +63,27 @@ function iterate() {
 function displaytext() {
   let v = iterate();
   if (v.length == 3) {
-    return 'Found the numerical solution after ' + v[1] + ' attempts with w<sub>0</sub> = ' + v[0] + '.'
+    return 'Done after ' + v[2] + ' attempts with w<sub>0</sub> = ' + v[0] + ' & y(5) = ' + v[1] + '.'
   } else {
-    return 'w<sub>0</sub> = ' + v[0] + ', y(b) = ' + v[1] + ' (Yb = ' + Yb + ')';
+    return 'w<sub>0</sub> = ' + v[0] + ', y(5) = ' + v[1] + ' (Yb = ' + Yb + ')';
   }
 }
 ]]
 
 fstr = nil -- no simple analytical solution to be plotted
 opts = {
-  I = {1, 40, 1, label = 'Guess No.'}, x = {-0.1, 4.1}, y = {-20, 40}, controls = 'I',
+  I = {1, 20, 1, label = 'Guess No.'}, x = {-0.1, 5.1}, y = {-10, 18}, controls = 'I',
   javascript = string.format(jcode, a, b, Ya, Yb, b),
   layout = {
     width = 600, height = 500, square = false,
-    title = 'Shooting method for y\\" = y + x(x - y), y(0) = 5, y(4) = -2 on [0, 4]<br>&rArr; Solved as w\' = y + x(x - y), w(0) = w<sub>0</sub> and y\' = w, y(0) = 5'
+    title = 'Shooting method for y\\" = -2y + 5sqrt(x) + 2x - 5, y(0) = 1, y(5) = 2 on [0, 5]<br>&rArr; Solved as w\' = -2y + 5sqrt(x) + 2x - 5, w(0) = w<sub>0</sub> and y\' = w, y(0) = 1'
   },
   enhancements = {
-    {x = b, y = Yb, point = true, color = 'red', size = 8},
-    {x = 1.7, y = -11, text = 'Note: The red point is the target, and a new guess is a', size = 12},
-    {x = 1.95, y = -14, text = 'linear function of the errors at x = 4 corresponding', size = 12},
-    {x = 1.24, y = -17, text = 'to the previous 2 guesses.', size = 12}
+    {x = b, y = Yb, point = true, color = 'red', size = 10},
+    {x = 3.6, y = -3, text = 'Note: The red point is the target, and a', size = 12},
+    {x = 3.8, y = -4.5, text = 'new guess is a linear function of', size = 12},
+    {x = 3.85, y = -6, text = 'the errors at x = 5 corresponding', size = 12},
+    {x = 3.6, y = -7.5, text = 'to the previous 2 guesses.', size = 12}
   }
 }
 manipulate(fstr, opts)
