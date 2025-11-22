@@ -407,7 +407,7 @@ Each control is a single letter, <code>a, b, ..., z, A, B, ...</code>, or <code>
 and <code>Y</code>. For example, <code>a, h</code>, and <code>k</code> are controls in
 <code>f(x) = a (x - h)^2 + k</code> for exploring the variation of the parabola as they change.</p>
 <p><code>fstr</code> must be a string for <code>y = f(x)</code> or a pair of strings for a parametric curve. The string(s) must be a function in the <a href=#easyf>shortcut string format</a>. <em><code>fstr</code> can also be <code>nil</code>,
-if all graphic elements are plotted through JavaScript and/or the <code>enhancements</code> field</em> (see <a href=examples/animate_shooting_method_by_guesses.lua target="_blank">animate_shooting_method_by_guesses.lua</a>).</p>
+if all graphic elements are plotted through JavaScript and/or the <code>enhancements</code> field</em> (e.g., <a href=examples/animate_shooting_method_by_guesses.lua target="_blank">animate_shooting_method_by_guesses.lua</a>).</p>
 <p>The <code>opts</code> is a table of tables, used to define the ranges of <code>x, y</code>, and <code>t</code>, etc. You may include optional <code>enhancements</code> in it to improve the effect of an animation. An enhancement is
 actually a simple graphics object here, i.e., a line, a point, a text, or a parametric curve, of which the properties, <code>color, size, width</code>, whenever applicable, can be specified.
 If more properties are needed, define them through field <code>style</code> in a string, such as <code>style = "symbol: 'diamond', line: { color: 'rgb(0, 0, 0)', width: 2 }"</code> for a point. You may search keywords like
@@ -1983,7 +1983,8 @@ manipulate(fstr, opts)
 <li><a href=examples/animate_definite_integral.lua target="_blank">Definite integral of <code>f(x)</code> on <code>[a, b]</code></a></li>
 <li><a href=examples/animate_double_integral.lua target="_blank">Double integral of <code>f(x, y)</code> over <code>[a, b] x [c, d]</code></a></li>
 <li><a href=examples/animate_euler's_method_for_y'=f(x,y),y(x0)=y0.lua target="_blank">Euler's method for first-order initial-value problems</a></li>
-<li><a href=examples/animate_shooting_method_by_guesses.lua target="_blank">Shooting method for second-order initial-value problems</a>).</li>
+<li><a href=examples/animate_shooting_method_by_guesses.lua target="_blank">Shooting method for second-order initial-value problems by guesses (for demonstration)</a>.</li>
+<li><a href=examples/animate_shooting_method_by_computed_guesses.lua target="_blank">Shooting method for second-order initial-value problems by computing guesses</a>.</li>
 <li><a href=examples/animate_matrix_operators_on_graph.lua target="_blank">Matrix operators on the graph of <code>f(x)</code></a></li>
 </ol>
 
