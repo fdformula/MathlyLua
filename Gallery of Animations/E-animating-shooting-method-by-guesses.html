@@ -25,17 +25,17 @@ input:focus {outline: none;}
 </style>
 </head>
 <body>
-<div id="mathlyDiv" style="width:600px;height:500px;display:inline-block;top:50px;position:absolute;"></div>
+<div id="mathlyDiv" style="width:600px;height:600px;display:inline-block;top:50px;position:absolute;"></div>
 <span id='title' style="width:600px;left:0px;display:block;text-align:center;">&nbsp;</span>
 <!-- controls -->
 <button type="button" title="Previous value" onclick="mthlyINext(-1)" style="width:48px;left:412px;top:60px;position:absolute">Prev</button>
 <button type="button" title="Next value" onclick="mthlyINext(1)" style="width:48px;left:463px;top:60px;position:absolute">Next</button>
 <label for="mthlySldrI" style='top:60px;'>Guess No.:</label>
-<input type="range" id="mthlySldrI" min="1" max="20" value="1" style='left:136px;top:60px;' step="1"></input><span id="mthlySldrIvalue" style="left:357px;top:60px;position:absolute">&nbsp;</span>
+<input type="range" id="mthlySldrI" min="1" max="12" value="1" style='left:136px;top:60px;' step="1"></input><span id="mthlySldrIvalue" style="left:357px;top:60px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:90px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
 function displaytext() { return ""; } // to be overwritten
-function displaytitle() { return "Shooting method for y\" = y + x(x - y), y(0) = 5, y(4) = -2 on [0, 4]<br>&rArr; Solved as w' = y + x(x - y), w(0) = w<sub>0</sub> and y' = w, y(0) = 5"; }
+function displaytitle() { return "Shooting method for y\" = -2y + 5sqrt(x) + 2x - 5, y(0) = 1, y(5) = 2 on [0, 5]<br>&rArr; Solved as w' = -2y + 5sqrt(x) + 2x - 5, w(0) = w<sub>0</sub> and y' = w, y(0) = 1"; }
 var x = [], t = [], X, Y, T, p;
 function mthlyINext(x) {
   x = I + x*mthlyIStep;
@@ -50,8 +50,8 @@ function mthlyINext(x) {
 }
 
 const mthlyLayout = {
-  xaxis: { range: [-0.1, 4.1]}, // plot with fixed axes
-  yaxis: { range: [-20, 40] },
+  xaxis: { range: [-0.1, 5.1]}, // plot with fixed axes
+  yaxis: { range: [-17, 25] },
   showlegend: false
 };
 
@@ -59,27 +59,27 @@ var mthlySldrI = document.getElementById('mthlySldrI');
 mthlySldrI.value = 1;
 var I = 1;
 p = 1;
-for (let i = -0.1; i <= p * (4.1 + 0.1) - 0.1; i += 0.0084) { x.push(i); }; t = x;
+for (let i = -0.1; i <= p * (5.1 + 0.1) - 0.1; i += 0.0104) { x.push(i); }; t = x;
 
 var mthlyTraces = [];
-const mthlyxMin = -0.1, mthlyxMax = 4.1, mthlyxStep = 1;
-const mthlyyMin = -20, mthlyyMax = 40;
-const mthlytMin = -0.1, mthlytMax = 4.1, mthlytStep = 1;
-const mthlyIMin = 1, mthlyIMax = 20, mthlyIStep = 1;
+const mthlyxMin = -0.1, mthlyxMax = 5.1, mthlyxStep = 1;
+const mthlyyMin = -17, mthlyyMax = 25;
+const mthlytMin = -0.1, mthlytMax = 5.1, mthlytStep = 1;
+const mthlyIMin = 1, mthlyIMax = 12, mthlyIStep = 1;
 
 function mthlyUpdateTraces() {
   mthlyTraces = [];
 
   // vvvvv user's javascript vvvvv
-const a = 0.000000, b = 4.000000, Ya = 5.000000, Yb = -2.000000;
-const n = 100;
+const a = 0.000000, b = 5.000000, Ya = 1.000000, Yb = 2.000000;
+const n = 200;
 const h = (b - a) / n, tol = 1e-14;
 
-function fw(x, y, w) { return y + x * (x - y); } // dw/dx = y + x(x-y); w(a) = ?
+function fw(x, y, w) { return -2*y + 5*Math.sqrt(x) + 2*x - 5; } // dw/dx = -2y + 5sqrt(x) + 2x - 5; w(a) = ?
 function fy(x, y, w) { return w; }       // dy/dx = w;      y(a) = Ya
 
 const guesses = [];
-for (let i = -5; i <= 14; i++) { guesses.push(i); }
+for (let i = -20; i <= 2; i += 2) { guesses.push(i); }
 
 const x = []; // shared data x
 {var v = a; for (let i = 1; i <= n + 1; i++) { x.push(v); v += h; }}
@@ -97,7 +97,7 @@ function iterate() {
       // w[I] = w[i] + 0.5 * (fwv + fw(x[I], y[I], w[I])) * h;
     }
     mthlyTraces.push({ x: x, y: y, mode: 'lines', line: { simplify: false, width: (j == I - 1)? 4 : 1 }, fill: 'none' });
-    mthlyTraces.push({ x: [4.000000], y: [y[n] ], mode: 'markers', marker: { color: 'grey', size: 6 } });
+    mthlyTraces.push({ x: [5.000000], y: [y[n] ], mode: 'markers', marker: { color: 'grey', size: 5 } });
   }
   // plot enough extra objects outside the graph so that no old traces will stay - ugly, but works!
   for (i = 0; i < 2*(mthlyIMax - mthlyIMin + 1) / mthlyIStep; i++) {
@@ -112,8 +112,8 @@ function displaytext() {
 }
   // ^^^^^ user's javascript ^^^^^
 
-  mthlyTraces.push({ x: [4.0], y: [-2.0], mode: 'markers', marker: { color: 'red', size: 8.000000  } });
-  mthlyTraces.push({ x: [1.2], y: [-15], text: 'Note: The red point is the target.', mode: 'text', type: 'scatter', textposition: 'bottom center', name: '', textfont: { color: 'black', size: 12.000000  } });
+  mthlyTraces.push({ x: [5.0], y: [2.0], mode: 'markers', marker: { color: 'red', size: 8.000000  } });
+  mthlyTraces.push({ x: [3.7], y: [-14], text: 'Note: The red point is the target.', mode: 'text', type: 'scatter', textposition: 'bottom center', name: '', textfont: { color: 'black', size: 12.000000  } });
   document.getElementById("displaytext").innerHTML = displaytext();
   document.getElementById("title").innerHTML = displaytitle();
 }

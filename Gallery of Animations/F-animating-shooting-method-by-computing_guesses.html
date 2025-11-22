@@ -31,11 +31,11 @@ input:focus {outline: none;}
 <button type="button" title="Previous value" onclick="mthlyINext(-1)" style="width:48px;left:412px;top:60px;position:absolute">Prev</button>
 <button type="button" title="Next value" onclick="mthlyINext(1)" style="width:48px;left:463px;top:60px;position:absolute">Next</button>
 <label for="mthlySldrI" style='top:60px;'>Guess No.:</label>
-<input type="range" id="mthlySldrI" min="1" max="40" value="1" style='left:136px;top:60px;' step="1"></input><span id="mthlySldrIvalue" style="left:357px;top:60px;position:absolute">&nbsp;</span>
+<input type="range" id="mthlySldrI" min="1" max="20" value="1" style='left:136px;top:60px;' step="1"></input><span id="mthlySldrIvalue" style="left:357px;top:60px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:90px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
 function displaytext() { return ""; } // to be overwritten
-function displaytitle() { return "Shooting method for y\" = y + x(x - y), y(0) = 5, y(4) = -2 on [0, 4]<br>&rArr; Solved as w' = y + x(x - y), w(0) = w<sub>0</sub> and y' = w, y(0) = 5"; }
+function displaytitle() { return "Shooting method for y\" = -2y + 5sqrt(x) + 2x - 5, y(0) = 1, y(5) = 2 on [0, 5]<br>&rArr; Solved as w' = -2y + 5sqrt(x) + 2x - 5, w(0) = w<sub>0</sub> and y' = w, y(0) = 1"; }
 var x = [], t = [], X, Y, T, p;
 function mthlyINext(x) {
   x = I + x*mthlyIStep;
@@ -50,8 +50,8 @@ function mthlyINext(x) {
 }
 
 const mthlyLayout = {
-  xaxis: { range: [-0.1, 4.1]}, // plot with fixed axes
-  yaxis: { range: [-20, 40] },
+  xaxis: { range: [-0.1, 5.1]}, // plot with fixed axes
+  yaxis: { range: [-10, 18] },
   showlegend: false
 };
 
@@ -59,30 +59,30 @@ var mthlySldrI = document.getElementById('mthlySldrI');
 mthlySldrI.value = 1;
 var I = 1;
 p = 1;
-for (let i = -0.1; i <= p * (4.1 + 0.1) - 0.1; i += 0.0084) { x.push(i); }; t = x;
+for (let i = -0.1; i <= p * (5.1 + 0.1) - 0.1; i += 0.0104) { x.push(i); }; t = x;
 
 var mthlyTraces = [];
-const mthlyxMin = -0.1, mthlyxMax = 4.1, mthlyxStep = 1;
-const mthlyyMin = -20, mthlyyMax = 40;
-const mthlytMin = -0.1, mthlytMax = 4.1, mthlytStep = 1;
-const mthlyIMin = 1, mthlyIMax = 40, mthlyIStep = 1;
+const mthlyxMin = -0.1, mthlyxMax = 5.1, mthlyxStep = 1;
+const mthlyyMin = -10, mthlyyMax = 18;
+const mthlytMin = -0.1, mthlytMax = 5.1, mthlytStep = 1;
+const mthlyIMin = 1, mthlyIMax = 20, mthlyIStep = 1;
 
 function mthlyUpdateTraces() {
   mthlyTraces = [];
 
   // vvvvv user's javascript vvvvv
-const a = 0.000000, b = 4.000000, Ya = 5.000000, Yb = -2.000000;
-const n = 100;
-const h = (b - a) / n, tol = 1e-14;
+const a = 0.000000, b = 5.000000, Ya = 1.000000, Yb = 2.000000;
+const n = 300;
+const h = (b - a) / n, tol = 1e-15;
 
-function fw(x, y, w) { return y + x * (x - y); } // dw/dx = y + x(x-y); w(a) = ?
+function fw(x, y, w) { return -2*y + 5*Math.sqrt(x) + 2*x - 5; } // dw/dx = -2y + 5sqrt(x) + 2x - 5; w(a) = ?
 function fy(x, y, w) { return w; }       // dy/dx = w;      y(a) = Ya
 
 const x = []; // shared data x
 {var v = a; for (let i = 1; i <= n + 1; i++) { x.push(v); v += h; }}
 
 var w, y, E1, E2;
-var W1 = -5, W2 = 14; // the first 2 guesses of w(a)
+var W1 = -5, W2 = 0; // the first 2 guesses of w(a)
 
 function iterate() {
   for(let j = 0; j < I; j++) { // I? control
@@ -106,7 +106,7 @@ function iterate() {
     }
     const E = y[n] - Yb;
     mthlyTraces.push({ x: x, y: y, mode: 'lines', line: { simplify: false, width: (Math.abs(E) < tol || j == I - 1)? 4 : 1 }, fill: 'none' });
-    mthlyTraces.push({ x: [4.000000], y: [y[n] ], mode: 'markers', marker: { color: 'grey', size: 6 } });
+    mthlyTraces.push({ x: [5.000000], y: [y[n] ], mode: 'markers', marker: { color: 'grey', size: 6 } });
 
     if (j == 0) {
       E1 = E;
@@ -116,7 +116,7 @@ function iterate() {
       E1 = E2; E2 = E;
       W1 = W2; W2 = W;
     }
-    if (Math.abs(E) < tol) { return [W, j + 1, 0]; }
+    if (Math.abs(E) < tol) { return [W, y[n], j + 1]; }
   }
   // plot enough extra objects outside the graph so that no old traces will stay - ugly, but works!
   for (i = 0; i < 2*(mthlyIMax - mthlyIMin + 1) / mthlyIStep; i++) {
@@ -128,17 +128,18 @@ function iterate() {
 function displaytext() {
   let v = iterate();
   if (v.length == 3) {
-    return 'Found the numerical solution after ' + v[1] + ' attempts with w<sub>0</sub> = ' + v[0] + '.'
+    return 'Done after ' + v[2] + ' attempts with w<sub>0</sub> = ' + v[0] + ' & y(5) = ' + v[1] + '.'
   } else {
-    return 'w<sub>0</sub> = ' + v[0] + ', y(b) = ' + v[1] + ' (Yb = ' + Yb + ')';
+    return 'w<sub>0</sub> = ' + v[0] + ', y(5) = ' + v[1] + ' (Yb = ' + Yb + ')';
   }
 }
   // ^^^^^ user's javascript ^^^^^
 
-  mthlyTraces.push({ x: [4.0], y: [-2.0], mode: 'markers', marker: { color: 'red', size: 8.000000  } });
-  mthlyTraces.push({ x: [1.7], y: [-11], text: 'Note: The red point is the target, and a new guess is a', mode: 'text', type: 'scatter', textposition: 'bottom center', name: '', textfont: { color: 'black', size: 12.000000  } });
-  mthlyTraces.push({ x: [1.95], y: [-14], text: 'linear function of the errors at x = 4 corresponding', mode: 'text', type: 'scatter', textposition: 'bottom center', name: '', textfont: { color: 'black', size: 12.000000  } });
-  mthlyTraces.push({ x: [1.24], y: [-17], text: 'to the previous 2 guesses.', mode: 'text', type: 'scatter', textposition: 'bottom center', name: '', textfont: { color: 'black', size: 12.000000  } });
+  mthlyTraces.push({ x: [5.0], y: [2.0], mode: 'markers', marker: { color: 'red', size: 10.000000  } });
+  mthlyTraces.push({ x: [3.6], y: [-3], text: 'Note: The red point is the target, and a', mode: 'text', type: 'scatter', textposition: 'bottom center', name: '', textfont: { color: 'black', size: 12.000000  } });
+  mthlyTraces.push({ x: [3.8], y: [-4.5], text: 'new guess is a linear function of', mode: 'text', type: 'scatter', textposition: 'bottom center', name: '', textfont: { color: 'black', size: 12.000000  } });
+  mthlyTraces.push({ x: [3.85], y: [-6], text: 'the errors at x = 5 corresponding', mode: 'text', type: 'scatter', textposition: 'bottom center', name: '', textfont: { color: 'black', size: 12.000000  } });
+  mthlyTraces.push({ x: [3.6], y: [-7.5], text: 'to the previous 2 guesses.', mode: 'text', type: 'scatter', textposition: 'bottom center', name: '', textfont: { color: 'black', size: 12.000000  } });
   document.getElementById("displaytext").innerHTML = displaytext();
   document.getElementById("title").innerHTML = displaytitle();
 }
