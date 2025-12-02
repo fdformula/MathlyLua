@@ -424,7 +424,9 @@ a string, such as <code>'2*X - a * Y + k'</code>. They are global variables acce
 <li>Each control is a global variable accessible to JavaScript code. In addition, the global variable <code>mthlyTraces</code>, an array of traces to be shown on the graph, and the global constants
 like <code>mthlyxMin, mthlyxMax, mthlyxStep, mthlyyMin, mthlyyMax, mthlytMin, mthlytMax, mthlytStep, mthly&lt;c&gt;Min</code>, <code>mthly&lt;c&gt;Max</code>, and <code>mthly&lt;c&gt;Step</code>,
 the lowest and largest values and the step size of <code>x, y, t</code> and each control <code>&lt;c&gt;</code>, respectively, on the graph, are all accessible to JavaScript code. Note: <code>mthlyyStep</code>
-is not defined.</li>
+is not defined.<p></p>
+Users may use the following predefined global variables for their own needs, including improving the performance of JavaScript code. They are <code>mthlyGlobal</code> and <code>mthlyGlobal1 ~ mthlyGlobal6</code>,
+each initialized to <code>[]</code>, i.e., say, <code>mthlyGlobal3.length == 0</code>. See <a href=examples/animate-taylor-series_sine target="_blanl">animate-taylor-series_sine.lua</a>.<p></p></li>
 <li>All controls can be specified in <code>opts.controls</code> like <code>'ahk'</code>, <code>'a, h, k'</code>, <code>'a h, k'</code>, etc. If the field, <code>controls</code>, is not specified,
 they will be recognized automatically from the string expression of <code>y = f(x)</code> or parametric equations in <code>fstr</code> in the order they occur.</li>
 <li>With a control, field <code>default</code> defines the initial value of the control. If not provided, it defaults to <code>start</code>.<br><br></li>
@@ -522,6 +524,10 @@ variables and functions defined in the JavaScript code.</p>
 </ol>
 <p>See detailed examples below:</p>
 <ol>
+<li><a href=examples\animate-taylor-series_exp.lua target="_blank">Using Taylor series to animate <em>e<sup>x</sup></em> </a></li>
+<li><a href=examples\animate-taylor-series_natural_base.lua target="_blank">Using Taylor series to approximate <em>e</em></a></li>
+<li><a href=examples\animate-taylor-series_sine.lua target="_blank">Using Taylor series to animate <em>sin</em>(<em>x</em>)</a></li>
+<p></p>
 <li><a href=examples/animate_stick_endpoints.lua target="_blank">Animating one end of a stick of which the other end moves along a circle</a></li>
 <li><a href=examples/animate_osculating_circle_1.lua target="_blank">Animating osculating circle of <code>y=sin(x)</code></a></li>
 <li><a href=examples/animate_osculating_circle_2.lua target="_blank">Animating osculating circle of <code>y=x<sup>2</sup></code></a></li>

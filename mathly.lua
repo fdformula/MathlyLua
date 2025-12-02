@@ -2854,7 +2854,7 @@ input:focus {outline: none;}
 <script type="text/javascript">
 function displaytext() { return ""; } // to be overwritten
 function displaytitle() { return "%s"; }
-var x = [], t = [], X, Y, T, p;
+var x = [], t = [], X, Y, T, p, mthlyGlobal = [], mthlyGlobal1 = [], mthlyGlobal2 = [], mthlyGlobal3 = [], mthlyGlobal4 = [], mthlyGlobal5 = [];
 ]], title or ''))
   for i = qq(_anmt_animateq, 2, 1), #cs do
     file:write(fmt([[
