@@ -3,7 +3,7 @@
 <head>
  <meta charset="utf-8">
  <title>Mathly Function Animation</title>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+ <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <style>
 label {
  display: inline-block;
@@ -25,13 +25,13 @@ input:focus {outline: none;}
 </style>
 </head>
 <body>
-<div id="mathlyDiv" style="width:400px;height:600px;display:inline-block;top:50px;position:absolute;"></div>
-<span id='title' style="width:400px;left:0px;display:block;text-align:center;">&nbsp;</span>
+<div id="mathlyDiv" style="width:500px;height:500px;display:inline-block;top:50px;position:absolute;"></div>
+<span id='title' style="width:500px;left:0px;display:block;text-align:center;">&nbsp;</span>
 <!-- controls -->
 <button type="button" title="Previous value" onclick="mthlyINext(-1)" style="width:48px;left:508px;top:60px;position:absolute">Prev</button>
 <button type="button" title="Next value" onclick="mthlyINext(1)" style="width:48px;left:559px;top:60px;position:absolute">Next</button>
 <label for="mthlySldrI" style='top:60px;'>Number of first terms:</label>
-<input type="range" id="mthlySldrI" min="2" max="53" value="2" style='left:232px;top:60px;' step="1"></input><span id="mthlySldrIvalue" style="left:453px;top:60px;position:absolute">&nbsp;</span>
+<input type="range" id="mthlySldrI" min="2" max="41" value="2" style='left:232px;top:60px;' step="1"></input><span id="mthlySldrIvalue" style="left:453px;top:60px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:90px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
 function displaytext() { return ""; } // to be overwritten
@@ -50,8 +50,8 @@ function mthlyINext(x) {
 }
 
 const mthlyLayout = {
-  xaxis: { range: [-20, 5]}, // plot with fixed axes
-  yaxis: { range: [-5, 100] },
+  xaxis: { range: [-15, 5]}, // plot with fixed axes
+  yaxis: { range: [-5, 15] },
   showlegend: false
 };
 
@@ -59,19 +59,19 @@ var mthlySldrI = document.getElementById('mthlySldrI');
 mthlySldrI.value = 2;
 var I = 2;
 p = 1;
-for (let i = -20; i <= p * (5 + 20) - 20; i += 0.05) { x.push(i); }; t = x;
+for (let i = -15; i <= p * (5 + 15) - 15; i += 0.04) { x.push(i); }; t = x;
 
 var mthlyTraces = [];
-const mthlyxMin = -20, mthlyxMax = 5, mthlyxStep = 1;
-const mthlyyMin = -5, mthlyyMax = 100;
-const mthlytMin = -20, mthlytMax = 5, mthlytStep = 1;
-const mthlyIMin = 2, mthlyIMax = 53, mthlyIStep = 1;
+const mthlyxMin = -15, mthlyxMax = 5, mthlyxStep = 1;
+const mthlyyMin = -5, mthlyyMax = 15;
+const mthlytMin = -15, mthlytMax = 5, mthlytStep = 1;
+const mthlyIMin = 2, mthlyIMax = 41, mthlyIStep = 1;
 
 function mthlyUpdateTraces() {
   mthlyTraces = [];
 
   // vvvvv user's javascript vvvvv
-const maxI = 53;
+const maxI = 41;
 function taylorCoeffs() { // coefficients of the first maxI terms of the Taylor series
   // mthlyGlobal = []; // unnecessary
   var factorial = 1;
