@@ -34,7 +34,7 @@ It provides a group of commonly used MATLAB functions and features, including <c
 <code><a href=#rand>rand</a></code>, <code><a href=#save>save</a></code>, <code><a href=#plot>plot</a></code>, <code><a href=#plot3d>plot3d</a></code>, and
 convenient matrix operations as well. If there is anything many love the most about MATLAB, these tools are. They make
 coding and testing a thought/algorithm much easier and faster than working in most other programming languages. Besides, <a href=#animate><code>animate</code></a>
-and <a href=#manipulate><code>manipulate</code></a> allow easy and cool animation of the graph of a single-variable function or a parametric 2D curve.</p>
+and <a href=#manipulate><code>manipulate</code></a> allow easy and cool animation of 2D curves.</p>
 
 <p>Mathly uses <a href="https://plotly.com/javascript/" target="_blank">Plotly JavaScript graphing library</a> to plot graphs. Therefore, graphs are shown in an internet browser.</p>
 
@@ -425,7 +425,7 @@ a string, such as <code>'2*X - a * Y + k'</code>. They are global variables acce
 like <code>mthlyxMin, mthlyxMax, mthlyxStep, mthlyyMin, mthlyyMax, mthlytMin, mthlytMax, mthlytStep, mthly&lt;c&gt;Min</code>, <code>mthly&lt;c&gt;Max</code>, and <code>mthly&lt;c&gt;Step</code>,
 the lowest and largest values and the step size of <code>x, y, t</code> and each control <code>&lt;c&gt;</code>, respectively, on the graph, are all accessible to JavaScript code. Note: <code>mthlyyStep</code>
 is not defined.<p></p>
-Users may use the following predefined global variables for their own needs, including improving the performance of JavaScript code. They are <code>mthlyGlobal</code> and <code>mthlyGlobal1 ~ mthlyGlobal6</code>,
+Users may use the following predefined global variables in JavaScript code for their own needs, including improving the performance of JavaScript code. They are <code>mthlyGlobal</code> and <code>mthlyGlobal1 ~ mthlyGlobal6</code>,
 each initialized to <code>[]</code>, i.e., say, <code>mthlyGlobal3.length == 0</code>. See <a href=examples/animate-taylor-series_sine.lua target="_blank">animate-taylor-series_sine.lua</a>.<p></p></li>
 <li>All controls can be specified in <code>opts.controls</code> like <code>'ahk'</code>, <code>'a, h, k'</code>, <code>'a h, k'</code>, etc. If the field, <code>controls</code>, is not specified,
 they will be recognized automatically from the string expression of <code>y = f(x)</code> or parametric equations in <code>fstr</code> in the order they occur.</li>
@@ -524,10 +524,6 @@ variables and functions defined in the JavaScript code.</p>
 </ol>
 <p>See detailed examples below:</p>
 <ol>
-<li><a href=examples\animate-taylor-series_exp.lua target="_blank">Using Taylor series to animate <em>e<sup>x</sup></em> </a></li>
-<li><a href=examples\animate-taylor-series_natural_base.lua target="_blank">Using Taylor series to approximate <em>e</em></a></li>
-<li><a href=examples\animate-taylor-series_sine.lua target="_blank">Using Taylor series to animate <em>sin</em>(<em>x</em>)</a></li>
-<p></p>
 <li><a href=examples/animate_stick_endpoints.lua target="_blank">Animating one end of a stick of which the other end moves along a circle</a></li>
 <li><a href=examples/animate_osculating_circle_1.lua target="_blank">Animating osculating circle of <code>y=sin(x)</code></a></li>
 <li><a href=examples/animate_osculating_circle_2.lua target="_blank">Animating osculating circle of <code>y=x<sup>2</sup></code></a></li>
@@ -1980,6 +1976,10 @@ manipulate(fstr, opts)
 
 <p>See more animation examples:</p>
 <ol>
+<li><a href=examples\animate-taylor-series_exp.lua target="_blank">Using Taylor series to approximate <em>e<sup>x</sup></em> </a></li>
+<li><a href=examples\animate-taylor-series_natural_base.lua target="_blank">Using Taylor series to approximate <em>e</em></a></li>
+<li><a href=examples\animate-taylor-series_sine.lua target="_blank">Using Taylor series to approximate <em>sin</em>(<em>x</em>)</a></li>
+<p></p>
 <li><a href=examples/newton_method_for_root.lua target="_blank">Newton's method for solving <code>f(x) = 0</code></a></li>
 <li><a href=examples/secant_method_for_root.lua target="_blank">Secant method for solving <code>f(x) = 0</code></a></li>
 <li><a href=examples/midpoint_method_for_root.lua target="_blank">Midpoint method for solving <code>f(x) = 0</code></a></li>
