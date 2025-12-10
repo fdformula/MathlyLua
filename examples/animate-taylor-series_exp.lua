@@ -42,14 +42,14 @@ function displaytext() {
 }
 ]]
 
-maxI = 53
+maxI = 41
 
 fstr = '@(x) exp(x)'
 opts = {
-  I = {2, maxI, 1, label = 'Number of first terms'}, x = {-20, 5}, y = {-5, 100}, width = 3, controls = 'I',
+  I = {2, maxI, 1, label = 'Number of first terms'}, x = {-15, 5}, y = {-5, 15}, width = 3, controls = 'I',
   javascript = string.format(jcode, maxI),
   layout = {
-    width = 400, height = 600, square = false,
+    width = 500, height = 500, square = false,
     title = 'Approximating <em>e<sup>x</sup></em>'
   },
   enhancements = {
