@@ -33,4 +33,4 @@ opts = {
   }
 }
 manipulate(fstr, opts)
--- round-off errors are noticeable when using 18 or more terms
+
