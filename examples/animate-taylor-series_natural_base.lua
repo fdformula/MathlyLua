@@ -26,7 +26,7 @@ opts = {
   javascript = jcode,
   layout = {
     width = 600, height = 400, square = false,
-    title = 'Approximate Value of the Natural Base, <em>e</em>'
+    title = 'Taylor Series: Approximating Value of the Natural Base, <em>e</em>'
   },
   enhancements = {
     {x = {0, maxI}, y = {e, e}, line = true, width = 1, color = 'red', style = "dash: 'dot'"},
