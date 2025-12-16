@@ -3,6 +3,8 @@
 --
 -- dwang@liberty.edu, 12/1/2025
 --
+mathly = require('mathly')
+
 jcode = [[
 const maxI = %d;
 function taylorCoeffs() { // coefficients of the first maxI terms of the Taylor series

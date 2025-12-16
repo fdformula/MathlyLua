@@ -3,6 +3,8 @@
 --
 -- dwang@liberty.edu, 11/19/2014
 --
+mathly = require('mathly')
+
 a, b, Ya, Yb = 0.0, 5.0, 1.0, 2.0
 
 jcode = [[

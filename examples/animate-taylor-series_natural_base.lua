@@ -3,6 +3,8 @@
 --
 -- dwang@liberty.edu, 12/1/2025
 --
+mathly = require('mathly')
+
 jcode = [[
 function displaytext() {
   var x = [], y = [];

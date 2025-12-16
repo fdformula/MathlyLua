@@ -2,6 +2,8 @@
 -- animating Euler's method for y' = f(x,y); y(x0) = y0 on [a, b], i.e., [x0, b]
 -- by David Wang, dwang@liberty.edu, on 11/06/2025 Thursday
 --
+mathly = require('mathly')
+
 jscode = [[
   function f(x, y) { return %s; }
   const a = %f, b = %f;

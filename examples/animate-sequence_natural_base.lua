@@ -1,8 +1,10 @@
 --
 -- 'animate' value of Taylor series of e^x = ∑x^n/n!, n = 0, 1, 2, ..., at x = 1
 --
--- dwang@liberty.edu, 12/1/2025
+-- dwang@liberty.edu, 12/12/2025
 --
+mathly = require('mathly')
+
 jcode = [[
 function displaytext() {
   var x = [], y = [];
