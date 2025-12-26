@@ -1,9 +1,5 @@
 ## CudaText is a very good "IDE" customized for Lua + Mathly
 
-&rArr; Microsoft Windows users may download on this very page the file, `cudatext-for-mathly-win-*.7z`. It includes a text editor, CudaText, with Lua 5.4.8 and
-Mathly integrated. Run [7zip](https://7-zip.org/) to extract it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder,
-`C:\cygwin`</em>.
-
 [CudaText](https://cudatext.github.io/) is a very good "IDE" for Lua + Mathly.
 Quite a few CudaText plugins are included. Some are customized and even have new features added. While in CudaText, press
 ```
@@ -23,6 +19,10 @@ CudaText detects and selects the very language according to the extension of the
 lines of the file, `C:\cygwin\cudatext\py\cuda_ex_terminal\__init__.py`.
 
 Other hotkeys? Refer to `C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt`.
+
+&rArr; Microsoft Windows users may download on this very page the file, `cudatext-for-mathly-win-*.7z`. It includes a text editor, CudaText, with Lua 5.4.8 and
+Mathly integrated. Run [7zip](https://7-zip.org/) to extract it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder,
+`C:\cygwin`</em>.
 
 &rArr; Linux users? For most Linux distributions, download the file, [cudatext-for-mathly-linux.tar.gz](https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-linux.tar.gz).
 For other distributions like Fedora, download the file, [cudatext-for-mathly-linux-RARE.tar.gz](https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-linux-RARE.tar.gz).
