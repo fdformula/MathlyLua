@@ -1,4 +1,4 @@
-## CudaText is a very good "IDE" for Lua + Mathly
+## [CudaText](https://cudatext.github.io/) is a very good "IDE" for Lua + Mathly
 
 [CudaText](https://cudatext.github.io/) is a very good "IDE" for Lua + Mathly.
 Quite a few CudaText plugins are included. Some are customized and even have new features added. While in CudaText, press
