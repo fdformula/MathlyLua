@@ -30,11 +30,4 @@ Expand the downloaded file and refer to the included file, `note.txt`, for other
 &rArr; MacOS users? Download the file, [cudatext-for-mathly-macosx.tar.gz](https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-macos.tar.gz). Expand the downloaded file
 and refer to the included file, `note.txt`, for other steps.
 
-[Lite XL](https://github.com/lite-xl/lite-xl) is another very good "IDE" for Lua and Mathly. It is much smaller and faster. You can download here the customized versions for Windows, Linux, and
-MacOS. While in Lite XL, press
-```
-  F1               to open help document on current Lua/Mathly function
-  F2               to start Lua interpreter with Mathly loaded in the folder of the current file
-  Ctrl-,           to run the command on current line or selected code in the editor
-  Ctrl-.           to run all code in the editor (HTML file? open it in a browser)
-```
+`Note`: [Lite XL](https://github.com/lite-xl/lite-xl) is another very good "IDE" for Lua + Mathly.
