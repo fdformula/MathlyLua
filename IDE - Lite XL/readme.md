@@ -9,7 +9,7 @@ versions for Windows, Linux, and MacOS. While in Lite XL, press
   Ctrl-.           to run all code in the editor (HTML file? open it in a browser)
 ```
 
-&rArr; Microsoft Windows users may download on this very page the file, `lite-xl-*-for-mathly-windows.7z`. It includes a text editor, Lite XL, with Lua 5.4.8 and
+&rArr; Microsoft Windows users may download on this very page the file, `lite-xl-*-for-mathly-windows.7z`. It includes the text editor, Lite XL, with Lua 5.4.8 and
 Mathly integrated. Run [7zip](https://7-zip.org/) to extract it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder,
 `C:\cygwin`</em>.
 
