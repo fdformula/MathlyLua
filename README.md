@@ -36,7 +36,7 @@ Quite a few CudaText plugins are included. Some are customized and even have new
 ```
   F1               to open help document on current Lua/Mathly function
 
-  F2               to start Lua interpreter with Mathly loaded
+  F2               to start Lua interpreter with Mathly loaded in the folder of the current file
   Ctrl-,           to run the command on current line or selected code in the editor
   Ctrl-.           to run all code in the editor (HTML file? open it in a browser)
 
@@ -64,6 +64,7 @@ MacOS. While in Lite XL, press
 ```
   F1               to open help document on current Lua/Mathly function
 
+  F2               to start Lua interpreter with Mathly loaded in the folder of the current file
   Ctrl-,           to run the command on current line or selected code in the editor
   Ctrl-.           to run all code in the editor (HTML file? open it in a browser)
 ```
