@@ -9,13 +9,12 @@ versions for Windows, Linux, and MacOS. While in Lite XL, press
   Ctrl-.           to run all code in the editor (HTML file? open it in a browser)
 ```
 
-&rArr; Microsoft Windows users may download on this very page the file, `cudatext-for-mathly-win-*.7z`. It includes a text editor, CudaText, with Lua 5.4.8 and
+&rArr; Microsoft Windows users may download on this very page the file, `lite-xl-*-for-mathly-windows.7z`. It includes a text editor, Lite XL, with Lua 5.4.8 and
 Mathly integrated. Run [7zip](https://7-zip.org/) to extract it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder,
 `C:\cygwin`</em>.
 
-&rArr; Linux users? For most Linux distributions, download the file, [cudatext-for-mathly-linux.tar.gz](https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-linux.tar.gz).
-For other distributions like Fedora, download the file, [cudatext-for-mathly-linux-RARE.tar.gz](https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-linux-RARE.tar.gz).
-Expand the downloaded file and refer to the included file, `note.txt`, for other steps.
+&rArr; Linux users? For most Linux distributions, download the file, `lite-xl-*-for-mathly-linux.tar.gz`. For other distributions like Fedora, download the file,
+`lite-xl-*-for-mathly-linux-RARE.tar.gz`. Expand the downloaded file and refer to the included file, `note.txt`, for other steps.
 
-&rArr; MacOS users? Download the file, [cudatext-for-mathly-macosx.tar.gz](https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-macos.tar.gz). Expand the downloaded file
+&rArr; MacOS users? Download the file, `lite-xl-*-for-mathly-macos-intel.tar.gz`. Expand the downloaded file
 and refer to the included file, `note.txt`, for other steps.
