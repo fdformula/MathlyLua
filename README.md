@@ -19,7 +19,7 @@ start Lua with Mathly loaded. While developing code and doing computation in a l
 of course contents and never need to worry if their computers work too slowly. Moreover, Lua is so
 simple and natural a language that students without programming skills can understand most of Lua code.
 
-## Which version of Lua is needed?
+## Which version of Lua is supported? Is there any IDE for Lua + Mathly?
 
 Mathly is developed in Lua 5.4.6. It might work with previous versions.
 
