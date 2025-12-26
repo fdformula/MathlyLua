@@ -21,9 +21,7 @@ simple and natural a language that students without programming skills can under
 
 ## Which version of Lua is supported? Is there any IDE for Lua + Mathly?
 
-Mathly is developed in Lua 5.4.6. It might work with previous versions.
-
-You may download Lua source code in https://lua.org/ and compile it yourself or simply download prebuilt binary commands
+Mathly is developed in Lua 5.4.6. It might work with previous versions. You may download Lua source code in https://lua.org/ and compile it yourself or simply download prebuilt binary commands
 for Microsoft Windows in, say, https://joedf.github.io/LuaBuilds/ and https://www.nuget.org/packages/lua/. Another way to get prebuilt Lua is to download
 ZeroBrane Studio (https://studio.zerobrane.com/), a lightweight Lua IDE for various platforms. It comes with multiple versions of Lua.
 
