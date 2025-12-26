@@ -20,7 +20,7 @@ lines of the file, say, `C:\cygwin\cudatext\py\cuda_ex_terminal\__init__.py`.
 Other hotkeys? Refer to, say, `C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt`.
 
 &rArr; Microsoft Windows users may download on this very page the file, `cudatext-for-mathly-win-*.7z`. It includes the text editor, CudaText, with Lua 5.4.8 and
-Mathly integrated. Run [7zip](https://7-zip.org/) to extract it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder,
+Mathly included and integrated. Run [7zip](https://7-zip.org/) to extract it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder,
 `C:\cygwin`</em>.
 
 &rArr; Linux users? For most Linux distributions, download the file, [cudatext-for-mathly-linux.tar.gz](https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-linux.tar.gz).
