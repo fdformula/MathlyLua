@@ -35,7 +35,6 @@ Mathly integrated. Run [7zip](https://7-zip.org/) to extract it to C:\ (the root
 Quite a few CudaText plugins are included. Some are customized and even have new features added. While in CudaText, press
 ```
   F1               to open help document on current Lua/Mathly function
-
   F2               to start Lua interpreter with Mathly loaded in the folder of the current file
   Ctrl-,           to run the command on current line or selected code in the editor
   Ctrl-.           to run all code in the editor (HTML file? open it in a browser)
@@ -63,7 +62,6 @@ and refer to the included file, `note.txt`, for other steps.
 MacOS. While in Lite XL, press
 ```
   F1               to open help document on current Lua/Mathly function
-
   F2               to start Lua interpreter with Mathly loaded in the folder of the current file
   Ctrl-,           to run the command on current line or selected code in the editor
   Ctrl-.           to run all code in the editor (HTML file? open it in a browser)
