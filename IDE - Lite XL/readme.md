@@ -19,4 +19,4 @@ Mathly included and integrated. Run [7zip](https://7-zip.org/) to extract it to 
 &rArr; MacOS users? Download the file, `lite-xl-*-for-mathly-macos-intel.tar.gz`. Expand the downloaded file
 and refer to the included file, `note.txt`, for other steps.
 
-`Note`: [Lite XL](https://github.com/fdformula/MathlyLua/tree/main/IDE%20-%20Lite%20XL) is another very good "IDE" for Lua + Mathly.
+`Note`: [CudaText](https://cudatext.github.io/) is another very good "IDE" for Lua + Mathly.
