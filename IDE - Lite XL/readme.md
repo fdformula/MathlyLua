@@ -1,6 +1,6 @@
 ## [Lite XL](https://github.com/lite-xl/lite-xl) is a very good "IDE" for Lua + Mathly
 
-It is even smaller and faster than [CudaText]https://github.com/fdformula/MathlyLua/tree/main/IDE%20-%20CudaText), another very good "IDE" for Lua + Mathly. You can download here the customized
+It is even smaller and faster than [CudaText](https://github.com/fdformula/MathlyLua/tree/main/IDE%20-%20CudaText), another very good "IDE" for Lua + Mathly. You can download here the customized
 versions for Windows, Linux, and MacOS. While in Lite XL, press
 ```
   F1               to open help document on current Lua/Mathly function
