@@ -15,9 +15,9 @@ If you download CudaText (Windows) or related configuration files (Linux or MacO
 ```
 `F2`, `Ctrl-,`, and `Ctrl-.` work with Bash, Julia, Octave, Python, R, Ruby, and some other languages with interactive REPL terminals.
 CudaText detects and selects the very language according to the extension of the present filename (defaults to Lua). See: The first few
-lines of the file, say, `C:\cygwin\cudatext\py\cuda_ex_terminal\__init__.py`.
+lines of the file, `cudatext/py/cuda_ex_terminal/__init__.py`.
 
-Other hotkeys? Refer to, say, `C:\cygwin\cudatext\cudatext-hotkeys-for-plugins.txt`.
+Other hotkeys? Refer to, `cudatext/cudatext-hotkeys-for-plugins.txt`.
 
 &rArr; Microsoft Windows users may download on this very page the file, `cudatext-for-mathly-win-*.7z`. It includes the text editor, CudaText, with Lua 5.4.8 and
 Mathly included and integrated. Run [7zip](https://7-zip.org/) to extract it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder,
