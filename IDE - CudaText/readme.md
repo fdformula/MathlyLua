@@ -23,9 +23,8 @@ Other hotkeys? See `cudatext/cudatext-hotkeys-for-lua-mathly.txt`.
 Mathly included and integrated. Run [7zip](https://7-zip.org/) to extract it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder,
 `C:\cygwin`</em>.
 
-&rArr; Linux users? For most Linux distributions, download the file, [cudatext-for-mathly-linux.tar.gz](https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-linux.tar.gz).
-For other distributions like Fedora, download the file, [cudatext-for-mathly-linux-RARE.tar.gz](https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-linux-RARE.tar.gz).
-Expand the downloaded file and refer to the included file, `note.txt`, for other steps.
+&rArr; Linux users? Linux users may download the file, [cudatext-for-mathly-linux.tar.gz](https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-linux.tar.gz).
+Run `tar xfz cudatext-for-mathly-linux.tar.gz` and refer to the included file, `cudatext-for-mathly-linux/note.txt`, for further steps.
 
 &rArr; MacOS users? Download the file, [cudatext-for-mathly-macosx.tar.gz](https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-macos.tar.gz). Expand the downloaded file
 and refer to the included file, `note.txt`, for other steps.
