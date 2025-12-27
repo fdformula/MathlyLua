@@ -3,10 +3,10 @@
 It is even smaller and faster than [CudaText](https://github.com/fdformula/MathlyLua/tree/main/IDE%20-%20CudaText). You can download here the customized
 versions for Windows, Linux, and MacOS. While in Lite XL, press
 ```
-  F1               to open help document on current Lua/Mathly function
-  F2               to start Lua interpreter with Mathly loaded in the folder of the current file
-  Ctrl-,           to run the command on current line or selected code in the editor
-  Ctrl-.           to run all code in the editor (HTML file? open it in a browser)
+  F1               to open help on current Lua/Mathly function
+  F2               to start Lua + Mathly in the folder of the current file
+  Ctrl-,           to run the selected code or the current line in the editor
+  Ctrl-.           to run all code in the editor
 ```
 
 &rArr; Microsoft Windows users may download on this very page the file, `lite-xl-*-for-mathly-windows.7z`. It includes the text editor, Lite XL, with Lua 5.4.8 and
