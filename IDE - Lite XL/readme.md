@@ -25,7 +25,7 @@ You will download [Lite XL](https://github.com/lite-xl/lite-xl) and install it. 
 as follows:
 
 ```bash
-wget https://github.com/lite-xl/lite-xl-plugin-manager/releases/download/latest/lpm.`uname -m | sed 's/arm64/aarch64/'`-`uname | tr '[:upper:]' '[:lower:]'` -O lpm && chmod +x lpm
+wget --no-check-certificate https://github.com/lite-xl/lite-xl-plugin-manager/releases/download/latest/lpm.`uname -m | sed 's/arm64/aarch64/'`-`uname | tr '[:upper:]' '[:lower:]'` -O lpm && chmod +x lpm
 ./lpm install terminal
 ```
 Then, run
