@@ -21,7 +21,7 @@ Mathly included and integrated. Run [7zip](https://7-zip.org/) to extract it to 
 tar xfz lite-xl-for-mathly-macos_intel.tar.gz
 ```
 and refer to the included file, `lite-xl-for-mathly-macos_intel/note.txt`, for further steps. If your Mac is newer and uses M-series chips, you still need the file.
-You will download [Lite XL](https://github.com/lite-xl/lite-xl) and install it. You will also need to install Lite XL Plugin Manager (`lpm`) and `lite-xl-terminal`
+You will first download [Lite XL](https://github.com/lite-xl/lite-xl) and install it. You will also need to install Lite XL Plugin Manager (`lpm`) and `lite-xl-terminal`
 as follows:
 
 ```bash
