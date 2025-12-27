@@ -16,4 +16,19 @@ Mathly included and integrated. Run [7zip](https://7-zip.org/) to extract it to 
 &rArr; Linux users may download the file, `lite-xl-2.1.8-for-mathly-linux.tar.gz`. Run `tar xfz lite-xl-2.1.8-for-mathly-linux.tar.gz` and refer to the included file,
 `lite-xl-2.1.8-for-mathly-linux/note.txt`, for further steps.
 
+&rArr; MacOS users may download the file, `lite-xl-for-mathly-macos_intel.tar.gz`, if your Mac is Intel-based. Run `tar xfz lite-xl-for-mathly-macos_intel.tar.gz` and refer to the included file,
+`lite-xl-for-mathly-macos_intel/note.txt`, for further steps. If your Mac is newer and uses M-series chips, you can download Lite Xl on [Lite XL](https://github.com/lite-xl/lite-xl) and install it.
+You will need to install Lite XL plugin manager (lpm) as follows:
+
+`wget https://github.com/lite-xl/lite-xl-plugin-manager/releases/download/latest/lpm.`uname -m | sed 's/arm64/aarch64/'`-`uname | tr '[:upper:]' '[:lower:]'` -O lpm && chmod +x lpm`
+`./lpm install plugin_manager --assume-yes`
+
+Then, run
+`cp -R lite-xl-for-mathly-macos_intel/usr/* /usr/'
+`cp -R lite-xl-for-mathly-macos_intel/Applications/* /Applications/'
+`rm -R
+`mkdir /Applications/Lite\ XL.app/Contents/Resources/terminal`
+`cp -R ~/.config/lite-xl/plugins/terminal/* /Applications/Lite\ XL.app/Contents/Resources/terminal`
+`cp lite-xl-for-mathly-macos_intel/Applications//Lite\ XL.app/Contents/Resources/terminal/init.lua /Applications/Lite\ XL.app/Contents/Resources/terminal`
+
 `Note`: [CudaText](https://github.com/fdformula/MathlyLua/tree/main/IDE%20-%20CudaText) is another very good "IDE" for Lua + Mathly.
