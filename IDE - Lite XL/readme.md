@@ -14,6 +14,6 @@ Mathly included and integrated. Run [7zip](https://7-zip.org/) to extract it to 
 `C:\cygwin`</em>.
 
 &rArr; Linux users may download the file, `lite-xl-2.1.8-for-mathly-linux.tar.gz`. Run `tar xfz lite-xl-2.1.8-for-mathly-linux.tar.gz` and refer to the included file,
-`lite-xl-2.1.8-for-mathly-linux.tar.gz/note.txt`, for further steps.
+`lite-xl-2.1.8-for-mathly-linux/note.txt`, for further steps.
 
 `Note`: [CudaText](https://github.com/fdformula/MathlyLua/tree/main/IDE%20-%20CudaText) is another very good "IDE" for Lua + Mathly.
