@@ -24,11 +24,11 @@ You will need to install Lite XL plugin manager (lpm) as follows:
 `./lpm install plugin_manager --assume-yes`
 
 Then, run
-`cp -R lite-xl-for-mathly-macos_intel/usr/* /usr/'
-`cp -R lite-xl-for-mathly-macos_intel/Applications/* /Applications/'
-`rm -R
-`mkdir /Applications/Lite\ XL.app/Contents/Resources/terminal`
-`cp -R ~/.config/lite-xl/plugins/terminal/* /Applications/Lite\ XL.app/Contents/Resources/terminal`
-`cp lite-xl-for-mathly-macos_intel/Applications//Lite\ XL.app/Contents/Resources/terminal/init.lua /Applications/Lite\ XL.app/Contents/Resources/terminal`
-
+```bash
+cp -R lite-xl-for-mathly-macos_intel/usr/* /usr/
+cp -R lite-xl-for-mathly-macos_intel/Applications/* /Applications/
+mkdir /Applications/Lite\ XL.app/Contents/Resources/terminal
+cp -R ~/.config/lite-xl/plugins/terminal/* /Applications/Lite\ XL.app/Contents/Resources/terminal
+cp lite-xl-for-mathly-macos_intel/Applications//Lite\ XL.app/Contents/Resources/terminal/init.lua /Applications/Lite\ XL.app/Contents/Resources/terminal
+```
 `Note`: [CudaText](https://github.com/fdformula/MathlyLua/tree/main/IDE%20-%20CudaText) is another very good "IDE" for Lua + Mathly.
