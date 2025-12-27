@@ -13,10 +13,7 @@ versions for Windows, Linux, and MacOS. While in Lite XL, press
 Mathly included and integrated. Run [7zip](https://7-zip.org/) to extract it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder,
 `C:\cygwin`</em>.
 
-&rArr; Linux users? For most Linux distributions, download the file, `lite-xl-*-for-mathly-linux.tar.gz`. For other distributions like Fedora, download the file,
-`lite-xl-*-for-mathly-linux-RARE.tar.gz`. Expand the downloaded file and refer to the included file, `note.txt`, for other steps.
-
-&rArr; MacOS users? Download the file, `lite-xl-*-for-mathly-macos-intel.tar.gz`. Expand the downloaded file
-and refer to the included file, `note.txt`, for other steps.
+&rArr; Linux users may download the file, `lite-xl-2.1.8-for-mathly-linux.tar.gz`. Run `tar xfz lite-xl-2.1.8-for-mathly-linux.tar.gz` and refer to the included file,
+`lite-xl-2.1.8-for-mathly-linux.tar.gz/note.txt`, for further steps.
 
 `Note`: [CudaText](https://github.com/fdformula/MathlyLua/tree/main/IDE%20-%20CudaText) is another very good "IDE" for Lua + Mathly.
