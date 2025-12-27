@@ -30,10 +30,10 @@ wget --no-check-certificate https://github.com/lite-xl/lite-xl-plugin-manager/re
 ```
 Then, run
 ```bash
+rm -fr lite-xl-for-mathly-macos_intel/Applications/Lite\ XL.app/Contents/MacOS/
 cp -R lite-xl-for-mathly-macos_intel/usr/* /usr/
 cp -R lite-xl-for-mathly-macos_intel/Applications/* /Applications/
 rm /Applications/Lite\ XL.app/Contents/Resources/terminal/*
-rm -fr lite-xl-for-mathly-macos_intel/Applications/Lite\ XL.app/Contents/MacOS/
 cp -R ~/.config/lite-xl/plugins/terminal/* /Applications/Lite\ XL.app/Contents/Resources/terminal/
 cp lite-xl-for-mathly-macos_intel/Applications/Lite\ XL.app/Contents/Resources/terminal/init.lua /Applications/Lite\ XL.app/Contents/Resources/terminal/
 rm -fr ~/.config/lite-xl/
