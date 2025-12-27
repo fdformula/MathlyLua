@@ -5,6 +5,7 @@ versions for Windows, Linux, and MacOS. While in Lite XL, press
 ```
   F1               to open help on current Lua/Mathly function
   F2               to start Lua + Mathly in the folder of the current file
+
   Ctrl-,           to run the selected code or the current line in the editor
   Ctrl-.           to run all code in the editor
 ```
