@@ -34,7 +34,7 @@ cp -R lite-xl-for-mathly-macos_intel/usr/* /usr/
 cp -R lite-xl-for-mathly-macos_intel/Applications/* /Applications/
 rm /Applications/Lite\ XL.app/Contents/Resources/terminal/*
 cp -R ~/.config/lite-xl/plugins/terminal/* /Applications/Lite\ XL.app/Contents/Resources/terminal/
-cp lite-xl-for-mathly-macos_intel/Applications//Lite\ XL.app/Contents/Resources/terminal/init.lua /Applications/Lite\ XL.app/Contents/Resources/terminal/pwd
+cp lite-xl-for-mathly-macos_intel/Applications/Lite\ XL.app/Contents/Resources/terminal/init.lua /Applications/Lite\ XL.app/Contents/Resources/terminal/
 rm -fr ~/.config/lite-xl/
 ```
 `Note`: [CudaText](https://github.com/fdformula/MathlyLua/tree/main/IDE%20-%20CudaText) is another very good "IDE" for Lua + Mathly.
