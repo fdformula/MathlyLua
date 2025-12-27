@@ -20,8 +20,10 @@ Mathly included and integrated. Run [7zip](https://7-zip.org/) to extract it to 
 `lite-xl-for-mathly-macos_intel/note.txt`, for further steps. If your Mac is newer and uses M-series chips, you can download Lite Xl on [Lite XL](https://github.com/lite-xl/lite-xl) and install it.
 You will need to install Lite XL plugin manager (lpm) as follows:
 
-`wget https://github.com/lite-xl/lite-xl-plugin-manager/releases/download/latest/lpm.`uname -m | sed 's/arm64/aarch64/'`-`uname | tr '[:upper:]' '[:lower:]'` -O lpm && chmod +x lpm`
-`./lpm install plugin_manager --assume-yes`
+```bash
+wget https://github.com/lite-xl/lite-xl-plugin-manager/releases/download/latest/lpm.`uname -m | sed 's/arm64/aarch64/'`-`uname | tr '[:upper:]' '[:lower:]'` -O lpm && chmod +x lpm
+./lpm install plugin_manager --assume-yes
+```
 
 Then, run
 ```bash
