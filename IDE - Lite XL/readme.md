@@ -4,11 +4,16 @@ It is even smaller and faster than [CudaText](https://github.com/fdformula/Mathl
 versions for Windows, Linux, and MacOS. While in Lite XL, press
 ```
   F1               to open help on current Lua/Mathly function
-  F2               to start Lua + Mathly in the folder of the current file
+  F2               to start Lua + Mathly or an associated interpreter in the folder of the current file
 
-  Ctrl-,           to run the selected code or the current line in the editor
-  Ctrl-.           to run all code in the editor
+  Ctrl-,           to run the selected code or the current line in the editor (or Shift-Enter)
+  Ctrl-.           to run all code in the editor (or Ctrl-Enter)
 ```
+`F2`, `Ctrl-,`, and `Ctrl-.` work with Bash, Julia, Octave, Python, R, Ruby, and some other languages with interactive REPL terminals.
+Lie XL detects and selects the very language according to the extension of the present filename (defaults to Lua). See: The first few
+lines of the file, `lite-xl/data/plugins/language_lua_mathly.lua`.
+
+Other hotkeys? See `lite-xl/lite_xl-hotkeys-for-lua-mathly.txt`.
 
 &rArr; Microsoft Windows users may download on this very page the file, `lite-xl-*-for-mathly-windows.7z`. It includes the text editor, Lite XL, with Lua 5.4.8 and
 Mathly included and integrated. Run [7zip](https://7-zip.org/) to extract it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder,
