@@ -10,7 +10,7 @@ versions for Windows, Linux, and MacOS. While in Lite XL, press
   Ctrl-.           to run all code in the editor (or Ctrl-Enter)
 ```
 `F2`, `Ctrl-,`, and `Ctrl-.` work with Bash, Julia, Octave, Python, R, Ruby, and some other languages with interactive REPL terminals.
-Lie XL detects and selects the very language according to the extension of the present filename (defaults to Lua). See: The first few
+Lite XL detects and selects the very language according to the extension of the present filename (defaults to Lua). See: The first few
 lines of the file, `lite-xl/data/plugins/language_lua_mathly.lua`.
 
 Other hotkeys? See `lite-xl/lite_xl-hotkeys-for-lua-mathly.txt`.
