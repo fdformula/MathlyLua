@@ -5,11 +5,8 @@ If you download CudaText (Windows) or related configuration files (Linux or MacO
   F1               to open help on current Lua/Mathly function
   F2               to start Lua + Mathly in the folder of the current file
 
-  Ctrl-,           to run the selected code or the current line in the editor
-  Shift-Enter      same
-
-  Ctrl-.           to run all code in the editor (HTML file? open it in a browser)
-  Ctrl-Enter       same
+  Ctrl-,           to run the selected code or the current line in the editor (or Shift-Enter)
+  Ctrl-.           to run all code in the editor (or Ctrl-Enter. HTML file? open it in a browser)
 
   Ctrl-Alt-Space   to trigger auto (Lua/Mathly) lexical completion
   Shift-Alt-Space  to trigger auto text completion (Ctrl-P D, load an English dictionary as part of the text)
