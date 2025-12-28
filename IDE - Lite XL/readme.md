@@ -7,7 +7,7 @@ versions for Windows, Linux, and MacOS. While in Lite XL, press
   F2               to start Lua + Mathly or an associated interpreter in the folder of the current file
 
   Ctrl-,           to run the selected code or the current line in the editor (or Shift-Enter)
-  Ctrl-.           to run all code in the editor (or Ctrl-Enter)
+  Ctrl-.           to run all code in the editor (or Ctrl-Enter. HTML file? Open it in a browser)
 ```
 `F2`, `Ctrl-,`, and `Ctrl-.` work with Bash, Julia, Octave, Python, R, Ruby, and some other languages with interactive REPL terminals.
 Lite XL detects and selects the very language according to the extension of the present filename (defaults to Lua). See: The first few
