@@ -966,20 +966,20 @@ end
 function isvector(x)
   if type(x) ~= 'table' or #x < 2 then return false end
   for k, v in pairs(x) do
-    if type(k) ~= 'number' then return false end -- {1, 2, a = 5, ...}
+    if type(k) ~= 'number' then return false end -- {1, 2, size = 5, ...}
   end
   if type(x[1]) == 'number' then -- {1, 2, ...}
     for i = 2, #x do
       if type(x[i]) ~= 'number' then return false end
     end
+    return true
   elseif type(x[1]) == 'table' and #x[1] == 1 and type(x[1][1]) == 'number' then -- {{1}, {2}, ...}
     for i = 2, #x do
       if type(x[i]) ~= 'table' or #x[i] ~= 1 or type(x[i][1]) ~= 'number' then return false end
     end
-  else
-    return false
+    return true
   end
-  return true
+  return false
 end
 
 -- test if x is a matrix simply by type(x) == 'table' and type(x[1]) == 'table'
