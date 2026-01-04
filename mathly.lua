@@ -962,10 +962,22 @@ function display(x) -- print x, for general purpose
   print(_vartostring_lua(x, nil, false, true))
 end
 
+-- return true if x is a row/column vector of two or more numbers
 function isvector(x)
-  if type(x) ~= 'table' then return false end
+  if type(x) ~= 'table' or #x < 2 then return false end
   for k, v in pairs(x) do
-    if type(k) ~= 'number' or type(v) ~= 'number' then return false end
+    if type(k) ~= 'number' then return false end -- {1, 2, a = 5, ...}
+  end
+  if type(x[1]) == 'number' then -- {1, 2, ...}
+    for i = 2, #x do
+      if type(x[i]) ~= 'number' then return false end
+    end
+  elseif type(x[1]) == 'table' and #x[1] == 1 and type(x[1][1]) == 'number' then -- {{1}, {2}, ...}
+    for i = 2, #x do
+      if type(x[i]) ~= 'table' or #x[i] ~= 1 or type(x[i][1]) ~= 'number' then return false end
+    end
+  else
+    return false
   end
   return true
 end
@@ -2010,7 +2022,7 @@ function plot(...)
   local gridline_visibleq, showlegendq = _gridline_visibleq, _showlegendq
   _specific_gridq, _3d_plotq, plotly.layout = false, false, {}
 
-  local args, x_start, x_stop = {}, nil -- range of x for a plot
+  local args, x_start, x_stop = {}, nil, nil -- range of x for a plot
   local adjustxrangeq, traces, layout_arg = false, {}, {}
   for _, v in pairs{...} do
     if type(v) == 'function' then
