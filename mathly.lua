@@ -2014,13 +2014,56 @@ function integral3(f, g, h, x)
   return m * s
 end -- integral3
 
+-- merge two tables, t and t2, of any structure into t
+function merge(t, t2)
+  if type(t) ~= 'table' then t = {t} end
+  if type(t2) ~= 'table' then t2 = {t2} end
+  for k, v in pairs(t2) do
+    if type(k) == 'string' then
+      if t[k] == nil then
+        t[k] = copy(t2[k])
+      else -- merge
+        if type(t[k]) == 'table' and type(v) == 'table' then
+          t[k] = merge(t[k], t2[k]) -- merge
+        else
+          t[k] = copy(v) -- t2 overwrites t
+        end
+      end
+    else -- it's a number index
+      if not ismember(v, t) then t[#t + 1] = v end
+    end
+  end
+  return t
+end
+
 -- plot the graphs of functions in a way like in MATLAB with more features
+local _xrange, _yrange, _xranges, _yranges = nil, nil, {}, {}
 local plotly = {}
 function plot(...)
   local axis_equalq = _axis_equalq
   local xaxis_visibleq, yaxis_visibleq = _xaxis_visibleq, _yaxis_visibleq
   local gridline_visibleq, showlegendq = _gridline_visibleq, _showlegendq
   _specific_gridq, _3d_plotq, plotly.layout = false, false, {}
+
+  -- scan for xrange, yrange, and layout
+  _xrange, _yrange, _xranges, _yranges = nil, nil, {}, {}
+  local layout_arg = {}
+  for _, v in pairs{...} do
+    if type(v) == 'table' then -- scann through, the last one dominates
+      if v.layout  then merge(layout_arg, v.layout) end
+      if v.xrange  then _xrange = v.xrange end -- handled by figure.toplotstring(self)
+      if v.yrange  then _yrange = v.yrange end
+      if v.xranges then _xranges = v.xranges end
+      if v.yranges then _yranges = v.yranges end
+      local opts = {'grid', 'width', 'height', 'title', 'xaxis', 'yaxis', 'margin', 'names'}
+      for i = 1, #opts do
+        if v[opts[i]] then
+          local x = {}; x[opts[i]] = v[opts[i]]
+          merge(layout_arg, x)
+        end
+      end
+    end
+  end
 
   local args, x_start, x_stop = {}, nil, nil -- range of x for a plot
   local adjustxrangeq, traces, layout_arg = false, {}, {}
@@ -2118,7 +2161,7 @@ function plot(...)
     if type(args[i]) == 'function' then
       args[i] = {0, args[i]}
       table.insert(args, i + 1, {0, 0}) -- pretend to be x, y, ...; to be modified before plotting
-    elseif i <= #args and type(args[i]) == 'table' and _hasanyindex(args[i], {'range', 'layout', 'names'})  then
+    elseif i <= #args and type(args[i]) == 'table' and _hasanyindex(args[i], {'xrange', 'yrange', 'xranges', 'yranges', 'layout', 'names'})  then
       layout_arg[#layout_arg + 1] = args[i] -- to be processed finally
       i = i + 1
     else
@@ -2272,9 +2315,9 @@ function plot(...)
             end
           end
         end
-      elseif k == 'range' then
+      elseif k == 'xrange' then
         xrange = v
-      elseif k ~= 'names' then
+      elseif k ~= 'names' and k ~= 'xranges' and k ~= 'yranges' then
         traces[1][k] = v
       end
     end
@@ -2289,7 +2332,11 @@ function plot(...)
 
   if adjustxrangeq then
     local x_step = 1
-    if x_start == nil then
+    --if plotly.layout.grid == nil then
+    if _xrange then
+      x_start, x_stop = _xrange[1], _xrange[2]
+      if _xrange[3] then x_step = _xrange[3] end
+    elseif x_start == nil or plotly.layout.grid then
       if xrange ~= nil then
         x_start, x_stop = xrange[1], xrange[2]
         if xrange[3] ~= nil then x_step = xrange[3] end
@@ -2298,9 +2345,14 @@ function plot(...)
       end
     end
     x_start, x_stop = x_start - 0.1, x_stop + 0.1
+    -- end
     for i = 1, #traces do
       if #traces[i] > 0 and #traces[i][1] >= 2 and type(traces[i][1][2]) == 'function' then
         local f = traces[i][1][2]
+        if plotly.layout.grid and _xranges[i] then
+          x_start, x_stop = _xranges[i][1] - 0.1, _xranges[i][2] + 0.1
+          if _xranges[i][3] ~= nil then x_step = _xranges[i][3] end
+        end
         traces[i][1] = linspace(x_start, x_stop, math.max(math.ceil(math.abs((x_stop - x_start) / x_step) * 10), 200))
         traces[i][2] = map(f, traces[i][1])
       end
@@ -2337,28 +2389,6 @@ local function _set_resolution(r, n)
   n = n or 500
   if r == nil or type(r) ~= 'number' or r < n then r = n end
   return r
-end
-
--- merge two tables, t and t2, of any structure into t
-function merge(t, t2)
-  if type(t) ~= 'table' then t = {t} end
-  if type(t2) ~= 'table' then t2 = {t2} end
-  for k, v in pairs(t2) do
-    if type(k) == 'string' then
-      if t[k] == nil then
-        t[k] = copy(t2[k])
-      else -- merge
-        if type(t[k]) == 'table' and type(v) == 'table' then
-          t[k] = merge(t[k], t2[k]) -- merge
-        else
-          t[k] = copy(v) -- t2 overwrites t
-        end
-      end
-    else -- it's a number index
-      if not ismember(v, t) then t[#t + 1] = v end
-    end
-  end
-  return t
 end
 
 --// #data == #opts
@@ -4862,33 +4892,33 @@ Shorthand options:
 ---@param trace table
 ---@return plotly.figure
 function figure.plot(self, trace)
-  if not trace["line"] then trace["line"] = {} end
-  if not trace["marker"] then trace["marker"] = {} end
-  for name, val in pairs(trace) do
-    if name == "ls" or name == 'style' then
-      trace["line"]["dash"] = _dash_style[val]
-      trace[name] = nil
-    elseif name == "lw" or name == 'width' then
-      trace["line"]["width"] = val
-      trace[name] = nil
-    elseif name == 1 then
-      trace["x"] = val
-      trace[name] = nil
-    elseif name == 2 then
-      trace["y"] = val
-      trace[name] = nil
-    elseif name == "ms" or name == 'size' then
-      trace["marker"]["size"] = val
-      trace[name] = nil
-    elseif name == 'symbol' then
-      trace["marker"]["symbol"] = val
-      trace[name] = nil
-    elseif name == "c" or name == "color" then
-      trace["marker"]["color"] = val
-      trace["line"]["color"] = val
-      trace[name] = nil
-    elseif name == "mode" and _mode_shorthand[val] then
-      trace["mode"] = _mode_shorthand[val]
+  if not trace.line then trace.line = {} end
+  if not trace.marker then trace.marker = {} end
+  for k, v in pairs(trace) do
+    if k == "ls" or k == 'style' then
+      trace.line.dash = _dash_style[v]
+      trace[k] = nil
+    elseif k == "lw" or k == 'width' then
+      trace.line.width = v
+      trace[k] = nil
+    elseif k == 1 then
+      trace.x = v
+      trace[k] = nil
+    elseif k == 2 then
+      trace.y = v
+      trace[k] = nil
+    elseif k == "ms" or k == 'size' then
+      trace.marker.size = v
+      trace[k] = nil
+    elseif k == 'symbol' then
+      trace.marker.symbol = v
+      trace[k] = nil
+    elseif k == "c" or k == "color" then
+      trace.marker.color = v
+      trace.line.color = v
+      trace[k] = nil
+    elseif k == "mode" and _mode_shorthand[v] then
+      trace.mode = _mode_shorthand[v]
     end
   end
 
@@ -4904,57 +4934,79 @@ function figure.update_layout(self, layout)
 end
 
 function figure.toplotstring(self)
-  if self['layout'] == nil then self['layout'] = {} end
-  if self['layout']['xaxis'] == nil then self['layout']['xaxis'] = {} end
-  if self['layout']['yaxis'] == nil then self['layout']['yaxis'] = {} end
+  if self.layout == nil then self.layout = {} end
+  if self.layout.xaxis == nil then self.layout.xaxis = {} end
+  if self.layout.yaxis == nil then self.layout.yaxis = {} end
   if (not _3d_plotq) and _axis_equalq then
-    self['layout']['xaxis']['scaleanchor'] = 'y'
-    self['layout']['yaxis']['scaleratio'] = 1
+    self.layout.xaxis.scaleanchor = 'y'
+    self.layout.yaxis.scaleratio = 1
   end
 
   if _3d_plotq then
-    if self['layout']['zaxis'] == nil then self['layout']['zaxis'] = {} end
+    if self.layout.zaxis == nil then self.layout.zaxis = {} end
   else -- only valid for 2d graphs
-    self['layout']['xaxis']['visible'] = _xaxis_visibleq
-    self['layout']['xaxis']['showgrid'] = _gridline_visibleq
-    self['layout']['yaxis']['visible'] = _yaxis_visibleq
-    self['layout']['yaxis']['showgrid'] = _gridline_visibleq
-    self['layout']['showlegend'] = _showlegendq
+    self.layout.xaxis.visible = _xaxis_visibleq
+    self.layout.xaxis.showgrid = _gridline_visibleq
+    self.layout.yaxis.visible = _yaxis_visibleq
+    self.layout.yaxis.showgrid = _gridline_visibleq
+    self.layout.showlegend = _showlegendq
+    if _xrange then
+      self.layout.xaxis.range = _xrange
+    elseif _xranges[1] then
+      self.layout.xaxis.range = _xranges[1]
+    end
+    if _yrange then
+      self.layout.yaxis.range = _yrange
+    elseif _yranges[1] then
+      self.layout.yaxis.range = _yranges[1]
+    end
   end
 
   if _vecfield_annotations ~= nil then
-    self['layout']['showlegend'] = false
-    self['layout']['annotations'] = _vecfield_annotations
+    self.layout.showlegend = false
+    self.layout.annotations = _vecfield_annotations
     _vecfield_annotations = nil
   end
   self:update_layout(plotly.layout)
-  if self['layout']['width'] == nil and self['layout']['height'] == nil then
-    self['layout']['width'] = 600 -- 4x3
-    self['layout']['height'] = 450
-  elseif self['layout']['height'] == nil then
-    self['layout']['height'] = self['layout']['width']
-  elseif self['layout']['width'] == nil then
-    self['layout']['width'] = self['layout']['height']
+  if self.layout.width == nil and self.layout.height == nil then
+    self.layout.width = 600 -- 4x3
+    self.layout.height = 450
+  elseif self.layout.height == nil then
+    self.layout.height = self.layout.width
+  elseif self.layout.width == nil then
+    self.layout.width = self.layout.height
   end
-  if self['layout']['grid'] ~= nil then
-    if type(self['layout']['grid']['rows']) == 'string' then
-      self['layout']['grid']['rows'] = tonumber(self['layout']['grid']['rows'])
+  if self.layout.grid ~= nil then
+    if type(self.layout.grid.rows) == 'string' then
+      self.layout.grid.rows = tonumber(self.layout.grid.rows)
     end
-    if type(self['layout']['grid']['columns']) == 'string' then
-      self['layout']['grid']['columns'] = tonumber(self['layout']['grid']['columns'])
+    if type(self.layout.grid.columns) == 'string' then
+      self.layout.grid.columns = tonumber(self.layout.grid.columns)
     end
-    if self['layout']['grid']['columns'] == nil or
-       self['layout']['grid']['rows'] == nil or
-       self['layout']['grid']['rows'] * self['layout']['grid']['columns'] < #self['data'] then
+    if self.layout.grid.columns == nil or
+       self.layout.grid.rows == nil or
+       self.layout.grid.rows * self.layout.grid.columns < #self.data then
       return '<html><body>Invalid grid: rows and/or columns not defined, or rows * columns &lt; the number of traces.</body></html>'
     end
 
     -- plotly-2.9.0.min.js, hopefully all versions, determines if grid options are used
     -- by checking whether the texts of xaxis and yaxis are different for traces
-    for i = 1,#self['data'] do
+    for i = 1,#self.data do
       if not _specific_gridq then
         self['data'][i]['xaxis'] = 'x' .. i -- they are different :-)
         self['data'][i]['yaxis'] = 'y' .. i
+      end
+      if self.layout.grid ~= nil then -- wang!!!
+        if _xranges[i] then
+          local axis = 'xaxis' .. qq(i == 1, '', i)
+          if self['layout'][axis] == nil then self['layout'][axis] = {} end
+          self['layout'][axis]['range'] = _xranges[i]
+        end
+        if _yranges[i] then
+          local axis = 'yaxis' .. qq(i == 1, '', i)
+          if self['layout'][axis] == nil then self['layout'][axis] = {} end
+          self['layout'][axis]['range'] = _yranges[i]
+        end
       end
       if _3d_plotq then self['data'][i]['zaxis'] = 'z' .. i end
     end
