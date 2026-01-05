@@ -3395,7 +3395,8 @@ can be useful. They take the same format, e.g., <code>layout.grid.xranges = {{st
 where <code>xranges[i]</code> is for the ith function/graph appearing in <code>plot(...)</code> from left to right, and
 <code>step</code> is optional, used to generate the x values of the ith subplot on <code>[start, stop]</code> if needed.
 If no such a range is needed, <code>nil</code> should be at the very position in the list. For example,</p>
-<pre><code>
+<pre><code>mathly = require('mathly')
+
 x = linspace(0, 10, 300)
 axisnotsquare()
 plot(sin, '-r', x, cos(x^2), {color='blue'}, exp, '@(x) exp(2*x)',
