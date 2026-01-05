@@ -2037,7 +2037,7 @@ function merge(t, t2)
 end
 
 -- plot the graphs of functions in a way like in MATLAB with more features
-local _xrange, _yrange, _xranges, _yranges = nil, nil, {}, {}
+local _xrange, _yrange = nil, nil
 local plotly = {}
 function plot(...)
   local axis_equalq = _axis_equalq
@@ -2046,15 +2046,13 @@ function plot(...)
   _specific_gridq, _3d_plotq, plotly.layout = false, false, {}
 
   -- scan for xrange, yrange, and layout
-  _xrange, _yrange, _xranges, _yranges = nil, nil, {}, {}
+  _xrange, _yrange = nil, nil
   local layout_arg = {}
   for _, v in pairs{...} do
     if type(v) == 'table' then -- scann through, the last one dominates
       if v.layout  then merge(layout_arg, v.layout) end
       if v.xrange  then _xrange = v.xrange end -- handled by figure.toplotstring(self)
       if v.yrange  then _yrange = v.yrange end
-      if v.xranges then _xranges = v.xranges end
-      if v.yranges then _yranges = v.yranges end
       local opts = {'grid', 'width', 'height', 'title', 'xaxis', 'yaxis', 'margin', 'names'}
       for i = 1, #opts do
         if v[opts[i]] then
@@ -2348,10 +2346,10 @@ function plot(...)
     -- end
     for i = 1, #traces do
       if #traces[i] > 0 and #traces[i][1] >= 2 and type(traces[i][1][2]) == 'function' then
-        local f = traces[i][1][2]
-        if plotly.layout.grid and _xranges[i] then
-          x_start, x_stop = _xranges[i][1] - 0.1, _xranges[i][2] + 0.1
-          if _xranges[i][3] ~= nil then x_step = _xranges[i][3] end
+        local f, g = traces[i][1][2], plotly.layout.grid
+        if g and g.xranges and g.xranges[i] then
+          x_start, x_stop = g.xranges[i][1] - 0.1, g.xranges[i][2] + 0.1
+          if g.xranges[i][3] ~= nil then x_step = g.xranges[i][3] end
         end
         traces[i][1] = linspace(x_start, x_stop, math.max(math.ceil(math.abs((x_stop - x_start) / x_step) * 10), 200))
         traces[i][2] = map(f, traces[i][1])
@@ -4950,16 +4948,8 @@ function figure.toplotstring(self)
     self.layout.yaxis.visible = _yaxis_visibleq
     self.layout.yaxis.showgrid = _gridline_visibleq
     self.layout.showlegend = _showlegendq
-    if _xrange then
-      self.layout.xaxis.range = _xrange
-    elseif _xranges[1] then
-      self.layout.xaxis.range = _xranges[1]
-    end
-    if _yrange then
-      self.layout.yaxis.range = _yrange
-    elseif _yranges[1] then
-      self.layout.yaxis.range = _yranges[1]
-    end
+    if _xrange then self.layout.xaxis.range = _xrange end
+    if _yrange then self.layout.yaxis.range = _yrange end
   end
 
   if _vecfield_annotations ~= nil then
@@ -4996,19 +4986,24 @@ function figure.toplotstring(self)
         self['data'][i]['xaxis'] = 'x' .. i -- they are different :-)
         self['data'][i]['yaxis'] = 'y' .. i
       end
-      if self.layout.grid ~= nil then -- wang!!!
-        if _xranges[i] then
+      local g = self.layout.grid
+      if g and g.xranges then
+        if g.xranges[i] then
           local axis = 'xaxis' .. qq(i == 1, '', i)
           if self['layout'][axis] == nil then self['layout'][axis] = {} end
-          self['layout'][axis]['range'] = _xranges[i]
+          self['layout'][axis]['range'] = g.xranges[i]
         end
-        if _yranges[i] then
+        if g.yranges[i] then
           local axis = 'yaxis' .. qq(i == 1, '', i)
           if self['layout'][axis] == nil then self['layout'][axis] = {} end
-          self['layout'][axis]['range'] = _yranges[i]
+          self['layout'][axis]['range'] = g.yranges[i]
         end
       end
       if _3d_plotq then self['data'][i]['zaxis'] = 'z' .. i end
+    end
+    if self.layout.grid then
+      self.layout.grid.xranges = nil
+      self.layout.grid.yranges = nil
     end
   end
 
