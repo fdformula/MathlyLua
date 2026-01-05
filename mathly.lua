@@ -2168,62 +2168,30 @@ function plot(...)
 
             trace['mode'] = ''
             if type(args[i]) == 'string' then -- options
-              local specs = string.lower(args[i]); i = i + 1
-              if string.find(specs, '%-%-') then
+              local s = string.lower(args[i]); i = i + 1
+              if s:find('%-%-') then
                 trace['mode'], trace['style'] = 'lines', '--'
-              elseif string.find(specs, '%-') then
+              elseif s:find('%-') then
                 trace['mode'], trace['style'] = 'lines', '-'
-              elseif string.find(specs, '%:') then
+              elseif s:find('%:') then
                 trace['mode'], trace['style'] = 'lines', ':'
               end
 
-              if string.find(specs, 'r') then
-                trace['color'] = 'red'
-              elseif string.find(specs, 'b') then
-                trace['color'] = 'blue'
-              elseif string.find(specs, 'g') then
-                trace['color'] = 'green'
-              elseif string.find(specs, 'c') then
-                trace['color'] = 'cyan'
-              elseif string.find(specs, 'm') then
-                trace['color'] = 'magenta'
-              elseif string.find(specs, 'y') then
-                trace['color'] = 'yellow'
-              elseif string.find(specs, 'k') then
-                trace['color'] = 'black'
-              elseif string.find(specs, 'w') then
-                trace['color'] = 'white'
-              end
+              local x = {{'r', 'red'}, {'b', 'blue'}, {'g', 'green'}, {'c', 'cyan'},
+                         {'m', 'magenta'}, {'y', 'yellow'}, {'k', 'black'}, {'w', 'white'}}
+              for i = 1, #x do if s:find(x[i][1]) then trace.color = x[i][2]; break end end
 
-              if string.find(specs, 'fs') then     -- fill to Self
-                trace['fill'] = 'toself'
-              elseif string.find(specs, 'fn') then -- No fill
-                trace['fill'] = 'none'
-              elseif string.find(specs, 'fa') then -- fill to the x-Axis
-                trace['fill'] = 'tozeroy'
-              elseif string.find(specs, 'ff') then -- fill to previous Function
-                trace['fill'] = 'tonexty'
-              end
+              x = {{'fs', 'toself'}, {'fn', 'none'}, {'fa', 'tozeroy'}, {'ff', 'tonexty'}}
+              for i = 1, #x do if s:find(x[i][1]) then trace.fill = x[i][2]; break end end
 
               local symbol = ''
-              if string.find(specs, 'o') then
-                symbol = 'circle'
-              elseif string.find(specs, '%*') then
-                symbol = 'star'
-              elseif string.find(specs, 'x') then
-                symbol = 'x'
-              elseif string.find(specs, '%^') then
-                symbol = 'triangle-up'
-              elseif string.find(specs, '%v') then
-                symbol = 'triangle-down'
-              elseif string.find(specs, '%>') then
-                symbol = 'triagle-right'
-              elseif string.find(specs, '%<') then
-                symbol = 'triagle-left'
-              end
-
-              if symbol ~= '' then
-                trace['symbol'], trace['mode'] = symbol, qq(trace['mode'] == '', 'markers', 'lines+markers')
+              x = {{'o', 'circle'}, {'%*', 'star'}, {'x', 'x'}, {'%^', 'triangle-up'},
+                   {'%v', 'triangle-down'}, {'%>', 'triagle-right'}, {'%<', 'triagle-left'}}
+              for i = 1, #x do
+                if s:find(x[i][1]) then
+                  trace.symbol, trace.mode = x[i][2], qq(trace.mode == '', 'markers', 'lines+markers')
+                  break
+                end
               end
             elseif type(args[i]) == 'table' then -- is it options?
               local optq = false
