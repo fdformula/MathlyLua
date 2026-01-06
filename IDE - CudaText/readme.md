@@ -12,7 +12,7 @@ If you download CudaText (Windows) or related configuration files (Linux or MacO
   Shift-Alt-Space  to trigger auto text completion (Ctrl-P D, load an English dictionary as part of the text)
 
   Ctrl-P L         to turn on/off Lua lexer switch (when editing Lua script, say, in a HTML file)
-  Ctrl-P P         to insert template for Mathly `plot` (or Ctrl-T)
+  Ctrl-P P         to insert template for Mathly `plot` (or simply Ctrl-T)
 ```
 `F2`, `Ctrl-,`, and `Ctrl-.` work with Bash, Julia, Octave, Python, R, Ruby, and some other languages with interactive REPL terminals.
 CudaText detects and selects the very language according to the extension of the present filename (defaults to Lua). See: The first few
