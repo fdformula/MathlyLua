@@ -199,7 +199,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <a href=#dot>dot</a>, <a href=#eval>eval</a>, <a href=#expand>expand</a>, <a href=#eye>eye</a>, <a href=#findroot>findroot</a>, <a href=#flatten>flatten</a>,
 <a href=#fliplr>fliplr</a>, <a href=#flipud>flipud</a>, <a href=#format>format</a>, <a href=#fstr2f>fstr2f</a>, <a href=#fzero>fzero</a>, <a href=#gcd>gcd</a>,
 <a href=#hasindex>hasindex</a>, <a href=#input>input</a>, <a href=#integral>integral</a>, <a href=#integral2>integral2</a>, <a href=#integral3>integral3</a>,
-<a href=#inv>inv</a>, <a href=#isinteger>isinteger</a>, <a href=#iseven>iseven</a>, <a href=#isodd>isodd</a>, <a href=#ismatrix>ismatrix</a>,
+<a href=#inv>inv</a>, <a href=#isempty>isempty</a>, <a href=#isinteger>isinteger</a>, <a href=#iseven>iseven</a>, <a href=#isodd>isodd</a>, <a href=#ismatrix>ismatrix</a>,
 <a href=#ismember>ismember</a>, <a href=#isvector>isvector</a>, <a href=#lagrangepoly>lagrangepoly</a>, <a href=#length>length</a>, <a href=#linsolve>linsolve</a>,
 <a href=#linspace>linspace</a>, <a href=#lu>lu</a>, <a href=#map>map</a>, <a href=#match>match</a>, <a href=#mathly>mathly</a>, <a href=#max>max</a>,
 <a href=#mean>mean</a>, <a href=#merge>merge</a>, <a href=#min>min</a>, <a href=#mod>mod</a>, <a href=#namedargs>namedargs</a>, <a href=#newtonpoly>newtonpoly</a>,
@@ -275,6 +275,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#integral3><code>integral3(f, {g1, g2}, {h1, h2}, {a, b})</code></a></td><td> </td><td>Evaluate numerically the triple integral of <code>f(x, y, z)</code> over a region <code>{(x, y, z) | x&in;[a, b], y&in;[h1(x), h2(x)], z&in;[g1(x, y), g2(x, y)]}</code>.</td></tr>
 <tr><td> </td><td><a href=#inv><code>inv(A)</code></a></td><td> </td><td>Return the inverse of square Mathly matrix <code>A</code>.</td></tr>
 <tr><td> </td><td><a name=isdir><code>isdir(f)</code></a></td><td> </td><td>Check if <code>f</code> is a directory/folder.</td></tr>
+<tr><td> </td><td><a name=isempty><code>isempty(t)</code></a></td><td> </td><td>Check if <code>t</code> is an empty table, the same as <code>next(t) == nil</code>.</td></tr>
 <tr><td> </td><td><a name=isfile><code>isfile(f)</code></a></td><td> </td><td>Check if <code>f</code> is a file.</td></tr>
 <tr><td> </td><td><a name=isinteger></a><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
 <tr><td> </td><td><a name=iseven></a><code>iseven(x)</code></td><td> </td><td>Check if <code>x</code> is even.</td></tr>
@@ -3317,25 +3318,36 @@ about the option and more control of your figure, you may refer to the official 
 at <a href=https://plotly.com/javascript/reference/layout/ target="_blank">https://plotly.com/javascript/reference/layout/</a>.</p>
 <p>For simplicity and the small size of Mathly, we just cover a very small subset of the features provided by Plotly JavaScript
 graphing library. However, it doesn't set limitations for you to experiment with various options/properties supported by Plotly.</p>
-<p>A summary of the option seen in our examples is as follows.</p>
+<p>A summary of the options seen in our examples is as follows:</p>
 <pre><code>{layout = {
-  width = 600, height = 450, -- Mathly default setting, 4x3
-  title = "&lt;b&gt;Demo:&lt;/b&gt; y = x&lt;sup&gt;2&lt;/sup&gt;", -- HTML tags may be used here: <b>Demo:</b> y = x<sup>2</sup>
-  xaxis = {title = "Your x label"}, yaxis = {title = "Your y label"},
-  grid = {rows = 2, columns = 3},
-  margin = {l = 40, r = 40, t = 40, b = 40, pad = 10},
-  autosize = false
-}}
+   width = 600, height = 450, -- default setting
+   title = "&lt;b&gt;Demo:&lt;/b&gt; y = x&lt;sup&gt;2&lt;/sup&gt;", -- HTML tags may be used here: <b>Demo:</b> y = x<sup>2</sup>
+   xaxis = {title = "Your x label"}, yaxis = {title = "Your y label"},
+   grid = {
+     rows = 2, columns = 3,
+     xranges = {{-5, 5}, nil,     {0, 5}, ...},
+     yranges = {{0, 10}, {-1, 2}, nil,    ...}
+   },
+   gridaxes = {
+     xaxis  = {title = "x label 1"}, yaxis  = {title = "y label 1"},
+     xaxis2 = {title = "x label 2"}, yaxis2 = {title = "y label 2"},
+     -- xaxis3, yaxis3 ...
+   },
+   margin = {l = 10, r = 40, t = 40, b = 40, pad = 10},
+   autosize = false
+  }
+}
 </code></pre>
 <p>You may use it as a template, remove some options, and fine-tune some others for your needs. For example,</p>
-<pre><code>plot(sin, '-r', {layout = {
-  title = "Example",
-  xaxis = {title = "x"}, yaxis = {title = "sin &lt;i&gt;x&lt;/i&gt;"},
+<pre><code>axissquare()
+plot(sin, '-r', {layout = {
+  title = "Example", width = 500, height = 200,
+  xaxis = {title = "<i>x</i>"}, yaxis = {title = "sin <i>x</i>"},
   margin = {l = 70, r = 40, t = 40, b = 40, pad = 5},
   autosize = false
 }})
 </code></pre>
-<p>&#x2713; &nbsp; In CudaText, press Ctrl-P P to insert such a <code>plot</code> template. See <a href=#cudatext>CudaText</a>.
+<p>&#x2713; &nbsp; In CudaText and Lite XL, press ctrl-t to insert such a <code>plot</code> template. See <a href=#cudatext>CudaText</a>.
 <p>If axis labels are needed for multiple graphs on a figure, <code>gridaxes</code> and <code>gridaxisnames</code> can be used as follows.</p>
 <pre><code>mathly = require('mathly')
 
@@ -3343,18 +3355,19 @@ plot(
   sin, cos, '@(x) x', '@(x) x^2',
   {layout = {
      width = 800, height = 500, title = "Example",
-     grid = {rows = 2, columns = 2},
+     grid = {rows = 2, columns = 2, xranges = {{-pi, pi}, {-2*pi, pi}, {-5, 5}, {-20, 20}}},
      gridaxes = {
        xaxis  = {title = "x label 1"}, yaxis  = {title = "y label 1"},
        xaxis2 = {title = "x label 2"}, yaxis2 = {title = "y label 2"},
-       xaxis3 = {title = "x label 3"}, yaxis3 = {title = "y label 3"},
-       xaxis4 = {title = "x label 4"}, yaxis4 = {title = "y label 4"}
+       yaxis3 = {title = "y label 3"}, xaxis3 = {title = "x label 3", domain = {0, 0.3}, scaleanchor = 'y3', scaleratio = 1}, -- square aspect ratio
+       xaxis4 = {title = "x label 4", domain = {0.4, 1}}, yaxis4 = {title = "y label 4"}
      },
      margin = {l = 58, r = 50, t = 40, b = 45, pad = 10},
      autosize = false
     }
   }
 )
+-- The <em>domain</em>s show how to assign space for subplots in the dimension of x or y of the entire plot.
 
 -- <a href=https://plotly.com/javascript/axes/ target = "_blank">An example on Plotly.com</a>
 x1 = {0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3}; y1 = {0, 0, 1, 1, 3, 3, 2, 2, 3, 3, 1, 1, 0, 0}
@@ -3390,7 +3403,7 @@ plot(
   }
 )
 </code></pre>
-<p>&#x2713; &nbsp; If the x and y ranges of subplots, the options <code>xranges</code> and <code>yranges</code>
+<p>&#x2713; &nbsp; If the x and y ranges of subplots vary, the options <code>xranges</code> and <code>yranges</code>
 can be useful. They take the same format, e.g., <code>layout.grid.xranges = {{start, stop, step}, {start, stop, step}, ....}</code>,
 where <code>xranges[i]</code> is for the ith function/graph appearing in <code>plot(...)</code> from left to right, and
 <code>step</code> is optional, used to generate the x values of the ith subplot on <code>[start, stop]</code> if needed.
