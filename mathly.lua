@@ -4993,8 +4993,8 @@ function figure.toplotstring(self)
         self['data'][i]['yaxis'] = 'y' .. i
       end
       local g = self.layout.grid
-      if g and g.xranges then
-        if g.xranges[i] then
+      if g then
+        if g.xranges and g.xranges[i] then
           local axis = 'xaxis' .. qq(i == 1, '', i)
           if self['layout'][axis] == nil then self['layout'][axis] = {} end
           self['layout'][axis]['range'] = g.xranges[i]
