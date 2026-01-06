@@ -8,7 +8,8 @@ If you download CudaText (Windows) or related configuration files (Linux or MacO
   Ctrl-,           to run the selected code or the current line in the editor (or Shift-Enter)
   Ctrl-.           to run all code in the editor (or Ctrl-Enter. HTML file? open it in a browser)
 
-  Ctrl-Alt-Space   to trigger auto (Lua/Mathly) lexical completion
+  Ctrl-Space       to trigger auto (Lua/Mathly) lexical completion
+  Ctrl-Alt-Space   to trigger auto (Lua/Mathly) lexical completion wiht more items
   Shift-Alt-Space  to trigger auto text completion (Ctrl-P D, load an English dictionary as part of the text)
 
   Ctrl-P L         to turn on/off Lua lexer switch (when editing Lua script, say, in a HTML file)
