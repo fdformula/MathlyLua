@@ -19,13 +19,13 @@ FUNCTIONS PROVIDED IN THIS MODULE
 
   all, any, apply, cc, clc, clear, copy, cross, det, diag, diff (or diff1), diff2,
   disp, display, dot, expand, eye, findroot, flatten, fliplr, flipud, format, fstr2f,
-  fzero, hasindex, horzcat, integral, integral2, integral3, inv, iseven, isinteger,
-  ismatrix, ismember, isodd, isvector, lagrangepoly, length, linsolve, linspace, lu,
-  map, match, max, mean, merge, min, tables, namedargs, newtonpoly, norm, ones,
-  polynomial, polyval, printf, prod, qq, qr, rand, randi, range, remake, repmat,
-  reshape, round, rr, rref, save, seq, size, sleep, sort, sprintf, std, strcat,
-  submatrix, subtable, sum, tables, tblcat, text, tic, toc, transpose, tt, unique,
-  var, vectorangle, vertcat, who, zeros
+  fzero, hasindex, horzcat, integral, integral2, integral3, inv, isempty, iseven,
+  isinteger, ismatrix, ismember, isodd, isvector, lagrangepoly, length, linsolve,
+  linspace, lu, map, match, max, mean, merge, min, tables, namedargs, newtonpoly,
+  norm, ones, polynomial, polyval, printf, prod, qq, qr, rand, randi, range, remake,
+  repmat, reshape, round, rr, rref, save, seq, size, sleep, sort, sprintf, std,
+  strcat, submatrix, subtable, sum, tables, tblcat, text, tic, toc, transpose, tt,
+  unique, var, vectorangle, vertcat, who, zeros
 
   dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
   oct2hex, hex2bin, hex2dec, hex2oct
@@ -4941,23 +4941,24 @@ function figure.toplotstring(self)
   if self.layout == nil then self.layout = {} end
   if self.layout.xaxis == nil then self.layout.xaxis = {} end
   if self.layout.yaxis == nil then self.layout.yaxis = {} end
-  if (not _3d_plotq) and _axis_equalq then
+  if (not _3d_plotq) and (not self.layout.grid) and _axis_equalq then
     self.layout.xaxis.scaleanchor = 'y'
     self.layout.yaxis.scaleratio = 1
   end
 
   if _3d_plotq then
     if self.layout.zaxis == nil then self.layout.zaxis = {} end
-  else -- only valid for 2d graphs
-    self.layout.xaxis.visible = _xaxis_visibleq
-    self.layout.xaxis.showgrid = _gridline_visibleq
-    self.layout.yaxis.visible = _yaxis_visibleq
-    self.layout.yaxis.showgrid = _gridline_visibleq
+  else
     self.layout.showlegend = _showlegendq
-    if _xrange then self.layout.xaxis.range = _xrange end
-    if _yrange then self.layout.yaxis.range = _yrange end
+    if not self.layout.grid then -- to make it simple, only valid for 2d graphs on a single figure; invalid for a grid of subplots
+      self.layout.xaxis.visible = _xaxis_visibleq
+      self.layout.xaxis.showgrid = _gridline_visibleq
+      self.layout.yaxis.visible = _yaxis_visibleq
+      self.layout.yaxis.showgrid = _gridline_visibleq
+      if _xrange then self.layout.xaxis.range = _xrange end
+      if _yrange then self.layout.yaxis.range = _yrange end
+    end
   end
-
   if _vecfield_annotations ~= nil then
     self.layout.showlegend = false
     self.layout.annotations = _vecfield_annotations
@@ -5006,10 +5007,6 @@ function figure.toplotstring(self)
         end
       end
       if _3d_plotq then self['data'][i]['zaxis'] = 'z' .. i end
-    end
-    if self.layout.grid then
-      self.layout.grid.xranges = nil
-      self.layout.grid.yranges = nil
     end
   end
 

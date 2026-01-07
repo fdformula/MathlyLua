@@ -55,7 +55,7 @@ download prebuilt binary commands for Microsoft Windows in, say,
 <a href="https://www.nuget.org/packages/lua/" target="_blank">https://www.nuget.org/packages/lua/</a>. Another way to get prebuilt Lua is to
 download <a href=https://studio.zerobrane.com/ target="_blank">ZeroBrane Studio</a>, a lightweight Lua IDE for various platforms. It may come with
 multiple versions of Lua.</p>
-<p>Two text editors, <a href=https://cudatext.github.io/>CudaText</a> and <a href=https://github.com/lite-xl/lite-xl>Lite XL</a>, are each a very good "IDE" for Lua + Mathly. You may download the editors with Lua + Mathly included and integrated on
+<p><a name=cudatext></a>Two text editors, <a href=https://cudatext.github.io/>CudaText</a> and <a href=https://github.com/lite-xl/lite-xl>Lite XL</a>, are each a very good "IDE" for Lua + Mathly. You may download the editors with Lua + Mathly included and integrated on
 <a href=https://github.com/fdformula/MathlyLua target="_blank">GitHub</a>.</p>
 
 <p>By the way, <a href=https://www.mozilla.org/ target="_blank">Mozilla Firefox</a> is the default internet browser. If you use a different browser, <em>you need to edit the
@@ -367,8 +367,8 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#showaxes><code>showaxes(), shownotaxes()</code></a></td><td> </td><td>Show/hide axes</td></tr>
 <tr><td> </td><td><a href=#showxaxis><code>showxaxis(), shownotxaxis()</code></a></td><td> </td><td>Show/hide the <code>x</code>-axis</td></tr>
 <tr><td> </td><td><a href=#showyaxis><code>showyaxis(), shownotyaxis</code></a></td><td> </td><td>Show/hide the <code>y</code>-axis</td></tr>
-<tr><td> </td><td><a href=#showlegend><code>showlegend(), shownotlegend()</code></a></td><td> </td><td>Show/hide the legend</td></tr>
 <tr><td> </td><td><a href=#showgridlines><code>showgridlines(), shownotgridlines()</code></a></td><td> </td><td>Show/hide gridlines</td></tr>
+<tr><td> </td><td><a href=#showlegend><code>showlegend(), shownotlegend()</code></a></td><td> </td><td>Show/hide the legend</td></tr>
 </tbody>
 </table>
 
@@ -661,7 +661,10 @@ plot(
   parametriccurve2d({'@(t) 2.5*sin(t)', '@(t) 2.5*cos(t)'}, {0, 2*pi}, {color = 'green'}))
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=showlegend></a><a name=shownotlegend></a><a name=shownotyaxis></a><a name=showyaxis></a><a name=shownotxaxis></a><a name=showxaxis></a><a name=axissquare></a><a name=axisnotsquare></a><a name=showaxes></a><a name=shownotaxes></a><a name=showgridlines></a><a name=shownotgridlines></a><a href=#m><code>axissquare, axisnotsquare; showaxes, shownotaxes ...</code></a></h4>
+<h4>&bull; &nbsp; <a name=showlegend></a><a name=shownotlegend></a><a name=shownotyaxis></a><a name=showyaxis></a>
+<a name=shownotxaxis></a><a name=showxaxis></a><a name=axissquare></a><a name=axisnotsquare></a><a name=showaxes></a>
+<a name=shownotaxes></a><a name=showgridlines></a><a name=shownotgridlines></a>
+<a href=#m><code>axissquare, axisnotsquare; showaxes, shownotaxes ...</code></a></h4>
 <table><tbody>
 <tr><td><code>axissquare(),    axisnotsquare()</code></td><td> &nbsp; </td><td>Force or stop a square axis aspect ratio (default: not square)</td></tr>
 <tr><td><code>showaxes(),      shownotaxes()</code></td><td> &nbsp; </td><td>Show/hide axes (all default: show)</td></tr>
@@ -670,7 +673,8 @@ plot(
 <tr><td><code>showgridlines(), shownotgridlines()</code></td><td> &nbsp; </td><td>Show/hide gridlines</td></tr>
 <tr><td><code>showlegend(),    shownotlegend()</code></td><td> &nbsp; </td><td>Show/hide the legend</td></tr>
 </tbody></table>
-<p>&#x2713; &nbsp; These functions are not valid for 3D graphs.</p>
+<p>&#x2713; &nbsp; These functions are not valid for 3D graphs. Except <code>showlegend</code> and <code>shownotlegend</code>,
+they are not valid for any grid of subplots either. If you need more control, see <a href=#layout>Plotly JavaScript Figure Reference: <code>layout</code> and <code>grid</code></a>.</p>
 
 <h4>&bull; &nbsp; <a name=bin2dec></a><a name=bin2hex></a><a name=bin2oct></a><a name=dec2bin></a>
 <a name=dec2hex></a><a name=dec2oct></a><a name=hex2bin></a><a name=hex2dec></a>
@@ -2904,7 +2908,7 @@ plot(sin)
 sleep(0.5)
 plot(cos)
 </code></pre>
-<p>Assume that your internet browser can automatically open two webpages with each for a graph.
+<p>Assume that your internet browser can automatically open two web pages with each for a graph.
 If <code>sleep(...)</code> is dropped, the two graphs can be the same because the two
 <code>plot</code> commands plot to the same HTML file. On slow computers, <code>sleep(...)</code>
 may not be needed.</p>
@@ -3313,41 +3317,55 @@ plot({layout={width=600, height=400}}, sin, {xrange={0, 2*pi}})
 </code></pre>
 
 <h2><a name=layout href=#top>Plotly JavaScript Figure Reference: <code>layout</code> and <code>grid</code></a></h2>
-<P>You can find the basic usage of the figure option, <code>layout</code>, in examples of this documentation. For more information
+<P>You can find the basic usage of the attribute, <code>layout</code>, in examples of this documentation. For more information
 about the option and more control of your figure, you may refer to the official website of Plotly Javascript Figure Reference
 at <a href=https://plotly.com/javascript/reference/layout/ target="_blank">https://plotly.com/javascript/reference/layout/</a>.</p>
-<p>For simplicity and the small size of Mathly, we just cover a very small subset of the features provided by Plotly JavaScript
-graphing library. However, it doesn't set limitations for you to experiment with various options/properties supported by Plotly.</p>
-<p>A summary of the options seen in our examples is as follows:</p>
-<pre><code>{layout = {
-   width = 600, height = 450, -- default setting
-   title = "&lt;b&gt;Demo:&lt;/b&gt; y = x&lt;sup&gt;2&lt;/sup&gt;", -- HTML tags may be used here: <b>Demo:</b> y = x<sup>2</sup>
-   xaxis = {title = "Your x label"}, yaxis = {title = "Your y label"},
-   grid = {
-     rows = 2, columns = 3,
-     xranges = {{-5, 5}, nil,     {0, 5}, ...},
-     yranges = {{0, 10}, {-1, 2}, nil,    ...}
-   },
-   gridaxes = {
-     xaxis  = {title = "x label 1"}, yaxis  = {title = "y label 1"},
-     xaxis2 = {title = "x label 2"}, yaxis2 = {title = "y label 2"},
-     -- xaxis3, yaxis3 ...
-   },
-   margin = {l = 10, r = 40, t = 40, b = 40, pad = 10},
-   autosize = false
-  }
+<p>For simplicity and the small size of Mathly, we just cover a small subset of the features provided by Plotly JavaScript
+graphing library. However, it doesn't set limitations for you to experiment with various attributes supported by Plotly.</p>
+<p><em>If you want more control over a graph/figure, you can always let Mathly plot it first and then start working on its output, the HTML file
+<code>_tmp-mathly_plot-6_4.html</code></em>.</p>
+<p>A summary of <code>plot</code> together with attributes seen in our examples is as follows:</p>
+<pre><code>-- axissquare()    -- axisnotsquare()    -- invalid for a grid of subplots
+-- showaxes()      -- shownotaxes()      --
+-- showxaxis()     -- shownotxaxis()     --
+-- showyaxis()     -- shownotyaxis()     --
+-- showgridlines() -- shownotgridlines() --
+-- showlegend()    -- shownotlegend()
+options = {
+  -- xrange = {-5, 5},
+  -- yrange = {-5, 5},
+  -- names = {'name_of_first_graph', ...}, -- run first: showlegend()
+  -- layout = {
+    -- width = 600, height = 450, -- default setting
+    -- title = "Example",
+    -- xaxis = {title = "Your x label"}, yaxis = {title = "Your y label"},
+    -- grid = {
+    --   rows = 2, columns = 3,
+    --   xranges = {{-5, 5}, nil,     {0, 5}, ...},
+    --   yranges = {{0, 10}, {-1, 2}, nil,    ...}
+    -- },
+    -- gridaxes = {
+    --   xaxis  = {title = "x label 1"}, yaxis  = {title = "y label 1"},
+    --   xaxis2 = {title = "x label 2"}, yaxis2 = {title = "y label 2"},
+    --   -- xaxis3, yaxis3 ...
+    -- },
+    -- margin = {l = 10, r = 40, t = 40, b = 40, pad = 10},
+    -- autosize = false
+  -- }
 }
+plot(data_functions_and_styles, options)
 </code></pre>
-<p>You may use it as a template, remove some options, and fine-tune some others for your needs. For example,</p>
+<p>You may use it as a template, remove some attributes, and fine-tune some others for your needs. For example,</p>
 <pre><code>axissquare()
 plot(sin, '-r', {layout = {
-  title = "Example", width = 500, height = 200,
+  width = 500, height = 200,
+  title = "Example",
   xaxis = {title = "<i>x</i>"}, yaxis = {title = "sin <i>x</i>"},
   margin = {l = 70, r = 40, t = 40, b = 40, pad = 5},
   autosize = false
 }})
 </code></pre>
-<p>&#x2713; &nbsp; In CudaText and Lite XL, press ctrl-t to insert such a <code>plot</code> template. See <a href=#cudatext>CudaText</a>.
+<p>&#x2713; &nbsp; In code editors <a href=#cudatext>CudaText and Lite XL</a>, press ctrl-t to insert such a template.</p>
 <p>If axis labels are needed for multiple graphs on a figure, <code>gridaxes</code> and <code>gridaxisnames</code> can be used as follows.</p>
 <pre><code>mathly = require('mathly')
 
@@ -3358,8 +3376,12 @@ plot(
      grid = {rows = 2, columns = 2, xranges = {{-pi, pi}, {-2*pi, pi}, {-5, 5}, {-20, 20}}},
      gridaxes = {
        xaxis  = {title = "x label 1"}, yaxis  = {title = "y label 1"},
+
        xaxis2 = {title = "x label 2"}, yaxis2 = {title = "y label 2"},
-       yaxis3 = {title = "y label 3"}, xaxis3 = {title = "x label 3", domain = {0, 0.3}, scaleanchor = 'y3', scaleratio = 1}, -- square aspect ratio
+
+       yaxis3 = {title = "y label 3"},
+       xaxis3 = {title = "x label 3", domain = {0, 0.3}, scaleanchor = 'y3', scaleratio = 1}, -- square aspect ratio
+
        xaxis4 = {title = "x label 4", domain = {0.4, 1}}, yaxis4 = {title = "y label 4"}
      },
      margin = {l = 58, r = 50, t = 40, b = 45, pad = 10},
@@ -3367,7 +3389,8 @@ plot(
     }
   }
 )
--- The <em>domain</em>s show how to assign space for subplots in the dimension of x or y of the entire plot.
+-- Here, the <em>domain</em> attribute is used to define the position and size of a subplot
+-- within the overall figure area, specified in normalized coordinates from 0 to 1.
 
 -- <a href=https://plotly.com/javascript/axes/ target = "_blank">An example on Plotly.com</a>
 x1 = {0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3}; y1 = {0, 0, 1, 1, 3, 3, 2, 2, 3, 3, 1, 1, 0, 0}
