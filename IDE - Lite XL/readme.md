@@ -9,7 +9,7 @@ versions for Windows, Linux, and MacOS. While in Lite XL, press
   Ctrl-,           to run the selected code or the current line in the editor (or Shift-Enter)
   Ctrl-.           to run all code in the editor (or Ctrl-Enter. HTML file? open it in a browser)
 
-  Ctrl-t           to insert template for Mathly `plot` 
+  Ctrl-t           to insert template for plot
 ```
 `F2`, `Ctrl-,`, and `Ctrl-.` work with Bash, Julia, Octave, Python, R, Ruby, and some other languages with interactive REPL terminals.
 Lite XL detects and selects the very language according to the extension of the present filename (defaults to Lua). See: The first few
