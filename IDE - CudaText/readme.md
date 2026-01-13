@@ -24,7 +24,7 @@ Other hotkeys? See `cudatext/cudatext-hotkeys-for-lua-mathly.txt`.
 Only one interpreter is allowed at a time. To change an interpreter, you may enter the interpreter terminal, and press ctrl-c or execute commands like `os.exit()`, `exit`, `quit`, `exit()`, etc., to exit the present interpreter. Then, go to the very file in the editor and press F2 to start the associated interpreter.
 
 &rArr; Microsoft Windows users may download on this very page the file, `cudatext-for-mathly-win-*.zip`. It includes the text editor, CudaText, with Lua 5.4.8 and
-Mathly included and integrated. Unzip/extract it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder,
+Mathly included and integrated. Unzip it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder,
 `C:\cygwin`</em>.
 
 &rArr; Linux users may download the file, [cudatext-for-mathly-linux.tar.gz](https://github.com/fdformula/MathlyLua/blob/main/cudatext-for-mathly-linux.tar.gz).
