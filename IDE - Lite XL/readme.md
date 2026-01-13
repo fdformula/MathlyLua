@@ -21,8 +21,8 @@ Only one interpreter is allowed at a time. To change an interpreter, you may ent
 commands like `os.exit()`, `exit`, `quit`, `exit()`, etc., to exit the present interpreter. Then, go to the very file in the editor and
 press F2 to start the associated interpreter.
 
-&rArr; Microsoft Windows users may download on this very page the file, `lite-xl-*-for-mathly-windows.7z`. It includes the text editor, Lite XL, with Lua 5.4.8 and
-Mathly included and integrated. Run [7zip](https://7-zip.org/) to extract it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder,
+&rArr; Microsoft Windows users may download on this very page the file, `lite-xl-*-for-mathly-windows.zip`. It includes the text editor, Lite XL, with Lua 5.4.8 and
+Mathly included and integrated. Unzip it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder,
 `C:\cygwin`</em>.
 
 &rArr; Linux users may download the file, `lite-xl-2.1.8-for-mathly-linux.tar.gz`. Run `tar xfz lite-xl-2.1.8-for-mathly-linux.tar.gz` and refer to the included file,
