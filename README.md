@@ -114,7 +114,7 @@ axisnotsquare()
 plot(x, y1)
 plot(x, y1, '-r', x, y2, '-g', x, y3, '--o')
 plot(sin, '-r', {layout={xaxis={title="x-axis"}, yaxis={title="y-axis"}, title='y = sin(x)'}})
-plot('@(x) x', '--r', sin, '@(x) x^3', '-g', {range = {0, 1.5}})
+plot('@(x) x', '--r', sin, '@(x) x^3', '-g', {xrange = {0, 1.5}})
 
 plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
 
