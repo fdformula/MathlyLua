@@ -216,8 +216,8 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <p><a href=#cat>cat</a>, <a href=#dir>dir</a>, <a href=#isdir>isdir</a>, <a href=#isfile>isfile</a>, <a href=#iswindows>iswindows</a>,
 <a href=#ls>ls</a>, <a href=#mv>mv</a>, <a href=#pwd>pwd</a>, <a href=#rm>rm</a></p>
 
-<p><a href=#animate>animate</a>, <a href=#manipulate>manipulate</a>, <a href=#plot>plot</a>; <a href=#plot3d>plot3d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>,
-<a href=#plotparametricsurface3d>plotparametricsurface3d</a>, <a href=#plotsphericalsurface3d>plotsphericalsurface3d</a></p>
+<p><a href=#plot>plot</a>; <a href=#plotparametriccurve2d>plotparametriccurve2d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>;
+<a href=#plot3d>plot3d</a>, <a href=#plotparametricsurface3d>plotparametricsurface3d</a>, <a href=#plotsphericalsurface3d>plotsphericalsurface3d</a>; <a href=#animate>animate</a>, <a href=#manipulate>manipulate</a></p>
 
 <p><a href=#arc>arc</a>, <a href=#circle>circle</a>, <a href=#contourplot>contourplot</a>, <a href=#dotplot>dotplot</a>, <a href=#line>line</a>,
 <a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#point>point</a>, <a href=#polarcurve2d>polarcurve2d</a>, <a href=#polygon>polygon</a>, <a href=#scatter>scatter</a>,
@@ -309,7 +309,8 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#pie><code>pie(x, nbins, style, names, title)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a pie chart.</td></tr>
 <tr><td> </td><td><a href=#plot><code>plot(x, y, ...)</code></a></td><td> </td><td>Plot the graph(s) of functions defined by data points <code>x</code> and <code>y</code> and ...</td></tr>
 <tr><td> </td><td><a href=#plot3d><code>plot3d(f, xrange, yrange, title, resolution)</code></a></td><td> </td><td>Plot the 3D graph of <code>z = f(x, y)</code>.</td></tr>
-<tr><td> </td><td><a href=#plotparametriccurve3d><code>plotparametriccurve3d({x(t), y(t), z(t)}, trange, titl, resolution)</code></a></td><td> </td><td>Plot a space curve defined by <code>{x(t), y(t), z(t)}</code>.</td></tr>
+<tr><td> </td><td><a href=#plotparametriccurve2d><code>plotparametriccurve2d({x(t), y(t)}, trange, style, resolution, orientationq)</code></a></td><td> </td><td>Plot a 2D curve defined by <code>{x(t), y(t)}</code>.</td></tr>
+<tr><td> </td><td><a href=#plotparametriccurve3d><code>plotparametriccurve3d({x(t), y(t), z(t)}, trange, title, resolution, orientationq)</code></a></td><td> </td><td>Plot a 3D curve defined by <code>{x(t), y(t), z(t)}</code>.</td></tr>
 <tr><td> </td><td><a href=#plotparametricsurface3d><code>plotparametricsurface3d({x(u, v), y(u, v), z(u, v)}, urange, vrange, title, resolution, orientationq)</code></a></td><td> </td><td>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u, v)</code>.</td></tr>
 <tr><td> </td><td><a href=#plotsphericalsurface3d><code>plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)</code></a></td><td> </td><td>Plot a spherical function.</td></tr>
 <tr><td> </td><td><a href=#point><code>point(x, y, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a point.</td></tr>
@@ -587,11 +588,11 @@ apply('@(x, y, z) x + y + z', {1, 2, 3})
 <tr><td><code>'fs'</code></td><td> - </td><td>Fill to Self</td></tr>
 </tbody></table>
 <p>Other specification shortcuts, see <a href=#plotspecs><code>plot</code></a>.</p>
-<p>&#x2713; &nbsp; <code><b>resolution</b></code> - <a name=resol></a>Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#plot3d>plot3d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, <a href=#plotparametricsurface3d>plotparametricsurface3d</a>, <a href=#plotsphericalsurface3d><code>plotsphericalsurface3d</code></a>, and <a href=#polarcurve2d>polarcurve2d</a></code>,
+<p>&#x2713; &nbsp; <code><b>resolution</b></code> - <a name=resol></a>Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#plot3d>plot3d</a>, <a href=#plotparametriccurve2d>plotparametriccurve2d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, <a href=#plotparametricsurface3d>plotparametricsurface3d</a>, <a href=#plotsphericalsurface3d><code>plotsphericalsurface3d</code></a>, and <a href=#polarcurve2d>polarcurve2d</a></code>,
 each take an argument, the minimum <code>resolution</code> (default: 100 for a surface, or 500 for a curve), for users to control the smoothness of a plotted curve or surface if needed.
 A larger value means better smoothness and requires more computing time.</p>
 
-<p>&#x2713; &nbsp; <code><b>orientationq</b></code> - Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, and <a href=#polarcurve2d>polarcurve2d</a></code>,
+<p>&#x2713; &nbsp; <code><b>orientationq</b></code> - Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#plotparametriccurve2d>plotparametriccurve2d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, and <a href=#polarcurve2d>polarcurve2d</a></code>,
 each take also a last argument, <code>orientationq</code> (default: false). If it is true, a few dots of reducing sizes are plotted together with a curve to show the orientation of the parametric curve. The orientation is from large to small dots (&#10148;).</p>
 
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining an anonymous function.</a></p>
@@ -2479,6 +2480,15 @@ for i = 1, n do
 end
 Z = sin(X) * cos(Y)
 plot3d(X, Y, Z, 'Demo 2')
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=plotparametriccurve2d href=#m><code>plotparametriccurve2d({x(t), y(t)}, trange, style, resolution, orientationq)</code></a></h4>
+<p>Plot a 2D curve defined by <code>{x(t), y(t)}</code>. It is simply <code>plot(parametriccurve2d({x(t), y(t)}, trange, style, resolution, orientationq))</code>.</p>
+<p><code>resolution</code> and <code>orientationq</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve2d</code></a>.</p>
+<p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
+<pre><code>mathly = require('mathly')
+plotparametriccurve2d({cos, sin}, {0,6*pi}, "--rfs")
+plotparametriccurve2d({'@(t) t*cos(t)', '@(t) t*sin(t)'}, {0, 8*pi})
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=plotparametriccurve3d href=#m><code>plotparametriccurve3d({x(t), y(t), z(t)}, trange, title, resolution, orientationq)</code></a></h4>

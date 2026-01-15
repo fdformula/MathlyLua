@@ -36,8 +36,8 @@ FUNCTIONS PROVIDED IN THIS MODULE
   polarcurve2d, polygon, scatter, text, wedge; boxplot, freqpolygon, hist, hist1,
   histfreqpolygon, pareto, pie, slopefield, vectorfield2d ← Graphics objects passed to 'plot'.
 
-  animate, manipulate, plot; plot3d, plotparametriccurve3d, plotparametricsurface3d,
-  plotsphericalsurface3d
+  plot; plotparametriccurve2d, plotparametriccurve3d; plot3d, plotparametricsurface3d,
+  plotsphericalsurface3d; animate, manipulate
 
   axissquare, axisnotsquare; showaxes, shownotaxes; showxaxis, shownotxaxis;
   showyaxis, shownotyaxis; showgridlines, shownotgridlines;
@@ -2054,7 +2054,7 @@ function plot(...)
   _xrange, _yrange = nil, nil
   local layout_arg = {}
   for _, v in pairs{...} do
-    if type(v) == 'table' and next(v) ~= nil then -- the last one dominates
+    if type(v) == 'table' and next(v) ~= nil then -- the last one matters
       if v.layout  then merge(layout_arg, v.layout) end
       if v.xrange  then _xrange = v.xrange end -- handled by figure.toplotstring(self)
       if v.yrange  then _yrange = v.yrange end
@@ -2534,6 +2534,10 @@ function plotparametricsurface3d(xyz, urange, vrange, title, resolution)
     x[i], y[i], z[i] = xs, ys, zs
   end
   plot3d(x, y, z, title)
+end
+
+function plotparametriccurve2d(xy, trange, style, resolution, orientationq)
+  plot(parametriccurve2d(xy, trange, style, resolution, orientationq))
 end
 
 -- xyz = { ... }, the parametric equations, x(t), y(t), z(t), in order, of a space curve,
