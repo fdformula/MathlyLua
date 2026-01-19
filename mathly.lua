@@ -2654,7 +2654,7 @@ local function _anmt_parse_args(fstr, opts)
     end
   end
 
-  local xr = opts.x or {-5, 5, 0.1}
+  local xr = opts.xrange or {-5, 5, 0.1}
   if type(xr) ~= 'table' or xr[1] >= xr[2] then error('Range of x is invalid.') end
 
   local xexpr, yexpr, s = nil, nil, ''
@@ -2705,7 +2705,7 @@ local function _anmt_parse_args(fstr, opts)
 
   local title = nil
   if type(opts.layout) == 'table' then title = opts.layout.title end
-  return cs, rs, xr, opts.y, tr, title, xexpr, yexpr, jxexpr, jyexpr, opts.enhancements, jscode
+  return cs, rs, xr, opts.yrange, tr, title, xexpr, yexpr, jxexpr, jyexpr, opts.enhancements, jscode
 end -- _anmt_parse_args
 
 function _anmt_fill(s)

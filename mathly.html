@@ -427,7 +427,7 @@ With each parametric curve in <code>enhancements</code>, field <code>resolution<
 
 fstr = '@(x) x^2'
 opts = {
-  x = {-6, 6}, y = {-2, 40},
+  xrange = {-6, 6}, yrange = {-2, 40},
   layout = {width = 500, height = 350, square = false}, -- square aspect ratio, square = true, by default
   enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
 animate(fstr, opts)
@@ -440,7 +440,7 @@ animate(fstr, opts)
 
 fstr = {'@(t) 6*cos(t)', '@(t) 4*sin(t)'}
 opts = {
-  t = {0, 2*pi}, x = {-6.4, 6.4}, y = { -4.3, 4.3 },
+  t = {0, 2*pi}, xrange = {-6.4, 6.4}, yrange = { -4.3, 4.3 },
   layout = { width = 600, height = 400 },
   enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
 animate(fstr, opts)
@@ -448,7 +448,7 @@ animate(fstr, opts)
 -- Lua + Mathly
 fstr = {'@(t) 5 * cos(t)', '@(t) 5 * sin(t)'}
 opts = {
-  p = {0, 1, 0.4}, t = {0, 2 * pi, 0.01}, x = {-10, 10}, width = 0, color = 'darkblue',
+  p = {0, 1, 0.4}, t = {0, 2 * pi, 0.01}, xrange = {-10, 10}, width = 0, color = 'darkblue',
   layout = {
     width = 500, height = 500,
     xaxis = { showgrid = false, zeroline = false, showticklabels = false },
@@ -472,7 +472,7 @@ r = 'exp(sin(t)) - 2*cos(4*t) + sin(t/12)^5'    -- r(t); change this only
 fstr = {'@(t) (' .. r .. ') * cos(t)', '@(t) (' .. r .. ') * sin(t)'}
 opts = {
   t = {0, 10 * pi, 0.01},        ----- adjust options if needed
-  x = {-4, 4}, y = {-4, 4},
+  xrange = {-4, 4}, yrange = {-4, 4},
   resolution = 1000,
   layout = {
     width = 500, height = 500, square = true, title = '',
@@ -511,7 +511,7 @@ and implement others through <code>enhancements</code> or in JavaScript.</p>
 fstr = '@(x) 4*sin(x)'
 -- fstr = {'@(t) 6*cos(t)', '@(t) 4*sin(t)'} -- try this one and see
 opts = {
-  t = {0, 2*pi}, x = {-6.1, 6.1}, y = { -4.3, 4.3 }, color = 'blue', width = 5, style = "dash: 'dot'",
+  t = {0, 2*pi}, xrange = {-6.1, 6.1}, yrange = { -4.3, 4.3 }, color = 'blue', width = 5, style = "dash: 'dot'",
   layout = { width = 600, height = 400, square = true, title = 'Demo' },
   enhancements = {
     {x = 'X', y = 'Y', color = 'blue', size = 8, point = true},
@@ -1851,7 +1851,7 @@ opts = {
   t = {0, 2*pi, 0.01},
   a = {0.1, 5, 0.1, default = 1}, m = {1, 20, 1, default = 2},
   b = {0.1, 5, 0.1, default = 2}, n = {1, 20, 1, default = 1},
-  x = {-5.1, 5.1},
+  xrange = {-5.1, 5.1},
   resolution = 2000,
   layout = { width = 640, height = 540, title = '&lt;h3&gt;Lissajous Curves&lt;/h3&gt;' }}
 manipulate(fstr, opts)
@@ -1862,7 +1862,7 @@ opts = {
   t = {0, 2 * pi, 0.01},         ----- adjust options if needed
   m = {1, 20, 1, default = 2}, n = {1, 20, 1, default = 2},
   a = {-10, 10, 1, default = 8}, b = {-20, 20, 1, default = -13},
-  x = {-4, 4},
+  xrange = {-4, 4},
   resolution = 2000,
   layout = {width = 500, height = 500, square = true}}
 manipulate(fstr, opts)
@@ -1876,7 +1876,7 @@ r = 'sin(n*t)'        -- r(θ) = sin(nθ); change this only
 fstr = {'@(t) (' .. r .. ') * cos(t)', '@(t) (' .. r .. ') * sin(t)'}
 disp(fstr)
 opts = {
-  t = {0, 2 * pi, 0.01}, x = {-1.2, 1.2}, n = {1, 24, 1}, -- adjust options if needed
+  t = {0, 2 * pi, 0.01}, xrange = {-1.2, 1.2}, n = {1, 24, 1}, -- adjust options if needed
   resolution = 2000,
   fill = 'fs',
   layout = {width = 500, height = 500, square = true, title = '&lt;h3&gt;Polar curve: r(t) = sin(nt)&lt;/h3&gt;'}}
@@ -1891,7 +1891,7 @@ opts = {
   t = {0, 2 * pi, 0.01},         ----- adjust options if needed
   m = {-10, 10, 1, default = 3}, n = {1, 10, 1},
   a = {-10, 10, 1, default = -9}, b = {-20, 20, 1, default = 9}, c = {1, 20, 1},
-  x = {-5, 5},
+  xrange = {-5, 5},
   resolution = 2000,
   layout = {
     width = 500, height = 500, square = true, title = '',
@@ -1910,7 +1910,7 @@ manipulate(fstr, opts)
 r = 'sin(1.6 * t)^2 + cos(n*t)^5'
 fstr = {'@(t) (' .. r .. ') * cos(t)', '@(t) (' .. r .. ') * sin(t)'}
 opts = {
-  t = {0, 10*pi, 0.01}, x = {-2, 2}, n = {1, 12, 1},
+  t = {0, 10*pi, 0.01}, xrange = {-2, 2}, n = {1, 12, 1},
   resolution = 6000,
   layout = {
     width = 640, height = 540,
@@ -1946,7 +1946,7 @@ jcode = [[
 fstr = '@(x) a * (x - h)^2 + k' -- a, h, and k are each a control here
 opts = {
   a = {-3, 3, 0.02, default = 3}, h = {-10, 10, 0.5, default = 0}, k = {-90, 90, default = 0},
-  x = {-10, 10}, y = {-100, 100},
+  xrange = {-10, 10}, yrange = {-100, 100},
   javascript = jcode,
   layout = { width = 600, height = 400, square = false }}
 manipulate(fstr, opts)
