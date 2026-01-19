@@ -147,13 +147,13 @@ plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
 
 manipulate('@(x) a * (x - h)^2 + k',
            {a = {-3, 3, 0.02, default = 3}, h = {-10, 10, 0.5, default = 0}, k = {-90, 90, default = 0},
-            x = {-10, 10}, y = {-100, 100},
+            xrange = {-10, 10}, yrange = {-100, 100},
             layout = { width = 600, height = 400, square = false }})
 
 -- animating trochoids, including cycloids
 fstr = {'@(t) r * t - d*sin(t)', '@(t) r - d*cos(t)'}
 opts = {t = {0, 8 * pi, 0.01}, r = {0.1, 5, 0.1, default = 1.5}, d = {0.1, 5, 0.1, default = 1.5},
-        x = {-2, 40}, y = {-5, 10.5},
+        xrange = {-2, 40}, yrange = {-5, 10.5},
         layout = {width = 800, height = 400},
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
                         {x = '@(t) r * T + r * cos(t)', y = '@(t) r + r * sin(t)', t = {0, 2 * pi}, color = 'orange'},
