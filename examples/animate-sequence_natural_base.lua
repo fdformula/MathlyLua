@@ -23,7 +23,8 @@ maxI = 200 -- max n in (1 + 1/n) ^ n
 
 fstr = nil
 opts = {
-  I = {0, maxI, 1, label = 'n as in { (1 + 1/n)^n }'}, x = {-1, maxI}, y = {-0.1, 3}, controls = 'I',
+  I = {0, maxI, 1, label = 'n as in { (1 + 1/n)^n }'}, controls = 'I',
+  xrange = {-1, maxI}, yrange = {-0.1, 3},
   javascript = jcode,
   layout = {
     width = 800, height = 400, square = false,

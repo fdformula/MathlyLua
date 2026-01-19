@@ -123,17 +123,17 @@ end
 
 -- examples
 if iswindows() then
-  explore('C:\\cygwin',
+  explore('C:\\mathly',
           { patterns = {'doc*', 'cuda*'},
             task = process,
             objects = 'files',
             subfolders = 'included'})
-  explore('C:\\cygwin',
+  explore('C:\\mathly',
           { patterns = {'doc*', 'cuda*'},
             task = process,
             objects = 'folders',
             subfolders = 'included'})
-  explore('C:\\cygwin',
+  explore('C:\\mathly',
           { patterns = {'doc*', 'cuda*'},
             task = process,
             objects = 'files+folders',

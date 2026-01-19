@@ -23,7 +23,8 @@ jscode = [[
 
 fstr = {'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'}
 opts = {
-  I = {1, 26, 1, label = 'Iterations'}, x = {-4.1, 4.1}, y = {-46, 40},
+  I = {1, 26, 1, label = 'Iterations'},
+  xrange = {-4.1, 4.1}, yrange = {-46, 40},
   layout = {
     width = 640, height = 640, square = false,
     title = "<h3>Secant method for x<sup>3</sup> - 2x + 2 = 0 starting with x<sub>1</sub> = -3 and x<sub>2</sub> = 2</h3>"

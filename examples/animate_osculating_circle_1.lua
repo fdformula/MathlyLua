@@ -18,7 +18,7 @@ jscode = [[
 
 fstr = {'@(t) t', '@(t) sin(t)'}
 opts = {
-  x = {-2*pi, 2*pi},
+  xrange = {-2*pi, 2*pi},
   layout = { title = '<h3>y = sin(x)</h3>' },
   javascript = jscode,
   enhancements = {

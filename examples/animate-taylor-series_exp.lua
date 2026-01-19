@@ -48,7 +48,8 @@ maxI = 41
 
 fstr = '@(x) exp(x)'
 opts = {
-  I = {2, maxI, 1, label = 'Number of first terms'}, x = {-15, 5}, y = {-5, 15}, width = 3, controls = 'I',
+  I = {2, maxI, 1, label = 'Number of first terms'}, width = 3, controls = 'I',
+  xrange = {-15, 5}, yrange = {-5, 15},
   javascript = string.format(jcode, maxI),
   layout = {
     width = 500, height = 500, square = false,

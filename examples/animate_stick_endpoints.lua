@@ -28,7 +28,7 @@ fstr = {'@(t) R * cos(t) + 0*b + 0*L', '@(t) R * sin(t)'} -- 0*b + 0*L, b and L 
 opts = {
   t = {0, 2 * pi, 0.01},
   b = {0.1, 5, 0.1, default = 2.7}, R = {0.1, 5, 0.1, default = 2}, L = { 0.1, 5, 0.1, default = 5},
-  x = {-3, 5}, y = {-5, 5},
+  xrange = {-3, 5}, yrange = {-5, 5},
   layout = {
     width = 640, height = 480, title = '',
     xaxis = { showgrid = false, zeroline = false, showticklabels = false },

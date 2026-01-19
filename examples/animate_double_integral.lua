@@ -83,7 +83,7 @@ opts = {
   m = {1, 32, 1, default = 8, label = 'X Subintervals'},
   n = {1, 32, 1, default = 8, label = 'Y Subintervals'},
   O = {1, 6, 1, default = 1, label = 'Method'},
-  x = {0, 2.1}, y = {-0.05, 2.1},
+  xrange = {0, 2.1}, yrange = {-0.05, 2.1},
   controls = 'Omn', javascript = jcode,
   layout = {
     width = 640, height = 640, square = true,

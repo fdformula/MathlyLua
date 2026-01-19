@@ -15,7 +15,8 @@ jscode = [[
 fstr = {'@(t) t', '@(t) fx0 + k * (t - x0)'} -- @(x) fx0 + k * (x - x0)'
 opts = {
   h = {-1.95, 0.87, 0.01, default = -0.79, label = 'Increment in x'}, controls = 'h',
-  x = {-1.5, 1.43}, y = {-0.1, 2.12}, width = 1, color = 'grey',
+  width = 1, color = 'grey',
+  xrange = {-1.5, 1.43}, yrange = {-0.1, 2.12},
   layout = { width = 540, height = 640, square = true, title = "<h3>Animating a derivative</h3>" },
   javascript = jscode,
   enhancements = {

@@ -55,7 +55,8 @@ maxI = 50
 
 fstr = '@(x) sin(x)'
 opts = {
-  I = {1, maxI, 1, label = 'Number of first terms'}, x = {-11*pi, 11*pi}, y = {-3, 3}, controls = 'I',
+  I = {1, maxI, 1, label = 'Number of first terms'}, controls = 'I',
+  xrange = {-11*pi, 11*pi}, yrange = {-3, 3},
   javascript = string.format(jcode, maxI),
   layout = {
     width = 600, height = 300, square = false,

@@ -27,7 +27,8 @@ jscode = [[
 
 fstr = {'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'}
 opts = {
-  I = {1, 12, 1, label = 'Iterations'}, x = {-2.5, 6.1}, y = {-6, 6},
+  I = {1, 12, 1, label = 'Iterations'},
+  xrange = {-2.5, 6.1}, yrange = {-6, 6},
   layout = {
     width = 640, height = 640, square = false,
     title = "<h3>Regula falsi method for 3cos(x) - 0.3x<sup>2</sup> + 2 = 0 starting on [-1.6, 5.5]</h3>"

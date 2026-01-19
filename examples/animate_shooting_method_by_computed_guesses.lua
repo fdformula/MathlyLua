@@ -74,7 +74,7 @@ function displaytext() {
 
 fstr = nil -- no simple analytical solution to be plotted
 opts = {
-  I = {1, 20, 1, label = 'Guess No.'}, x = {-0.1, 5.1}, y = {-10, 18}, controls = 'I',
+  I = {1, 20, 1, label = 'Guess No.'}, xrange = {-0.1, 5.1}, yrange = {-10, 18}, controls = 'I',
   javascript = string.format(jcode, a, b, Ya, Yb, b),
   layout = {
     width = 600, height = 500, square = false,

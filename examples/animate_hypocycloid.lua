@@ -8,7 +8,7 @@ mathly = require('mathly')
 
 fstr = {'@(t) (a - b) * cos(t) + b * cos((a - b) / b * t)', '@(t) (a - b) * sin(t) - b * sin((a - b) / b * t)'}
 opts = {
-  t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 7.8}, b = {0.2, 9, 0.1, default = 1.6}, x = {-10, 10},
+  t = {0, 20 * pi, 0.01}, a  = {0.2, 9, 0.1, default = 7.8}, b = {0.2, 9, 0.1, default = 1.6}, xrange = {-10, 10},
   resolution = 1500,
   layout = { width = 500, height = 500, title = '<h3>Hypocycloid</h3>' },
   enhancements = {

@@ -17,7 +17,7 @@ jscode = [[
 
 fstr = {'@(t) t', '@(t) t*t'}
 opts = {
-  x = {-5, 5},
+  xrange = {-5, 5},
   layout = { title = '<h3><em>y = x<sup>2</sup></em></h3>' },
   p = { default = 0.43 }, -- control p starts at p = 0.43
   javascript = jscode,

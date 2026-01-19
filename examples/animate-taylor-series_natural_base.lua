@@ -24,7 +24,8 @@ maxI = 25 -- max number of first terms to be used in a Taylor series expansion
 
 fstr = nil
 opts = {
-  I = {1, maxI, 1, label = 'Number of first terms'}, x = {-0.1, maxI}, y = {-0.1, 3}, controls = 'I',
+  I = {1, maxI, 1, label = 'Number of first terms'}, controls = 'I',
+  xrange = {-0.1, maxI}, yrange = {-0.1, 3},
   javascript = jcode,
   layout = {
     width = 600, height = 400, square = false,

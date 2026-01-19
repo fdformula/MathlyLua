@@ -57,7 +57,7 @@ opts = {
   m = {-3, 3, 0.1, default = 1, label = 'Dilate in x'},
   n = {-3, 3, 0.1, default = 1, label = 'Dilate in y'},
   r = {0, 1, 1, default = 0, label = 'Reflect about y = x'},
-  x = {-6, 6}, y = {-6, 6}, controls = 'abqcdmnr',
+  xrange = {-6, 6}, yrange = {-6, 6}, controls = 'abqcdmnr',
   javascript = jcode,
   layout = { width = 640, height = 640, square = true, title = '' } -- no title
 }

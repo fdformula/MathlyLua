@@ -36,7 +36,7 @@ x0, y0 = 0, 1
 a, b = x0, 5
 ------------------------------------------------------
 opts = {
-  x = {a, b}, y = {0, 10}, -- make adjustments here for your initial-value problem
+  xrange = {a, b}, yrange = {0, 10}, -- make adjustments here for your initial-value problem
   I = {1, 50, 1, default = 15, label = 'Iterations'}, n = {1, 50, 1, default =17, label = 'Subintervals'}, controls = 'In',
   width = 2, color = 'green',
   layout = {width = 500, height = 500},

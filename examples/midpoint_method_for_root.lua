@@ -27,7 +27,8 @@ jscode = [[
 
 fstr = {'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'}
 opts = {
-  I = {1, 56, 1, label = 'Iterations'}, x = {-3.1, 2.1}, y = {-22, 8},
+  I = {1, 56, 1, label = 'Iterations'},
+  xrange = {-3.1, 2.1}, yrange = {-22, 8},
   layout = {
     width = 640, height = 640, square = false,
     title = "<font size=4 color=black>Midpoint method for <em>x<sup>3</sup> - 2x + 2 = 0</em> starting on [-3, 2]</font>"

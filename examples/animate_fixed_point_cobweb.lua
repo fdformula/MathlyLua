@@ -29,7 +29,8 @@ jscode = [[
 
 fstr = '@(x) ' .. g
 opts = {
-  I = {1, MaxIterations, 1, default = MaxIterations, label = 'Iterations'}, x = {-0.1, 1.1}, y = {-0.1, 1.1},
+  I = {1, MaxIterations, 1, default = MaxIterations, label = 'Iterations'},
+  xrange = {-0.1, 1.1}, yrange = {-0.1, 1.1},
   a = {0, 1, 0.1, default = 0.9, label = 'Initial Value'},
   layout = {
     width = 540, height = 540, square = true,

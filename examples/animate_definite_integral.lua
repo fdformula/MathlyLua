@@ -68,7 +68,8 @@ jscode = [[
 MaxN = 50 -- max number of subintervals
 fstr = '@(x) 1 - x^2'
 opts = {
-  N = {1, MaxN, 1, default = MaxN, label = 'Subintervals'}, x = {-0.1, 1.1}, y = {-0.1, 1.12},
+  N = {1, MaxN, 1, default = MaxN, label = 'Subintervals'},
+  xrange = {-0.1, 1.1}, yrange = {-0.1, 1.12},
   O = {1, 5, 1, default = 3, label = 'Method'},
   controls = 'ON', javascript = jscode,
   layout = {
