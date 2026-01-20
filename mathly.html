@@ -381,9 +381,9 @@ and <code>Y</code>. For example, <code>a, h</code>, and <code>k</code> are contr
 <code>f(x) = a (x - h)^2 + k</code> for exploring the variation of the parabola as they change.</p>
 <p><code>fstr</code> must be a string for <code>y = f(x)</code> or a pair of strings for a parametric curve. The string(s) must be a function in the <a href=#easyf>shortcut string format</a>. <em><code>fstr</code> can also be <code>nil</code>,
 if all graphic elements are plotted through JavaScript and/or the <code>enhancements</code> field</em> (e.g., <a href=examples/animate_shooting_method_by_guesses.lua target="_blank">animate_shooting_method_by_guesses.lua</a>).</p>
-<p>The <code>opts</code> is a table of tables, used to define the ranges of <code>x, y</code>, and <code>t</code>, etc. You may include optional <code>enhancements</code> in it to improve the effect of an animation. An enhancement is
+<p>The <code>opts</code> is a table of tables, used to specify <code>layout</code>, the range of <code>t</code>, etc. You may include optional <code>enhancements</code> in it to improve the effect of an animation. An enhancement is
 actually a simple graphics object here, i.e., a line, a point, a text, or a parametric curve, of which the properties, <code>color, size, width</code>, whenever applicable, can be specified.
-If more properties are needed, define them through field <code>style</code> in a string, such as <code>style = "symbol: 'diamond', line: { color: 'rgb(0, 0, 0)', width: 2 }"</code> for a point. You may search keywords like
+If more attributes are needed, define them through field <code>style</code> in a string, such as <code>style = "symbol: 'diamond', line: { color: 'rgb(0, 0, 0)', width: 2 }"</code> for a point. You may search keywords like
 <a href="https://www.google.com/search?q=Plotly+JavaScript+line+style" target="_blank">Plotly JavaScript line style</a>,
 <a href="https://www.google.com/search?q=Plotly+JavaScript+point+style" target="_blank">Plotly JavaScript point style</a>, and
 <a href="https://www.google.com/search?q=Plotly+JavaScript+textfont+style" target="_blank">Plotly JavaScript textfont style</a>
@@ -420,7 +420,7 @@ With each parametric curve in <code>enhancements</code>, field <code>resolution<
 
 <li>Show no title? Add <code>layout = { title = '' }</code>. No square aspect ratio? Add <code>layout = { square = false }</code>.<br><br></li>
 
-<li>The ranges of <code>x</code> and <code>y</code> define their ranges displayed on a graph.</li>
+<li>As with <code><a href=#plot>plot</a></code>, <code>xrange</code> and <code>yrange</code> define the ranges of <code>x</code> and <code>y</code> displayed on a graph.</li>
 </ol></p>
 
 <pre><code>mathly = require('mathly')
