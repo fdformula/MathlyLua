@@ -139,16 +139,16 @@ y2 = x^2 - 2*x + 2 - 2*exp(-x -1)
 y3 = x^2 - 2*x + 2 - 8*exp(-x -2)
 axissquare()
 plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
-     x, y1, '-r', point(0, 1, {symbol='x', size=7, color='red'}),
-     x, y2, '-b', point(-1, 3, {symbol='circle', size=7, color='blue'}),
-     x, y3, '-g', point(-2, 2, {symbol='square', size=7, color='green'}),
-     {layout={autosize=false, width=380, height=600, title="y' = x<sup>2</sup> - y",
-              margin={l=40, r=20, t=45, b=40, pad=10}}})
+     x, y1, '-r', point(0, 1, {symbol ='x', size = 7, color = 'red'}),
+     x, y2, '-b', point(-1, 3, {symbol ='circle', size = 7, color = 'blue'}),
+     x, y3, '-g', point(-2, 2, {symbol ='square', size = 7, color = 'green'}),
+     {layout = {autosize = false, width = 380, height = 600, title = "y' = x<sup>2</sup> - y",
+                margin = {l = 40, r = 20, t = 45, b = 40, pad = 10}}})
 
 manipulate('@(x) a * (x - h)^2 + k',
            {a = {-3, 3, 0.02, default = 3}, h = {-10, 10, 0.5, default = 0}, k = {-90, 90, default = 0},
             xrange = {-10, 10}, yrange = {-100, 100},
-            layout = { width = 600, height = 400, square = false }})
+            layout = {width = 600, height = 400, square = false}})
 
 -- animating trochoids, including cycloids
 fstr = {'@(t) r * t - d*sin(t)', '@(t) r - d*cos(t)'}
