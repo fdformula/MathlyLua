@@ -186,6 +186,16 @@ local function _index_range(R, x)
   return r
 end
 
+local function friendly_matrix(A, msg)
+  if getmetatable(A) ~= mathly_meta then
+    if ismatrix(A) then
+      setmetatable(A, mathly_meta)
+    else
+      error(msg .. ': A must be a matrix.')
+    end
+  end
+end
+
 -- rr(x):            make x a row vector and return it
 -- rr(x, i):         return the ith row of x
 -- rr(x, i, irange): return ith row on specified columns
@@ -198,7 +208,7 @@ function rr(x, I, irange)
     return setmetatable({flatten(x)}, mathly_meta) -- convert x to a row vector
   else
     local matrixq = type(x[1]) == 'table'
-    assert(getmetatable(x) == mathly_meta, 'rr(x, i...): x must be a mathly matrix.')
+    friendly_matrix(x, 'rr(A)')
     irange = _index_range(irange or '*', qq(matrixq, x[1], x))
     local rows = {}
     if type(I) ~= 'table' then I = { I } end
@@ -230,7 +240,7 @@ function cc(x, I, irange)
   if I == nil then
     return setmetatable(map(function(x) return {x} end, flatten(x)), mathly_meta) -- convert x to a column vector
   else
-    assert(getmetatable(x) == mathly_meta, 'cc(x, i...): x must be a mathly matrix.')
+    friendly_matrix(x, 'cc(A)')
     irange = _index_range(irange, x)
     if type(I) ~= 'table' then I = { I } end
     local cols = mathly(math.ceil((math.abs(irange[2] - irange[1]) + 1) / math.abs(irange[3])), #I, 0)
@@ -1268,7 +1278,7 @@ function mean(x)
     elseif type(x[1]) == 'string' then
       return mean(strcat(table.unpack(x)))
     else
-      assert(getmetatable(x) == mathly_meta, 'mean(A, ...): A must be a mathly matrix')
+      friendly_matrix(x, 'mean(A)')
       local m, n = size(x)
       if m == 1 then
         return mean(x[1])
@@ -1303,7 +1313,7 @@ local function _stdvar(x, opt, sqrtq)
       if sqrtq then s = math.sqrt(s) end
       return s
     else -- a "matrix"
-      assert(getmetatable(x) == mathly_meta, 'std(x): x should be a mathly matrix here')
+      friendly_matrix(x, 'std(A)')
       local m, n = size(x)
       if m == 1 then
         return _stdvar(x[1], opt, sqrtq)
@@ -3853,7 +3863,7 @@ function shownotlegend() _showlegendq = false end
 
 -- transpose a matrix
 function transpose(A)
-  assert(getmetatable(A) == mathly_meta, 'transpose(A): A must be a mathly metatable.')
+  friendly_matrix(A, 'transpose(A)')
 	local B = {}
 	local m, n = size(A)
 	if type(A[1]) ~= 'table' then -- m == 1
@@ -3871,8 +3881,8 @@ end
 -- if B is provided, it works on [ A | B]; useful for finding the inverse of A or
 -- solving Ax = b by rref [ A | b ]
 function rref(a, b) -- gauss-jordan elimination
-  assert(getmetatable(a) == mathly_meta, 'rref(A): A must be a mathly metatable.')
-  assert(b == nil or getmetatable(b) == mathly_meta, 'rref(A, B): A and B must be mathly matrices.')
+  friendly_matrix(a, 'rref(A)')
+  if b ~= nil then friendly_matrix(b, 'rref(B, A)') end
   local rows, columns = size(a)
   local ROWS = math.min(rows, columns)
 
@@ -3880,7 +3890,7 @@ function rref(a, b) -- gauss-jordan elimination
   local bcolumns = 0
   if b ~= nil then
     bq = true
-    assert(#b == rows, 'rref(A, B): A and be must have the same number of rows.')
+    assert(#b == rows, 'rref(A, B): A and B must have the same number of rows.')
   end
 
   local A = copy(a) -- 4/23/25
@@ -3962,9 +3972,9 @@ function rref(a, b) -- gauss-jordan elimination
   end
 end -- rref
 
--- solve the linear system Ax = b for x, given that A is a square matrix; return the solution
+-- solve Ax = b and return x: A is square
 function linsolve(A, b, opt)
-  assert(getmetatable(A) == mathly_meta, 'linsolve(A): A must be a mathly metatable.')
+  friendly_matrix(A, 'linsolve(A)')
   local B = b
   if b ~= nil then
     if getmetatable(b) ~= mathly_meta then
@@ -4011,7 +4021,7 @@ end -- linsolve
 -- calculate the inverse of matrix A
 -- rref([A | I]) gives [ I | B ], where B is the inverse of A
 function inv(A)
-  assert(getmetatable(A) == mathly_meta, 'inv(A): A must be a mathly metatable.')
+  friendly_matrix(A, 'inv(A)')
   local rows, columns = size(A)
   assert(rows == columns, 'inv(A): A must be square.')
   local v1, v2 = rref(A, eye(rows))
@@ -4089,7 +4099,7 @@ end
 
 -- Make A a lower (opt = 'LT'), upper (opt = 'UT'), or a symmetric (opt = 'SYM') matrix by replacing entries with 0's or so
 function remake(A, opt)
-  assert(getmetatable(A) == mathly_meta, 'remake(A, opt): A must be a mathly matrix.')
+  friendly_matrix(A, 'remake(A, ...)')
   local B
   local m, n = size(A)
   local minn = math.min(m, n)
@@ -4193,26 +4203,27 @@ function length(A)
 end
 
 -- // function diag(A, k)
--- return the table of all entries of the k-th diagonal as a column vector
--- The second argument k is optional. Its default value is 0.
+-- return a table of all entries of the k-th diagonal as a column vector
+-- k defaults to 0.
 --
--- Which diagonal? If k = 0, the main diagonal; if k = j, the diagonal j rows above (if j > 0)
+-- which diagonal? If k = 0, the main diagonal; if k = j, the diagonal j rows above (if j > 0)
 -- or -j rows below the main diagonal (if j < 0). E.g., k = 1, the diagonal right above the main
 -- diagonal; k = -1, the diagonal right below the main diagonal.
 --
--- // function diag(v), where v is a table or a row/column vector
--- return a nxn matrix with v as its main diagonal, where n = size of v
+-- // function diag(v), where v is a vector
+-- return a square matrix with v as its main diagonal
 
--- // function diag(v, k), where v is a table or a row/column vector
+-- // function diag(v, k), where v is a vector
 -- if k > 0, return a matrix with v as the diagonal k rows above the main diagonal.
 -- if k < 0, return a matrix with v as the diagonal -k columns below the main diagonal
 -- if k = 0, same as diag(v)
 --
--- // function diag(v, m, n), where v is a table or a row/column vector
+-- // function diag(v, m, n), where v is a vector
 -- return a mxn matrix with vector v (or first elements in it) as its main diagonal
 function diag(A, m, n)
-  local v
-  if getmetatable(A) == mathly_meta then
+  local v = getmetatable(A) == mathly_meta
+  if v or ismatrix(A) then
+    if not v then setmetatable(A, mathly_meta) end
     local rows, columns = size(A)
     if rows == 1 or columns == 1 then -- row/column vector
       v = flatten(A) -- continue after last if .. then .. else ..
@@ -4265,7 +4276,7 @@ end -- diag
 --// function eigs(A)
 -- Return eigenvalues of a square matrix A.
 function eigs(A) -- apply qr factorization
-  assert(getmetatable(A) == mathly_meta, 'eigs(A): A must be a mathly matrix.')
+  friendly_matrix(A, 'eigs(A)')
   local row, col = size(A)
   assert(row == col, 'eigs(A): A must be a square matrix.')
   local Q, R
@@ -4293,7 +4304,7 @@ end
 -- expand/shrink a matrix by adding value v's or dropping entries.
 -- the default value of v is 0
 function expand(A, m, n, v)
-  assert(getmetatable(A) == mathly_meta, 'expand(A): A must be a mathly matrix.')
+  friendly_matrix(A, 'expand(A, ...)')
   if m == nil then return A end
   if n == nil then n = m end
   if v == nil then v = 0 end
@@ -4336,7 +4347,7 @@ end
 
 -- Return L and U in LU factorization A = L * U, where L and U are lower and upper traingular matrices, respectively.
 function lu(A) -- by Crout's method
-  assert(getmetatable(A) == mathly_meta, 'lu(A): A must be a mathly square matrix.')
+  friendly_matrix(A, 'lu(A)')
   local s, n = size(A)
   assert(n == s and n > 1, "lu(A): A is not square.\n")
   local abs, L, U = math.abs, zeros(n, n), zeros(n, n)
@@ -4368,7 +4379,7 @@ end
 -- column vectors, and R is an invertible upper triangular matrix.
 -- note: this implementation requires that m >= n.
 function qr(A)  -- by Gram-Schmidt process
-  assert(getmetatable(A) == mathly_meta, 'qr(A): A must be a mathly matrix.')
+  friendly_matrix(A, 'qr(A)')
   local m, n = size(A)
   assert(m >= n, 'qr(A): A is a mxn matrix, where m >= n.')
 
@@ -4394,9 +4405,8 @@ function qr(A)  -- by Gram-Schmidt process
   return Q, R
 end
 
--- Calculate the determinant of a matrix
 function det(B)
-  assert(getmetatable(B) == mathly_meta, 'det(A): A must be a mathly matrix.')
+  friendly_matrix(B, 'det(A)')
   local m, n = size(B)
   if m ~= n then
     print('det(A): A must be square.')
@@ -4608,7 +4618,7 @@ mathly_meta.__sub = function(m1, m2)
   return mathly.add_sub_shared(m1, m2, '-')
 end
 
--- MATLAB: a .* b
+-- matlab: a .* b
 -- v1 determines the size and structure of the resulted vector
 function mathly.matlabvmul(v1, v2)
   local v22 = flatten(v2)
@@ -4621,9 +4631,9 @@ function mathly.matlabvmul(v1, v2)
   return _set_matrix_meta(x)
 end
 
--- Multiply two matrices; m1 columns must be equal to m2 rows
--- if A and B are row/column vectors, find A .* B as in MATLAB and Julia
--- Special case: A is a mathly matrix, B is any kind of table, for solving Ax = B.
+-- multiply 2 matrices
+-- if both are row/column vectors, find m1 .* m2 as in matlab
+-- special case: m1 is a mathly matrix, m2 is any kind of table, for solving Ax = B.
 function mathly.mul(m1, m2)
   if type(m1) == 'number' then
     return mathly.mulnum(m2, m1)
@@ -4631,8 +4641,6 @@ function mathly.mul(m1, m2)
     return mathly.mulnum(m1, m2)
   end
 
-	assert(getmetatable(m1) == mathly_meta or getmetatable(m2) == mathly_meta,
-	       'm1 * m2: m1 or m2 must be a mathly metatable.')
 	local t = {}
 	local M1 = m1
 	local M2 = m2
@@ -4695,11 +4703,8 @@ mathly_meta.__mul = function(m1, m2)
 	return mathly.mul(m1, m2)
 end
 
--- Multiply mathly with a number
--- num may be of type 'number' or 'complex number'
--- strings get converted to complex number, if that fails then to symbol
+-- scalar multiplication
 function mathly.mulnum(m1, num)
-	assert(getmetatable(m1) == mathly_meta, 'm1 * m2: m1 or m2 must be a mathly metatable.')
 	local t = {}
 	for i = 1,#m1 do
 		if type(m1[1]) == 'table' then
