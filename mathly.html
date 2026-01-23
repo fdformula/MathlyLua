@@ -1689,7 +1689,7 @@ all x, y, and z-simple solids.</p>
 <code>∫∫∫f(θ,φ,ρ)dρdφdθ</code>.</p>
 <pre><code>mathly = require('mathly')
 
---- ∫∫∫f(x,y,z)dzdydx
+-- ∫∫∫f(x,y,z)dzdydx
 disp(integral3('@(x, y, z) 2*(x + y + z)', {'@(x, y) x - y', '@(x, y) x + y'}, {'@(x) x', '@(x) 2 * x'}, {0, 1}))
 -- 5.3333333333333 (exact value 16/3 = 5.3333333333333)
 disp(integral3('@(x, y, z) y*sin(x) + z*cos(x)', {-1, 1}, {0, 1}, {0, pi}))
@@ -1779,24 +1779,22 @@ plot(xs, newtonpoly(x, y, xs))
 linsolve({{58, 18, 88}, {68, 30, 71}, {14, 75, 49}}, {89, 6, 4})
 -- -2.1499  -1.3064   2.6955
 
-a = mathly{{58, 18, 88}, {68, 30, 71}, {14, 75, 49}}
+A = mathly{{58, 18, 88}, {68, 30, 71}, {14, 75, 49}}
 b = mathly({89, 6, 4}, 3, 1)
-x = linsolve(a, b) -- or x = linsolve(a, {89, 6, 4})
+x = linsolve(A, b) -- or x = linsolve(A, {89, 6, 4})
 disp(x)
 -- -2.1499  -1.3064   2.6955
 
-b = mathly{{89, 6, 4}, {21, 1, 6}}^T
+b = mathly{{89, 6, 4}, {21, 1, 6}}^T -- solve Ax = b1, Ax = b2
 disp(b)
 -- 89 21
 --  6  1
 --  4  6
-x = linsolve(a, b)
+x = linsolve(A, b)
 disp(x)
 -- -2.1499  -0.5706
 -- -1.3064  -0.2483
 --  2.6955   0.6655
-
-
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=linspace href=#m><code>linspace(x, y, n)</code></a></h4>
@@ -1822,11 +1820,11 @@ disp(x)
 x = ls('b?o*g.lua') -- a list of all Lua code files in current folder of which file names start with 'b', their 3rd letter is 'o', and all end with 'g.lua'.
 disp(x)
 
-folder = qq(iswindows(), 'c:\\cygwin\\cudatext', '/usr/share/cudatext/')
+folder = qq(iswindows(), 'c:\\mathly\\cudatext', '/usr/share/cudatext/')
 x = ls(folder, '*.txt', false)
 disp(x)
 
-files, path, subfolders = ls(qq(iswindows(), 'c:\\cygwin\\cudatext\\*.txt', '/usr/share/cudatext/*.txt'))
+files, path, subfolders = ls(qq(iswindows(), 'c:\\mathly\\lite-xl\\*.txt', '/usr/share/cudatext/*.txt'))
 disp(files)
 path
 disp(subfolders)
