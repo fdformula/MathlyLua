@@ -3,7 +3,7 @@ mathly = require('mathly')
 -- manipulate1.jpg
 manipulate('@(x) a * (x - h)^2 + k',
            {a = {-3, 3, 0.02, default = 3}, h = {-10, 10, 0.5, default = 0}, k = {-90, 90, default = 0},
-            x = {-10, 10}, y = {-100, 100},
+            xrange = {-10, 10}, yrange = {-100, 100},
             layout = { width = 600, height = 400, square = false }})
 
 -- manipulate2.jpg
@@ -11,14 +11,14 @@ fstr = {'@(t) a*sin(m * t)', '@(t) b*sin(n * t)'}
 opts = {t = {0, 2*pi, 0.01},
         a = {0.1, 5, 0.1, default = 1}, m = {1, 20, 1, default = 2},
         b = {0.1, 5, 0.1, default = 2}, n = {1, 20, 1, default = 1},
-        x = {-5, 5}, resolution = 1500,
+        xrange = {-5, 5}, resolution = 1500,
         layout = { width = 640, height = 540 }}
 manipulate(fstr, opts)
 
 -- animate1~3.jpg
 fstr = {'@(t) r * t - d*sin(t)', '@(t) r - d*cos(t)'}
 opts = {t = {0, 8 * pi, 0.01}, r = {0.1, 5, 0.1, default = 1.5}, d = {0.1, 5, 0.1, default = 1.5},
-        x = {-2, 40}, y = {-5, 10.5},
+        xrange = {-2, 40}, yrange = {-5, 10.5},
         layout = {width = 800, height = 400},
         enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true},
                         {x = '@(t) r * T + r * cos(t)', y = '@(t) r + r * sin(t)', t = {0, 2 * pi}, color = 'orange'},
@@ -43,7 +43,7 @@ jscode = [[
 fstr = {'@(t) R * cos(t) + 0*b + 0*L', '@(t) R * sin(t)'} -- 0*b + 0*L, b and L are controls, too; X, Y, and T are about a point on this curve
 opts = {t = {0, 2 * pi, 0.01},
         b = {0.1, 5, 0.1, default = 2.7}, R = {0.1, 5, 0.1, default = 2}, L = { 0.1, 5, 0.1, default = 5},
-        x = {-3, 5}, y = {-4, 4},
+        xrange = {-3, 5}, yrange = {-4, 4},
         layout = { width = 640, height = 480, title = '',
                    xaxis = { showgrid = false, zeroline = false, showticklabels = false },
                    yaxis = { showgrid = false, zeroline = false, showticklabels = false }},
@@ -130,8 +130,9 @@ jscode = [[
 MaxN = 50 -- max number of subintervals
 fstr = '@(x) 1 - x^2'
 opts = {
-  N = {1, MaxN, 1, default = MaxN, label = 'Subintervals'}, x = {-0.1, 1.1}, y = {-0.1, 1.12},
+  N = {1, MaxN, 1, default = MaxN, label = 'Subintervals'},
   O = {1, 5, 1, default = 3, label = 'Method'},
+  xrange = {-0.1, 1.1}, yrange = {-0.1, 1.12},
   controls = 'ON', javascript = jscode,
   layout = {
     width = 640, height = 640, square = true,
@@ -168,7 +169,8 @@ jscode = [[
 
 fstr = '@(x) ' .. g
 opts = {
-  I = {1, MaxIterations, 1, default = MaxIterations, label = 'Iterations'}, x = {-0.1, 1.1}, y = {-0.1, 1.1},
+  I = {1, MaxIterations, 1, default = MaxIterations, label = 'Iterations'},
+  xrange = {-0.1, 1.1}, yrange = {-0.1, 1.1},
   a = {0, 1, 0.1, default = 0.9, label = 'Initial Value'},
   layout = {
     width = 540, height = 540, square = true,
