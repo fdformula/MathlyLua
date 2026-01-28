@@ -624,7 +624,7 @@ end -- any
 -- If f is a table/matrix, return 1) a table of elements of A (rowwisely) that correspond
 -- to nonzero elements of f and 2) A with entries replaced with corresponding zero elements of f.
 --
--- note: 'select' seems to be a better name . however, Lua already uses it.
+-- note: 'select' seems to be a better name. however, Lua already uses it.
 function match(A, f)
   if type(A) ~= 'table' then error('match(A, ...): A must be a table.') end
   if type(f) == 'string' then f = fstr2f(f) end
@@ -650,9 +650,7 @@ local function _dec2bho(x, title, f)
   if isinteger(x) then
     return f(x)
   elseif type(x) == 'table' then
-    local X = copy(x)
-    demathly(X)
-    return map(f, X)
+    return map(f, x)
   else
     error(title .. '(x): x must be an integer or a table of integers.')
   end
