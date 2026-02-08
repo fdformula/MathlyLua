@@ -21,18 +21,18 @@ Only one interpreter is allowed at a time. To change an interpreter, you may ent
 commands like `os.exit()`, `exit`, `quit`, `exit()`, etc., to exit the present interpreter. Then, go to the very file in the editor and
 press F2 to start the associated interpreter.
 
-&rArr; Microsoft Windows users may download on this very page the file, `lite-xl-*-for-mathly-windows.zip`. It includes the text editor, Lite XL, with Lua 5.4.8 and
+&rArr; Microsoft Windows users may download on this very page the file, `lite-xl-*-for-mathly-win.zip`. It includes the text editor, Lite XL, with Lua 5.4.8 and
 Mathly included and integrated. Unzip it to C:\ (the root directory of the C drive). <em>Do not change the name of the folder,
 `C:\mathly`</em>.
 
 &rArr; Linux users may download the file, `lite-xl-2.1.8-for-mathly-linux.tar.gz`. Run `tar xfz lite-xl-2.1.8-for-mathly-linux.tar.gz` and refer to the included file,
 `lite-xl-2.1.8-for-mathly-linux/note.txt`, for further steps.
 
-&rArr; MacOS users may download the file, `lite-xl-for-mathly-macos_intel.tar.gz`, if your Mac is Intel-based. Run
+&rArr; MacOS users may download the file, `lite-xl-2.1.8-for-mathly-macos_intel.tar.gz`, if your Mac is Intel-based. Run
 ```bash
-tar xfz lite-xl-for-mathly-macos_intel.tar.gz
+tar xfz lite-xl-2.1.8-for-mathly-macos_intel.tar.gz
 ```
-and refer to the included file, `lite-xl-for-mathly-macos_intel/note.txt`, for further steps. If your Mac is newer and uses M-series chips, you still need the file.
+and refer to the included file, `lite-xl-2.1.8-for-mathly-macos_intel/note.txt`, for further steps. If your Mac is newer and uses M-series chips, you still need the file.
 You will first download [Lite XL](https://github.com/lite-xl/lite-xl) and install it. You will also need to install Lite XL Plugin Manager (`lpm`) and `lite-xl-terminal`
 as follows:
 
@@ -42,12 +42,12 @@ wget --no-check-certificate https://github.com/lite-xl/lite-xl-plugin-manager/re
 ```
 Then, run
 ```bash
-rm -fr lite-xl-for-mathly-macos_intel/Applications/Lite\ XL.app/Contents/MacOS/
-cp -R lite-xl-for-mathly-macos_intel/usr/* /usr/
-cp -R lite-xl-for-mathly-macos_intel/Applications/* /Applications/
+rm -fr lite-xl-2.1.8-for-mathly-macos_intel/Applications/Lite\ XL.app/Contents/MacOS/
+cp -R lite-xl-2.1.8-for-mathly-macos_intel/usr/* /usr/
+cp -R lite-xl-2.1.8-for-mathly-macos_intel/Applications/* /Applications/
 rm /Applications/Lite\ XL.app/Contents/Resources/terminal/*
 cp -R ~/.config/lite-xl/plugins/terminal/* /Applications/Lite\ XL.app/Contents/Resources/terminal/
-cp lite-xl-for-mathly-macos_intel/Applications/Lite\ XL.app/Contents/Resources/terminal/init.lua /Applications/Lite\ XL.app/Contents/Resources/terminal/
+cp lite-xl-2.1.8-for-mathly-macos_intel/Applications/Lite\ XL.app/Contents/Resources/terminal/init.lua /Applications/Lite\ XL.app/Contents/Resources/terminal/
 rm -fr ~/.config/lite-xl/
 ```
 `Note`: [CudaText](https://github.com/fdformula/MathlyLua/tree/main/IDE%20-%20CudaText) is another very good "IDE" for Lua + Mathly.
