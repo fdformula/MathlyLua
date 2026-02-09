@@ -14,6 +14,9 @@ If you download CudaText (Windows) or related configuration files (Linux or MacO
 
   Ctrl-P L         to turn on/off Lua lexer switch (when editing Lua script, say, in a HTML file)
   Ctrl-P P         to insert template for plot(...) (or simply Ctrl-T)
+
+  Ctrl-Shift-C     to copy selection (in terminal)
+  Ctrl-Shift-V     to paste (in terminal)
 ```
 `F2`, `Ctrl-,`, and `Ctrl-.` work with Bash, Julia, Octave, Python, R, Ruby, and some other languages with interactive REPL terminals.
 CudaText detects and selects the very language according to the extension of the present filename (defaults to Lua). See: The first few
