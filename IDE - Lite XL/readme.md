@@ -10,6 +10,9 @@ versions for Windows, Linux, and MacOS. While in Lite XL, press
   Ctrl-.           to run all code in the editor (or Ctrl-Enter. HTML file? open it in a browser)
 
   Ctrl-t           to insert template for plot(...)
+
+  Ctrl-Shift-c     to copy selection (in terminal)
+  Ctrl-Shift-v     to paste (in terminal)
 ```
 `F2`, `Ctrl-,`, and `Ctrl-.` work with Bash, Julia, Octave, Python, R, Ruby, and some other languages with interactive REPL terminals.
 Lite XL detects and selects the very language according to the extension of the present filename (defaults to Lua). See: The first few
