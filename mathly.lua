@@ -1565,22 +1565,7 @@ function newtonpoly(x, y, xx)
   return _set_matrix_meta(map(fstr2f('@(x) ' .. s), xx))
 end -- newtonpoly
 
--- if xx is provided, return the value(s) of a polynomial, defined by data (x, y)'s, at xx;
--- otherwise, return the string and the coefficeints of the polynomial
-function polynomial(x, y, xx)
-  local X, Y = _poly_input(x)
-  if #X ~= 0 then xx = y; x, y = X, Y end
-  assert(type(x) == 'table' and type(y) == 'table' and #x == #y and #x > 1,
-         'polynomial(x, y...): x and y must be tables of the same size (≥ 2).')
-  local A = {}
-  for i = 1, #x do
-    A[i] = {}
-    for j = 1, #x-2 do
-      A[i][j] = x[i] ^ (#x - j)
-    end
-    A[i][#x - 1], A[i][#x] = x[i], 1
-  end
-  local B = linsolve(mathly(A), y) -- coefs of polynomial
+local function _polystring(B)
   local s, not1stq, abs = '', false, math.abs
   for i = 1, #B do
     if abs(B[i]) > 10*eps then -- B[i] ~= 0
@@ -1607,9 +1592,53 @@ function polynomial(x, y, xx)
       not1stq = true
     end
   end
+  return s
+end -- _polystring
+
+-- if xx is provided, return the value(s) of a polynomial, defined by data (x, y)'s, at xx;
+-- otherwise, return the string and the coefficeints of the polynomial
+function polynomial(x, y, xx)
+  local X, Y = _poly_input(x)
+  if #X ~= 0 then xx = y; x, y = X, Y end
+  assert(type(x) == 'table' and type(y) == 'table' and #x == #y and #x > 1,
+         'polynomial(x, y...): x and y must be tables of the same size (≥ 2).')
+  local A = {}
+  for i = 1, #x do
+    A[i] = {}
+    for j = 1, #x-2 do A[i][j] = x[i] ^ (#x - j) end
+    A[i][#x - 1], A[i][#x] = x[i], 1
+  end
+  local B = linsolve(mathly(A), y) -- coefs of polynomial
+  local s = _polystring(B)
   if xx == nil then return s, B end
   return _set_matrix_meta(map(fstr2f('@(x) ' .. s), xx))
 end -- polynomial
+
+-- use a polynomial of degree n to curve fit data with least sum of squares of errors
+function polyfit(x, y, n, xx)
+  local X, Y = _poly_input(x)
+  if #X ~= 0 then xx, n = n, y; x, y = X, Y end
+  assert(type(x) == 'table' and type(y) == 'table' and #x == #y and #x > 1,
+         'polyfit(x, y, n): x and y must be tables of the same size (≥ 2).')
+
+  x = tt(x)
+  local n2, N, I = 2 * n, n + 1, 1
+  local S, A, B = zeros(1, n2 + 1), zeros(N), zeros(1, N)
+  for i = n2, 0, -1 do S[I] = sum(x^i); I = I + 1 end
+
+  for i = 1, N do
+    I = i
+    for j = 1, N do A[i][j] = S[I]; I = I + 1 end
+  end
+
+  I = 1
+  for i = n, 0, -1 do B[I] = sum(x^i * y); I = I + 1 end
+
+  B = linsolve(A, B) -- coefs of polynomial
+  local s = _polystring(B)
+  if xx == nil then return s, B end
+  return _set_matrix_meta(map(fstr2f('@(x) ' .. s), xx))
+end -- polyfit
 
 -- evaluate a polynomial p at x
 -- example: polyval({6, -3, 4}, 5) -- evalue 6 x^2 - 3 x + 4 at x = 5

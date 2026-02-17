@@ -203,7 +203,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <a href=#ismember>ismember</a>, <a href=#isvector>isvector</a>, <a href=#lagrangepoly>lagrangepoly</a>, <a href=#length>length</a>, <a href=#linsolve>linsolve</a>,
 <a href=#linspace>linspace</a>, <a href=#lu>lu</a>, <a href=#map>map</a>, <a href=#match>match</a>, <a href=#mathly>mathly</a>, <a href=#max>max</a>,
 <a href=#mean>mean</a>, <a href=#merge>merge</a>, <a href=#min>min</a>, <a href=#mod>mod</a>, <a href=#namedargs>namedargs</a>, <a href=#newtonpoly>newtonpoly</a>,
-<a href=#norm>norm</a>, <a href=#ones>ones</a>, <a href=#polynomial>polynomial</a>, <a href=#polyval>polyval</a>, <a href=#powermod>powermod</a>,
+<a href=#norm>norm</a>, <a href=#ones>ones</a>, <a href=#polyfit>polyfit</a>, <a href=#polynomial>polynomial</a>, <a href=#polyval>polyval</a>, <a href=#powermod>powermod</a>,
 <a href=#printf>printf</a>, <a href=#prod>prod</a>, <a href=#qq>qq</a>, <a href=#qr>qr</a>, <a href=#rand>rand</a>, <a href=#randi>randi</a>,
 <a href=#randn>randn</a>, <a href=#range>range</a> (or <a href=#seq>seq</a>), <a href=#remake>remake</a>, <a href=#repmat>repmat</a>, <a href=#reshape>reshape</a>,
 <a href=#reverse>reverse</a>, <a href=#round>round</a>, <a href=#rr>rr</a>, <a href=#rref>rref</a>, <a href=#save>save</a>, <a href=#seq>seq</a> (or
@@ -315,6 +315,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#plotsphericalsurface3d><code>plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)</code></a></td><td> </td><td>Plot a spherical function.</td></tr>
 <tr><td> </td><td><a href=#point><code>point(x, y, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a point.</td></tr>
 <tr><td> </td><td><a href=#polarcurve2d><code>polarcurve2d(r(t), trange, style, resolution, orientationq)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a polar curve.</td></tr>
+<tr><td> </td><td><a href=#polyfit><code>polyfit(...)</code></a></td><td> </td><td>Return a polynomial of degree n that best fits give data (in a least-squares sense), or the values of the polynomial at specified points.</td></tr>
 <tr><td> </td><td><a href=#polygon><code>polygon(vertices, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a polygon.</td></tr>
 <tr><td> </td><td><a href=#polynomial><code>polynomial(...)</code></a></td><td> </td><td>Return the polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
 <tr><td> </td><td><a href=#polyval><code>polyval(coefs, x)</code></a></td><td> </td><td>Evaluate at <code>x</code> the value of a polynomial of which the coefficients are specified in a table <code>coefs</code>.</td></tr>
@@ -1739,7 +1740,7 @@ print(ismember(4, x))
 <p>Return the Lagrange interpolating polynomial, defined by data <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>, or the value(s) of the polynomial at <code>xx</code>.</p>
 <p>If <code>xx</code> is provided, return the value(s) of the polynomial at <code>xx</code>;
 otherwise, return the string of the polynomial.</p>
-<p>See also: <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polynomial><code>polynomial</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
+<p>See also: <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polyfit><code>polyfit</code></a>, <a href=#polynomial><code>polynomial</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
 <pre><code>mathly = require('mathly')
 
 clear()
@@ -2267,7 +2268,7 @@ f({z = 100})    -- same as f(nil, nil, 100)
 <p>Return the Newton interpolating polynomial, defined by data <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>, or the value(s) of the polynomial at <code>xx</code>.</p>
 <p>If <code>xx</code> is provided, return the value(s) of the polynomial at <code>xx</code>;
 otherwise, return the string of the polynomial.</p>
-<p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#polynomial><code>polynomial</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
+<p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#polyfit><code>polyfit</code></a>, <a href=#polynomial><code>polynomial</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
 <pre><code>mathly = require('mathly')
 
 clear()
@@ -2549,11 +2550,33 @@ plotsphericalsurface3d('@(theta, phi) theta + 2 * phi', {0, 4*pi}, nil, 'Demo')
 plotsphericalsurface3d(function(t, p) return 2 + sin(5*p + 7*t) end)
 </code></pre>
 
+<h4>&bull; &nbsp; <a name=polyfit href=#m><code>polyfit({x1, x2, ...}, {y1, y2, ...}, n, xx), polynomial({{x1, y1}, {x2, y2}, ...}, n, xx)</code></a></h4>
+<p>Construct a polynomial of degree <code>n</code> that best fits the given data, defined by <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>, in a least-squares sense.</p>
+<p>If <code>xx</code> is provided, return the value(s) of the polynomial at (each of) <code>xx</code>;
+otherwise, return the string and the coefficients of the polynomial.</p>
+<p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polynomial><code>polynomial</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
+<pre><code>mathly = require('mathly')
+
+x = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100}
+y = {0.94, 0.96, 1, 1.05, 1.07, 1.09, 1.14, 1.17, 1.21, 1.24, 1.28}
+s, coeffs = polyfit(x, y, 1) -- linear least-squares regression
+print(s)
+xx = {10, 15, 22}
+polyval(coeffs, xx)
+polyfit(x, y, 1, xx)
+
+s, coeffs = polyfit(x, y, 2)
+plot(x, y, 'o', '@(x) ' .. s)
+polyfit(x, y, 2, xx)
+
+polyfit({{1, 3}, {2, 1}, {3, 4}}, 2)
+</code></pre>
+
 <h4>&bull; &nbsp; <a name=polynomial href=#m><code>polynomial({x1, x2, ...}, {y1, y2, ...}, xx), polynomial({{x1, y1}, {x2, y2}, ...}, xx)</code></a></h4>
 <p>Construct a polynomial, defined by data <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>.</p>
 <p>If <code>xx</code> is provided, return the value(s) of the polynomial at (each of) <code>xx</code>;
 otherwise, return the string and the coefficients of the polynomial.</p>
-<p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
+<p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polyfit><code>polyfit</code></a>, <a href=#polyval><code>polyval</code></a>.</p>
 <pre><code>mathly = require('mathly')
 
 disp(polynomial({1, 2}, {3, 4}))
@@ -2602,7 +2625,7 @@ in a table <code>coefs</code>.</p>
 a<sub>1</sub>x + a<sub>0</sub></code>,
 <code>coefs = {a<sub>n</sub>, a<sub>n-1</sub>, ..., a<sub>0</sub>}</code>.
 For example, <code>p(x) = -2x<sup>4</sup> + 4x<sup>2</sup> - 5x</code>, <code>coef = {-2, 0, 4, -5, 0}.</code></p>
-<p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polynomial><code>polynomial</code></a>.</p>
+<p>See also: <a href=#lagrangepoly><code>lagrangepoly</code></a>, <a href=#newtonpoly><code>newtonpoly</code></a>, <a href=#polyfit><code>polyfit</code></a>, <a href=#polynomial><code>polynomial</code></a>.</p>
 <pre><code>mathly = require('mathly')
 polyval({1, 2, 1}, 0) -- evaluate x<sup>2</sup> + 2x + 1 at x = 0
 -- 1.0000
