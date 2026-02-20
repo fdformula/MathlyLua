@@ -1645,13 +1645,9 @@ function polyfit(x, y, n, xx)
 end -- polyfit
 
 -- evaluate a polynomial p at x
--- example: polyval({6, -3, 4}, 5) -- evalue 6 x^2 - 3 x + 4 at x = 5
+-- polyval({6, -3, 4}, 5) returns 6 x^2 - 3 x + 4 at x = 5
 function polyval(p, x)
-  local msg = 'polyval(p, x): invalid p. It must be a table of the coefficients of a polynomial.'
-  if p == nil or type(p) ~= 'table' then
-    error(msg)
-  end
-
+  assert(type(p) == 'table', 'polyval(p, x): invalid p. It must be a table of the coefficients of a polynomial.')
   p = tt(p)
   if type(x) ~= 'table' then
     x = { x }
