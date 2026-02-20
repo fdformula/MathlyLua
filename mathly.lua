@@ -1370,9 +1370,9 @@ function vectorangle(a, b)
   return x, '(' .. tostring(deg(x)) .. ' degree)'
 end
 
--- generates a evenly spaced sequence/table of numbers starting at 'start' and likely ending at 'stop' by 'step'.
+-- generates an evenly spaced sequence/table of numbers starting at 'start' and likely ending at 'stop' by 'step'.
 function range(start, stop, step) -- Python, but inclusive
-  if start == nil then error('range(start, stop, step): no input.') end
+  assert(start ~= nil, 'range(start, stop, step): no input.')
   if stop == nil then
     stop = start
     if start > 0 then start = 1 else start = -1 end
@@ -1380,10 +1380,11 @@ function range(start, stop, step) -- Python, but inclusive
   if step == nil then
     if start < stop then step = 1 else step = -1 end
   end
-  if start <= stop and step < 0 then
-    error(sprintf("range(%d, %d, step): step must be positive.\n", start, stop))
-  elseif start >= stop and step > 0 then
-    error(sprintf("range(%d, %d, step): step must be negative.\n", start, stop))
+  local msg = sprintf("range(%d, %d, step): step must be ", start, stop)
+  if start < stop and step < 0 then
+    error(msg .. "positive")
+  elseif start > stop and step > 0 then
+    error(msg .. "negative")
   end
 
   local v, k = {}, 1
