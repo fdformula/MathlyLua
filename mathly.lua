@@ -1619,12 +1619,9 @@ end -- polynomial
 function polyfit(x, y, n, xx)
   local X, Y = _poly_input(x)
   if #X ~= 0 then xx, n = n, y; x, y = X, Y end
-  assert(type(x) == 'table' and type(y) == 'table' and #x == #y and #x > 1,
-         'polyfit(x, y, n): x and y must be tables of the same size (≥ 2).')
+  assert(type(x) == 'table' and type(y) == 'table' and #x == #y and #x > 1, 'polyfit(x, y, n): x and y must be tables of the same size (≥ 2).')
   assert(n > 0 and isinteger(n), 'polyfit(x, y, n): n must be a positive integer.')
-  if n >= #x then
-    disp("polyfit(x, y, n): n is >= number of data points. Add points with distinct x values or reduce n.")
-  end
+  assert(n < #x, "polyfit(x, y, n): n is >= number of data points. Add points with distinct x values or reduce n.")
 
   x = tt(x)
   local n2, N, I = 2 * n, n + 1, 1
