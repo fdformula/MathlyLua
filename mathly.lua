@@ -1644,13 +1644,28 @@ end -- polyfit
 
 -- calculate linear correlation coefficient
 function corr(x, y)
-  local X, Y = _poly_input(x)
-  if #X ~= 0 then x, y = X, Y end
-  assert(type(x) == 'table' and type(y) == 'table' and #x == #y and #x > 1, 'corr(x, y): x and y must be tables of the same size (≥ 2).')
-  x, y = tt(x), tt(y)
-  local n, Sx, Sy = #x, sum(x), sum(y)
-  local Sxx, Syy, Sxy = sum(x*x), sum(y*y), sum(x*y)
-  return (n * Sxy - Sx * Sy) / sqrt((n * Sxx - Sx^2) * (n * Syy - Sy^2))
+  function c(x, y)
+    local n, Sx, Sy = #x, sum(x), sum(y)
+    local Sxx, Syy, Sxy = sum(x*x), sum(y*y), sum(x*y)
+    return (n * Sxy - Sx * Sy) / sqrt((n * Sxx - Sx^2) * (n * Syy - Sy^2))
+  end
+  if isvector(x) or (ismatrix(x) and #x[1] <= 2) then
+    local X, Y = _poly_input(x)
+    if #X ~= 0 then x, y = X, Y end
+    assert(type(x) == 'table' and type(y) == 'table' and #x == #y and #x > 1, 'corr(x, y): x and y must be tables of the same size (≥ 2).')
+    return c(tt(x), tt(y))
+  end
+  if ismatrix(x) then
+    local A, B = transpose(x), {}
+    for i = 1, #A do
+      B[i] = {}; B[i][i] = 1.0;
+      for j = i + 1, #A do B[i][j] =  c(A[i], A[j]) end
+      for j = 1, i - 1 do B[i][j] = B[j][i] end
+    end
+    return setmetatable(B, mathly_meta)
+  else
+    error('corr(A): A must be a matrix.')
+  end
 end
 
 -- evaluate a polynomial p at x
