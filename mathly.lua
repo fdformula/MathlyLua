@@ -1642,8 +1642,18 @@ function polyfit(x, y, n, xx)
   return _set_matrix_meta(map(fstr2f('@(x) ' .. s), xx))
 end -- polyfit
 
+-- calculate linear correlation coefficient
+function corr(x, y)
+  local X, Y = _poly_input(x)
+  if #X ~= 0 then x, y = X, Y end
+  assert(type(x) == 'table' and type(y) == 'table' and #x == #y and #x > 1, 'corr(x, y): x and y must be tables of the same size (≥ 2).')
+  x, y = tt(x), tt(y)
+  local n, Sx, Sy = #x, sum(x), sum(y)
+  local Sxx, Syy, Sxy = sum(x*x), sum(y*y), sum(x*y)
+  return (n * Sxy - Sx * Sy) / sqrt((n * Sxx - Sx^2) * (n * Syy - Sy^2))
+end
+
 -- evaluate a polynomial p at x
--- polyval({6, -3, 4}, 5) returns 6 x^2 - 3 x + 4 at x = 5
 function polyval(p, x)
   assert(type(p) == 'table', 'polyval(p, x): invalid p. It must be a table of the coefficients of a polynomial.')
   p = tt(p)

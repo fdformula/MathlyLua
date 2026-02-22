@@ -194,7 +194,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 
 <a href=#top name=m><h2>Table of Functions Provided by Mathly</h2></a>
 <code><p><a href=#horzcat>.. (or horzcat)</a>, <a href=#all>all</a>, <a href=#any>any</a>, <a href=#apply>apply</a>, <a href=#cc>cc</a>, <a href=#clc>clc</a>,
-<a href=#clear>clear</a>, <a href=#copy>copy</a>, <a href=#cross>cross</a>, <a href=#demathly>demathly</a>, <a href=#det>det</a>, <a href=#diag>diag</a>,
+<a href=#clear>clear</a>, <a href=#copy>copy</a>, <a href=#corr>corr</a>, <a href=#cross>cross</a>, <a href=#demathly>demathly</a>, <a href=#det>det</a>, <a href=#diag>diag</a>,
 <a href=#diff>diff</a> (or <a href=#diff1>diff1</a>), <a href=#diff2>diff2</a>, <a href=#disp>disp</a>, <a href=#display>display</a>, <a href=#div>div</a>,
 <a href=#dot>dot</a>, <a href=#eval>eval</a>, <a href=#expand>expand</a>, <a href=#eye>eye</a>, <a href=#findroot>findroot</a>, <a href=#flatten>flatten</a>,
 <a href=#fliplr>fliplr</a>, <a href=#flipud>flipud</a>, <a href=#format>format</a>, <a href=#fstr2f>fstr2f</a>, <a href=#fzero>fzero</a>, <a href=#gcd>gcd</a>,
@@ -241,6 +241,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a name=clear></a><code>clear()</code></td><td> </td><td>Delete all user-defined variables and their values in memory and make it ready for a new task.</td></tr>
 <tr><td> </td><td><a href=#contourplot><code>contourplot(f, xdata, ydata, style)</code></a></td><td> </td><td>Prepare a graphics object for <code>plot</code> to plot the contour map of function <code>f(x, y)</code>.</td></tr>
 <tr><td> </td><td><a href=#copy><code>copy(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></a></td><td> </td><td>Make a deep copy of <code>x</code> if <code>B</code> is not provided; otherwise, copy to <code>A</code> from <code>B</code>.</td></tr>
+<tr><td> </td><td><a href=#corr><code>corr(x, y)</code></a></td><td> </td><td>Calculate linear correlation coefficient.</td></tr>
 <tr><td> </td><td><a href=#cross><code>cross(a, b)</code></a></td><td> </td><td>Calculate the cross/vector product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub>}</code>.</td></tr>
 <tr><td> </td><td><a href=#demathly><code>demathly(x)</code></a></td><td> </td><td>Force <code>x</code> not to be a Mathly matrix.</td></tr>
 <tr><td> </td><td><a name=det></a><code>det(A)</code></td><td> </td><td>Calculate the determinant of square matrix <code>A</code>.</td></tr>
@@ -1156,6 +1157,20 @@ Mathly: copy(A, {1, -1, 2}, {-1, -2, -3})
 
 MATLAB: A(1:2:end) = B(1:3:end)
 Mathly: copy(A, {1, -1, 2}, B, {1, -1, 3})
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=corr href=#m><code>corr({x1, x2, ...}, {y1, y2, ...}, n, xx), corr({{x1, y1}, {x2, y2}, ...}, n, xx)</code></a></h4>
+<p>Calculate Pearson's linear correlation coefficient for the given data, defined by <code>x = {x1, x2, ...}</code> and <code>y = {y1, y2, ...}</code>.</p>
+<p>See also: <code><a href=#polyfit>polyfit</a></code>.</p>
+<pre><code>mathly = require('mathly')
+
+x = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100}
+y = {1.94, 3.96, 5, 6.5, 8.07, 6.09, 9.14, 10.97, 11.21, 14.74, 18.28}
+s = polyfit(x, y, 1)
+corr(x, y)
+plot(x, y, 'o', '@(x) ' .. s)
+
+corr{{0, 1.94}, {10, 3.96}, {20, 5}, {30, 6.5}, {40, 8.07}, {50, 6.09}, {60, 9.14}, {70, 10.97}, {80, 11.21}, {90, 14.74}, {100, 18.28}}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=cross href=#m><code>cross(a, b)</code></a></h4>
@@ -2561,10 +2576,14 @@ x = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100}
 y = {1.94, 3.96, 5, 6.5, 8.07, 6.09, 9.14, 10.97, 11.21, 14.74, 18.28}
 s, coeffs = polyfit(x, y, 1) -- linear least-squares regression
 print(s)
+corr(x, y)
+plot(x, y, 'o', '@(x) ' .. s)
+
 xx = {10, 15, 22}
 polyval(coeffs, xx)
 polyfit(x, y, 1, xx)
-s, coeffs = polyfit(x, y, 3)
+
+s, coeffs = polyfit(x, y, 8)
 plot(x, y, 'o', '@(x) ' .. s)
 
 polyfit({{1, 3}, {2, 1}, {3, 4}}, 2)
