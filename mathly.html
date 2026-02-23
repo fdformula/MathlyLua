@@ -721,7 +721,7 @@ disp(dec2hex(a))
 <h4>&bull; &nbsp; <a name=cc></a><a name=rr></a><a name=tt href=#m><code>cc, rr, tt</code></a></h4>
 <p>A matrix operation may be applied to an ordinary table. It takes the table as a row or column vector according to the very context.
 If you want full control, you can use <code>cc</code> or <code>rr</code> to tell Mathly whether the table is a column or row vector.</p>
-<p>Each function has an argument, <code>irange</code>, a range of index values. See <a href=#copy>copy</a>.</p>
+<p>Each function has an argument, <code>irange</code>, a range of index values. See <a href=#copy><code>copy</code></a>.</p>
 <table><tbody>
 <tr><td width=20></td><td><code>cc(x, i, irange)</code></td><td> </td><td width=10> </td><td>Convert table <code>x</code> into a column vector or return specified columns of a Mathly matrix...</td></tr>
 <tr><td></td><td><code>rr(x, i, irange)</code></td><td> </td><td> </td><td>Convert table <code>x</code> into a row vector or return specified rows of a Mathly matrix...</td></tr>
@@ -1199,7 +1199,7 @@ display(cross({1, 2, 3}, {3, 4, 5}))
 <p>Force <code>x</code> to be an ordinary Lua table. It is not a Mathly matrix now.</p>
 <p>It is provided for special purposes. If no matrix operations are needed/allowed or the structure of a
 matrix is damaged (on purpose), you had better call it.</p>
-<p>See also: <a href=#mathly>mathly</a>.</p>
+<p>See also: <a href=#mathly><code>mathly</code></a>.</p>
 <pre><code>mathly = require('mathly')
 
 A = mathly{{1, 2}, {3, 4}}
@@ -1297,7 +1297,7 @@ diag({1, 2, 3},-1)
 -- 1  0  0  0
 -- 0  2  0  0
 -- 0  0  3  0
-diag({2,3,4,5}, 1) + diag({1,2,3,4,5}) + diag({3,4,5,6}, -1) -- See also: <a name=diag1></a><a href=#remake1>remake</a>
+diag({2,3,4,5}, 1) + diag({1,2,3,4,5}) + diag({3,4,5,6}, -1) -- See also: <a name=diag1></a><a href=#remake1><code>remake</code></a>
 -- 1  2  0  0  0
 -- 3  2  3  0  0
 -- 0  4  3  4  0
@@ -1774,8 +1774,10 @@ otherwise, return the string of the polynomial.</p>
 
 clear()
 x, y = {0, 1, 2}, {3, 1, 4}
-disp(lagrangepoly(x, y)) -- or: lagrangepoly({{0, 3}, {1, 1}, {2, 4}})
+s = lagrangepoly(x, y) -- or: lagrangepoly({{0, 3}, {1, 1}, {2, 4}})
+disp(s)
 -- '1.5*(x - 1)*(x - 2) - x*(x - 2) + 2.0*x*(x - 1)'
+plot('@(x) ' .. s, x, y, 'ro')
 disp(lagrangepoly(x, y, 5)) -- or: lagrangepoly({{0, 3}, {1, 1}, {2, 4}}, 5)
 -- 43.0
 disp(lagrangepoly(x, y, {5, -6, 100}))
@@ -1963,7 +1965,7 @@ opts = {
     yaxis = { showgrid = false, zeroline = false, showticklabels = false }}}
 manipulate(fstr, opts)
 -- to view how the curves are dynamically drawn, replace 'manipulate' with 'animate'.
-sleep(1.2) -- see <a href=#sleep>sleep</a>
+sleep(1.2) -- see <a href=#sleep><code>sleep</code></a>
 opts.enhancements = {{x = 'X', y = 'Y', point = true, color = 'red'}} -- add a red "pen tip"
 animate(fstr, opts)
 </code></pre>
@@ -2301,10 +2303,11 @@ otherwise, return the string of the polynomial.</p>
 <pre><code>mathly = require('mathly')
 
 clear()
-x = {-1.0, 0, 7, 10}
-y = {1, -1, 6, -2}
-disp(newtonpoly(x, y))
+x, y = {-1.0, 0, 7, 10}, {1, -1, 6, -2}
+s = newtonpoly(x, y)
+disp(s)
 -- '1 - 2.0*(x + 1.0) + 0.375*(x + 1.0)*x - 0.067424242424242*(x + 1.0)*x*(x - 7)'
+plot('@(x) ' .. s, x, y, 'ro')
 
 xs = linspace(x[1], x[length(x)], 100)
 ys = newtonpoly(x, y, xs)
@@ -2617,9 +2620,11 @@ disp(polynomial({1, 2}, {3, 4}, 5))
 disp(polynomial({1, 2}, {3, 4}, {5, -6, 100}))
 -- {7.0, -4.0, 102.0}
 
-s, coefs = polynomial({1, 2, 3}, {3, 1, 4})
+x, y = {1, 2, 3}, {3, 1, 4}
+s, coefs = polynomial(x, y)
 disp(s)
 -- '2.5*x^2 - 9.5*x + 10.0'
+plot(x, y, 'o', '@(x) ' .. s)
 p = fstr2f('@(x) ' .. s) -- or load('function p(x) return ' .. s .. ' end')() -- activate the function
 p(10)
 -- 165.0
@@ -2801,7 +2806,7 @@ remake(A, 'SYM')
 -- 11  12 13  18  23
 -- 16  17 18  19  24
 -- 21  22 23  24  25
-remake(A, {-1, 0, 1}) -- or remake(A, seq(-1,1)) -- See also: <a name=remake1></a><a href=#diag1>diag</a>
+remake(A, {-1, 0, 1}) -- or remake(A, seq(-1,1)) -- See also: <a name=remake1></a><a href=#diag1><code>diag</code></a>
 -- 1  6   0   0   0
 -- 2  7  12   0   0
 -- 0  8  13  18   0
