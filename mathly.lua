@@ -1380,7 +1380,7 @@ function range(start, stop, step) -- Python, but inclusive
   if step == nil then
     if start < stop then step = 1 else step = -1 end
   end
-  local msg = sprintf("range(%d, %d, step): step must be ", start, stop)
+  local msg = "range(" .. start .. ", " .. stop .. ", step): step must be "
   if start < stop and step < 0 then
     error(msg .. "positive")
   elseif start > stop and step > 0 then
