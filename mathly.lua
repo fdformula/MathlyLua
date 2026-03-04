@@ -2816,7 +2816,7 @@ local function _amnt_write_subtraces(traces, tr, file, resolution)   -- traces =
           local step = tr1[3] or (tr1[2] - tr1[1]) / res
           file:write(fmt("    %sfor (let i = %s; i <= %s; i += %s) { t.push(i); }\n", head, tostring(tr1[1]), tostring(tr1[2]), tostring(step)))
         end
-        trace = fmt("{ x: t.map(t => %s), y: t.map(t => %s), mode: 'lines', line: { simplify: false, color: '%s', width: %d %s }%s }",
+        trace = fmt("{ x: t.map(t => %s), y: t.map(t => %s), mode: 'lines', line: { simplify: false, color: '%s', width: %f %s }%s }",
                     obj.x, obj.y, color, obj.width or 3, style, _anmt_fill(obj.fill))
         file:write(fmt("    %smthlyTraces.push(%s);\n%s  }\n", head, trace, head))
       end
