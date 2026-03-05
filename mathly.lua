@@ -2304,8 +2304,7 @@ function plot(...)
               local optq = false
               for k, v in pairs(args[i]) do
                 if type(k) == 'string' then
-                  k = string.lower(k)
-                  optq = ismember(k, {'layout', 'color', 'size', 'width', 'mode', 'symbol', 'name'})
+                  optq = ismember(string.lower(k), {'layout', 'color', 'size', 'width', 'mode', 'symbol', 'name'})
                   if optq then break end
                 end
               end
@@ -2348,28 +2347,29 @@ function plot(...)
   end
 
   local xrange = nil
-  for i = 1, #layout_arg do  -- processed finally
+  local i = 1
+  while i <= #layout_arg do  -- processed finally
     local names = {}
     for k, v in pairs(layout_arg[i]) do -- layout settings are merged into the 1st trace
       if k == 'layout' then
         for k_, v_ in pairs(v) do
           if type(k_) == 'string' then
-            k_ = string.lower(k_)
-            if k_ == 'name' then
-              traces[1][k_] = v_
-            elseif ismember(k_, {'autosize', 'grid', 'width', 'height', 'title', 'xaxis', 'yaxis', 'margin'}) then
-              plotly.layout[k_] = v_
-              if k_ == 'grid' then
-                plotly.layout[k_]['pattern'] = 'independent'
+            local K = string.lower(k_)
+            if K == 'name' then
+              traces[1][K] = v_
+            elseif ismember(K, {'autosize', 'grid', 'width', 'height', 'title', 'xaxis', 'yaxis', 'margin'}) then
+              plotly.layout[K] = v_
+              if K == 'grid' then
+                plotly.layout[K]['pattern'] = 'independent'
               end
             elseif v.grid ~= nil then
-              if k_ == 'gridaxes' then
+              if K == 'gridaxes' then
                 for j = 1, #traces do
                   local s = qq(j == 1, '', j)
                   local x, y = 'xaxis' .. s, 'yaxis' .. s
                   plotly.layout[x], plotly.layout[y] = v_[x], v_[y]
                 end
-              elseif k_ =='gridaxisnames' then
+              elseif K =='gridaxisnames' then
                 _specific_gridq = true
                 for j = 1, #traces do
                   local s = qq(j == 1, '', j)
@@ -2391,7 +2391,7 @@ function plot(...)
         traces[j]['name'] = names[j]
       end
     end
-    i = i + 1
+    i = i + 2
   end
 
   if adjustxrangeq then

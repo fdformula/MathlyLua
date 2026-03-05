@@ -50,7 +50,7 @@ on delivery of course contents and never need to worry if their computers work t
 Lua is so simple and so natural a language that students without programming skills can understand most of Lua code.</p>
 
 <h2><a name=version href=#top>Which version of Lua is supported? Is there any IDE for Lua + Mathly?</a></h2>
-<p>Mathly is developed in Lua 5.4.6. It might work with previous versions. You may download Lua source code in <a href="https://lua.org/" target="_blank">https://lua.org/</a> and compile it yourself or simply
+<p>Mathly is developed in Lua 5.4.6. It works with Lua 5.5.0 and might work with previous versions. You may download Lua source code in <a href="https://lua.org/" target="_blank">https://lua.org/</a> and compile it yourself or simply
 download prebuilt binary commands for Microsoft Windows in, say,
 <a href="https://www.nuget.org/packages/lua/" target="_blank">https://www.nuget.org/packages/lua/</a>. Another way to get prebuilt Lua is to
 download <a href=https://studio.zerobrane.com/ target="_blank">ZeroBrane Studio</a>, a lightweight Lua IDE for various platforms. It may come with
@@ -279,7 +279,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a name=isempty><code>isempty(t)</code></a></td><td> </td><td>Check if <code>t</code> is an empty table, the same as <code>next(t) == nil</code>.</td></tr>
 <tr><td> </td><td><a name=isfile><code>isfile(f)</code></a></td><td> </td><td>Check if <code>f</code> is a file.</td></tr>
 <tr><td> </td><td><a name=isinteger></a><code>isinteger(x)</code></td><td> </td><td>Check if <code>x</code> is an integer.</td></tr>
-<tr><td> </td><td><a name=#iseven></a><code>iseven(x)</code></td><td> </td><td>Check if <code>x</code> is even.</td></tr>
+<tr><td> </td><td><a name=iseven></a><code>iseven(x)</code></td><td> </td><td>Check if <code>x</code> is even.</td></tr>
 <tr><td> </td><td><a name=isodd></a><code>isodd(x)</code></td><td> </td><td>Check if <code>x</code> is odd.</td></tr>
 <tr><td> </td><td><a name=ismatrix></a><code>ismatrix(x)</code></td><td> </td><td>Check if <code>x</code> can be a Mathly matrix.</td></tr>
 <tr><td> </td><td><a href=#ismember><code>ismember(x, table)</code></a></td><td> </td><td>Check if <code>x</code> is a member of <code>table</code>.</td></tr>
@@ -710,7 +710,7 @@ a = mathly{{75, 28}, {90, 6}}
 display(dec2bin(a))
 -- {{'1001011', '11100'}, {'1011010', '110'}}
 disp(oct2hex(dec2oct(a)))
-disp(dec2hex(a))
+display(dec2hex(a))
 -- {{'4b', '1c'}, {'5a', '6'}}
 </code></pre>
 
@@ -1749,10 +1749,6 @@ inv{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}} * {2, 0, 1}
 --  1.8000
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=iseven href=#m><code>iseven(x)</code></a></h4>
-<p>Check if <code>x</code> is even.</p>
-<p>See: <a href=examples\modular_exponentiation.lua>Modular exponentiation</a>.</p>
-
 <h4>&bull; &nbsp; <a name=ismember href=#m><code>ismember(x, table)</code></a></h4>
 <p>Check if <code>x</code> is a member of <code>table</code>.</p>
 <pre><code>mathly = require('mathly')
@@ -2481,7 +2477,7 @@ plot(x, y1, specs3,
 
 axisnotsquare()
 plot(rand(125, 4), specs1, {names={'f1', 'f2', 'f3', 'g'}}) -- each column of a matrix defines a function with x changing from 0 to # of rows
-plot(rand(100,3), specs1, {layout={grid={rows=3, columns=2}}}, rand(100,2))
+plot(rand(100,5), {layout = {grid = {rows=3, columns=3}}}, rand(100,3))
 </code></pre>
 <p>&#x2713; &nbsp; The options <code>xrange</code> and <code>yrange</code> can be used to specify the ranges of x and y for all graphs on a single figure.
 They take the same format, e.g., <code>xrange = {start, stop, step}</code>, where <code>step</code> is optional, used to generate x values
@@ -2673,7 +2669,7 @@ display(polyval({1, 2, 1}, {0, 5, 9, 100})) -- evaluate at x = 0, 5, 9, 100
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=powermod href=#m><code>powermod(b, n, m)</code></a></h4>
-<p>Return <code>b<sup>n</sup> mod m</code>, i.e., the remainder of <code>b<sup>n</sup></code> divided by <code>m</code>.</p>
+<p>Return the modular exponentiation <code>b<sup>n</sup> mod m</code>, i.e., the remainder of <code>b<sup>n</sup></code> divided by <code>m</code>.</p>
 <p>Note: <code>b, n</code>, and <code>m</code> are nonnegative integers with <code>m &gt; 0</code>.</p>
 <pre><code>mathly = require('mathly')
 powermod(211, 410, 19) -- 6
