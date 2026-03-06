@@ -2347,8 +2347,7 @@ function plot(...)
   end
 
   local xrange = nil
-  local i = 1
-  while i <= #layout_arg do  -- processed finally
+  for i = 1, #layout_arg, 2 do  -- processed finally
     local names = {}
     for k, v in pairs(layout_arg[i]) do -- layout settings are merged into the 1st trace
       if k == 'layout' then
@@ -2391,7 +2390,6 @@ function plot(...)
         traces[j]['name'] = names[j]
       end
     end
-    i = i + 2
   end
 
   if adjustxrangeq then
