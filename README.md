@@ -12,7 +12,8 @@ The entire Mathly tool together with Lua interpreter is less than 5 MB, while pr
 to implement numerical algorithms. <b>Because it is super lightweight and fast as well, it can run fast even on old and slow devices</b> like 
 Microsoft Surface Pro 4 (Intel Core i5-6300U with 8 GB RAM). In contrast to it, MATLAB needs a few GB of storage space. In addition, 
 it takes about 22 seconds to start MATLAB R2024b on a new high-end Intel Core i9-14900HX laptop with 56 GB RAM. Thus, it can hardly 
-be installed on slow or pretty old computers and run smoothly.
+be installed on slow or pretty old computers and run smoothly. In addition, multiple sessions/instances of Lua + Mathly can coexist for
+multiple tasks at the same time with each instance in its own workspace.
 
 Mathly is especially a good choice for instructors of linear algebra and numerical computing for teaching. It takes no time to
 start Lua with Mathly loaded. While developing code and doing computation in a lecture, they can simply focus on delivery
