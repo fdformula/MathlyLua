@@ -5,12 +5,14 @@ linux_browser = 'firefox'
 mac_browser = '/Applications/Firefox.app/Contents/MacOS/firefox'
 
 plotly_engine = 'plotly-2.9.0.min.js'
+doc_folder = 'c:/mathly/doc/'
 do
   local dir
   if package.config:sub(1,1) == '\\' then -- windows
     dir = 'c:/mathly/bin/' -- must end with '/'  ← ← ← ← ← windows users
   else
-    dir = '/usr/local/share/lua/5.4/' -- ← ← ← users of other os systems
+    dir = '/usr/local/share/lua/5.5/' -- ← ← ← users of other os systems
+    doc_folder = '/usr/local/share/lua/doc/'
   end
   plotly_engine = 'file:///' .. dir .. plotly_engine
 end

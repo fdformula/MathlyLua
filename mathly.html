@@ -198,7 +198,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <a href=#diff>diff</a> (or <a href=#diff1>diff1</a>), <a href=#diff2>diff2</a>, <a href=#disp>disp</a>, <a href=#display>display</a>, <a href=#div>div</a>,
 <a href=#dot>dot</a>, <a href=#eval>eval</a>, <a href=#expand>expand</a>, <a href=#eye>eye</a>, <a href=#findroot>findroot</a>, <a href=#flatten>flatten</a>,
 <a href=#fliplr>fliplr</a>, <a href=#flipud>flipud</a>, <a href=#format>format</a>, <a href=#fstr2f>fstr2f</a>, <a href=#fzero>fzero</a>, <a href=#gcd>gcd</a>,
-<a href=#hasindex>hasindex</a>, <a href=#input>input</a>, <a href=#integral>integral</a>, <a href=#integral2>integral2</a>, <a href=#integral3>integral3</a>,
+<a href=#hasindex>hasindex</a>, <a href=#help>help</a>, <a href=#input>input</a>, <a href=#integral>integral</a>, <a href=#integral2>integral2</a>, <a href=#integral3>integral3</a>,
 <a href=#inv>inv</a>, <a href=#isempty>isempty</a>, <a href=#isinteger>isinteger</a>, <a href=#iseven>iseven</a>, <a href=#isodd>isodd</a>, <a href=#ismatrix>ismatrix</a>,
 <a href=#ismember>ismember</a>, <a href=#isvector>isvector</a>, <a href=#lagrangepoly>lagrangepoly</a>, <a href=#length>length</a>, <a href=#linsolve>linsolve</a>,
 <a href=#linspace>linspace</a>, <a href=#lu>lu</a>, <a href=#map>map</a>, <a href=#match>match</a>, <a href=#mathly>mathly</a>, <a href=#max>max</a>,
@@ -266,6 +266,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#findroot><code>fzero(func, interval, tolerance)</code></a></td><td> </td><td>Find the zero of a function on specified interval.</td></tr>
 <tr><td> </td><td><a href=#gcd><code>gcd(x, y)</code></a></td><td> </td><td>Return the greatest common divisor of <code>x</code> and <code>y</code>.</td></tr>
 <tr><td> </td><td><a href=#hasindex><code>hasindex(tbl, index)</code></a></td><td> </td><td>Check if table <code>tbl</code> contains <code>index</code>.</td></tr>
+<tr><td> </td><td><a href=#help><code>help(w)</code></a></td><td> </td><td>Open help on w in a web browser.</td></tr>
 <tr><td> </td><td><a href=#hist><code>hist(x, nbins, style, xrange)</code></a></td><td> </td><td>Return a special graphics object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table or a matrix of numbers and <code>nbins</code> is the number of bins (default: 10).</td></tr>
 <tr><td> </td><td><a href=#hist1><code>hist1(x, nbins, style, xrange)</code></a></td><td> </td><td>Return an ordinary graphics object for <code><a href=#plot>plot</a></code> to plot a histogram, where <code>x</code> is a table of numbers.</td></tr>
 <tr><td> </td><td><a href=#histfreqpolygon><code>histfreqpolygon(x, nbins, style, xrange, style1)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a histogram plus a frequency polygon, where <code>x</code> is a table of numbers.</td></tr>
@@ -1469,6 +1470,15 @@ disp(fliplr(a))
 <tr><td width=20></td><td><code>'short'</code></td><td> </td><td width=10> </td><td>4 decimal places (default).</td></tr>
 <tr><td width=20></td><td><code>'long'</code></td><td> </td><td width=10> </td><td>15 decimal places</td></tr>
 </tbody></table>
+
+<h4>&bull; &nbsp; <a name=help></a><a href=#m><code>help(word)</code></a></h4>
+<p>Open help on <code>word</code> in a web browser, where <code>word</code> is a string, i.e., the name of a function, a keyword, or so.</p>
+<pre><code>mathly = require('mathly')
+help('pack')
+help('linsolve')
+help('while')
+help('re')
+</code></pre>
 
 <h4>&bull; &nbsp; <a name=boxplot></a><a name=pareto></a><a name=freqpolygon></a><a name=histfreqpolygon></a><a name=hist></a><a name=hist1></a>
 <a name=pie href=#m><code>freqpolygon, hist, hist1, histfreqpolygon, pareto, pie</code></a></h4>
