@@ -3161,37 +3161,28 @@ end
 function help(w)
   local lua_manual_url = 'file:///' .. doc_folder .. 'manual.html'
   local mathly_manual_url = 'file:///' .. doc_folder .. 'mathly.html'
-  local mathlyq = ismember(w, { -- is w a mathly function?
-    'all', 'animate', 'any', 'apply', 'arc', 'axisnotsquare', 'axissquare', 'bin2dec', 'bin2hex', 'bin2oct', 'boxplot',
-    'cat', 'cc', 'circle', 'clc', 'clear', 'contourplot', 'copy', 'corr', 'cross', 'dec2bin', 'dec2hex', 'dec2oct',
-    'demathly', 'det', 'diag', 'diff', 'diff1', 'diff2', 'dir', 'directionfield', 'disp', 'display', 'div', 'dot',
-    'dotplot', 'eps', 'eval', 'expand', 'eye', 'findroot', 'fliplr', 'flipud', 'format','freqpolygon', 'fstr2f',
-    'fzero', 'gcd', 'hasindex', 'help', 'hex2bin', 'hex2dec', 'hex2oct', 'hist', 'hist1', 'histfreqpolygon', 'horzcat',
-    'input', 'integral', 'integral2', 'integral3', 'inv', 'isdir', 'isempty', 'iseven', 'isfile', 'isinteger', 'ismatrix',
-    'ismember', 'isodd', 'isvector', 'iswindows', 'lagrangepoly', 'length', 'line', 'linsolve', 'linspace',
-    'ls', 'lu', 'manipulate', 'map', 'match', 'mathly', 'max', 'mean', 'merge', 'min', 'mod', 'mv', 'namedargs',
-    'newtonpoly', 'norm', 'oct2bin', 'oct2dec', 'oct2hex', 'ones', 'parametriccurve2d', 'pareto', 'pie', 'plot',
-    'plot3d', 'plotparametriccurve2d', 'plotparametriccurve3d', 'plotparametricsurface3d', 'plotsphericalsurface3d',
-    'point', 'polarcurve2d', 'polyfit', 'polygon', 'polynomial', 'polyval', 'powermod', 'printf', 'prod', 'pwd', 'qq', 'qr', 'rand',
-    'randi', 'randn', 'range', 'remake', 'repmat', 'reshape', 'reverse', 'rm', 'round', 'rr', 'rref', 'save', 'scatter',
-    'seq', 'showaxes', 'showgridlines', 'showlegend', 'shownotlegend', 'shownotaxes', 'shownotgridlines', 'shownotxaxis',
-    'shownotyaxis', 'showxaxis', 'showyaxis', 'size', 'sleep', 'slopefield', 'sort', 'sprintf', 'std', 'strcat',
-    'submatrix', 'subtable', 'sum', 'tables', 'tblcat', 'text', 'tic', 'toc', 'transpose', 'tt', 'unique', 'var',
-    'vectorangle', 'vectorfield2d', 'vertcat', 'wedge', 'who', 'zeros'})
-  local basicq = (not mathlyq) and ismember(w, {
-    'abs', 'acos', 'asin', 'atan', 'ceil', 'cos', 'deg', 'e', 'eps', 'exp', 'floor', 'log', 'log10', 'phi',
-    'pi', 'rad', 'random', 'sin', 'sqrt', 'tan'})
+  local mathq = ismember(w, {'abs', 'acos', 'asin', 'atan', 'ceil', 'cos', 'deg', 'e', 'eps', 'exp', 'floor',
+    'log', 'log10', 'phi', 'pi', 'rad', 'random', 'sin', 'sqrt', 'tan'})
+  local basics = {'_G', '_VERSION', 'assert', 'collectgarbage', 'dofile', 'error', 'getmetatable', 'ipairs',
+    'load', 'loadfile', 'next', 'pairs', 'pcall', 'print', 'rawequal', 'rawget', 'rawlen', 'rawset', 'require',
+    'select', 'setmetatable', 'tonumber', 'tostring', 'type', 'warn', 'xpcall', -- basic functions at beginning of the Index in lua5_5.html
+
+    'do', 'else', 'end', 'f', 'function', 'goto', 'if', 'io', 'os', 're', 'regex', 'repeat', 'string', 'then', 'until', 'while'} -- extra anchors added to manual.html
   local url
-  if mathlyq then
-      url = mathly_manual_url .. '#' .. w
-  elseif basicq then
+  if mathq then
       url = mathly_manual_url .. '#math'
   else
-    url = lua_manual_url
     if ismember(w:sub(1, 4), {'lua_', 'luaL'}) then
-      url = url .. '#' .. w
+      url = lua_manual_url .. '#' .. w
     else
-      url = url .. '#pdf-' .. (w:match('[:|%.](.+)') or w)
+      local f = w:match('[:|%.](.+)')
+      if f then
+        url = lua_manual_url .. '#pdf-' .. f
+      elseif ismember(w, basics) then
+        url = lua_manual_url .. '#pdf-' .. w
+      else
+        url = mathly_manual_url .. '#' .. w
+      end
     end
   end
   _open_url(url)
