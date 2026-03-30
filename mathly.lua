@@ -867,7 +867,7 @@ function who(userq) -- R
       if not ismember(k,
         {'e', 'eps', 'pi', 'phi', 'T', 'mathly', 'm', '_G', 'coroutine', 'utf8',
          '_VERSION', 'io', 'package', 'os', 'arg', 'debug', 'string', 'table', 'math',
-         'linux_browser', 'mac_browser', 'win_browser', 'plotly_engine',
+         'linux_browser', 'mac_browser', 'win_browser', 'doc_folder', 'plotly_engine',
          'tmp_plot_html_file'}) then
         list[#list + 1] = k
       end
@@ -3167,7 +3167,7 @@ function help(w)
     'load', 'loadfile', 'next', 'pairs', 'pcall', 'print', 'rawequal', 'rawget', 'rawlen', 'rawset', 'require',
     'select', 'setmetatable', 'tonumber', 'tostring', 'type', 'warn', 'xpcall', -- basic functions at beginning of the Index in lua5_5.html
 
-    'do', 'else', 'end', 'f', 'function', 'goto', 'if', 'io', 'os', 're', 'regex', 'repeat', 'string', 'then', 'until', 'while'} -- extra anchors added to manual.html
+    'do', 'else', 'end', 'f', 'file', 'function', 'goto', 'if', 'io', 'math', 'os', 're', 'regex', 'repeat', 'string', 'table', 'then', 'until', 'while'} -- extra anchors added to manual.html
   local url
   if mathq then
       url = mathly_manual_url .. '#math'
