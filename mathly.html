@@ -262,7 +262,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#flipud><code>flipud(A)</code></a></td><td> </td><td>Return a matrix with rows of matrix <code>A</code> reversed.</td></tr>
 <tr><td> </td><td><a href=#format><code>format(fmt)</code></a></td><td> </td><td>Reset or specify the format of the output of <code>disp(...)</code>.</td></tr>
 <tr><td> </td><td><a href=#freqpolygon><code>freqpolygon(x, nbins, style, xrange)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot frequency polygon, where <code>x</code> is a table of numbers.</td></tr>
-<tr><td> </td><td><a href=#fstr2f><code>fstr2f(str)</code></a></td><td> </td><td>Convert a MATLAB-style anonymous function in a string to a Lua function handle.</td></tr>
+<tr><td> </td><td><a href=#fstr2f><code>fstr2f(str)</code></a></td><td> </td><td>Convert a MATLAB-style anonymous function in a string to a Lua function.</td></tr>
 <tr><td> </td><td><a href=#findroot><code>fzero(func, interval, tolerance)</code></a></td><td> </td><td>Find the zero of a function on specified interval.</td></tr>
 <tr><td> </td><td><a href=#gcd><code>gcd(x, y)</code></a></td><td> </td><td>Return the greatest common divisor of <code>x</code> and <code>y</code>.</td></tr>
 <tr><td> </td><td><a href=#hasindex><code>hasindex(tbl, index)</code></a></td><td> </td><td>Check if table <code>tbl</code> contains <code>index</code>.</td></tr>
@@ -1572,13 +1572,22 @@ plot(pareto(x, '-fs'))
 <li>It is not very meaningful to plot a function together with the graphics object returned by <code>hist</code> on a single figure (because of the x-axis).</li>
 </ol>
 <h4>&bull; &nbsp; <a name=fstr2f href=#m><code>fstr2f(str)</code></a></h4>
-<p>Convert a MATLAB-style anonymous function in a string to a Lua function handle.</p>
+<p>Convert a MATLAB-style anonymous function in a string to a Lua function.</p>
 <p>See also: <a href=#easyf>Shortcut for defining an anonymous function.</a></p>
 <pre><code>mathly = require('mathly')
 clear()
 f = fstr2f('@(x) x*x - 2*x + 1')
 disp(f(1)) -- 0
 plot(f, sin, {xrange = {0, 2}})
+
+g = fstr2f('@(x) x*x')
+g(1) -- 1
+g{1, 2, 3} -- {1, 4, 9} -- map the function to each element of a table.</p>
+disp(g{1, 2, {3, {4}}}) -- {1, 4, {9, {16}}}
+
+h=fstr2f('@(x,y,z) x+y+z')
+h(1, 2, 3) -- 6
+h({1, 2, 3}, {2, 3, 4}, {3, 4, 5}) -- {6, 9, 12}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=gcd href=#m><code>gcd(x, y)</code></a></h4>
@@ -3322,6 +3331,8 @@ expressed by an algebraic or logical expression</b>, it can be defined in a stri
 parametriccurve2d, plotparametriccurve3d, polarcurve2d, plotparametricsurface3d, plotsphericalsurface3d,
 sort,</code> etc. The function, <a href=#fstr2f><code>fstr2f(str)</code></a>, is called to convert an
 anonymous function in a string to a Lua function.</p>
+<p>Note: @(...) requires at least one argument.</p>
+<p>See also: <a href=#fstr2f><code>fstr2f</code></a>.</p>
 <pre><code>mathly = require('mathly')
 
 clear()

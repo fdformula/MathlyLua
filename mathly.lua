@@ -320,15 +320,19 @@ end
 function max(x) return _max_min_shared(math.max, x) end
 function min(x) return _max_min_shared(math.min, x) end
 
--- convert a MATLAB-style anonymous function in string to a function handle
--- e.g., fstr2f('@(x) x^2 - 2*x + 1') returns an anonymous function, function(x) return x^2 -2*x + 1 end.
+-- convert a MATLAB-style anonymous function in string to a function
 function fstr2f(s)
   s = string.gsub(s, '%s+', ' ')
   local head, body = string.match(s, '^%s*@%s*(%(%s*[%w,%s]*%))%s*(.+)%s*$')
   if head ~= nil then
-    return eval('function' .. head .. ' return ' .. body .. ' end', '"' .. s .. '": ' .. body .. ', poor expression')
+    local v1 = string.match(head, '^%((.-),')
+    if v1 == nil then v1 = head end
+    local vars = string.match(head, '^%((.*)%)')
+    assert(vars ~= '' and vars ~= ' ', '@(...) needs at least 1 argument')
+    body = 'function' .. head .. ' local function _f' .. head .. ' return ' .. body .. ' end; if type(' .. v1 .. ') == \'table\' then return map(_f,' .. vars .. ') else return _f' .. head .. ' end end'
+    return eval(body, '"' .. s .. '": ' .. body .. ', poor expression')
   else
-    error('Poor function: ' ..  s .. ". Example: '@(x) 3*x^2 - 5*x + 1'")
+    error('Poor expression: ' ..  s .. ". E.g., '@(x) 3*x^2 - 5*x + 1'")
   end
 end
 
