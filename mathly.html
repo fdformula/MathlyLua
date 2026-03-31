@@ -1573,7 +1573,7 @@ plot(pareto(x, '-fs'))
 </ol>
 <h4>&bull; &nbsp; <a name=fstr2f href=#m><code>fstr2f(str)</code></a></h4>
 <p>Convert a MATLAB-style anonymous function in a string to a Lua function.</p>
-<p>See also: <a href=#easyf>Shortcut for defining an anonymous function.</a></p>
+<p>See also: <a href=#map><code>map</code></a>, <a href=#easyf>Shortcut for defining an anonymous function.</a></p>
 <pre><code>mathly = require('mathly')
 clear()
 f = fstr2f('@(x) x*x - 2*x + 1')
@@ -1582,7 +1582,7 @@ plot(f, sin, {xrange = {0, 2}})
 
 g = fstr2f('@(x) x*x')
 g(1) -- 1
-g{1, 2, 3} -- {1, 4, 9} -- map the function to each element of a table.</p>
+g{1, 2, 3} -- {1, 4, 9} -- map the function to each element of a table.
 disp(g{1, 2, {3, {4}}}) -- {1, 4, {9, {16}}}
 
 h=fstr2f('@(x,y,z) x+y+z')
