@@ -34,7 +34,7 @@ function solvelegendrepoly(n)
     return {0.0}
   else
     local roots = {}
-    local f = fstr2f('@(x) legendrepoly(' .. n .. ', x)')
+    local f = ff('@(x) legendrepoly(' .. n .. ', x)')
     if isodd(n) then roots[#roots + 1] = 0.0 end -- 0 is a root
     local m = floor(n / 2) -- find m roots on (0, 1)
     local h = 1 / (100*m) -- large n requires large denominator; 100m works for n <= 30; for larger n, 150m, 200m, or so might be needed
@@ -91,7 +91,7 @@ function find_and_activate_gauss_quadrature(n, printq)
   gq = [[
 function(f, a, b)
   a, b = a or -1, b or 1
-  if type(f) == 'string' then f = fstr2f(f) end
+  if type(f) == 'string' then f = ff(f) end
   local A, B = (b - a)/2, (b + a)/2
   return (]] .. s ..') * A\nend'
   if printq then
