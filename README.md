@@ -146,6 +146,10 @@ plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
      {layout = {autosize = false, width = 380, height = 600, title = "y' = x<sup>2</sup> - y",
                 margin = {l = 40, r = 20, t = 45, b = 40, pad = 10}}})
 
+axissquare()
+plot(vectorfield2d('@(x, y) {2*x*y, x^2-3*y^2}', {-3, 3}, {-3, 3}, 0.75),
+     contourplot('@(x, y) x^2*y - y^3', {-3, 3}))
+
 manipulate('@(x) a * (x - h)^2 + k',
            {a = {-3, 3, 0.02, default = 3}, h = {-10, 10, 0.5, default = 0}, k = {-90, 90, default = 0},
             xrange = {-10, 10}, yrange = {-100, 100},
