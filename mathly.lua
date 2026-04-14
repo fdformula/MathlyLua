@@ -3850,10 +3850,10 @@ function contourplot(f, x, y, style)
   x = data(x)
   if y == nil then y = x else y = data(y) end
   local z = {}
-  for i = 1, #x do
+  for i = 1, #y do
     z[i] = {}
-		for j = 1, #y do
-			z[i][j] = f(x[i], y[j])
+		for j = 1, #x do
+			z[i][j] = f(x[j], y[i])
 		end
 	end
   return {'contour', x, y, z, style or {colorscale = 'Jet', contours = {coloring = 'lines'}}}
