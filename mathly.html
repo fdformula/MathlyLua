@@ -1416,9 +1416,15 @@ g(1) -- 1
 g{1, 2, 3} -- {1, 4, 9} -- map the function to each element of a table.
 disp(g{1, 2, {3, {4}}}) -- {1, 4, {9, {16}}}
 
-h=ff('@(x,y,z) x+y+z')
+h = ff('@(x, y, z) x + y + z')
 h(1, 2, 3) -- 6
 h({1, 2, 3}, {2, 3, 4}, {3, 4, 5}) -- {6, 9, 12}
+
+ff('@(x) x*x'){1, 2, 3, 4, 5}
+ff('@(x) x*x')(seq(5))
+-- 1 4 9 16 25
+ff('@(x, y) x + y')({1, 2, 3, 4, 5}, {4, 5, 6, 7, 8})
+-- 5 7 9 11 13
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=fzero></a><a name=findroot href=#m><code>findroot(f, interval, accuracy), fzero(f, interval, accuracy)</code></a></h4>
@@ -3276,6 +3282,9 @@ plot(vectorfield2d('@(x,y) {-y, -x}', {scale=10}), {layout={width=800, height=60
 
 plot(vectorfield2d('@(x,y) {y, sin(x)}', {xrange={-2*pi, 2*pi, pi/8}, scale=7}))
 plot(vectorfield2d('@(x,y) {3*cos(3*x), 2*cos(2*y)}', {-1, 1, 1/10}, {-1.5, 1.5, 1/10}, 15), {layout={width=600, height=700}})
+
+plot(vectorfield2d('@(x, y) {2*x*y, x^2-3*y^2}', {-3, 3}, {-3, 3}, 0.75),
+     contourplot('@(x, y) x^2*y - y^3', {-3, 3}))
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=vectorangle href=#m><code>vectorangle(a, b)</code></a></h4>
