@@ -33,7 +33,7 @@ FUNCTIONS PROVIDED IN THIS MODULE
   cat, isdir, isfile, iswindows, ls (or dir), mv, pwd, rm
 
   arc, circle, contourplot, directionfield, dotplot, line, parametriccurve2d, point,
-  polarcurve2d, polygon, scatter, text, wedge; boxplot, freqpolygon, hist, hist1,
+  polarcurve, polygon, scatter, text, wedge; boxplot, freqpolygon, hist, hist1,
   histfreqpolygon, pareto, pie, slopefield, vectorfield2d ← Graphics objects passed to 'plot'.
 
   plot; plotparametriccurve2d, plotparametriccurve3d; plot3d, plotparametricsurface3d,
@@ -3778,7 +3778,7 @@ function parametriccurve2d(xy, trange, style, resolution, orientationq)
 end -- parametriccurve2d
 
 -- r(θ), a polar function
-function polarcurve2d(r, trange, style, resolution, orientationq)
+function polarcurve(r, trange, style, resolution, orientationq)
   local args = namedargs(
     {r, trange, style, resolution, orientationq},
     {'r', 'trange', 'style', 'resolution', 'orientationq'})
