@@ -49,7 +49,7 @@ package.path = "./?.luac;;"
 
 `plot`; `plotparametriccurve2d`, `plotparametriccurve3d`; `plot3d`, `plotparametricsurface3d`, `plotsphericalsurface3d`; `animate`, `manipulate`
 
-`arc`, `circle`, `contourplot`, `dotplot`, `line`, `parametriccurve2d`, `point`, `polarcurve2d`, `polygon`, `scatter`, `text`, `wedge`; `boxplot`, `freqpolygon`, `hist`, `hist1`,
+`arc`, `circle`, `contourplot`, `dotplot`, `line`, `parametriccurve2d`, `point`, `polarcurve`, `polygon`, `scatter`, `text`, `wedge`; `boxplot`, `freqpolygon`, `hist`, `hist1`,
 `histfreqpolygon`, `pareto`, `pie`; `directionfield` (or `slopefield`), `vectorfield2d` &lArr; All are graphics objects passed to `plot`.
 
 See `mathly.html`.
@@ -120,7 +120,7 @@ plot(sin, '-r', {layout={xaxis={title="x-axis"}, yaxis={title="y-axis"}, title='
 plot(rand(125, 4), {layout={width=900, height=400, grid={rows=2, columns=2}, title='Demo'}, names={'f1', 'f2', 'f3', 'g'}})
 
 axissquare()
-plot(polarcurve2d('@(t) t*cos(sqrt(t))', {0, 35*pi}))
+plot(polarcurve('@(t) t*cos(sqrt(t))', {0, 35*pi}))
 plot(parametriccurve2d({'@(t) cos(3*t)/(1 + sin(3*t)^2)', '@(t) sin(5*t)*cos(5*t)/(1 + sin(5*t)^2)'}, {0, 2*pi}, '-g', 150, true))
 
 plot3d('@(x, y) x^2 - y^2')
