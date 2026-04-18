@@ -218,7 +218,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <a href=#ls>ls</a>, <a href=#mv>mv</a>, <a href=#pwd>pwd</a>, <a href=#rm>rm</a></p>
 
 <p><a href=#plot>plot</a>; <a href=#plotparametriccurve2d>plotparametriccurve2d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>;
-<a href=#plot3d>plot3d</a>, <a href=#plotparametricsurface3d>plotparametricsurface3d</a>, <a href=#plotsphericalsurface3d>plotsphericalsurface3d</a>; <a href=#animate>animate</a>, <a href=#manipulate>manipulate</a></p>
+<a href=#plot3d>plot3d</a>, <a href=#plotparametricsurface>plotparametricsurface</a>, <a href=#plotsphericalsurface>plotsphericalsurface</a>; <a href=#animate>animate</a>, <a href=#manipulate>manipulate</a></p>
 
 <p><a href=#arc>arc</a>, <a href=#circle>circle</a>, <a href=#contourplot>contourplot</a>, <a href=#dotplot>dotplot</a>, <a href=#line>line</a>,
 <a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#point>point</a>, <a href=#polarcurve>polarcurve</a>, <a href=#polygon>polygon</a>, <a href=#scatter>scatter</a>,
@@ -318,8 +318,8 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#plot3d><code>plot3d(f, xrange, yrange, title, resolution)</code></a></td><td> </td><td>Plot the 3D graph of <code>z = f(x, y)</code>.</td></tr>
 <tr><td> </td><td><a href=#plotparametriccurve2d><code>plotparametriccurve2d({x(t), y(t)}, trange, style, resolution, orientationq)</code></a></td><td> </td><td>Plot a 2D curve defined by <code>{x(t), y(t)}</code>.</td></tr>
 <tr><td> </td><td><a href=#plotparametriccurve3d><code>plotparametriccurve3d({x(t), y(t), z(t)}, trange, title, resolution, orientationq)</code></a></td><td> </td><td>Plot a 3D curve defined by <code>{x(t), y(t), z(t)}</code>.</td></tr>
-<tr><td> </td><td><a href=#plotparametricsurface3d><code>plotparametricsurface3d({x(u, v), y(u, v), z(u, v)}, urange, vrange, title, resolution, orientationq)</code></a></td><td> </td><td>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u, v)</code>.</td></tr>
-<tr><td> </td><td><a href=#plotsphericalsurface3d><code>plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)</code></a></td><td> </td><td>Plot a spherical function.</td></tr>
+<tr><td> </td><td><a href=#plotparametricsurface><code>plotparametricsurface({x(u, v), y(u, v), z(u, v)}, urange, vrange, title, resolution, orientationq)</code></a></td><td> </td><td>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u, v)</code>.</td></tr>
+<tr><td> </td><td><a href=#plotsphericalsurface><code>plotsphericalsurface(rho, thetarange, phirange, title, resolution)</code></a></td><td> </td><td>Plot a spherical function.</td></tr>
 <tr><td> </td><td><a href=#point><code>point(x, y, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a point.</td></tr>
 <tr><td> </td><td><a href=#polarcurve><code>polarcurve(r(t), trange, style, resolution, orientationq)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a polar curve.</td></tr>
 <tr><td> </td><td><a href=#polyfit><code>polyfit(...)</code></a></td><td> </td><td>Return a polynomial of specified degree that best fits given data in a least-squares sense, or the values of the polynomial at specified points.</td></tr>
@@ -596,7 +596,7 @@ apply('@(x, y, z) x + y + z', {1, 2, 3})
 <tr><td><code>'fs'</code></td><td> - </td><td>Fill to Self</td></tr>
 </tbody></table>
 <p>Other specification shortcuts, see <a href=#plotspecs><code>plot</code></a>.</p>
-<p>&#x2713; &nbsp; <code><b>resolution</b></code> - <a name=resol></a>Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#plot3d>plot3d</a>, <a href=#plotparametriccurve2d>plotparametriccurve2d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, <a href=#plotparametricsurface3d>plotparametricsurface3d</a>, <a href=#plotsphericalsurface3d><code>plotsphericalsurface3d</code></a>, and <a href=#polarcurve>polarcurve</a></code>,
+<p>&#x2713; &nbsp; <code><b>resolution</b></code> - <a name=resol></a>Functions, <code><a href=#parametriccurve2d>parametriccurve2d</a>, <a href=#plot3d>plot3d</a>, <a href=#plotparametriccurve2d>plotparametriccurve2d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, <a href=#plotparametricsurface>plotparametricsurface</a>, <a href=#plotsphericalsurface><code>plotsphericalsurface</code></a>, and <a href=#polarcurve>polarcurve</a></code>,
 each take an argument, the minimum <code>resolution</code> (default: 100 for a surface, or 500 for a curve), for users to control the smoothness of a plotted curve or surface if needed.
 A larger value means better smoothness and requires more computing time.</p>
 
@@ -2588,17 +2588,17 @@ plotparametriccurve3d({cos, sin, '@(t) t'}, {0,6*pi}, "Helix")
 plotparametriccurve3d({'@(t) t*cos(t)', '@(t) t*sin(t)', '@(t) t'}, {0, 8*pi})
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=plotparametricsurface3d href=#m><code>plotparametricsurface3d({x(u, v), y(u, v), z(u,v)}, urange, vrange, title, resolution, orientationq)</a></code></h4>
+<h4>&bull; &nbsp; <a name=plotparametricsurface href=#m><code>plotparametricsurface({x(u, v), y(u, v), z(u,v)}, urange, vrange, title, resolution, orientationq)</a></code></h4>
 <p>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u,v)</code>.</p>
 <p><code>resolution</code> and <code>orientationq</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve</code></a>.</p>
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
 <pre><code>mathly = require('mathly')
 
-plotparametricsurface3d({'@(u,v) u', '@(u,v) v', '@(u,v) sqrt(u^2 + v^2)'}, {-3, 3}, {-3, 3}, 'Demo')
+plotparametricsurface({'@(u,v) u', '@(u,v) v', '@(u,v) sqrt(u^2 + v^2)'}, {-3, 3}, {-3, 3}, 'Demo')
 
 R = 5
 r = 2
-plotparametricsurface3d({ -- torus
+plotparametricsurface({ -- torus
   '@(s,t) (R + r * cos(t)) * cos(s)',
   '@(s,t) (R + r * cos(t)) * sin(s)',
   '@(s,t) r * sin(t)'})
@@ -2609,18 +2609,18 @@ do -- https://plotly.com/python/3d-surface-plots/
   local function x(u, v) return (d * (c - a * cos(u) * cos(v)) + b^2 * cos(u)) / (a - c * cos(u) * cos(v)) end
   local function y(u, v) return b * sin(u) * (a - d*cos(v)) / (a - c * cos(u) * cos(v)) end
   local function z(u, v) return b * sin(v) * (c*cos(u) - d) / (a - c * cos(u) * cos(v)) end
-  plotparametricsurface3d({x, y, z}, {0, 2*pi}, {0, 2*pi})
+  plotparametricsurface({x, y, z}, {0, 2*pi}, {0, 2*pi})
 end
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=plotsphericalsurface3d href=#m><code>plotsphericalsurface3d(ρ(θ,φ), θrange, φrange, title, resolution)</code></a></h4>
+<h4>&bull; &nbsp; <a name=plotsphericalsurface href=#m><code>plotsphericalsurface(ρ(θ,φ), θrange, φrange, title, resolution)</code></a></h4>
 <p>Plot spherical function <code>ρ(θ, φ)</code>, where <code>θ</code> is in the range <code>θrange = {θ1, θ2}</code> (default: <code>{0, 2*pi}</code>)
 and <code>φ</code> in the range <code>φrange = {φ1, φ2}</code> (default: <code>{0, pi}</code>). If <code>ρ(θ, φ)</code> is a number, the radius of a sphere centered at the origin, plot the sphere.</p>
 <p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve</code></a>.</p>
 <pre><code>mathly = require('mathly')
-plotsphericalsurface3d(1)
-plotsphericalsurface3d('@(theta, phi) theta + 2 * phi', {0, 4*pi}, nil, 'Demo')
-plotsphericalsurface3d(function(t, p) return 2 + sin(5*p + 7*t) end)
+plotsphericalsurface(1)
+plotsphericalsurface('@(theta, phi) theta + 2 * phi', {0, 4*pi}, nil, 'Demo')
+plotsphericalsurface(function(t, p) return 2 + sin(5*p + 7*t) end)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=polyfit href=#m><code>polyfit({x1, x2, ...}, {y1, y2, ...}, n, xx), polynomial({{x1, y1}, {x2, y2}, ...}, n, xx)</code></a></h4>
@@ -3356,7 +3356,7 @@ disp(E)
 expressed by an algebraic or logical expression</b>, it can be defined in a string of the the format,
 <code>'@(variabls) expression'</code>. It is a MATLAB-style anonymous function but in a string.</p>
 <p>Many Mathly functions accept such an argument, including <code>all, any, apply, map, match, plot, plot3d,
-parametriccurve2d, plotparametriccurve3d, polarcurve, plotparametricsurface3d, plotsphericalsurface3d,
+parametriccurve2d, plotparametriccurve3d, polarcurve, plotparametricsurface, plotsphericalsurface,
 sort,</code> etc. The function, <a href=#ff><code>ff(str)</code></a>, is called to convert an
 anonymous function in a string to a Lua function.</p>
 <p>Note: @(...) requires at least one argument.</p>
@@ -3373,8 +3373,8 @@ plot(parametriccurve2d({'@(t) t', '@(t) t^2'}))   -- x(t) = t, y(t) = t^2, i.e.,
 plot(polarcurve('@(t) cos(t) + 2*t'))           -- r(θ) = cos(θ) + 2*θ
 plot3d('@(x, y) x^2 - y^2')                       -- f(x, y) = x^2 - y^2
 plotparametriccurve3d({'@(t) 10*sin(t)', '@(t) t^2 - 10*t + 2', '@(t) t^3'})           -- x(t) = 10 * sin(t), ...
-plotparametricsurface3d({'@(u, v) sin(u)*v', '@(u, v) cos(u)*v - 2', '@(u, v) u + v'}) -- x(u, v) = sin(u)*v, ...
-plotsphericalsurface3d('@(t, p) sin(t) + 5*p')    -- ρ(θ, φ) = sin(θ) + 5*φ
+plotparametricsurface({'@(u, v) sin(u)*v', '@(u, v) cos(u)*v - 2', '@(u, v) u + v'}) -- x(u, v) = sin(u)*v, ...
+plotsphericalsurface('@(t, p) sin(t) + 5*p')    -- ρ(θ, φ) = sin(θ) + 5*φ
 disp(sort({2, 5, 1, -3}, '@(x, y) x > y'))
 
 x = {1, 2, 3, 4, 5}
@@ -3412,8 +3412,8 @@ plot(polarcurve('@(t) cos(a*t)', {0, 2*pi}))
 
 <h2><a name=namedargs0 href=#top>Named arguments</a></h2>
 <p>Functions for plotting graphs or providing <a href=#plot><code>plot</code></a> with graphics objects allow "named" arguments, including
-<a href=#plot3d><code></code>plot3d</code></a>, <a href=#plotsphericalsurface3d><code></code>plotsphericalsurface3d</code></a>,
-<a href=#plotparametricsurface3d><code></code>plotparametricsurface3d</code></a>, <a href=#plotparametriccurve3d><code></code>plotparametriccurve3d</code></a>,
+<a href=#plot3d><code></code>plot3d</code></a>, <a href=#plotsphericalsurface><code></code>plotsphericalsurface</code></a>,
+<a href=#plotparametricsurface><code></code>plotparametricsurface</code></a>, <a href=#plotparametriccurve3d><code></code>plotparametriccurve3d</code></a>,
 <a href=#parametriccurve2d><code></code>parametriccurve2d</code></a>, <a href=#polarcurve><code></code>polarcurve</code></a>,
 <a href=#contourplot><code></code>contourplot</code></a>, <a href=#scatter><code></code>scatter</code></a>,
 <a href=#slopefield><code></code>slopefield</code></a>, <a href=#vectorfield2d><code></code>vectorfield2d</code></a>,

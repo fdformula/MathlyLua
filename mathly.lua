@@ -37,8 +37,8 @@ FUNCTIONS PROVIDED IN THIS MODULE
   polarcurve, polygon, scatter, text, wedge; boxplot, freqpolygon, hist, hist1,
   histfreqpolygon, pareto, pie, slopefield, vectorfield2d ← Graphics objects passed to 'plot'.
 
-  plot; plotparametriccurve2d, plotparametriccurve3d; plot3d, plotparametricsurface3d,
-  plotsphericalsurface3d; animate, manipulate
+  plot; plotparametriccurve2d, plotparametriccurve3d; plot3d, plotparametricsurface,
+  plotsphericalsurface; animate, manipulate
 
   axissquare, axisnotsquare; showaxes, shownotaxes; showxaxis, shownotxaxis;
   showyaxis, shownotyaxis; showgridlines, shownotgridlines;
@@ -2564,7 +2564,7 @@ end -- plot3d
 
 -- plot rho, a spherical function of theta and phi, where theta is in the range thetarange = {θ1, θ2}
 -- and phi is in the range phirange = {φ1, φ2}
-function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
+function plotsphericalsurface(rho, thetarange, phirange, title, resolution)
   local args = namedargs(
     {rho, thetarange, phirange, title, resolution},
     {'rho', 'thetarange', 'phirange', 'title', 'resolution'})
@@ -2597,7 +2597,7 @@ function plotsphericalsurface3d(rho, thetarange, phirange, title, resolution)
 end
 
 -- Plot a surface defined by xyz = {x(u, v), y(u, v), z(u,v)}.
-function plotparametricsurface3d(xyz, urange, vrange, title, resolution)
+function plotparametricsurface(xyz, urange, vrange, title, resolution)
   local args = namedargs(
     {xyz, urange, vrange, title, resolution},
     {'xyz', 'urange', 'vrange', 'title', 'resolution'})
