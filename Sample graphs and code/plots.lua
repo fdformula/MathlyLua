@@ -42,7 +42,7 @@ plotparametriccurve3d({'@(t) t*math.cos(t)', '@(t) t*math.sin(t)', '@(t) t'}, {0
 
 
 -- plot6.png
-plotparametricsurface3d({
+plotparametricsurface({
   '@(u, v) u*cos(v)’,
   '@(u, v) u*sin(v)’,
   '@(u, v) v’
@@ -54,7 +54,7 @@ plotparametricsurface3d({
 -- https://plotly.com/python/3d-surface-plots/
 a, b, d = 1.32, 1, 0.8
 c = a^2 - b^2
-plotparametricsurface3d({
+plotparametricsurface({
   '@(u, v) (d * (c - a * cos(u) * cos(v)) + b^2 * cos(u)) / (a - c * cos(u) * cos(v))',
   '@(u, v) b * sin(u) * (a - d*cos(v)) / (a - c * cos(u) * cos(v))',
   '@(u, v) b * sin(v) * (c*cos(u) - d) / (a - c * cos(u) * cos(v))'}, {0, 2*pi}, {0, 2*pi})
