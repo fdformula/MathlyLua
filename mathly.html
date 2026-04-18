@@ -194,17 +194,18 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 
 <a href=#top name=m><h2>Table of Functions Provided by Mathly</h2></a>
 <code><p><a href=#horzcat>.. (or horzcat)</a>, <a href=#all>all</a>, <a href=#any>any</a>, <a href=#apply>apply</a>, <a href=#cc>cc</a>, <a href=#clc>clc</a>,
-<a href=#clear>clear</a>, <a href=#copy>copy</a>, <a href=#corr>corr</a>, <a href=#cross>cross</a>, <a href=#demathly>demathly</a>, <a href=#det>det</a>, <a href=#diag>diag</a>,
-<a href=#diff>diff</a> (or <a href=#diff1>diff1</a>), <a href=#diff2>diff2</a>, <a href=#disp>disp</a>, <a href=#display>display</a>, <a href=#div>div</a>,
-<a href=#dot>dot</a>, <a href=#eval>eval</a>, <a href=#expand>expand</a>, <a href=#eye>eye</a>, <a href=#ff>ff</a>, <a href=#findroot>findroot</a>, <a href=#flatten>flatten</a>,
-<a href=#fliplr>fliplr</a>, <a href=#flipud>flipud</a>, <a href=#format>format</a>, <a href=#fzero>fzero</a>, <a href=#gcd>gcd</a>,
-<a href=#hasindex>hasindex</a>, <a href=#help>help</a>, <a href=#input>input</a>, <a href=#integral>integral</a>, <a href=#integral2>integral2</a>, <a href=#integral3>integral3</a>,
-<a href=#inv>inv</a>, <a href=#isempty>isempty</a>, <a href=#isinteger>isinteger</a>, <a href=#iseven>iseven</a>, <a href=#isodd>isodd</a>, <a href=#ismatrix>ismatrix</a>,
-<a href=#ismember>ismember</a>, <a href=#isvector>isvector</a>, <a href=#lagrangepoly>lagrangepoly</a>, <a href=#length>length</a>, <a href=#linsolve>linsolve</a>,
-<a href=#linspace>linspace</a>, <a href=#lu>lu</a>, <a href=#map>map</a>, <a href=#match>match</a>, <a href=#mathly>mathly</a>, <a href=#max>max</a>,
-<a href=#mean>mean</a>, <a href=#merge>merge</a>, <a href=#min>min</a>, <a href=#mod>mod</a>, <a href=#namedargs>namedargs</a>, <a href=#newtonpoly>newtonpoly</a>,
-<a href=#norm>norm</a>, <a href=#ones>ones</a>, <a href=#polyfit>polyfit</a>, <a href=#polynomial>polynomial</a>, <a href=#polyval>polyval</a>, <a href=#powermod>powermod</a>,
-<a href=#printf>printf</a>, <a href=#prod>prod</a>, <a href=#qq>qq</a>, <a href=#qr>qr</a>, <a href=#rand>rand</a>, <a href=#randi>randi</a>,
+<a href=#clear>clear</a>, <a href=#copy>copy</a>, <a href=#corr>corr</a>, <a href=#cross>cross</a>, <a href=#demathly>demathly</a>, <a href=#det>det</a>,
+<a href=#diag>diag</a>, <a href=#diff>diff</a> (or <a href=#diff1>diff1</a>), <a href=#diff2>diff2</a>, <a href=#disp>disp</a>, <a href=#display>display</a>,
+<a href=#div>div</a>, <a href=#dot>dot</a>, <a href=#eval>eval</a>, <a href=#expand>expand</a>, <a href=#eye>eye</a>, <a href=#factorial>factorial</a>,
+<a href=#ff>ff</a>, <a href=#findroot>findroot</a>, <a href=#flatten>flatten</a>, <a href=#fliplr>fliplr</a>, <a href=#flipud>flipud</a>, <a href=#format>format</a>,
+<a href=#fzero>fzero</a>, <a href=#gcd>gcd</a>, <a href=#hasindex>hasindex</a>, <a href=#help>help</a>, <a href=#input>input</a>, <a href=#integral>integral</a>,
+<a href=#integral2>integral2</a>, <a href=#integral3>integral3</a>, <a href=#inv>inv</a>, <a href=#isempty>isempty</a>, <a href=#isinteger>isinteger</a>,
+<a href=#iseven>iseven</a>, <a href=#isodd>isodd</a>, <a href=#ismatrix>ismatrix</a>, <a href=#ismember>ismember</a>, <a href=#isvector>isvector</a>,
+<a href=#lagrangepoly>lagrangepoly</a>, <a href=#length>length</a>, <a href=#linsolve>linsolve</a>, <a href=#linspace>linspace</a>, <a href=#lu>lu</a>,
+<a href=#map>map</a>, <a href=#match>match</a>, <a href=#mathly>mathly</a>, <a href=#max>max</a>, <a href=#mean>mean</a>, <a href=#merge>merge</a>,
+<a href=#min>min</a>, <a href=#mod>mod</a>, <a href=#namedargs>namedargs</a>, <a href=#nck>nchoosek</a>, <a href=#nck>nck</a>, <a href=#newtonpoly>newtonpoly</a>,
+<a href=#norm>norm</a>, <a href=#nck>npk</a>, <a href=#ones>ones</a>, <a href=#polyfit>polyfit</a>, <a href=#polynomial>polynomial</a>, <a href=#polyval>polyval</a>,
+<a href=#powermod>powermod</a>, <a href=#printf>printf</a>, <a href=#prod>prod</a>, <a href=#qq>qq</a>, <a href=#qr>qr</a>, <a href=#rand>rand</a>, <a href=#randi>randi</a>,
 <a href=#randn>randn</a>, <a href=#range>range</a> (or <a href=#seq>seq</a>), <a href=#remake>remake</a>, <a href=#repmat>repmat</a>, <a href=#reshape>reshape</a>,
 <a href=#reverse>reverse</a>, <a href=#round>round</a>, <a href=#rr>rr</a>, <a href=#rref>rref</a>, <a href=#save>save</a>, <a href=#seq>seq</a> (or
 <a href=#range>range</a>), <a href=#size>size</a>, <a href=#sleep>sleep</a>, <a href=#sort>sort</a>, <a href=#sprintf>sprintf</a>, <a href=#std>std</a>,
@@ -256,6 +257,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#eval><code>eval(str)</code></a></td><td> </td><td>Evaluate the expression in <code>str</code> and return the result.</td></tr>
 <tr><td> </td><td><a href=#expand><code>expand(A, m, n, v)</code></a></td><td> </td><td>Return an expanded/shrunk <code>mxn</code> Mathly matrix with value <code>v</code>'s added or entries dropped.</td></tr>
 <tr><td> </td><td><a name=eye></a><code>eye(n)</code></td><td> </td><td>Return a <code>nxn</code> identity Mathly matrix.</td></tr>
+<tr><td> </td><td><a name=factorial><code>factorial(n)</code></a></td><td> </td><td>Return a factorial of <code>n</code>, i.e., <code>n!</code></td></tr>
 <tr><td> </td><td><a href=#ff><code>ff(str)</code></a></td><td> </td><td>Convert a MATLAB-style anonymous function in a string to a Lua function.</td></tr>
 <tr><td> </td><td><a href=#findroot><code>findroot(func, interval, tolerance)</code></a></td><td> </td><td>Find the zero of a function on specified interval.</td></tr>
 <tr><td> </td><td><a href=#flatten><code>flatten(x)</code></a></td><td> </td><td>Remove the structure of <code>x</code> and return a table of all atomic elements in <code>x</code> in order.</td></tr>
@@ -303,8 +305,11 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#min><code>min(x)</code></a></td><td> </td><td>If <code>x</code> is a table/array, return the smallest of all elements of the table; if it is a matrix, ...</td></tr>
 <tr><td> </td><td><a name=mv><code>mv(fname1, fname2)</code></a></td><td> </td><td>Rename file/folder <code>fname1</code> to <code>fname2</code>. Same as <code>os.rename</code>.</td></tr>
 <tr><td> </td><td><a href=#namedargs><code>namedargs(data, opts)</code></a></td><td> </td><td>Provide support for named arguments.</td></tr>
+<tr><td> </td><td><a href=#nck><code>nchoosek(n, k, permq)</code></a></td><td> </td><td>Return the number of combinations or permutations of <code>n</code> items taken <code>k</code> at a time.</td></tr>
+<tr><td> </td><td><a href=#nck><code>nck(n, k)</code></a></td><td> </td><td>Return the number of combinations of <code>n</code> items taken <code>k</code> at a time.</td></tr>
 <tr><td> </td><td><a href=#newtonpoly><code>newtonpoly(...)</code></a></td><td> </td><td>Return the Newton interpolating polynomial, defined by given data, or the values of the polynomial at specified points.</td></tr>
 <tr><td> </td><td><a href=#norm><code>norm(x)</code></a></td><td> </td><td>Return the Euclidean norm of a row/column vector <code>x</code>.</td></tr>
+<tr><td> </td><td><a href=#nck><code>npk(n, k)</code></a></td><td> </td><td>Return the number of permutations of <code>n</code> items taken <code>k</code> at a time.</td></tr>
 <tr><td> </td><td><a href=#ones><code>ones(m, n)</code></a></td><td> </td><td>Return a <code>mxn</code> Mathly matrix of which each element is 1. If <code>m = 1</code>, return a table.</td></tr>
 <tr><td> </td><td><a href=#parametriccurve2d><code>parametriccurve2d({x(t), y(t)}, trange, style, resolution, orientationq)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a parametric curve.</td></tr>
 <tr><td> </td><td><a href=#pareto><code>pareto(data, style, style1)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a pareto chart.</td></tr>
@@ -2318,6 +2323,17 @@ f({y = 10, z = 100, x = 1}) -- or simply: f{y = 10, z = 100, x = 1}
 
 f(1, {z = 100}) -- same as f(1, nil, 100)
 f({z = 100})    -- same as f(nil, nil, 100)
+</code></pre>
+
+<h4>&bull; &nbsp; <a name=npk></a><a name=nck></a><a name=nchoosek href=#m><code>nchoosek(n, k, permq), nck(n, k), npk(n, k)</code></a></h4>
+<p>Return the number of combinations, if <code>permq</code> is <code>nil</code> (not provided), or otherwise permutations of <code>n</code> items taken <code>k</code> at a time.</p>
+<p><code>nck(n, k)</code> and <code>npk(n, k)</code> return the number of combinations and permutations of <code>n</code> items taken <code>k</code> at a time, respectively.</p>
+<pre><code>mathly = require('mathly')
+
+n, k = 20, 7
+nck(n, k) -- or: nchoosek(n, k)
+nck(n, n - k)
+npk(n, k) -- or: nchoosek(n, k, true)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=newtonpoly href=#m><code>newtonpoly({x1, x2, ...}, {y1, y2, ...}, xx), newtonpoly({{x1, y1}, {x2, y2}, ...}, xx)</code></a></h4>

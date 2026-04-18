@@ -18,14 +18,15 @@ DESCRIPTION
 FUNCTIONS PROVIDED IN THIS MODULE
 
   all, any, apply, cc, clc, clear, copy, cross, det, diag, diff (or diff1), diff2,
-  disp, display, dot, expand, eye, ff, findroot, flatten, fliplr, flipud, format,
-  fzero, hasindex, help, horzcat, integral, integral2, integral3, inv, isempty, iseven,
-  isinteger, ismatrix, ismember, isodd, isvector, lagrangepoly, length, linsolve,
-  linspace, lu, map, match, max, mean, merge, min, tables, namedargs, newtonpoly,
-  norm, ones, polynomial, polyval, printf, prod, qq, qr, rand, randi, range, remake,
-  repmat, reshape, round, rr, rref, save, seq, size, sleep, sort, sprintf, std,
-  strcat, submatrix, subtable, sum, tables, tblcat, text, tic, toc, transpose, tt,
-  unique, var, vectorangle, vertcat, who, zeros
+  disp, display, dot, expand, eye, factorial, ff, findroot, flatten, fliplr, flipud,
+  format, fzero, hasindex, help, horzcat, integral, integral2, integral3, inv,
+  isempty, iseven, isinteger, ismatrix, ismember, isodd, isvector, lagrangepoly,
+  length, linsolve, linspace, lu, map, match, max, mean, merge, min, tables,
+  namedargs, nchoosek, nck, newtonpoly, norm, npk, ones, polynomial, polyval,
+  printf, prod, qq, qr, rand, randi, range, remake, repmat, reshape, round, rr,
+  rref, save, seq, size, sleep, sort, sprintf, std, strcat, submatrix, subtable,
+  sum, tables, tblcat, text, tic, toc, transpose, tt, unique, var, vectorangle,
+  vertcat, who, zeros
 
   dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
   oct2hex, hex2bin, hex2dec, hex2oct
@@ -1264,6 +1265,31 @@ function strcat(...)
   end
   return s
 end
+
+function factorial(n)
+  assert(isinteger(n) and n >= 0, 'factorial(n): n must be a nonnegative integer')
+  local v = 1.0
+  for i = 2, n do v = v * i end
+  if v < math.maxinteger then v = math.floor(v + 0.5) end
+  return v
+end
+
+function nchoosek(n, k, permq) -- combination & permutation
+  assert(isinteger(n) and isinteger(k) and n >= k, 'nchoosek(n, k, ...): n and k must be nonnegative integers with n >= k')
+  local v = 1.0
+  if permq ~= nil then
+    for i = n - k + 1, n do v = v * i end
+  else
+    local m = n - k
+    if m < k then m, k = k, m end
+    for i = m + 1, n do v = v * i end
+    v = v / factorial(k)
+  end
+  if v < math.maxinteger then v = math.floor(v + 0.5) end
+  return v
+end
+nck = nchoosek
+function npk(n, k) return nchoosek(n, k, 1) end
 
 -- calculates the mean of all elements of a table
 -- calculates the mean of all elements of each column in a matrix
