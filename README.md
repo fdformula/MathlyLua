@@ -131,7 +131,7 @@ do -- https://plotly.com/python/3d-surface-plots/
   local function x(u, v) return (d * (c - a * cos(u) * cos(v)) + b^2 * cos(u)) / (a - c * cos(u) * cos(v)) end
   local function y(u, v) return b * sin(u) * (a - d*cos(v)) / (a - c * cos(u) * cos(v)) end
   local function z(u, v) return b * sin(v) * (c*cos(u) - d) / (a - c * cos(u) * cos(v)) end
-  plotparametricsurface3d({x, y, z}, {0, 2*pi}, {0, 2*pi})
+  plotparametricsurface({x, y, z}, {0, 2*pi}, {0, 2*pi})
 end
 
 x = linspace(-3, 2.7, 100)
