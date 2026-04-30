@@ -47,7 +47,7 @@ package.path = "./?.luac;;"
 
 `cat`, `isdir`, `isfile`, `iswindows`, `ls` (or `dir`), `mv`, `pwd`, `rm`
 
-`plot`; `plotparametriccurve2d`, `plotparametriccurve3d`; `plot3d`, `plotparametricsurface`, `plotsphericalsurface`; `animate`, `manipulate`
+`plot`; `plotparametriccurve2d`, `plotparametriccurve3d`, `plotpolarcurve`; `plot3d`, `plotparametricsurface`, `plotsphericalsurface`; `animate`, `manipulate`
 
 `arc`, `circle`, `contourplot`, `dotplot`, `line`, `parametriccurve2d`, `point`, `polarcurve`, `polygon`, `scatter`, `text`, `wedge`; `boxplot`, `freqpolygon`, `hist`, `hist1`,
 `histfreqpolygon`, `pareto`, `pie`; `directionfield` (or `slopefield`), `vectorfield2d` &lArr; All are graphics objects passed to `plot`.
