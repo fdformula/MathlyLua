@@ -37,8 +37,8 @@ FUNCTIONS PROVIDED IN THIS MODULE
   polarcurve, polygon, scatter, text, wedge; boxplot, freqpolygon, hist, hist1,
   histfreqpolygon, pareto, pie, slopefield, vectorfield2d ← Graphics objects passed to 'plot'.
 
-  plot; plotparametriccurve2d, plotparametriccurve3d; plot3d, plotparametricsurface,
-  plotsphericalsurface; animate, manipulate
+  plot; plotparametriccurve2d, plotparametriccurve3d, plotpolarcurve; plot3d,
+  plotparametricsurface, plotsphericalsurface; animate, manipulate
 
   axissquare, axisnotsquare; showaxes, shownotaxes; showxaxis, shownotxaxis;
   showyaxis, shownotyaxis; showgridlines, shownotgridlines;
@@ -3820,6 +3820,10 @@ function polarcurve(r, trange, style, resolution, orientationq)
       function(t) return r(t) * math.cos(t) end,
       function(t) return r(t) * math.sin(t) end
     }, trange or {0, 2*pi}, style, resolution, orientationq)
+end
+
+function plotpolarcurve(r, trange, style, resolution, orientationq)
+  plot(polarcurve(r, trange, style, resolution, orientationq))
 end
 
 -- x and y are tables of the same size

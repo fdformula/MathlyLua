@@ -217,7 +217,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <p><a href=#cat>cat</a>, <a href=#dir>dir</a>, <a href=#isdir>isdir</a>, <a href=#isfile>isfile</a>, <a href=#iswindows>iswindows</a>,
 <a href=#ls>ls</a>, <a href=#mv>mv</a>, <a href=#pwd>pwd</a>, <a href=#rm>rm</a></p>
 
-<p><a href=#plot>plot</a>; <a href=#plotparametriccurve2d>plotparametriccurve2d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>;
+<p><a href=#plot>plot</a>; <a href=#plotparametriccurve2d>plotparametriccurve2d</a>, <a href=#plotparametriccurve3d>plotparametriccurve3d</a>, <a href=#plotpolarcurve>plotpolarcurve</a>;
 <a href=#plot3d>plot3d</a>, <a href=#plotparametricsurface>plotparametricsurface</a>, <a href=#plotsphericalsurface>plotsphericalsurface</a>; <a href=#animate>animate</a>, <a href=#manipulate>manipulate</a></p>
 
 <p><a href=#arc>arc</a>, <a href=#circle>circle</a>, <a href=#contourplot>contourplot</a>, <a href=#dotplot>dotplot</a>, <a href=#line>line</a>,
@@ -319,6 +319,7 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#plotparametriccurve2d><code>plotparametriccurve2d({x(t), y(t)}, trange, style, resolution, orientationq)</code></a></td><td> </td><td>Plot a 2D curve defined by <code>{x(t), y(t)}</code>.</td></tr>
 <tr><td> </td><td><a href=#plotparametriccurve3d><code>plotparametriccurve3d({x(t), y(t), z(t)}, trange, title, resolution, orientationq)</code></a></td><td> </td><td>Plot a 3D curve defined by <code>{x(t), y(t), z(t)}</code>.</td></tr>
 <tr><td> </td><td><a href=#plotparametricsurface><code>plotparametricsurface({x(u, v), y(u, v), z(u, v)}, urange, vrange, title, resolution, orientationq)</code></a></td><td> </td><td>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u, v)</code>.</td></tr>
+<tr><td> </td><td><a href=#plotpolarcurve><code>plotpolarcurve(r, trange, style, resolution, orientationq)</code></a></td><td> </td><td>Plot a polar curve defined by <code>r(θ)</code>.</td></tr>
 <tr><td> </td><td><a href=#plotsphericalsurface><code>plotsphericalsurface(rho, thetarange, phirange, title, resolution)</code></a></td><td> </td><td>Plot a spherical function.</td></tr>
 <tr><td> </td><td><a href=#point><code>point(x, y, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a point.</td></tr>
 <tr><td> </td><td><a href=#polarcurve><code>polarcurve(r(t), trange, style, resolution, orientationq)</code></a></td><td> </td><td>Return a graphics object for <code><a href=#plot>plot</a></code> to plot a polar curve.</td></tr>
@@ -658,6 +659,12 @@ axisnotsquare()
 r = function(t) return sin(1.6 * t^2) + cos(4 * t)^5 end
 plot(polarcurve(r, {0, 8*pi}, '-sfn'), {layout={width=800, height=800}})
 plot(polarcurve(r, {0, 8*pi}, '-sfn', 10000), {layout={width=800, height=800}}) -- increase resolution to improve smoothness
+
+plot(polarcurve('@(t) sin(cos(tan(t)))', {0, 2*pi}),
+     polarcurve('@(t) t*sin(t)*cos(t)^2', {0, 20*pi}),
+     polarcurve('@(t) exp(cos(t)) - 2*cos(4*t) + sin(t/4)^3', {0, 10*pi}),
+     polarcurve('@(t) exp(sin(t)) - 2*cos(4*t) + sin(t/5)^3', {0, 10*pi}),
+     {layout = {width=800, height=600, grid={rows=2, columns=2}, title='Polar Curves'}})
 
 gobjs = {}
 for i = 1, 6 do
@@ -2578,6 +2585,7 @@ plot3d(X, Y, Z, 'Demo 2')
 plotparametriccurve2d({cos, sin}, {0,6*pi}, "--rfs")
 plotparametriccurve2d({'@(t) t*cos(t)', '@(t) t*sin(t)'}, {0, 8*pi})
 </code></pre>
+<p>To plot multiple parametric curves in a single figure, use <a href=#plot><code>plot</code></a>. See <a href=#polarcurve><code>polarcurve</code></a>.</p>
 
 <h4>&bull; &nbsp; <a name=plotparametriccurve3d href=#m><code>plotparametriccurve3d({x(t), y(t), z(t)}, trange, title, resolution, orientationq)</code></a></h4>
 <p>Plot a space curve defined by <code>{x(t), y(t), z(t)}</code>.</p>
@@ -2587,6 +2595,19 @@ plotparametriccurve2d({'@(t) t*cos(t)', '@(t) t*sin(t)'}, {0, 8*pi})
 plotparametriccurve3d({cos, sin, '@(t) t'}, {0,6*pi}, "Helix")
 plotparametriccurve3d({'@(t) t*cos(t)', '@(t) t*sin(t)', '@(t) t'}, {0, 8*pi})
 </code></pre>
+
+<h4>&bull; &nbsp; <a name=plotpolarcurve href=#m><code>plotpolarcurve(r, trange, style, resolution, orientationq)</code></a></h4>
+<p>Plot a polar curve defined by <code>r(θ)</code>. It is simply <code>plot(plotpolarcurve(r, trange, style, resolution, orientationq))</code>.</p>
+<p>See <a href=#polarcurve><code>polarcurve</code></a>.</p>
+<p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
+<pre><code>mathly = require('mathly')
+axissquare()
+plotpolarcurve(1, {0, 2*pi}, 'rfs')
+
+plotpolarcurve(function(t) return sin(cos(tan(t))) end, {0, 2*pi}, 'rfs')
+plotpolarcurve('@(t) exp(cos(t)) - 2*cos(4*t) + sin(t/4)^3', {0, 10*pi})
+</code></pre>
+<p>To plot multiple polar curves in a single figure, use <a href=#plot><code>plot</code></a>. See <a href=#polarcurve><code>polarcurve</code></a>.</p>
 
 <h4>&bull; &nbsp; <a name=plotparametricsurface href=#m><code>plotparametricsurface({x(u, v), y(u, v), z(u,v)}, urange, vrange, title, resolution, orientationq)</a></code></h4>
 <p>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u,v)</code>.</p>
@@ -3300,6 +3321,14 @@ plot(vectorfield2d('@(x,y) {-y, -x}', {scale=10}), {layout={width=800, height=60
 
 plot(vectorfield2d('@(x,y) {y, sin(x)}', {xrange={-2*pi, 2*pi, pi/8}, scale=7}))
 plot(vectorfield2d('@(x,y) {3*cos(3*x), 2*cos(2*y)}', {-1, 1, 1/10}, {-1.5, 1.5, 1/10}, 15), {layout={width=600, height=700}})
+
+k, scale = 6, 1.8
+axissquare()
+plot(vectorfield2d('@(x, y) {x - y, x + y}', {-k, k}, {-k, k}, scale))
+plot(vectorfield2d('@(x, y) {-(x - y), -(x + y)}', {-k, k}, {-k, k}, scale))
+plot(vectorfield2d('@(x, y) {x + y, x - y}', {-k, k}, {-k, k}, scale))
+plot(vectorfield2d('@(x, y) {x - y, x - y}', {-k, k}, {-k, k}, scale))
+plot(vectorfield2d('@(x, y) {x + y, x + y}', {-k, k}, {-k, k}, scale))
 
 plot(vectorfield2d('@(x, y) {2*x*y, x^2-3*y^2}', {-3, 3}, {-3, 3}, 0.75),
      contourplot('@(x, y) x^2*y - y^3', {-3, 3}))
