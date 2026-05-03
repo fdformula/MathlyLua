@@ -2607,7 +2607,33 @@ plotpolarcurve(1, {0, 2*pi}, 'rfs')
 plotpolarcurve(function(t) return sin(cos(tan(t))) end, {0, 2*pi}, 'rfs')
 plotpolarcurve('@(t) exp(cos(t)) - 2*cos(4*t) + sin(t/4)^3', {0, 10*pi})
 </code></pre>
-<p>To plot multiple polar curves in a single figure, use <a href=#plot><code>plot</code></a>. See <a href=#polarcurve><code>polarcurve</code></a>.</p>
+<p>To plot multiple polar curves in a single figure, use <a href=#plot><code>plot</code></a>. See <a href=#polarcurve><code>polarcurve</code></a>.
+Below can be a different version of <code>plotpolarcurve</code>.</p>
+<pre><code>mathly = require('mathly')
+
+function plotpolarcurve(r, trange, style, resolution, orientationq)
+  if type(r) ~= 'table' then
+    plot(polarcurve(r, trange, style, resolution, orientationq))
+  else
+    local cs = {}
+    for i = 1, #r do
+      cs[i] = polarcurve(table.unpack(r[i]))
+    end
+    if trange then cs[#cs + 1] = trange end
+    plot(table.unpack(cs))
+  end
+end
+
+axissquare()
+plotpolarcurve('@(t) t', {0, 10*pi})
+
+plotpolarcurve(
+  {{'@(t) t', {0, 10*pi}},
+   {'@(t) t^2', {0, 6*pi}},
+   {'@(t) sqrt(t)', {0, 8*pi}},
+   {'@(t) t^2*cos(t)', {0, 8*pi}}},
+  {layout={width=640, height=600, grid={rows=2, columns=2}}})
+</code></pre>
 
 <h4>&bull; &nbsp; <a name=plotparametricsurface href=#m><code>plotparametricsurface({x(u, v), y(u, v), z(u,v)}, urange, vrange, title, resolution, orientationq)</a></code></h4>
 <p>Plot a surface defined by <code>x = x(u, v), y = y(u, v), z = z(u,v)</code>.</p>
