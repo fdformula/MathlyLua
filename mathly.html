@@ -129,7 +129,7 @@ A[1], A[3] = A[3], A[1] -- interchange 2 rows
 -- plot multiple functions on a single figure
 x = linspace(0, pi, 100)
 y = 5 * x * cos(x ^ 2) - 1
-plot(x, y, '-r', x, -3 * x ^ 2 + 2 * x + 3, '--b')
+plot(x, y, '-r', x, -3 * x ^ 2 + 2 * x + 3, '--b') --&gt; <a href=img/0-1.png target=_blank>figure</a>
 </code></pre>
 
 <h2><a name=math href=#top>Basic mathematical functions and elementwise operations</a></h2>
@@ -439,20 +439,20 @@ opts = {
   xrange = {-6, 6}, yrange = {-2, 40},
   layout = {width = 500, height = 350, square = false}, -- square aspect ratio, square = true, by default
   enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
-animate(fstr, opts)
+animate(fstr, opts) --&gt; <a href=img/animate1.html target=_blank>watch</a>
 
 fstr = {'@(t) 4*sin(t)', '@(t) 4*cos(t)'}
 opts = {t = {-2*pi, 2*pi},
   layout = { width = 500, height = 500 },
   enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
-animate(fstr, opts)
+animate(fstr, opts) --&gt; <a href=img/animate2.html target=_blank>watch</a>
 
 fstr = {'@(t) 6*cos(t)', '@(t) 4*sin(t)'}
 opts = {
   t = {0, 2*pi}, xrange = {-6.4, 6.4}, yrange = { -4.3, 4.3 },
   layout = { width = 600, height = 400 },
   enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
-animate(fstr, opts)
+animate(fstr, opts) --&gt; <a href=img/animate3.html target=_blank>watch</a>
 
 -- Lua + Mathly
 fstr = {'@(t) 5 * cos(t)', '@(t) 5 * sin(t)'}
@@ -471,7 +471,7 @@ opts = {
     {x = '(5 + 2.9)*cos(T + Math.PI/4)', y = '(5 + 2.9)*sin(T + Math.PI/4) + 0.3', text = 'Mathly', color = 'white', size = 14}
   }
 }
-animate(fstr, opts)
+animate(fstr, opts) --&gt; <a href=img/animate4.html target=_blank>watch</a>
 
 -- polar curves: the code below may be used as a template
 -- butterfly curve: polar function r(θ) = e^sin(θ) - 2cos(4θ) + sin^5(θ/12)
@@ -488,13 +488,13 @@ opts = {
     xaxis = { showgrid = false, zeroline = false, showticklabels = false },
     yaxis = { showgrid = false, zeroline = false, showticklabels = false }},
   enhancements = {{x = 'X', y = 'Y', color = 'red', size = 10, point = true}}}
-animate(fstr, opts)
+animate(fstr, opts) --&gt; <a href=img/animate5.html target=_blank>watch</a>
 </code></pre>
 
 <p>See more examples below:</p>
 <ol>
-<li><a href=examples/animate_hypocycloid.lua target="_blank">Animating hypocycloid</a></li>
-<li><a href=examples/animate_epicycloid.lua target="_blank">Animating epicycloid</a></li>
+<li><a href=examples/animate_hypocycloid.lua target="_blank">Animating hypocycloid</a> &rarr; <a href=img/animateA.html target=_blank>watch</a></li>
+<li><a href=examples/animate_epicycloid.lua target="_blank">Animating epicycloid</a> &rarr; <a href=img/animateB.html target=_blank>watch</a></li>
 </ol>
 <p>&#x2713; &nbsp; You may run these Lua scripts in a terminal like: <code>lua -e "dofile('examples/animate_hypocycloid.lua')"</code>.</p>
 
@@ -507,10 +507,10 @@ variables and functions defined in the JavaScript code.</p>
 </ol>
 <p>See detailed examples below:</p>
 <ol>
-<li><a href=examples/animate_stick_endpoints.lua target="_blank">Animating one end of a stick of which the other end moves along a circle</a></li>
-<li><a href=examples/animate_osculating_circle_1.lua target="_blank">Animating osculating circle of <code>y=sin(x)</code></a></li>
-<li><a href=examples/animate_osculating_circle_2.lua target="_blank">Animating osculating circle of <code>y=x<sup>2</sup></code></a></li>
-<li><a href=examples/animate_fixed_point_cobweb.lua target="_blank">Animating the fixed-point method or the generation of a cobweb for <code>x=g(x)</code></a>
+<li><a href=examples/animate_stick_endpoints.lua target="_blank">Animating one end of a stick of which the other end moves along a circle</a> &rarr; <a href=img/animateC.html target=_blank>watch</a></li>
+<li><a href=examples/animate_osculating_circle_1.lua target="_blank">Animating osculating circle of <code>y=sin(x)</code></a> &rarr; <a href=img/animateD.html target=_blank>watch</a></li>
+<li><a href=examples/animate_osculating_circle_2.lua target="_blank">Animating osculating circle of <code>y=x<sup>2</sup></code></a> &rarr; <a href=img/animateE.html target=_blank>watch</a></li>
+<li><a href=examples/animate_fixed_point_cobweb.lua target="_blank">Animating the fixed-point method or the generation of a cobweb for <code>x=g(x)</code></a> &rarr; <a href=img/animateF.html target=_blank>watch</a></li>
 </ol>
 
 <p>&#x2713; &nbsp; If there are multiple points, lines, and/or curves to be animated, use <code>fstr</code> to animate (the primary) one,
@@ -533,7 +533,7 @@ opts = {
     {x = '-T', y = '3* cos(T)', point = true, color = 'red', style = "symbol: 'star'"},
     {x = 'X', y = 'Y', text = "(x<sub>0</sub> = ' + X.toFixed(2) + ', y<sub>0</sub> = ' + Y.toFixed(2) + ')", color = '#0fff', size = 10}
   }}
-animate(fstr, opts)
+animate(fstr, opts) --&gt; <a href=img/animate6.html target=_blank>watch</a>
 </code></pre>
 <p>&#x2713; &nbsp; <b>Note</b>: With <code>text</code> in <code>enhancements</code>, if dynamical evaluation is needed, it must be defined like <code>text =
 <font color='red'>"...'</font> + expr1 + '...' + expr2 + '...' [+ more terms] + <font color='red'>'..."</font></code>, where ... can be any text, expr1, expr2, ...,
@@ -608,18 +608,18 @@ each take also a last argument, <code>orientationq</code> (default: false). If i
 
 <pre><code>mathly = require('mathly')
 clear()
-plot(sin, point({{-2, 1.5}, {2, -1}, {2.5, 2}}), point(-1, sin(-1), {symbol='circle-open', size=18, color='red'}))
+plot(sin, point({{-2, 1.5}, {2, -1}, {2.5, 2}}), point(-1, sin(-1), {symbol='circle-open', size=18, color='red'})) --&gt; <a href=img/plot1.png target=_blank>figure</a>
 
 x = 0.5 - rand(1, 100) * 10
 axisnotsquare()
-plot(scatter(x, cos(x)))
-plot(scatter(randi(99, 1, 200), randi(1000, 1, 200)))
+plot(scatter(x, cos(x))) --&gt; <a href=img/plot2.png target=_blank>figure</a>
+plot(scatter(randi(99, 1, 200), randi(1000, 1, 200))) --&gt; <a href=img/plot3.png target=_blank>figure</a>
 plot(scatter(randi(99, 200, 2)))
 
 data = {{-1.0, -2.0}, {0, -3}, {3, 10}, {7, 6}, {10, -2}}
 xs = linspace(data[1][1], data[#data][1], 100)
 ys = newtonpoly(data, xs)
-plot(scatter(data), xs, ys, "-")
+plot(scatter(data), xs, ys, "-") --&gt; <a href=img/plot4.png target=_blank>figure</a>
 
 axissquare()
 plot(
@@ -628,43 +628,43 @@ plot(
   circle(1, {0, 0}, '-fs'),
   point(3, 2, {symbol='circle', size=36, color='red'}),
   circle(1, {1,1}, '-bfn')
-)
+) --&gt; <a href=img/plot5.png target=_blank>figure</a>
 
 axisnotsquare()
-plot(sin, '-rfa')
+plot(sin, '-rfa') --&gt; <a href=img/plot6.png target=_blank>figure</a>
 
 x = linspace(-2.337, 0.779, 100)
 X = linspace(-5, 5, 200)
-plot(X, cos(X), X, sin(X), '-rff') -- shade regions between two curves
-plot(x, cos(x), x, sin(x), '-rff', X, cos(X), X, sin(X)) -- shade part of  ...
+plot(X, cos(X), X, sin(X), '-rff') -- shade regions between two curves  --&gt; <a href=img/plot7.png target=_blank>figure</a>
+plot(x, cos(x), x, sin(x), '-rff', X, cos(X), X, sin(X)) -- shade part of  ...  --&gt; <a href=img/plot8.png target=_blank>figure</a>
 
 axissquare()
-plot(polarcurve('@(t) 2 - 2*sin(t) + sin(t)*sqrt(abs(cos(t))) / (sin(t) + 1.8)', {0, 2*pi}, 'rfs'))
+plot(polarcurve('@(t) 2 - 2*sin(t) + sin(t)*sqrt(abs(cos(t))) / (sin(t) + 1.8)', {0, 2*pi}, 'rfs'))  --&gt; <a href=img/plot9.png target=_blank>figure</a>
 
 plot(
   polarcurve(1.5),
   polarcurve('@(t) sqrt(t) * cos(t)', {0, 4*pi}, '-b'),
   polarcurve('@(t) cos(4*t)', {0, 2*pi}, '-rfs'),
   parametriccurve2d({cos, sin}, {3/4*pi, 5/4*pi}, '-gfs')
-)
+) --&gt; <a href=img/plot10.png target=_blank>figure</a>
 
 do -- https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)
   local function f(t) return (exp(cos(t)) - 2*cos(4*t) - sin(t/12)^5) end
   local function x(t) return sin(t) * f(t) end
   local function y(t) return cos(t) * f(t) end
   plot(parametriccurve2d({x, y}, {0, 12*pi}), {layout={title = "Butterfly Curve"}})
-end
+end --&gt; <a href=img/plot11.png target=_blank>figure</a>
 
 axisnotsquare()
 r = function(t) return sin(1.6 * t^2) + cos(4 * t)^5 end
-plot(polarcurve(r, {0, 8*pi}, '-sfn'), {layout={width=800, height=800}})
-plot(polarcurve(r, {0, 8*pi}, '-sfn', 10000), {layout={width=800, height=800}}) -- increase resolution to improve smoothness
+plot(polarcurve(r, {0, 8*pi}, '-sfn'), {layout={width=800, height=800}}) --&gt; <a href=img/plot12.png target=_blank>figure</a>
+plot(polarcurve(r, {0, 8*pi}, '-sfn', 10000), {layout={width=800, height=800}}) -- increase resolution to improve smoothness  --&gt; <a href=img/plot13.png target=_blank>figure</a>
 
 plot(polarcurve('@(t) sin(cos(tan(t)))', {0, 2*pi}),
      polarcurve('@(t) t*sin(t)*cos(t)^2', {0, 20*pi}),
      polarcurve('@(t) exp(cos(t)) - 2*cos(4*t) + sin(t/4)^3', {0, 10*pi}),
      polarcurve('@(t) exp(sin(t)) - 2*cos(4*t) + sin(t/5)^3', {0, 10*pi}),
-     {layout = {width=800, height=600, grid={rows=2, columns=2}, title='Polar Curves'}})
+     {layout = {width=800, height=600, grid={rows=2, columns=2}, title='Polar Curves'}}) --&gt; <a href=img/plot14.png target=_blank>figure</a>
 
 gobjs = {}
 for i = 1, 6 do
@@ -677,7 +677,7 @@ axissquare()
 plot(
   parametriccurve2d({'@(t) 3*cos(t)', '@(t) 3*sin(t)'}, {0, 2*pi}, {orientationq = true}), -- counter clockwise
   parametriccurve2d({'@(t) 2*sin(t)', '@(t) cos(t)'}, {0, 2*pi}, {orientationq = true}),   -- clockwise
-  parametriccurve2d({'@(t) 2.5*sin(t)', '@(t) 2.5*cos(t)'}, {0, 2*pi}, {color = 'green'}))
+  parametriccurve2d({'@(t) 2.5*sin(t)', '@(t) 2.5*cos(t)'}, {0, 2*pi}, {color = 'green'})) --&gt; <a href=img/plot15.png target=_blank>figure</a>
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=showlegend></a><a name=shownotlegend></a><a name=shownotyaxis></a><a name=showyaxis></a>
@@ -884,13 +884,13 @@ Larger <code>x3</code> means better smoothness of the level/contour curves.</p>
 <pre><code>mathly= require('mathly')
 clear()
 function f(x, y) return x^2 - y^2 end
-plot(contourplot(f, {-5, 5}, {-8, 8}), {layout={width=500, height=600}})
+plot(contourplot(f, {-5, 5}, {-8, 8}), {layout={width=500, height=600}}) --&gt; <a href=img/ct1.png target=_blank>figure</a>
 
 axissquare()
-plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}))
-plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, {style = {}})) -- remove default style
-plot(contourplot('@(x, y) -3*x / (x^2 + y^2 + 1)', {-5, 5, 500}))
-plot(contourplot('@(x, y) -x*y * exp(-x^2 - y^2)', linspace(-1.7, 1.7, 500)))
+plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50})) --&gt; <a href=img/ct2.png target=_blank>figure</a>
+plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, {style = {}})) -- remove default style --&gt; <a href=img/ct3.png target=_blank>figure</a>
+plot(contourplot('@(x, y) -3*x / (x^2 + y^2 + 1)', {-5, 5, 500})) --&gt; <a href=img/ct3.png target=_blank>figure</a>
+plot(contourplot('@(x, y) -x*y * exp(-x^2 - y^2)', linspace(-1.7, 1.7, 500))) --&gt; <a href=img/ct5.png target=_blank>figure</a>
 
 style = { contours = {
   coloring = 'heatmap', -- values of coloring: 'lines', 'heatmap', 'fill'
@@ -899,13 +899,13 @@ style = { contours = {
   showscale = true, showlabels = true,
   labelfont = { family = 'Raleway', size = 12, color = 'blue'}
 }}
-plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, {style = style}))
+plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, {style = style})) --&gt; <a href=img/ct6.png target=_blank>figure</a>
 
 axissquare()
 style = {colorscale = 'Viridis', contours = { coloring = 'lines'}, showscale = false}
 x = linspace(-5, 1.2, 100)
 y = 1.3*(x + 1.73) + 1.4
-plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, {style = style}), x, y)
+plot(contourplot('@(x, y) x^2 + y^2', {-5, 5, 50}, {style = style}), x, y) --&gt; <a href=img/ct7.png target=_blank>figure</a>
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=copy href=#m><code>copy(A, rowrange, columnrange, B, rowrange1, columnrange1)</code></a></h4>
@@ -1185,7 +1185,7 @@ x = {0, 10, 20, 30, 40, 50, 60, 70, 80}
 y = {1.94, 3.96, 5, 6.5, 8.07, 6.09, 9.14, 10.97, 11.21}
 s = polyfit(x, y, 1)
 corr(x, y)
-plot(x, y, 'o', '@(x) ' .. s)
+plot(x, y, 'o', '@(x) ' .. s) --&gt; <a href=img/pf.png target=_blank>figure</a>
 
 corr{{0, 1.94}, {10, 3.96}, {20, 5}, {30, 6.5}, {40, 8.07}, {50, 6.09}, {60, 9.14}, {70, 10.97}, {80, 11.21}}
 
@@ -1240,7 +1240,7 @@ disp(diff2(sin, 1))
 
 f = ff('@(x) 0.5*x^2')
 x0 = 2
-plot(f, '@(x) f(x0) + diff(f, x0)*(x - x0)')
+plot(f, '@(x) f(x0) + diff(f, x0)*(x - x0)') --&gt; <a href=img/dp.png target=_blank>figure</a>
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=diag href=#m><code>diag(A, ...)</code></a></h4>
@@ -1363,13 +1363,13 @@ where <code>symbol</code> can be <code>circle, square, diamond</code>, etc. See 
 <pre><code>mathly = require('mathly')
 x = range(0, 2*pi, 0.3)
 y = map('@(x) sin(x)', x)
-plot(dotplot(x, y, {size = 10, color = 'red', opacity = 0.5, symbol = 'star', line = {color = 'blue', width = 0.5}}))
-plot(dotplot(x, y), cos, {xrange = {0, 2*pi}})
+plot(dotplot(x, y, {size = 10, color = 'red', opacity = 0.5, symbol = 'star', line = {color = 'blue', width = 0.5}})) --&gt; <a href=img/dp1.png target=_blank>figure</a>
+plot(dotplot(x, y), cos, {xrange = {0, 2*pi}}) --&gt; <a href=img/dp2.png target=_blank>figure</a>
 
 x = tables('i', {i = {1, 100}})
 y = tables('(-1)^i * i / (i + 1)', {i = {1, 100}})
 axisnotsquare()
-plot(dotplot(x, y, {size = 3}))
+plot(dotplot(x, y, {size = 3})) --&gt; <a href=img/dp3.png target=_blank>figure</a>
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=eval href=#m><code>eval(str)</code></a></h4>
@@ -1423,7 +1423,7 @@ disp(expand(a, 2))
 clear()
 f = ff('@(x) x*x - 2*x + 1')
 disp(f(1)) -- 0
-plot(f, sin, {xrange = {0, 2}})
+plot(f, sin, {xrange = {0, 2}}) --&gt; <a href=img/ff.png target=_blank>figure</a>
 
 g = ff('@(x) x*x')
 g(1) -- 1
@@ -1543,18 +1543,18 @@ help 're' -- 'regex'
 <pre><code>mathly = require('mathly')
 clear()
 data = {1, 11, 4, 7, 6, 5, 10, 4, 3, 15, 13, 1, 4, 10, 9}
-plot(pie(data, 5))
-plot(pie(data, 5, {names={'A', 'B', 'C', 'D', 'E'}, style={pull={0, 0.1, 0, 0, 0}}, title='Demo'}))
+plot(pie(data, 5)) --&gt; <a href=img/pi1.png target=_blank>figure</a>
+plot(pie(data, 5, {names={'A', 'B', 'C', 'D', 'E'}, style={pull={0, 0.1, 0, 0, 0}}, title='Demo'})) --&gt; <a href=img/pi2.png target=_blank>figure</a>
 
 -- insidetextorientation: auto, horizontal, radial, tangential
 -- textposition: auto, inside, outside
 plot(pie({5, 6, 1, 10, 7, 6}, {names={'A', 'B', 'C', 'D', 'E', 'F'}, title='Demo',
-         style={textposition='outside', outsidetextfont={color={'blue', 'red', 'green'}, family="Raleway", size={12, 16, 20, 24, 28, 32}}}}))
+         style={textposition='outside', outsidetextfont={color={'blue', 'red', 'green'}, family="Raleway", size={12, 16, 20, 24, 28, 32}}}})) --&gt; <a href=img/pi3.png target=_blank>figure</a>
 plot(pie({x={5, 6, 1, 10, 7, 6}, names={'A', 'B', 'C', 'D', 'E', 'F'}, title='Demo',
          style={textposition='inside', insidetextfont={color='white', family = "Droid Serif", size = 16},
-                pull={0.1, 0, 0, 0, 0}, insidetextorientation='radial'}}))
+                pull={0.1, 0, 0, 0, 0}, insidetextorientation='radial'}})) --&gt; <a href=img/pi4.png target=_blank>figure</a>
 plot(pie(randi({-100, 100}, 1, 200),
-         {style={textposition='inside', insidetextfont={color='white', family = "Courier New", size = 16}, pull={0.1, 0, 0, 0, 0}}}))
+         {style={textposition='inside', insidetextfont={color='white', family = "Courier New", size = 16}, pull={0.1, 0, 0, 0, 0}}})) --&gt; <a href=img/pi5.png target=_blank>figure</a>
 </code></pre>
 
 <p>More examples,</p>
@@ -1564,9 +1564,9 @@ data1 = {1, 2, 3, 4, 2, 12, 3, 4, 2, 12, 9, 9, 9, 8, 5, 3, 3, 2, 1, 5, 3, 2}
 data2 = {2, 1, 2, 4, 5, 7, 11}
 data3 = {3, 2, 3, 4, 2, 2, 9, 11}
 axisnotsquare(); shownotlegend()
-plot(boxplot(data1), {layout={width=500, height=400}})
-plot(boxplot({data1, data2}, {"name 1", "name 2"}))
-plot(boxplot({data1, data2, data3, {2, 3, 5, 7, 11, 20, 1, 2, 3}}))
+plot(boxplot(data1), {layout={width=500, height=400}}) --&gt; <a href=img/box1.png target=_blank>figure</a>
+plot(boxplot({data1, data2}, {"name 1", "name 2"})) --&gt; <a href=img/box2.png target=_blank>figure</a>
+plot(boxplot({data1, data2, data3, {2, 3, 5, 7, 11, 20, 1, 2, 3}})) --&gt; <a href=img/box3.png target=_blank>figure</a>
 
 mu, sigma = 72.11, 13.36
 x = flatten(randn(1, 5000, mu, sigma))
@@ -1581,28 +1581,28 @@ Y = n(X, mu, sigma) * 7.8
 
 gobj = hist1(x, 12)
 axisnotsquare(); shownotlegend()
-plot(gobj, X, Y, '--r')   -- <font color=blue>example of hist1</font>
+plot(gobj, X, Y, '--r')   -- <font color=blue>example of hist1</font> --&gt; <a href=img/his1.png target=_blank>figure</a>
 gobj = hist1(x, 12, {color='blue', fill='toself'}, {20, 120}, true, {color='red'})
-plot(gobj)
+plot(gobj) --&gt; <a href=img/his2.png target=_blank>figure</a>
 gobj = hist1(x, {xrange={20,120}, nbins=12, freqpolygonq=true, style='bfs', style1={color='red'}})
-plot(gobj)
+plot(gobj) --&gt; <a href=img/his3.png target=_blank>figure</a>
 
 showaxes()
 axisnotsquare()
-plot(hist(randn(1, 100))) -- <font color=blue>examples of hist</font>
+plot(hist(randn(1, 100))) -- <font color=blue>examples of hist</font> --&gt; <a href=img/his4.png target=_blank>figure</a>
 A = randi({0, 99}, 3, 50)
-plot(hist(A), {layout={width=800, height=600}})
+plot(hist(A), {layout={width=800, height=600}}) --&gt; <a href=img/his5.png target=_blank>figure</a>
 plot(hist(A, {xrange = {0, 99}})) -- run multiple times, the two can produce different results
 
 axisnotsquare()
-plot(freqpolygon(x))
+plot(freqpolygon(x)) --&gt; <a href=img/his6.png target=_blank>figure</a>
 plot(freqpolygon(x, {style='--r*'}))
 plot(histfreqpolygon(x))
-plot(histfreqpolygon(x, {style='-bfs', style1='--r*'}))
+plot(histfreqpolygon(x, {style='-bfs', style1='--r*'})) --&gt; <a href=img/his7.png target=_blank>figure</a>
 
 x = {{'A', 382}, {'B', 22}, {'C', 91}, {'D', 53}, {'E', 19}, {'F', 35}}
-plot(pareto(x))
-plot(pareto(x, '-bfs', '--r')) -- or: plot(pareto(x, {style='-bfs', style1='--r'}))
+plot(pareto(x)) --&gt; <a href=img/pt1.png target=_blank>figure</a>
+plot(pareto(x, '-bfs', '--r')) -- or: plot(pareto(x, {style='-bfs', style1='--r'})) --&gt; <a href=img/pt2.png target=_blank>figure</a>
 plot(pareto(x, '-fs'))
 </code></pre>
 <p>&#x2713; &nbsp; From the above examples, we can tell the major difference between <code>hist</code> and <code>hist1</code>.</p>
@@ -1814,7 +1814,7 @@ x, y = {0, 1, 2}, {3, 1, 4}
 s = lagrangepoly(x, y) -- or: lagrangepoly({{0, 3}, {1, 1}, {2, 4}})
 disp(s)
 -- '1.5*(x - 1)*(x - 2) - x*(x - 2) + 2.0*x*(x - 1)'
-plot('@(x) ' .. s, x, y, 'ro')
+plot('@(x) ' .. s, x, y, 'ro') --&gt; <a href=img/lp1.png target=_blank>figure</a>
 disp(lagrangepoly(x, y, 5)) -- or: lagrangepoly({{0, 3}, {1, 1}, {2, 4}}, 5)
 -- 43.0
 disp(lagrangepoly(x, y, {5, -6, 100}))
@@ -1831,8 +1831,8 @@ g(10)
 -- 113.0
 
 xs = linspace(-2, 5, 100)
-plot(xs, lagrangepoly(x, y, xs))
-plot(xs, newtonpoly(x, y, xs))
+plot(xs, lagrangepoly(x, y, xs)) --&gt; <a href=img/lp2.png target=_blank>figure</a>
+plot(xs, newtonpoly(x, y, xs)) --&gt; <a href=img/lp2.png target=_blank>figure</a>
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=linsolve href=#m><code>linsolve(A, b, opt)</code></a></h4>
@@ -1874,7 +1874,7 @@ disp(x)
 clear()
 x = linspace(0, 2*pi, 500)
 y = cos(x)
-plot(x, y, '-r')
+plot(x, y, '-r') --&gt; <a href=img/cos.png target=_blank>figure</a>
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=dir></a><a name=ls href=#m><code>ls(path, printq)</code> or <code>dir(path, printq)</code></a></h4>
@@ -1937,7 +1937,7 @@ opts = {
   xrange = {-5.1, 5.1},
   resolution = 2000,
   layout = { width = 640, height = 540, title = '&lt;h3&gt;Lissajous Curves&lt;/h3&gt;' }}
-manipulate(fstr, opts)
+manipulate(fstr, opts) --&gt; <a href=img/manipulate1.html target=_blank>watch</a>
 
 fstr = {'@(t) cos(t) + 1/m * cos(a*t) + 1/n * cos(b*t+3.1416/2)',
         '@(t) sin(t) + 1/m * sin(a*t) + 1/n * sin(b*t+3.1416/2)'}
@@ -1948,7 +1948,7 @@ opts = {
   xrange = {-4, 4},
   resolution = 2000,
   layout = {width = 500, height = 500, square = true}}
-manipulate(fstr, opts)
+manipulate(fstr, opts) --&gt; <a href=img/manipulate2.html target=_blank>watch</a>
 -- m = 2, (n = 5 | 9), a = 9, b = -15
 -- m = 2, n = 2, a = 8, b = -6
 
@@ -1963,7 +1963,7 @@ opts = {
   resolution = 2000,
   fill = 'fs',
   layout = {width = 500, height = 500, square = true, title = '&lt;h3&gt;Polar curve: r(t) = sin(nt)&lt;/h3&gt;'}}
-manipulate(fstr, opts)
+manipulate(fstr, opts) --&gt; <a href=img/manipulate3.html target=_blank>watch</a>
 
 r = 'm + 1/n * sin(a*t)'
 s = 't + sin(b*t)/c'
@@ -1980,7 +1980,7 @@ opts = {
     width = 500, height = 500, square = true, title = '',
     xaxis = { showgrid = false, zeroline = false, showticklabels = false },
     yaxis = { showgrid = false, zeroline = false, showticklabels = false }}}
-manipulate(fstr, opts)
+manipulate(fstr, opts) --&gt; <a href=img/manipulate4.html target=_blank>watch</a>
 -- m = -2, n = 7, a = -9, b = -2, c = 1
 -- m = n = c = 1, (a = -1, b = -10) | (a = +-10, b = 4)
 -- m = 3, n = 1, a = 8, b = 16, c = ...
@@ -2000,11 +2000,11 @@ opts = {
     title = '&lt;font size=5&gt;Polar curve: r(t) = sin(1.6t)&lt;sup&gt;2&lt;/sup&gt; + cos(nt)&lt;sup&gt;5&lt;/sup&gt;&lt;/font&gt;',
     xaxis = { showgrid = false, zeroline = false, showticklabels = false },
     yaxis = { showgrid = false, zeroline = false, showticklabels = false }}}
-manipulate(fstr, opts)
+manipulate(fstr, opts) --&gt; <a href=img/manipulate5.html target=_blank>watch</a>
 -- to view how the curves are dynamically drawn, replace 'manipulate' with 'animate'.
 sleep(1.2) -- see <a href=#sleep><code>sleep</code></a>
 opts.enhancements = {{x = 'X', y = 'Y', point = true, color = 'red'}} -- add a red "pen tip"
-animate(fstr, opts)
+animate(fstr, opts) --&gt; <a href=img/manipulate6.html target=_blank>watch</a>
 </code></pre>
 
 <p>JavaScript and enhancements are allowed as with <code>animate</code>.</p>
@@ -2032,28 +2032,28 @@ opts = {
   xrange = {-10, 10}, yrange = {-100, 100},
   javascript = jcode,
   layout = { width = 600, height = 400, square = false }}
-manipulate(fstr, opts)
+manipulate(fstr, opts) --&gt; <a href=img/manipulate7.html target=_blank>watch</a>
 </code></pre>
 
 <p>See more animation examples:</p>
 <ol>
-<li><a href=examples\animate-taylor-series_exp.lua target="_blank">Using Taylor series to approximate <em>e<sup>x</sup></em> </a></li>
-<li><a href=examples\animate-taylor-series_sine.lua target="_blank">Using Taylor series to approximate <em>sin</em>(<em>x</em>)</a></li>
-<li><a href=examples\animate-taylor-series_natural_base.lua target="_blank">Using Taylor series to approximate <em>e</em></a></li>
-<li><a href=examples\animate-sequence_natural_base.lua target="_blank">Using a sequence to approximate <em>e</em></a></li>
+<li><a href=examples\animate-taylor-series_exp.lua target="_blank">Using Taylor series to approximate <em>e<sup>x</sup></em> </a> &rarr; <a href=img/manipulateA.html target=_blank>watch</a></li>
+<li><a href=examples\animate-taylor-series_sine.lua target="_blank">Using Taylor series to approximate <em>sin</em>(<em>x</em>)</a> &rarr; <a href=img/manipulateB.html target=_blank>watch</a></li>
+<li><a href=examples\animate-taylor-series_natural_base.lua target="_blank">Using Taylor series to approximate <em>e</em></a> &rarr; <a href=img/manipulateC.html target=_blank>watch</a></li>
+<li><a href=examples\animate-sequence_natural_base.lua target="_blank">Using a sequence to approximate <em>e</em></a> &rarr; <a href=img/manipulateD.html target=_blank>watch</a></li>
 <p></p>
-<li><a href=examples/newton_method_for_root.lua target="_blank">Newton's method for solving <code>f(x) = 0</code></a></li>
-<li><a href=examples/secant_method_for_root.lua target="_blank">Secant method for solving <code>f(x) = 0</code></a></li>
-<li><a href=examples/midpoint_method_for_root.lua target="_blank">Midpoint method for solving <code>f(x) = 0</code></a></li>
-<li><a href=examples/regula_falsi_method_for_root.lua target="_blank">Regula falsi method for solving <code>f(x) = 0</code></a></li>
-<li><a href=examples/regula_falsi_method_for_root_modified.lua target="_blank">Modified regula falsi method for solving <code>f(x) = 0</code></a><br><br></li>
-<li><a href=examples/animate_derivative.lua target="_blank">Derivative of <code>y = f(x)</code> at <code>x = x<sub>0</sub></code></a></li>
-<li><a href=examples/animate_definite_integral.lua target="_blank">Definite integral of <code>f(x)</code> on <code>[a, b]</code></a></li>
-<li><a href=examples/animate_double_integral.lua target="_blank">Double integral of <code>f(x, y)</code> over <code>[a, b] x [c, d]</code></a></li>
-<li><a href=examples/animate_euler's_method_for_y'=f(x,y),y(x0)=y0.lua target="_blank">Euler's method for first-order initial-value problems</a></li>
-<li><a href=examples/animate_shooting_method_by_guesses.lua target="_blank">Shooting method for second-order initial-value problems by guesses (for demonstration)</a>.</li>
-<li><a href=examples/animate_shooting_method_by_computed_guesses.lua target="_blank">Shooting method for second-order initial-value problems by computing guesses</a>.</li>
-<li><a href=examples/animate_matrix_operators_on_graph.lua target="_blank">Matrix operators on the graph of <code>f(x)</code></a></li>
+<li><a href=examples/newton_method_for_root.lua target="_blank">Newton's method for solving <code>f(x) = 0</code></a> &rarr; <a href=img/manipulateE.html target=_blank>watch</a></li>
+<li><a href=examples/secant_method_for_root.lua target="_blank">Secant method for solving <code>f(x) = 0</code></a> &rarr; <a href=img/manipulateF.html target=_blank>watch</a></li>
+<li><a href=examples/midpoint_method_for_root.lua target="_blank">Midpoint method for solving <code>f(x) = 0</code></a> &rarr; <a href=img/manipulateG.html target=_blank>watch</a></li>
+<li><a href=examples/regula_falsi_method_for_root.lua target="_blank">Regula falsi method for solving <code>f(x) = 0</code></a> &rarr; <a href=img/manipulateH.html target=_blank>watch</a></li>
+<li><a href=examples/regula_falsi_method_for_root_modified.lua target="_blank">Modified regula falsi method for solving <code>f(x) = 0</code></a> &rarr; <a href=img/manipulateI.html target=_blank>watch</a><br><br></li>
+<li><a href=examples/animate_derivative.lua target="_blank">Derivative of <code>y = f(x)</code> at <code>x = x<sub>0</sub></code></a> &rarr; <a href=img/manipulateJ.html target=_blank>watch</a></li>
+<li><a href=examples/animate_definite_integral.lua target="_blank">Definite integral of <code>f(x)</code> on <code>[a, b]</code></a> &rarr; <a href=img/manipulateK.html target=_blank>watch</a></li>
+<li><a href=examples/animate_double_integral.lua target="_blank">Double integral of <code>f(x, y)</code> over <code>[a, b] x [c, d]</code></a> &rarr; <a href=img/manipulateL.html target=_blank>watch</a></li>
+<li><a href=examples/animate_euler's_method_for_y'=f(x,y),y(x0)=y0.lua target="_blank">Euler's method for first-order initial-value problems</a> &rarr; <a href=img/manipulateM.html target=_blank>watch</a></li>
+<li><a href=examples/animate_shooting_method_by_guesses.lua target="_blank">Shooting method for second-order initial-value problems by guesses (for demonstration)</a> &rarr; <a href=img/manipulateN.html target=_blank>watch</a></li>
+<li><a href=examples/animate_shooting_method_by_computed_guesses.lua target="_blank">Shooting method for second-order initial-value problems by computing guesses</a> &rarr; <a href=img/manipulateO.html target=_blank>watch</a></li>
+<li><a href=examples/animate_matrix_operators_on_graph.lua target="_blank">Matrix operators on the graph of <code>f(x)</code></a> &rarr; <a href=img/manipulateP.html target=_blank>watch</a></li>
 </ol>
 <p><p>&#x2713; &nbsp; You may run these Lua scripts in a terminal like: <code>lua -e "dofile('examples/animate-sequence_natural_base.lua')"</code>.</p>
 
@@ -2355,18 +2355,18 @@ x, y = {-1.0, 0, 7, 10}, {1, -1, 6, -2}
 s = newtonpoly(x, y)
 disp(s)
 -- '1 - 2.0*(x + 1.0) + 0.375*(x + 1.0)*x - 0.067424242424242*(x + 1.0)*x*(x - 7)'
-plot('@(x) ' .. s, x, y, 'ro')
+plot('@(x) ' .. s, x, y, 'ro') --&gt; <a href=img/np1.png target=_blank>figure</a>
 
 xs = linspace(x[1], x[length(x)], 100)
 ys = newtonpoly(x, y, xs)
 axissquare()
-plot(x, y, "*", xs, ys, "-")
+plot(x, y, "*", xs, ys, "-") --&gt; <a href=img/np2.png target=_blank>figure</a>
 
 axisnotsquare()
 data = {{-1.0, -2.0}, {0, -3}, {3, 10}, {7, 6}, {10, -2}}
 xs = linspace(data[1][1], data[#data][1], 100)
 ys = newtonpoly(data, xs)
-plot(scatter(data), xs, ys, "-", {layout={width=350, height=400}})
+plot(scatter(data), xs, ys, "-", {layout={width=350, height=400}}) --&gt; <a href=img/np3.png target=_blank>figure</a>
 
 x = {1.0, 2, 4, 5, 7, 10, 20, 22, 30}
 y = {52.0, 5, -50, -40, 10, 9, 22, 23, 65}
@@ -2375,7 +2375,7 @@ f = ff('@(x) ' .. str) -- or load('function f(x) return ' .. str .. ' end')()
 xs = linspace(x[1], x[length(x)], 100)
 ys = f(xs)
 axisnotsquare()
-plot(x, y, "*", xs, ys, "-")
+plot(x, y, "*", xs, ys, "-") --&gt; <a href=img/np4.png target=_blank>figure</a>
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=norm href=#m><code>norm(x)</code></a></h4>
@@ -2504,29 +2504,29 @@ specs1 = {layout={width=600, height=600, grid={rows=2, columns=2}, title='Exampl
 specs2 = {color='blue', name='cos <i>x</i>', layout={width=500, height=500, grid={rows=4, columns=1}, title='Demo'}}
 specs3 = {width=3, name='x<sup>2</sup>', style=':', color='cyan', symbol='circle-open', size=4}
 
-plot(sin)
-plot('@(x) x^2', {xrange={-6, 6}})
+plot(sin) --&gt; <a href=img/p1.png target=_blank>figure</a>
+plot('@(x) x^2', {xrange={-6, 6}}) --&gt; <a href=img/p2.png target=_blank>figure</a>
 plot(sin, '-r',
      '@(x) x^2', {color='blue'},
      {xrange = {-0.5, 1}},
      {layout = {title = 'Demo', xaxis = {title = 'x'}, yaxis = {title = 'y'},
-                margin = {l = 40, r = 40, t = 40, b = 40, pad = 40}}})
+                margin = {l = 40, r = 40, t = 40, b = 40, pad = 40}}}) --&gt; <a href=img/p3.png target=_blank>figure</a>
 shownotlegend()
 plot(x, y1, '--xr',
      x, y2, ':g',
      text(0.79, 0.71 - 0.08, 'A'),
-     point(0.79, 0.71, {symbol='circle', size=10, color='blue'}))
-plot(x, y1, x, y2, specs1, sin, '--r')
+     point(0.79, 0.71, {symbol='circle', size=10, color='blue'})) --&gt; <a href=img/p4.png target=_blank>figure</a>
+plot(x, y1, x, y2, specs1, sin, '--r') --&gt; <a href=img/p5.png target=_blank>figure</a>
 showlegend()
 plot(x, y1, specs3,
      x, y2, specs2,
      sin, {name = 'sin <i>x</i>'},
      x, y3, {name = 'x<sup>2</sup> sin <i>x</i>'},
-     specs1) -- multiple layouts are merged into one with the last one overwriting others
+     specs1) -- multiple layouts are merged into one with the last one overwriting others --&gt; <a href=img/p6.png target=_blank>figure</a>
 
 axisnotsquare()
-plot(rand(125, 4), specs1, {names={'f1', 'f2', 'f3', 'g'}}) -- each column of a matrix defines a function with x changing from 0 to # of rows
-plot(rand(100,5), {layout = {grid = {rows=3, columns=3}}}, rand(100,3))
+plot(rand(125, 4), specs1, {names={'f1', 'f2', 'f3', 'g'}}) -- each column of a matrix defines a function with x changing from 0 to # of rows --&gt; <a href=img/p7.png target=_blank>figure</a>
+plot(rand(100,5), {layout = {grid = {rows=3, columns=3}}}, rand(100,3)) --&gt; <a href=img/p8.png target=_blank>figure</a>
 </code></pre>
 <p>&#x2713; &nbsp; The options <code>xrange</code> and <code>yrange</code> can be used to specify the ranges of x and y for all graphs on a single figure.
 They take the same format, e.g., <code>xrange = {start, stop, step}</code>, where <code>step</code> is optional, used to generate x values
@@ -2534,14 +2534,14 @@ on <code>[start, stop]</code> if needed. For example,</p>
 <pre><code>mathly = require('mathly')
 x = linspace(0, 10, 300)
 axisnotsquare()
-plot(x, x^4*sin(x), '-r', x, x*cos(x^2), '-b', exp, {xrange={0, 5}, yrange={-5,30}})
+plot(x, x^4*sin(x), '-r', x, x*cos(x^2), '-b', exp, {xrange={0, 5}, yrange={-5,30}}) --&gt; <a href=img/p9.png target=_blank>figure</a>
 
 -------
 
 fs = tables('!@(x) cos(i * x) * sin(i - x)', {i = {1, 4}, controls = 'i'})
 disp(fs)
-plot({xrange = {-6, 6}}, table.unpack(fs)) -- same as {-6, 6, 1}
-plot({xrange = {-6, 6, 0.01}}, table.unpack(fs)) -- smoother
+plot({xrange = {-6, 6}}, table.unpack(fs)) -- same as {-6, 6, 1} --&gt; <a href=img/p10.png target=_blank>figure</a>
+plot({xrange = {-6, 6, 0.01}}, table.unpack(fs)) -- smoother --&gt; <a href=img/p11.png target=_blank>figure</a>
 </code></pre>
 <p>See: <a href=#layout>More complicated examples of grids and subplots</a>.</p>
 <p>&#x2713; &nbsp; In CudaText, press Ctrl-P P to insert a <code>plot</code> template. See <a href=#cudatext>CudaText</a>.
@@ -2563,7 +2563,7 @@ Z = {{z11,  ...,  z1n}, {z21,  ...,  z2n}, ..., {zn1,  ...,  zn2}}
 <pre><code>mathly = require('mathly')
 
 clear()
-plot3d('@(x, y) x^2 - y^2')
+plot3d('@(x, y) x^2 - y^2') --&gt; <a href=img/3d1.png target=_blank>figure</a>
 
 n = 100
 x = linspace(0, 2*pi, n)
@@ -2574,7 +2574,7 @@ for i = 1, n do
   Y[i] = y
 end
 Z = sin(X) * cos(Y)
-plot3d(X, Y, Z, 'Demo 2')
+plot3d(X, Y, Z, 'Demo 2') --&gt; <a href=img/3d2.png target=_blank>figure</a>
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=plotparametriccurve2d href=#m><code>plotparametriccurve2d({x(t), y(t)}, trange, style, resolution, orientationq)</code></a></h4>
@@ -2582,8 +2582,8 @@ plot3d(X, Y, Z, 'Demo 2')
 <p><code>resolution</code> and <code>orientationq</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve</code></a>.</p>
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
 <pre><code>mathly = require('mathly')
-plotparametriccurve2d({cos, sin}, {0,6*pi}, "--rfs")
-plotparametriccurve2d({'@(t) t*cos(t)', '@(t) t*sin(t)'}, {0, 8*pi})
+plotparametriccurve2d({cos, sin}, {0,6*pi}, "--rfs") --&gt; <a href=img/pc2d1.png target=_blank>figure</a>
+plotparametriccurve2d({'@(t) t*cos(t)', '@(t) t*sin(t)'}, {0, 8*pi}) --&gt; <a href=img/pc2d2.png target=_blank>figure</a>
 </code></pre>
 <p>To plot multiple parametric curves in a single figure, use <a href=#plot><code>plot</code></a>. See <a href=#polarcurve><code>polarcurve</code></a>.</p>
 
@@ -2592,8 +2592,8 @@ plotparametriccurve2d({'@(t) t*cos(t)', '@(t) t*sin(t)'}, {0, 8*pi})
 <p><code>resolution</code> and <code>orientationq</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve</code></a>.</p>
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
 <pre><code>mathly = require('mathly')
-plotparametriccurve3d({cos, sin, '@(t) t'}, {0,6*pi}, "Helix")
-plotparametriccurve3d({'@(t) t*cos(t)', '@(t) t*sin(t)', '@(t) t'}, {0, 8*pi})
+plotparametriccurve3d({cos, sin, '@(t) t'}, {0,6*pi}, "Helix") --&gt; <a href=img/pc3d1.png target=_blank>figure</a>
+plotparametriccurve3d({'@(t) t*cos(t)', '@(t) t*sin(t)', '@(t) t'}, {0, 8*pi}) --&gt; <a href=img/pc3d2.png target=_blank>figure</a>
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=plotpolarcurve href=#m><code>plotpolarcurve(r, trange, style, resolution, orientationq)</code></a></h4>
@@ -2602,10 +2602,10 @@ plotparametriccurve3d({'@(t) t*cos(t)', '@(t) t*sin(t)', '@(t) t'}, {0, 8*pi})
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
 <pre><code>mathly = require('mathly')
 axissquare()
-plotpolarcurve(1, {0, 2*pi}, 'rfs')
+plotpolarcurve(1, {0, 2*pi}, 'rfs') --&gt; <a href=img/po1.png target=_blank>figure</a>
 
-plotpolarcurve(function(t) return sin(cos(tan(t))) end, {0, 2*pi}, 'rfs')
-plotpolarcurve('@(t) exp(cos(t)) - 2*cos(4*t) + sin(t/4)^3', {0, 10*pi})
+plotpolarcurve(function(t) return sin(cos(tan(t))) end, {0, 2*pi}, 'rfs') --&gt; <a href=img/po2.png target=_blank>figure</a>
+plotpolarcurve('@(t) exp(cos(t)) - 2*cos(4*t) + sin(t/4)^3', {0, 10*pi}) --&gt; <a href=img/po3.png target=_blank>figure</a>
 </code></pre>
 <p>To plot multiple polar curves in a single figure, use <a href=#plot><code>plot</code></a>. See <a href=#polarcurve><code>polarcurve</code></a>.
 Below can be a different version of <code>plotpolarcurve</code>.</p>
@@ -2625,14 +2625,14 @@ function plotpolarcurve(r, trange, style, resolution, orientationq)
 end
 
 axissquare()
-plotpolarcurve('@(t) t', {0, 10*pi})
+plotpolarcurve('@(t) t', {0, 10*pi}) --&gt; <a href=img/po4.png target=_blank>figure</a>
 
 plotpolarcurve(
   {{'@(t) t', {0, 10*pi}},
    {'@(t) t^2', {0, 6*pi}},
    {'@(t) sqrt(t)', {0, 8*pi}},
    {'@(t) t^2*cos(t)', {0, 8*pi}}},
-  {layout={width=640, height=600, grid={rows=2, columns=2}}})
+  {layout={width=640, height=600, grid={rows=2, columns=2}}}) --&gt; <a href=img/po5.png target=_blank>figure</a>
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=plotparametricsurface href=#m><code>plotparametricsurface({x(u, v), y(u, v), z(u,v)}, urange, vrange, title, resolution, orientationq)</a></code></h4>
@@ -2641,14 +2641,14 @@ plotpolarcurve(
 <p>&#x2713; &nbsp; See also: <a href=#easyf>Shortcut for defining a function for this function.</a></p>
 <pre><code>mathly = require('mathly')
 
-plotparametricsurface({'@(u,v) u', '@(u,v) v', '@(u,v) sqrt(u^2 + v^2)'}, {-3, 3}, {-3, 3}, 'Demo')
+plotparametricsurface({'@(u,v) u', '@(u,v) v', '@(u,v) sqrt(u^2 + v^2)'}, {-3, 3}, {-3, 3}, 'Demo') --&gt; <a href=img/ps1.png target=_blank>figure</a>
 
 R = 5
 r = 2
 plotparametricsurface({ -- torus
   '@(s,t) (R + r * cos(t)) * cos(s)',
   '@(s,t) (R + r * cos(t)) * sin(s)',
-  '@(s,t) r * sin(t)'})
+  '@(s,t) r * sin(t)'}) --&gt; <a href=img/ps2.png target=_blank>figure</a>
 
 do -- https://plotly.com/python/3d-surface-plots/
   local a, b, d = 1.32, 1, 0.8
@@ -2657,7 +2657,7 @@ do -- https://plotly.com/python/3d-surface-plots/
   local function y(u, v) return b * sin(u) * (a - d*cos(v)) / (a - c * cos(u) * cos(v)) end
   local function z(u, v) return b * sin(v) * (c*cos(u) - d) / (a - c * cos(u) * cos(v)) end
   plotparametricsurface({x, y, z}, {0, 2*pi}, {0, 2*pi})
-end
+end --&gt; <a href=img/ps3.png target=_blank>figure</a>
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=plotsphericalsurface href=#m><code>plotsphericalsurface(ρ(θ,φ), θrange, φrange, title, resolution)</code></a></h4>
@@ -2665,9 +2665,9 @@ end
 and <code>φ</code> in the range <code>φrange = {φ1, φ2}</code> (default: <code>{0, pi}</code>). If <code>ρ(θ, φ)</code> is a number, the radius of a sphere centered at the origin, plot the sphere.</p>
 <p><code>resolution</code>? See <a href=#resol><code>parametriccurve2d</code> and <code>polarcurve</code></a>.</p>
 <pre><code>mathly = require('mathly')
-plotsphericalsurface(1)
-plotsphericalsurface('@(theta, phi) theta + 2 * phi', {0, 4*pi}, nil, 'Demo')
-plotsphericalsurface(function(t, p) return 2 + sin(5*p + 7*t) end)
+plotsphericalsurface(1) --&gt; <a href=img/ps4.png target=_blank>figure</a>
+plotsphericalsurface('@(theta, phi) theta + 2 * phi', {0, 4*pi}, nil, 'Demo') --&gt; <a href=img/ps5.png target=_blank>figure</a>
+plotsphericalsurface(function(t, p) return 2 + sin(5*p + 7*t) end) --&gt; <a href=img/ps6.png target=_blank>figure</a>
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=polyfit href=#m><code>polyfit({x1, x2, ...}, {y1, y2, ...}, n, xx), polynomial({{x1, y1}, {x2, y2}, ...}, n, xx)</code></a></h4>
@@ -2683,14 +2683,14 @@ y = {1.94, 3.96, 5, 6.5, 8.07, 6.09, 9.14, 10.97, 11.21, 14.74, 18.28}
 s, coeffs = polyfit(x, y, 1) -- linear least-squares regression
 print(s)
 corr(x, y)
-plot(x, y, 'o', '@(x) ' .. s)
+plot(x, y, 'o', '@(x) ' .. s) --&gt; <a href=img/pf1.png target=_blank>figure</a>
 
 xx = {10, 15, 22}
 polyval(coeffs, xx)
 polyfit(x, y, 1, xx)
 
 s, coeffs = polyfit(x, y, 8)
-plot(x, y, 'o', '@(x) ' .. s)
+plot(x, y, 'o', '@(x) ' .. s) --&gt; <a href=img/pf2.png target=_blank>figure</a>
 
 polyfit({{0, 1.94}, {10, 3.96}, {20, 5}, {30, 6.5}, {40, 8.07}, {50, 6.09}, {60, 9.14}, {70, 10.97}, {80, 11.21}, {90, 14.74}, {100, 18.28}}, 2)
 </code></pre>
@@ -2713,7 +2713,7 @@ x, y = {1, 2, 3}, {3, 1, 4}
 s, coefs = polynomial(x, y)
 disp(s)
 -- '2.5*x^2 - 9.5*x + 10.0'
-plot(x, y, 'o', '@(x) ' .. s)
+plot(x, y, 'o', '@(x) ' .. s) --&gt; <a href=img/polyn.png target=_blank>figure</a>
 p = ff('@(x) ' .. s) -- or load('function p(x) return ' .. s .. ' end')() -- activate the function
 p(10)
 -- 165.0
@@ -3096,8 +3096,8 @@ commands. This shall work with Firefox, Pale Moon, etc., by default.</p>
 
 clear()
 axissquare()
-plot(slopefield(function(x, y) return x + y end, {-3, 3, 0.2}), {layout={width=600, height=600}})
-plot(directionfield('@(x, y) x^2 - y', {-3.5, 3.5, 0.5}, {-3.5, 3.5, 0.5}, 2), {layout={width=600, height=600}})
+plot(slopefield(function(x, y) return x + y end, {-3, 3, 0.2}), {layout={width=600, height=600}}) --&gt; <a href=img/slopef1.png target=_blank>figure</a>
+plot(directionfield('@(x, y) x^2 - y', {-3.5, 3.5, 0.5}, {-3.5, 3.5, 0.5}, 2), {layout={width=600, height=600}}) --&gt; <a href=img/slopef2.png target=_blank>figure</a>
 
 x = linspace(-3, 2.7, 100)
 y1 = x^2 - 2*x + 2 - exp(-x)
@@ -3111,7 +3111,7 @@ plot(slopefield('@(x, y) x^2 - y', {-3, 2.8, 0.5}, {-5, 4.5, 0.5}, 2),
      x, y2, '-b', point(-1, 3, {symbol='circle', size=7, color='blue'}),
      x, y3, '-g', point(-2, 2, {symbol='square', size=7, color='green'}),
      xa, ya, '-n', point(-1.5, 1.6, {symbol='circle', size=7, color='purple'}),
-     {layout={width=400, height=600, title="y' = x<sup>2</sup> - y"}})
+     {layout={width=400, height=600, title="y' = x<sup>2</sup> - y"}}) --&gt; <a href=img/slopef3.png target=_blank>figure</a>
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=sort href=#m><code>sort(tbl, compf)</code></a></h4>
@@ -3264,11 +3264,12 @@ x = tables('!i + j', {i = {1, 5}}); disp(x) -- no evaluation at all
 fs = tables('!@(x) sin(x + i)', {i = {1, 10}, controls = 'i'})
 disp(fs)
 -- {'@(x) sin(x + 1)', '@(x) sin(x + 2)', '@(x) sin(x + 3)', ..., '@(x) sin(x + 10)'}
-plot(table.unpack(fs))
+axisnotsquare()
+plot(table.unpack(fs)) --&gt; <a href=img/cs1.png target=_blank>figure</a>
 
 fs = tables('!@(x) i*sin(x + j) + k', {i = {1, 5}, j = {-1, 1}, k = {0, 2}, controls = 'ikj', printcode = true})
 disp(fs)
-plot({xrange = {-6, 6}}, table.unpack(flatten(fs)))
+plot({xrange = {-6, 6}}, table.unpack(flatten(fs))) --&gt; <a href=img/cs2.png target=_blank>figure</a>
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=tblcat href=#m><code>tblcat(t<sub>1</sub>, t<sub>2</sub>, ...)</code></code></a></h4>
@@ -3296,8 +3297,8 @@ disp(tblcat(1, {c = 2, a = {3, 4}}, true, {ab = {5, 6, 'OK'}, aa = 7}))
 
 clear()
 x = linspace(-pi, pi, 200)
-plot(x, cos(x), point(-pi/3, cos(-pi/3)), text(-pi/3+0.3, cos(-pi/3) - 0.1, 'Point A'), point(pi/3, cos(pi/3)), text(1.6, cos(pi/3) - 0.1, 'Point B'))
-plot(x, cos(x), text(0, -0.2, 'Demo', {family = 'Sans Serif', size = 28, color = '#00aaff'}))
+plot(x, cos(x), point(-pi/3, cos(-pi/3)), text(-pi/3+0.3, cos(-pi/3) - 0.1, 'Point A'), point(pi/3, cos(pi/3)), text(1.6, cos(pi/3) - 0.1, 'Point B')) --&gt; <a href=img/t1.png target=_blank>figure</a>
+plot(x, cos(x), text(0, -0.2, 'Demo', {family = 'Sans Serif', size = 28, color = '#00aaff'})) --&gt; <a href=img/t2.png target=_blank>figure</a>
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=toc></a><a name=tic href=#m><code>tic()</code>, <code>toc()</code></a></h4>
@@ -3333,31 +3334,31 @@ display(unique({4,5,2,1,-2,2,4,2,7,6,19}))
 
 clear()
 axissquare()
-plot(vectorfield2d('@(x,y) {sin(y), sin(x)}', {-pi, pi, pi/8}, {-pi, pi, pi/8}, 20))
+plot(vectorfield2d('@(x,y) {sin(y), sin(x)}', {-pi, pi, pi/8}, {-pi, pi, pi/8}, 20)) --&gt; <a href=img/vf1.png target=_blank>figure</a>
 
-plot(vectorfield2d('@(x,y) {x, y}'))
-plot(vectorfield2d('@(x,y) {-x, -y}'))
+plot(vectorfield2d('@(x,y) {x, y}')) --&gt; <a href=img/vf2.png target=_blank>figure</a>
+plot(vectorfield2d('@(x,y) {-x, -y}')) --&gt; <a href=img/vf3.png target=_blank>figure</a>
 
-plot(vectorfield2d('@(x,y) {-x, y}'))
-plot(vectorfield2d('@(x,y) {-y, x}'))
-plot(vectorfield2d('@(x,y) {-y^2, 2*x^2}', {-5, 5, 0.5}, {-5, 5, 0.5}, 0.8))
-plot(vectorfield2d('@(x,y) {y, -x}'))
-plot(vectorfield2d('@(x,y) {y, x}'))
-plot(vectorfield2d('@(x,y) {-y, -x}', {scale=10}), {layout={width=800, height=600, title='<b>F</b>(x, y) = {-y, -x}'}})
+plot(vectorfield2d('@(x,y) {-x, y}')) --&gt; <a href=img/vf4.png target=_blank>figure</a>
+plot(vectorfield2d('@(x,y) {-y, x}')) --&gt; <a href=img/vf5.png target=_blank>figure</a>
+plot(vectorfield2d('@(x,y) {-y^2, 2*x^2}', {-5, 5, 0.5}, {-5, 5, 0.5}, 0.8)) --&gt; <a href=img/vf6.png target=_blank>figure</a>
+plot(vectorfield2d('@(x,y) {y, -x}')) --&gt; <a href=img/vf7.png target=_blank>figure</a>
+plot(vectorfield2d('@(x,y) {y, x}')) --&gt; <a href=img/vf8.png target=_blank>figure</a>
+plot(vectorfield2d('@(x,y) {-y, -x}', {scale=10}), {layout={width=800, height=600, title='<b>F</b>(x, y) = {-y, -x}'}}) --&gt; <a href=img/vf9.png target=_blank>figure</a>
 
-plot(vectorfield2d('@(x,y) {y, sin(x)}', {xrange={-2*pi, 2*pi, pi/8}, scale=7}))
-plot(vectorfield2d('@(x,y) {3*cos(3*x), 2*cos(2*y)}', {-1, 1, 1/10}, {-1.5, 1.5, 1/10}, 15), {layout={width=600, height=700}})
+plot(vectorfield2d('@(x,y) {y, sin(x)}', {xrange={-2*pi, 2*pi, pi/8}, scale=7})) --&gt; <a href=img/vf10.png target=_blank>figure</a>
+plot(vectorfield2d('@(x,y) {3*cos(3*x), 2*cos(2*y)}', {-1, 1, 1/10}, {-1.5, 1.5, 1/10}, 15), {layout={width=600, height=700}}) --&gt; <a href=img/vf11.png target=_blank>figure</a>
 
 k, scale = 6, 1.8
 axissquare()
-plot(vectorfield2d('@(x, y) {x - y, x + y}', {-k, k}, {-k, k}, scale))
-plot(vectorfield2d('@(x, y) {-(x - y), -(x + y)}', {-k, k}, {-k, k}, scale))
-plot(vectorfield2d('@(x, y) {x + y, x - y}', {-k, k}, {-k, k}, scale))
-plot(vectorfield2d('@(x, y) {x - y, x - y}', {-k, k}, {-k, k}, scale))
-plot(vectorfield2d('@(x, y) {x + y, x + y}', {-k, k}, {-k, k}, scale))
+plot(vectorfield2d('@(x, y) {x - y, x + y}', {-k, k}, {-k, k}, scale)) --&gt; <a href=img/vf12.png target=_blank>figure</a>
+plot(vectorfield2d('@(x, y) {-(x - y), -(x + y)}', {-k, k}, {-k, k}, scale)) --&gt; <a href=img/vf13.png target=_blank>figure</a>
+plot(vectorfield2d('@(x, y) {x + y, x - y}', {-k, k}, {-k, k}, scale)) --&gt; <a href=img/vf14.png target=_blank>figure</a>
+plot(vectorfield2d('@(x, y) {x - y, x - y}', {-k, k}, {-k, k}, scale)) --&gt; <a href=img/vf15.png target=_blank>figure</a>
+plot(vectorfield2d('@(x, y) {x + y, x + y}', {-k, k}, {-k, k}, scale)) --&gt; <a href=img/vf16.png target=_blank>figure</a>
 
 plot(vectorfield2d('@(x, y) {2*x*y, x^2-3*y^2}', {-3, 3}, {-3, 3}, 0.75),
-     contourplot('@(x, y) x^2*y - y^3', {-3, 3}))
+     contourplot('@(x, y) x^2*y - y^3', {-3, 3})) --&gt; <a href=img/vf17.png target=_blank>figure</a>
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=vectorangle href=#m><code>vectorangle(a, b)</code></a></h4>
@@ -3423,13 +3424,13 @@ disp(all({1, 2, 3, {4, {5}}}, '@(x) x > 0'))      -- 1
 disp(any({1, 2, 3, {4, {5}}}, '@(x) x % 3 == 0')) -- 1
 disp(apply('@(x, y, z) x + y + z', {1, 2, 3}))    -- 6
 disp(map('@(x) x*x', {1, 2, 3, {4, {5}}}))        -- {1, 4, 9, {16, {25}}}
-plot(sin, '@(x) 0.5*x^2 - 5', '-r', '@(t) cos(t)*t-3', '--g', {xrange={-pi, pi}})
-plot(parametriccurve2d({'@(t) t', '@(t) t^2'}))   -- x(t) = t, y(t) = t^2, i.e., y = x^2
-plot(polarcurve('@(t) cos(t) + 2*t'))           -- r(θ) = cos(θ) + 2*θ
-plot3d('@(x, y) x^2 - y^2')                       -- f(x, y) = x^2 - y^2
-plotparametriccurve3d({'@(t) 10*sin(t)', '@(t) t^2 - 10*t + 2', '@(t) t^3'})           -- x(t) = 10 * sin(t), ...
-plotparametricsurface({'@(u, v) sin(u)*v', '@(u, v) cos(u)*v - 2', '@(u, v) u + v'}) -- x(u, v) = sin(u)*v, ...
-plotsphericalsurface('@(t, p) sin(t) + 5*p')    -- ρ(θ, φ) = sin(θ) + 5*φ
+plot(sin, '@(x) 0.5*x^2 - 5', '-r', '@(t) cos(t)*t-3', '--g', {xrange={-pi, pi}}) --&gt; <a href=img/an1.png target=_blank>figure</a>
+plot(parametriccurve2d({'@(t) t', '@(t) t^2'}))   -- x(t) = t, y(t) = t^2, i.e., y = x^2 --&gt; <a href=img/an2.png target=_blank>figure</a>
+plot(polarcurve('@(t) cos(t) + 2*t'))           -- r(θ) = cos(θ) + 2*θ --&gt; <a href=img/an3.png target=_blank>figure</a>
+plot3d('@(x, y) x^2 - y^2')                       -- f(x, y) = x^2 - y^2 --&gt; <a href=img/3d1.png target=_blank>figure</a>
+plotparametriccurve3d({'@(t) 10*sin(t)', '@(t) t^2 - 10*t + 2', '@(t) t^3'})           -- x(t) = 10 * sin(t), ... --&gt; <a href=img/an4.png target=_blank>figure</a>
+plotparametricsurface({'@(u, v) sin(u)*v', '@(u, v) cos(u)*v - 2', '@(u, v) u + v'}) -- x(u, v) = sin(u)*v, ... --&gt; <a href=img/an5.png target=_blank>figure</a>
+plotsphericalsurface('@(t, p) sin(t) + 5*p')    -- ρ(θ, φ) = sin(θ) + 5*φ --&gt; <a href=img/an6.png target=_blank>figure</a>
 disp(sort({2, 5, 1, -3}, '@(x, y) x > y'))
 
 x = {1, 2, 3, 4, 5}
@@ -3452,7 +3453,7 @@ axissquare()
 do
   local a = 5
   plot(polarcurve(function(t) return cos(a*t) end, {0, 2*pi}))
-end
+end --&gt; <a href=img/an7.png target=_blank>figure</a>
 </code></pre>
 <p>Here, <code>function(t) return cos(a*t) end</code> can't be replaced with <code>'@(t) cos(a*t)'</code> because <code>a</code>
 is supposed to be a <code>global</code> variable, which is why the following code works.
@@ -3460,7 +3461,7 @@ is supposed to be a <code>global</code> variable, which is why the following cod
 clear()
 axissquare()
 a = 5
-plot(polarcurve('@(t) cos(a*t)', {0, 2*pi}))
+plot(polarcurve('@(t) cos(a*t)', {0, 2*pi})) --&gt; <a href=img/an7.png target=_blank>figure</a>
 </code></pre>
 
 <p>The function, <a href=#qq><code>qq</code></a>, allows more complicated expressions to be defined through this shortcut.</p>
@@ -3498,7 +3499,7 @@ vectorfield2d{scale=3, xrange={-5, 5}, f='@(x, y) {-y, x}'}
 It can take two or more "named" arguments which can occur before an unnamed argument. For instance,</p>
 <pre><code>mathly = require('mathly')
 clear()
-plot({layout={width=600, height=400}}, sin, {xrange={0, 2*pi}})
+plot({layout={width=600, height=400}}, sin, {xrange={0, 2*pi}}) --&gt; <a href=img/sin.png target=_blank>figure</a>
 </code></pre>
 
 <h2><a name=layout href=#top>Plotly JavaScript Figure Reference: <code>layout</code> and <code>grid</code></a></h2>
@@ -3551,7 +3552,7 @@ options = {layout = {
   margin = {l = 70, r = 40, t = 40, b = 40, pad = 5},
   autosize = false
 }}
-plot(sin, '-r', options)
+plot(sin, '-r', options) --&gt; <a href=img/sin1.png target=_blank>figure</a>
 </code></pre>
 <p>Attributes <code>gridaxes</code> and <code>gridaxisnames</code> can specify axis labels of subplots.</p>
 <pre><code>mathly = require('mathly')
@@ -3575,7 +3576,7 @@ plot(
      autosize = false
     }
   }
-)
+) --&gt; <a href=img/grid1.png target=_blank>figure</a>
 </code></pre>
 <p>Here, the <em>domain</em> attribute is used to define the positioning and the size of a subplot
 within the overall figure area, specified in normalized coordinates from 0 to 1. By default,
@@ -3604,7 +3605,7 @@ plot(x, y1, {name='x<sup>2</sup>', style=':', color='cyan', symbol='circle-open'
         },
         margin = {l = 58, r = 50, t = 40, b = 45, pad = 10},
         autosize = false
-      }})
+      }}) --&gt; <a href=img/grid2.png target=_blank>figure</a>
 
 -- a subplot occupies the entire row of a 2x2 grid
 plot(x, y1, {name='x<sup>2</sup>', style=':', color='cyan', symbol='circle-open', size=4},
@@ -3622,7 +3623,7 @@ plot(x, y1, {name='x<sup>2</sup>', style=':', color='cyan', symbol='circle-open'
         },
         margin = {l = 58, r = 50, t = 40, b = 45, pad = 10},
         autosize = false
-      }})
+      }}) --&gt; <a href=img/grid3.png target=_blank>figure</a>
 
 -- a subplot occupies the entire column of a 2x2 grid
 plot(x, y1, {name='x<sup>2</sup>', style=':', color='cyan', symbol='circle-open', size=4},
@@ -3640,7 +3641,7 @@ plot(x, y1, {name='x<sup>2</sup>', style=':', color='cyan', symbol='circle-open'
         },
         margin = {l = 58, r = 50, t = 40, b = 45, pad = 10},
         autosize = false
-      }})
+      }}) --&gt; <a href=img/grid4.png target=_blank>figure</a>
 
 -- a subplot occupies the entire column of a 2x2 grid with the width of each subplot specified
 plot(x, y1, {name='x<sup>2</sup>', style=':', color='cyan', symbol='circle-open', size=4},
@@ -3658,7 +3659,7 @@ plot(x, y1, {name='x<sup>2</sup>', style=':', color='cyan', symbol='circle-open'
         },
         margin = {l = 58, r = 50, t = 40, b = 45, pad = 10},
         autosize = false
-      }})
+      }}) --&gt; <a href=img/grid5.png target=_blank>figure</a>
 </code></pre>
 <p>An example on <a href=https://plotly.com/javascript/axes/#fixedratio-axes target = "_blank">Plotly.com</a>:</p>
 <pre><code>
@@ -3693,7 +3694,7 @@ plot(
      autosize = false
     }
   }
-)
+) --&gt; <a href=img/grid6.png target=_blank>figure</a>
 </code></pre>
 <p>&#x2713; &nbsp; If the x and y ranges of subplots vary, the attributes <code>xranges</code> and <code>yranges</code>
 can be useful. They take the same format, e.g., <code>layout.grid.xranges = {{start, stop, step}, {start, stop, step}, ....}</code>,
@@ -3713,7 +3714,7 @@ plot(sin, '-r', x, cos(x^2), {color='blue'}, exp, '@(x) exp(2*x)',
       autosize = false
     }
   }
-)
+) --&gt; <a href=img/grid7.png target=_blank>figure</a>
 
 plot(sin, '-r', x, cos(x^2), {color='blue'}, exp, '@(x) exp(2*x)',
   {layout = {
@@ -3724,7 +3725,7 @@ plot(sin, '-r', x, cos(x^2), {color='blue'}, exp, '@(x) exp(2*x)',
       autosize = false
     }
   }
-)
+) --&gt; <a href=img/grid8.png target=_blank>figure</a>
 </code></pre>
 <p></p>
 <hr>
