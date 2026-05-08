@@ -205,14 +205,14 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <a href=#map>map</a>, <a href=#match>match</a>, <a href=#mathly>mathly</a>, <a href=#max>max</a>, <a href=#mean>mean</a>, <a href=#merge>merge</a>,
 <a href=#min>min</a>, <a href=#mod>mod</a>, <a href=#namedargs>namedargs</a>, <a href=#nck>nchoosek</a>, <a href=#nck>nck</a>, <a href=#newtonpoly>newtonpoly</a>,
 <a href=#norm>norm</a>, <a href=#nck>npk</a>, <a href=#ones>ones</a>, <a href=#polyfit>polyfit</a>, <a href=#polynomial>polynomial</a>, <a href=#polyval>polyval</a>,
-<a href=#powermod>powermod</a>, <a href=#printf>printf</a>, <a href=#prod>prod</a>, <a href=#qq>qq</a>, <a href=#qr>qr</a>, <a href=#rand>rand</a>, <a href=#randi>randi</a>,
-<a href=#randn>randn</a>, <a href=#range>range</a> (or <a href=#seq>seq</a>), <a href=#remake>remake</a>, <a href=#repmat>repmat</a>, <a href=#reshape>reshape</a>,
-<a href=#reverse>reverse</a>, <a href=#round>round</a>, <a href=#rr>rr</a>, <a href=#rref>rref</a>, <a href=#save>save</a>, <a href=#seq>seq</a> (or
-<a href=#range>range</a>), <a href=#size>size</a>, <a href=#sleep>sleep</a>, <a href=#sort>sort</a>, <a href=#sprintf>sprintf</a>, <a href=#std>std</a>,
-<a href=#strcat>strcat</a>, <a href=#submatrix>submatrix</a>, <a href=#subtable>subtable</a>, <a href=#sum>sum</a>, <a href=#tables>tables</a>,
-<a href=#tblcat>tblcat</a>, <a href=#tic>tic</a>, <a href=#toc>toc</a>, <a href=#transpose>transpose</a>, <a href=#tt>tt</a>, <a href=#unique>unique</a>,
-<a href=#var>var</a>, <a href=#vectorangle>vectorangle</a>, <a href=#vertcat>vertcat</a>, <a href=#who>who</a>, <a href=#zeros>zeros</a>;
-<a href=#bin2dec>bin2dec</a>, <a href=#oct2hex>oct2hex, ...</a></p>
+<a href=#powermod>powermod</a>, <a href=#printf>printf</a>, <a href=#prod>prod</a>, <a href=#qq>qq</a>,
+<a href=#qr>qr</a>, <a href=#rand>rand</a>, <a href=#randi>randi</a>, <a href=#randn>randn</a>, <a href=#range>range</a> (or <a href=#seq>seq</a>),
+<a href=#remake>remake</a>, <a href=#repmat>repmat</a>, <a href=#reshape>reshape</a>, <a href=#reverse>reverse</a>, <a href=#round>round</a>, <a href=#rr>rr</a>,
+<a href=#rref>rref</a>, <a href=#save>save</a>, <a href=#seq>seq</a> (or <a href=#range>range</a>), <a href=#size>size</a>, <a href=#sleep>sleep</a>,
+<a href=#sort>sort</a>, <a href=#sprintf>sprintf</a>, <a href=#std>std</a>, <a href=#strcat>strcat</a>, <a href=#submatrix>submatrix</a>,
+<a href=#subtable>subtable</a>, <a href=#sum>sum</a>, <a href=#tables>tables</a>, <a href=#tblcat>tblcat</a>, <a href=#tic>tic</a>, <a href=#toc>toc</a>,
+<a href=#transpose>transpose</a>, <a href=#tt>tt</a>, <a href=#unique>unique</a>, <a href=#var>var</a>, <a href=#vectorangle>vectorangle</a>,
+<a href=#vertcat>vertcat</a>, <a href=#who>who</a>, <a href=#zeros>zeros</a>; <a href=#bin2dec>bin2dec</a>, <a href=#oct2hex>oct2hex, ...</a></p>
 
 <p><a href=#cat>cat</a>, <a href=#dir>dir</a>, <a href=#isdir>isdir</a>, <a href=#isfile>isfile</a>, <a href=#iswindows>iswindows</a>,
 <a href=#ls>ls</a>, <a href=#mv>mv</a>, <a href=#pwd>pwd</a>, <a href=#rm>rm</a></p>
@@ -250,8 +250,8 @@ divided by <code>d</code> with <code>0 &le; r &lt; d</code> while <code>div(a, d
 <tr><td> </td><td><a href=#diff><code>diff</code> (or <code>diff1</code>), <code>diff2</code></a></td><td> </td><td>Calculate numerically the first and second derivatives of <code>f(x)</code> at a point.</td></tr>
 <tr><td> </td><td><a href=#dir><code>dir(path, printq)</code></a></td><td> </td><td>List files in the folder <code>path</code> (the current directory by default).</td></tr>
 <tr><td> </td><td><a href=#directionfield><code>directionfield(f, xrange, yrange, scale)</code></a></td><td> </td><td>Exactly the same as <code>slopefield</code>.</td></tr>
-<tr><td> </td><td><a href=#disp><code>disp(x)</code></a></td><td> </td><td>Print a Mathly matrix.</td></tr>
-<tr><td> </td><td><a href=#display><code>display(x)</code></a></td><td> </td><td>Print a table of any type, including Mathly matrices, with structure.</td></tr>
+<tr><td> </td><td><a href=#disp><code>disp(x, ...)</code></a></td><td> </td><td>Print a Mathly matrix.</td></tr>
+<tr><td> </td><td><a href=#display><code>display(x, ...)</code></a></td><td> </td><td>Print a table of any type, including Mathly matrices, with structure.</td></tr>
 <tr><td> </td><td><a href=#dot><code>dot(a, b)</code></a></td><td> </td><td>Calculate the dot/inner product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, ..., a<sub>n</sub>}</code> and <code>b = {b<sub>1</sub>, b<sub>2</sub>, ..., b<sub>n</sub>}</code>.</td></tr>
 <tr><td> </td><td><a href=#dotplot><code>dotplot(x, y, style)</code></a></td><td> </td><td>Return a graphics object for <code>plot</code> to plot a dot plot.</td></tr>
 <tr><td> </td><td><a href=#eval><code>eval(str)</code></a></td><td> </td><td>Evaluate the expression in <code>str</code> and return the result.</td></tr>
@@ -1318,27 +1318,113 @@ diag({2,3,4,5}, 1) + diag({1,2,3,4,5}) + diag({3,4,5,6}, -1) -- See also: <a nam
 -- 0  0  0  6  5
 </code></pre>
 
-<h4>&bull; &nbsp; <a name=disp></a><a name=display href=#m><code>disp(A), display(x)</code></a></h4>
+<h4>&bull; &nbsp; <a name=disp></a><a name=display href=#m><code>disp(x, ...), display(x, ...)</code></a></h4>
 <table>
-<tr><td><code>disp(x)</code></td><td> - </td><td>Print a Mathly matrix. If <code>x</code> is not a Mathly matrix, <code>display</code> is called to print it.</td></tr>
-<tr><td><code>display(x)</code></td><td> - </td><td>Print a table, including any Mathly matrix, with structure.</td></tr>
+<tr><td><code>disp(x, ...)</code></td><td> - </td><td>Print a Mathly matrix. If <code>x</code> is not a Mathly matrix, <code>display</code> is called to print it.</td></tr>
+<tr><td><code>display(x, ...)</code></td><td> - </td><td>Print a table, including any Mathly matrix, with structure.</td></tr>
 </table>
 <p>&#x2713; &nbsp; You can always use <code>disp</code> in all cases (except that you want to know the structure of a Mathly matrix).</p>
+<p>&#x2713; &nbsp; <code>disp(x, 'flat'), display(x, 'flat')</code>: Print a table on a single line with structure. Here, 'flat' can be replaced with anything but a number.</p>
 <pre><code>mathly = require('mathly')
 
-a = eye(3)
-disp(a)
--- 1 0 0
--- 0 1 0
--- 0 0 1
-display(a)
--- {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
+x = mathly(3, 5)
+disp(x)
 
-x = {1, 2, {3, 4, {5, 6, {7, 8, {9}}}}}
-disp(x) -- or display(x)
+x = {{1, 2, {3, 4}, 8, 9, x = 10, 11, 12, {1, 2, 3, {4, 5, {6, 7}}}}, 100}
+disp(x) -- display(x) is called since x is not a mathly matrix
+-- {
+--   {
+--     1, 2,
+--     {
+--       3, 4
+--     },
+--     8, 9, 11, 12,
+--     {
+--       1, 2, 3,
+--       {
+--         4, 5,
+--         {
+--           6, 7
+--         }
+--       }
+--     },
+--     x = 10
+--   },
+--   100
+-- }
+disp(x, 'flat') -- same as disp(x, true), disp(x, ''), disp(x, 'compact'), ...
+-- {{1, 2, {3, 4}, 8, 9, 11, 12, {1, 2, 3, {4, 5, {6, 7}}}, x = 10}, 100}
+</code></pre>
 
-x = {1, 2, hi = {2, 3, my = {1, 2, 3, you = 6, 5, 4, 2, 7, 'hello', true, false, 5, yes = 1}}}
-disp(x) -- or display(x)
+<p>&#x2713; &nbsp; <code>display(t, n)</code>: If the indices of a table are all fields/keys like 'key', 'left', and
+'right' in the following example, they are sorted in alphabetical order. Items in table <code>t</code> are organized in
+<code>n</code> columns. The default value of <code>n</code>, -1, indicates that none-field items are basically printed
+on a single line.</p>
+<pre><code>mathly = require('mathly')
+
+-- a binary search tree
+bst = {right = {right = {right = {key = 21}, key = 14, left = {key = 10}},
+  key = 8}, key = 3, left = {right = {key = 2}, key = 1, left = {key = -5}}}
+--            ┌── 21
+--        ┌── 14
+--        │   └── 10
+--    ┌── 8
+-- ── 3
+--    │   ┌── 2
+--    └── 1
+--        └── -5
+disp(bst) -- display(...) is called because bst is not a mathly matrix
+-- {
+--  key = 3,
+--  left = {
+--    key = 1,
+--    left = {
+--      key = -5
+--    },
+--    right = {
+--      key = 2
+--    }
+--  },
+--  right = {
+--    key = 8,
+--    right = {
+--      key = 14,
+--      left = {
+--        key = 10
+--      },
+--      right = {
+--        key = 21
+--      }
+--    }
+--  }
+--}
+
+x = randi({0, 100}, 2, 12)
+disp(x)
+-- 52  77  33  91  12  20  83  17  81  53  11  89
+-- 40  28  39  54  55  62  54   1  57  91  49  31
+display(x)
+-- {
+--   {
+--     52, 77, 33, 91, 12, 20, 83, 17, 81, 53, 11, 89
+--   },
+--   {
+--     40, 28, 39, 54, 55, 62, 54, 1, 57, 91, 49, 31
+--   }
+-- }
+disp(x, 5) -- if more than one argument is provided, display(x, ...) is called
+-- {
+--   {
+--      52,  77,  33,  91,  12,
+--      20,  83,  17,  81,  53,
+--      11,  89
+--   },
+--   {
+--      40,  28,  39,  54,  55,
+--      62,  54,   1,  57,  91,
+--      49,  31
+--   }
+-- }
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=dot href=#m><code>dot(a, b)</code></a></h4>

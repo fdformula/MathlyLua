@@ -949,9 +949,8 @@ local function _vartostring_lua(x, firstq, titleq, printnowq) -- print x, for ge
 end -- _vartostring_lua
 
 -- print a mathly matrix while display(x) prints a table with its structure
--- disp({{1, 2, 3, 4}, {2, -3, 4, 5}, {3, 4, -5, 6}})
-function disp(A)
-  if getmetatable(A) == mathly_meta then
+function disp(A, col)
+  if col == nil and getmetatable(A) == mathly_meta then
     _set_disp_format(A)
     local rows, columns = size(A)
     if type(A[1]) ~= 'table' then
@@ -964,15 +963,76 @@ function disp(A)
       end
     end
   else
-    display(A)
+    display(A, col)
   end
 end
 
+local function _disp(t, ind, col)
+  local keys, sortq, n, newlined = {}, true, col, false -- collect & sort keys
+  local align = function() io.write(string.rep(" ", ind + 2)) end
+  local newline = function() if not newlined then print(); newlined = true; align() end; n = col end
+
+  for k in pairs(t) do
+    table.insert(keys, k)
+    if type(k) == 'number' then sortq = false end
+  end
+  if sortq then
+    table.sort(keys, function(a, b)
+      if type(a) == type(b) then return a < b end
+      return tostring(a) < tostring(b)
+    end)
+  end
+
+  print('{')
+  for _, k in ipairs(keys) do
+    local v, tq, fieldq = t[k], false, type(k) == 'string'
+    if n == 0 then newline() end
+    if fieldq then
+      if not newlined then
+        if k ~= keys[1] then newline() else align() end
+      end
+      io.write(k .. " = ")
+    end
+    if type(v) == "table" then
+      if not fieldq then
+        if k ~= keys[1] then newline() end
+        if not newlined then align() end
+      end
+      _disp(v, ind + 2, col)
+      tq = true
+    else
+      if not fieldq and k == keys[1] and not newlined then align() end
+      if type(v) == 'string' then
+        io.write("\"" .. v .. "\"")
+      else
+        local s = _tostring(v)
+        if col < 0 or fieldq then s = string.match(s, "[%d%.%+%-]+") end
+        io.write(s)
+      end
+    end
+    if k ~= keys[#keys] then io.write(", ") end
+    newlined = false
+    if tq or fieldq then
+      if not fieldq and k ~= keys[#keys] then newline(); end
+      n = col
+    else
+      n = n - 1
+    end
+  end
+  io.write("\n" .. string.rep(" ", ind) .. "}")
+end -- _disp
+
 -- print a table with its structure while disp(x) prints a matrix
--- display({1, 2, {3, 4, opt = {height = 3, width = 5}, 6, 'string', false}, 7, 8})
-function display(x) -- print x, for general purpose
-  if x == nil then print('nil'); return end
-  print(_vartostring_lua(x, nil, false, true))
+function display(t, col) -- 5/7/26
+  if t == nil then print('nil'); return end
+  if col ~= nil and type(col) ~= 'number' then print(_vartostring_lua(t, nil, false, true)); return end
+  if type(t) == 'table' then
+    _disp(t, 0, col or -1); print()
+  elseif type(t) == 'string' then
+    print("\"" .. t .. "\"")
+  else
+    print(_tostring(t))
+  end
 end
 
 -- return true if x is a row/column vector of two or more numbers
