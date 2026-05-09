@@ -145,10 +145,11 @@ A = randi(100, 5, 6)
 disp(cos(A))
 
 x = {-10, 12, -3, {4, -5, {6}}}
-disp(abs(x), true)
+disp(abs(x))
 -- {10, 12, 3, {4, 5, {6}}}
-disp(log10(abs(x)), 'flat')
--- {1.0, 1.0791812460476, 0.47712125471966, {0.60205999132796, 0.69897000433602, {0.77815125038364}}}
+format 'short'
+disp(log10(abs(x)))
+-- {1.0000, 1.0792, 0.4771, {0.6021, 0.6990, {0.7782}}}
 </code></pre>
 
 <p>&#x2713; &nbsp; With each of these functions, should we use, say, <code>sin(x)</code> or <code>math.sin(x)</code>?
@@ -171,10 +172,10 @@ D = map('@(x, y, z) qq(iseven(x), x - y + 3 * z, x + y * y)', A, B, C)
 disp(D)
 
 E = map('@(x, y) {x, y}', {1, 2, {3, {4}, 5}}, {'a', 'b', {'c', {'d'}, 'e'}})
-disp(E, 'flat')
+disp(E)
 -- {{1, 'a'}, {2, 'b'}, {{3, 'c'}, {{4, 'd'}}, {5, 'e'}}}
 
-display(sin{1, 2, {3, {4}, 5}}, 'flat')
+disp(sin{1, 2, {3, {4}, 5}})
 </code></pre>
 
 <p>&#x2713; &nbsp; <a name=eps></a><a name=div></a><a name=mod></a>Functions <code>div</code> and <code>mod</code> are simply the names of <a href=manual.html#3.4.1>Lua operators <code>//</code> and <code>%</code></a>, respectively.
@@ -717,16 +718,16 @@ disp(dec2hex(123)) -- '7b'
 disp(dec2oct(123)) -- '173'
 disp(oct2dec('173')) -- 123
 
-disp(dec2bin({123, 124, 125, {126, {127, 128}}}), '')
+disp(dec2bin({123, 124, 125, {126, {127, 128}}}))
 -- {'1111011', '1111100', '1111101', {'1111110', {'1111111', '10000000'}}}
-disp(hex2dec(dec2hex({123, 124, 125, {126, {127, 128}}})), '')
+disp(hex2dec(dec2hex({123, 124, 125, {126, {127, 128}}})))
 -- {123, 124, 125, {126, {127, 128}}}
 
 a = mathly{{75, 28}, {90, 6}}
-display(dec2bin(a), '')
+disp(dec2bin(a), '')
 -- {{'1001011', '11100'}, {'1011010', '110'}}
-disp(oct2hex(dec2oct(a)))
-display(dec2hex(a), '')
+disp(oct2hex(dec2oct(a)), '')
+disp(dec2hex(a), '')
 -- {{'4b', '1c'}, {'5a', '6'}}
 </code></pre>
 
@@ -801,13 +802,13 @@ disp(A)
 -- 1  2  3  4
 -- 2  3  4  5
 -- 3  4  5  6
-display(rr({1, 2, 3}), '') -- or rr(cc(A, 1))  -- return a row vector
+disp(rr({1, 2, 3}), '') -- or rr(cc(A, 1))  -- return a row vector
 -- {{1, 2, 3}}
-display(rr(A), '')         -- return a row vector with elements of a matrix flattened rowwisely
+disp(rr(A), '')         -- return a row vector with elements of a matrix flattened rowwisely
 --  {{1, 2, 3, 4, 2, 3, 4, 5, 3, 4, 5, 6}}
-display(rr(A[2]))      -- or rr(A, 2); return the 2nd row of A
-display(rr(A, -1))     -- return the last row of A
-rr(A, {1, -2, 1, -1})  -- rows can be rearranged in certain order with repetitions allowed
+disp(rr(A[2]), '')      -- or rr(A, 2); return the 2nd row of A
+disp(rr(A, -1), '')     -- return the last row of A
+rr(A, {1, -2, 1, -1})   -- rows can be rearranged in certain order with repetitions allowed
 -- 1  2  3  4
 -- 2  3  4  5
 -- 1  2  3  4
@@ -850,27 +851,27 @@ a = mathly{{52, 67, 82}, {82, 15, 70}, {94, 82, 50}}
 -- 52  67  82
 -- 82  15  70
 -- 94  82  50
-display(tt(a)) -- flatten a matrix columnwisely first
+disp(tt(a), '') -- flatten a matrix columnwisely first
 -- {52, 82, 94, 67, 15, 82, 82, 70, 50}
-display(tt(a, {3, -1}))
+disp(tt(a, {3, -1}), '')
 -- {94, 67, 15, 82, 82, 70, 50}
-display(tt(a, {-6, -2}))
+disp(tt(a, {-6, -2}), '')
 -- {67, 15, 82, 82, 70}}
-display(tt(a, {1, -1, 3}))
+disp(tt(a, {1, -1, 3}), '')
 -- {52, 67, 82}
-display(tt({1, 2, 3, 4, 5, 6}, {-1, 1, -1}))
+disp(tt({1, 2, 3, 4, 5, 6}, {-1, 1, -1}), '')
 -- {6, 5, 4, 3, 2, 1}
-display(tt({1, 2, 3, 4, 5, 6}, {-1, 1, -2}))
+disp(tt({1, 2, 3, 4, 5, 6}, {-1, 1, -2}), '')
 -- {6, 4, 2}
 
 x = {1, 2, {3}, 4, {{5, 6, {7}}}}
-display(tt(x))
+disp(tt(x), '')
 -- {1, 2, 3, 4, 5, 6, 7}
-display(subtable(x, {2, 4}), '') -- no flattening
+disp(subtable(x, {2, 4}), '') -- no flattening
 -- {2, {3}, 4}
-display(tt(x, {2, 4}))           -- flattened first
+disp(tt(x, {2, 4}), '')       -- flattened first
 -- {2, 3, 4}
-display(tt(x, {2, -1}))
+disp(tt(x, {2, -1}), '')
 -- {2, 3, 4, 5, 6, 7}
 </code></pre>
 <p>More examples: See <a href=examples/chinese_remainder_theorem.lua>The Chinese remainder theorem</a>.</p>
@@ -938,9 +939,9 @@ or <code>{1, 7, 1}</code>, and <code>{-1, 1}</code> is the same as <code>{7, 1}<
 a = {1, 2, {3, 4, x = {5, y = 6, 7}}}
 b = copy(a)
 b[3] = 0
-display(a, '')
+disp(a, '')
 -- {1, 2, {3, 4, x = {5, 7, y = 6}}}
-display(b)
+disp(b)
 -- {1, 2, 0}
 
 A = mathly{{1, 2}, {3, 4}}
@@ -952,23 +953,23 @@ disp(A)
 
 x = {1, 2, 3, 4, 5, 6, 7, 'abc'}
 y = copy(x, {5, -1})
-disp(y, '')
+disp(y)
 -- {5, 6, 7, 'abc'}
 y = copy(x, {2, -1, 2})
-disp(y, '')
+disp(y)
 -- {2, 4, 6, 'abc'}
 y = copy(x, {-1, 1, -3})
-disp(y, '')
+disp(y)
 -- {'abc', 5, 2}
 
 x = {1, 2, hi = {2, 3, abc = {1, 2, bcd = 6, 2, 7, 'hello', true, false, cde = 1}}}
-display(x, '')
+disp(x)
 -- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1, bcd = 6}}}
 y = copy(x)
 x.hi.abc.bcd = nil
-display(x, '')
+disp(x)
 -- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1}}}
-display(y, '')
+disp(y)
 -- {1, 2, hi = {2, 3, abc = {1, 2, 2, 7, 'hello', true, false, cde = 1, bcd = 6}}}
 </code></pre>
 <p>&raquo; Make a deep copy of a mxn matrix</p>
@@ -982,10 +983,10 @@ disp(a)
 -- 20  85  90  37  92
 -- 16  67   9  56  33
 
-display(copy(a, 2), '') -- or rr(a, 2); MATLAB: a(2, :)
+disp(copy(a, 2)) -- or rr(a, 2); MATLAB: a(2, :)
 -- {{43, 58, 96, 64, 5}}
 
-display(copy(a, 2, {1, 3}), '') -- MATLAB: a(2, 1:3)
+disp(copy(a, 2, {1, 3}), '') -- MATLAB: a(2, 1:3)
 -- {{43, 58, 96}}
 
 copy(a, '*', 2) -- or cc(a, 2); MATLAB: a(:, 2)
@@ -1204,7 +1205,7 @@ corr(A)
 <P>Return the cross/vector product of <code>a = {a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>}</code>
 and <code>b = {b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub>}</code>.</P>
 <pre><code>mathly = require('mathly')
-display(cross({1, 2, 3}, {3, 4, 5}))
+disp(cross({1, 2, 3}, {3, 4, 5}), '')
 -- {-2, 4, -2}
 </code></pre>
 
@@ -1232,6 +1233,7 @@ finite difference formulas, generated by <a href=https://github.com/fdformula/Fi
 Toolkit</a>, are used for <code>f'</code> and <code>f''</code>, respectively.
 <pre><code>mathly = require('mathly')
 
+format 'long'
 disp(diff(sin, 1))
 disp(diff1(sin, 1))
 -- 0.54030230586815 (exact: 0.54030230586814)
@@ -1320,18 +1322,25 @@ diag({2,3,4,5}, 1) + diag({1,2,3,4,5}) + diag({3,4,5,6}, -1) -- See also: <a nam
 
 <h4>&bull; &nbsp; <a name=disp></a><a name=display href=#m><code>disp(x, ...), display(x, ...)</code></a></h4>
 <table>
-<tr><td><code>disp(x, ...)</code></td><td> - </td><td>Print a Mathly matrix. If <code>x</code> is not a Mathly matrix, <code>display</code> is called to print it.</td></tr>
+<tr><td><code>disp(x, ...)</code></td><td> - </td><td>Print a Mathly matrix. If <code>x</code> is not a Mathly matrix, <code>display(x, 0, '')</code> is called to print it on a single line.</td></tr>
 <tr><td><code>display(x, ...)</code></td><td> - </td><td>Print a table, including any Mathly matrix, with structure.</td></tr>
 </table>
 <p>&#x2713; &nbsp; You can always use <code>disp</code> in all cases (except that you want to know the structure of a Mathly matrix).</p>
-<p>&#x2713; &nbsp; <code>disp(x, 'flat'), display(x, 'flat')</code>: Print a table on a single line with structure. Here, 'flat' can be replaced with anything but a number.</p>
+<p>&#x2713; &nbsp; <code>disp(x, ''), display(x, n, '')</code>: Print a table on a single line with structure. Here, '' can be replaced with anything but <code>nil</code>, e.g., ' ', '..', {{}}, true, 0, etc.
+Note: Imagine that entries are packed together without spaces ('') in between any two entries.</p>
 <pre><code>mathly = require('mathly')
 
-x = mathly(3, 5)
+format 'bank'
+x = mathly(3, 15)
 disp(x)
+disp(x, '')
+display(x)
+display(x, 8)
 
 x = {{1, 2, {3, 4}, 8, 9, x = 10, 11, 12, {1, 2, 3, {4, 5, {6, 7}}}}, 100}
-disp(x) -- display(x) is called since x is not a mathly matrix
+disp(x) -- display(x, 0, '') is called since x is not a mathly matrix
+-- {{1, 2, {3, 4}, 8, 9, 11, 12, {1, 2, 3, {4, 5, {6, 7}}}, x = 10}, 100}
+display(x)
 -- {
 --   {
 --     1, 2,
@@ -1352,8 +1361,6 @@ disp(x) -- display(x) is called since x is not a mathly matrix
 --   },
 --   100
 -- }
-disp(x, 'flat') -- same as disp(x, true), disp(x, ''), disp(x, 'compact'), ...
--- {{1, 2, {3, 4}, 8, 9, 11, 12, {1, 2, 3, {4, 5, {6, 7}}}, x = 10}, 100}
 </code></pre>
 
 <p>&#x2713; &nbsp; <code>display(t, n)</code>: If the indices of a table are all fields/keys like 'key', 'left', and
@@ -1373,7 +1380,9 @@ bst = {right = {right = {right = {key = 21}, key = 14, left = {key = 10}},
 --    │   ┌── 2
 --    └── 1
 --        └── -5
-disp(bst) -- display(...) is called because bst is not a mathly matrix
+disp(bst)
+-- {left = {left = {key = -5}, right = {key = 2}, key = 1}, right = {right = {left = {key = 10}, right = {key = 21}, key = 14}, key = 8}, key = 3}
+display(bst)
 -- {
 --  key = 3,
 --  left = {
@@ -1401,30 +1410,32 @@ disp(bst) -- display(...) is called because bst is not a mathly matrix
 
 x = randi({0, 100}, 2, 12)
 disp(x)
--- 52  77  33  91  12  20  83  17  81  53  11  89
--- 40  28  39  54  55  62  54   1  57  91  49  31
+-- 58  79  80  59  79  33  94  75  42   2  75  88
+-- 68  18  85  59  78  45   0  22  85  50  31  16
 display(x)
 -- {
 --   {
---     52, 77, 33, 91, 12, 20, 83, 17, 81, 53, 11, 89
+--     58, 79, 80, 59, 79, 33, 94, 75, 42, 2, 75, 88
 --   },
 --   {
---     40, 28, 39, 54, 55, 62, 54, 1, 57, 91, 49, 31
+--     68, 18, 85, 59, 78, 45, 0, 22, 85, 50, 31, 16
 --   }
 -- }
-disp(x, 5) -- if more than one argument is provided, display(x, ...) is called
+display(x, 5)
 -- {
 --   {
---      52,  77,  33,  91,  12,
---      20,  83,  17,  81,  53,
---      11,  89
+--      58,  79,  80,  59,  79,
+--      33,  94,  75,  42,   2,
+--      75,  88
 --   },
 --   {
---      40,  28,  39,  54,  55,
---      62,  54,   1,  57,  91,
---      49,  31
+--      68,  18,  85,  59,  78,
+--      45,   0,  22,  85,  50,
+--      31,  16
 --   }
 -- }
+display(x, '') -- same as disp(x, '')
+-- {{58, 79, 80, 59, 79, 33, 94, 75, 42, 2, 75, 88}, {68, 18, 85, 59, 78, 45, 0, 22, 85, 50, 31, 16}}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=dot href=#m><code>dot(a, b)</code></a></h4>
@@ -1468,7 +1479,7 @@ print(x)
 
 x = eval(' 3 * x^3 + pi -exp(x) + 5   ')
 print(x * 2)
--- 49.505073109318
+-- 49.505073109318289
 
 x = eval('cos{0, pi/6, pi/4, pi/3, pi/2, pi}')
 disp(x)
@@ -1514,7 +1525,7 @@ plot(f, sin, {xrange = {0, 2}}) --&gt; <a href=img/ff.png target=_blank>View</a>
 g = ff('@(x) x*x')
 g(1) -- 1
 g{1, 2, 3} -- {1, 4, 9} -- map the function to each element of a table.
-disp(g{1, 2, {3, {4}}}, '') -- {1, 4, {9, {16}}}
+disp(g{1, 2, {3, {4}}}) -- {1, 4, {9, {16}}}
 
 h = ff('@(x, y, z) x + y + z')
 h(1, 2, 3) -- 6
@@ -1604,7 +1615,6 @@ disp(pi)
 
 format('short')
 disp(pi)
-
 disp(rand(3, 4))
 </code></pre>
 
@@ -1714,7 +1724,7 @@ plot(pareto(x, '-fs'))
 <pre><code>mathly = require('mathly')
 gcd(126, 12)
 disp(gcd({126, 35}, {12, 5}))
-disp(gcd({126, {35, 12}}, {12, {5, 36}}), 'flat')
+disp(gcd({126, {35, 12}}, {12, {5, 36}}))
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=hasindex href=#m><code>hasindex(tbl, idx)</code></a></h4>
@@ -1796,8 +1806,9 @@ on the integrand, too; in addition, a small value of the parameter requires more
 errors can be an issue.</p>
 <pre><code>mathly = require('mathly')
 
+format 'long'
 disp(integral('@(theta) 0.5 * cos(2*theta)^2', -pi/4, pi/4))
--- 0.39269908169872 (exact: pi/8 = 0.39269908169872)
+-- 0.3926990816987 (exact: pi/8 = 0.39269908169872)
 
 -- &int;e<sup>-x<sup>2</sup></sup>dx on (-&infin;,&infin;) = sqrt(&pi;) &asymp; 1.7724538509055
 -- the results below show the effect of round-off errors
@@ -1824,11 +1835,12 @@ over all x and y-simple regions.
 <code>∫∫f(θ,r)drdθ</code>.</p>
 <pre><code>mathly = require('mathly')
 
+format 'long'
 -- ∫∫f(x,y)dydx:
 disp(integral2('@(x, y) x + y', {0, 1}, {0, 1}))
--- 1.0 (exact: 1)
+-- 1.0000000000000 (exact: 1)
 disp(integral2('@(x, y) x * y', {'@(x) x', '@(x) 2*x'}, {0, 1}))
--- 0.375 (exact: 3/8 = 0.375)
+-- 0.3750000000000 (exact: 3/8 = 0.375)
 disp(integral2('@(x, y) x + 2*y', {'@(x) 2 * x^2', '@(x) 1 + x^2'}, {-1, 1}))
 -- 2.1333333333333 (exact: 32/15 = 2.1333333333333)
 
@@ -1856,11 +1868,12 @@ all x, y, and z-simple solids.</p>
 <code>∫∫∫f(θ,φ,ρ)dρdφdθ</code>.</p>
 <pre><code>mathly = require('mathly')
 
+format 'long'
 -- ∫∫∫f(x,y,z)dzdydx
 disp(integral3('@(x, y, z) 2*(x + y + z)', {'@(x, y) x - y', '@(x, y) x + y'}, {'@(x) x', '@(x) 2 * x'}, {0, 1}))
 -- 5.3333333333333 (exact value 16/3 = 5.3333333333333)
 disp(integral3('@(x, y, z) y*sin(x) + z*cos(x)', {-1, 1}, {0, 1}, {0, pi}))
--- 2.0 (exact value 2)
+-- 2.0000000000000 (exact value 2)
 
 -- ∫∫∫f(z,y,x)dxdydz: f(z,y,x) rather than f(x,y,z), i.e., f(x,y,z) = 2x - y + z should be written as f(z,y,x) = 2x - y + z.
 disp(integral3('@(z, y, x) 2*x - y', {0, '@(z, y) y - z'}, {0, '@(z) z^2'}, {0, 2}))
@@ -1868,7 +1881,7 @@ disp(integral3('@(z, y, x) 2*x - y', {0, '@(z, y) y - z'}, {0, '@(z) z^2'}, {0, 
 
 -- with spherical coordinates: f(θ,φ,ρ): ∫∫∫f(θ,φ,ρ)dρdφdθ
 disp(integral3('@(theta, phi, rho) rho^2 * sin(phi)', {0, '@(theta, phi) cos(phi)'}, {0, pi/4}, {0, 2*pi}))
--- 0.39269908169872 (exact: pi/8 = 0.39269908169872)
+-- 0.3926990816987 (exact: pi/8 = 0.39269908169872)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=inv href=#m><code>inv(A)</code></a></h4>
@@ -1908,20 +1921,21 @@ otherwise, return the string of the polynomial.</p>
 <pre><code>mathly = require('mathly')
 
 clear()
+format 'short'
 x, y = {0, 1, 2}, {3, 1, 4}
 s = lagrangepoly(x, y) -- or: lagrangepoly({{0, 3}, {1, 1}, {2, 4}})
 disp(s)
 -- '1.5*(x - 1)*(x - 2) - x*(x - 2) + 2.0*x*(x - 1)'
 plot('@(x) ' .. s, x, y, 'ro') --&gt; <a href=img/lp1.png target=_blank>View</a>
 disp(lagrangepoly(x, y, 5)) -- or: lagrangepoly({{0, 3}, {1, 1}, {2, 4}}, 5)
--- 43.0
+-- 43.0000
 disp(lagrangepoly(x, y, {5, -6, 100}))
 -- 43.0000    120.0000  24553.0000
 
 s = lagrangepoly({1, 0, 2}, {-4, -2, -3})
 disp(s)
 -- '4.0*x*(x - 2) - (x - 1)*(x - 2) - 1.5*(x - 1)*x'
-load('function f(x) return ' .. s .. ' end')() -- activate the function
+f = ff('@(x) ' .. s) -- or load('function f(x) return ' .. s .. ' end')() -- activate the function
 f(10)
 -- 113.0
 g = ff('@(x) ' .. s) -- a simpler way
@@ -1944,6 +1958,7 @@ plot(xs, newtonpoly(x, y, xs)) --&gt; <a href=img/lp2.png target=_blank>View</a>
 <p>If <code>A</code> is neither upper nor lower triangular, <a href=#rref><code>rref(A, b)</code></a> is called.</p>
 <pre><code>mathly = require('mathly')
 
+format 'short'
 linsolve({{58, 18, 88}, {68, 30, 71}, {14, 75, 49}}, {89, 6, 4})
 -- -2.1499  -1.3064   2.6955
 
@@ -1959,7 +1974,7 @@ disp(b)
 --  6  1
 --  4  6
 x = linsolve(A, b)
-format 'short'; disp(x)
+disp(x)
 -- -2.1499  -0.5706
 -- -1.3064  -0.2483
 --  2.6955   0.6655
@@ -1983,7 +1998,7 @@ If <code>printq = true</code> (default), it prints the list in Lua REPL.</p>
 <pre><code>mathly = require('mathly')
 
 x = dir('*.lua') -- a list of all Lua code files in current folder
-disp(x, 3)
+disp(x)
 
 x = ls('b?o*g.lua') -- a list of all Lua code files in current folder of which file names start with 'b', their 3rd letter is 'o', and all end with 'g.lua'.
 disp(x)
@@ -2002,6 +2017,7 @@ disp(subfolders)
 <p>Return <code>L</code> and <code>U</code> of LU factorization <code>A = LU</code>, where <code>L</code> and <code>U</code> are lower and upper triangular matrices, respectively.</p>
 <pre><code>mathly = require('mathly')
 
+format 'short'
 A = mathly{{1, 2, 3}, {2, 3, 4}, {-1, 0, 2}}
 L, U = lu(A)
 disp(L)
@@ -2173,7 +2189,7 @@ display(map('@(x, y) x + y', a, b)) -- or a + b; x and y are taken from a and b,
 -- {2, 6, 12, 20, 30, 42, 56, 72, 90, 110}
 
 x = {1, 2, {3, 4, {5, 6, {7}}}}
-display(map(f, x), 'flat')
+disp(map(f, x), '')
 -- {1, 4, {9, 16, {25, 36, {49}}}}
 
 A = mathly{{1, 2, 3}, {3, 4, 5}, {-1, 2, 0}}
@@ -2193,12 +2209,12 @@ disp(map('@(x, y, z) x + y - z', A, B, C)) -- x, y, and z are taken from A, B, a
 -- -3   -9  -17
 
 x1 = {1, 2, 3, 4, A = 5, 6, {0, 1, 2, B = 3}}
-disp(x1, 'flat')
+disp(x1)
 -- {1, 2, 3, 4, 6, {0, 1, 2, B = 3}, A = 5}
 x2 = map('@(x) x*x', x1)
-disp(x2, '')
+disp(x2)
 -- {1, 4, 9, 16, 36, {0, 1, 4, B = 9}, A = 25}
-disp(map('@(x, y) x + y', x1, x2), '')
+disp(map('@(x, y) x + y', x1, x2))
 -- {2, 6, 12, 20, 42, {0, 2, 6, B = 12}, A = 30}
 
 disp(map('@(x, y) x + y', {1, 2, 3}, 10)) -- 10 is treated as {10, 10, 10}
@@ -2210,10 +2226,10 @@ disp(map('@(x, y, z) x + y + z', {1, 2, 3}, 10, 100)) -- 10 is treated as {10, 1
 disp(map('@(x, y, z) x + y + z', {1, 2, 3}, 10, {100, 200, 300}))
 -- 111  212  313
 
-disp(map('@(x, y) x .. y', {'1', '2', '3'}, '10'), '') -- '10' is treated as {'10', '10', '10'}
+disp(map('@(x, y) x .. y', {'1', '2', '3'}, '10')) -- '10' is treated as {'10', '10', '10'}
 -- {'110', '210', '310'}
 
-disp(map('@(x, y) 2 * x * y + 1', {1, {2, {3, {4}}}}, 10), '') -- 10 is treated as {10, {10, {10, {10}}}}
+disp(map('@(x, y) 2 * x * y + 1', {1, {2, {3, {4}}}}, 10)) -- 10 is treated as {10, {10, {10, {10}}}}
 -- {21, {41, {61, {81}}}}
 </code></pre>
 
@@ -2234,22 +2250,22 @@ disp(A)
 -- 4  5  6
 -- 7  8  9
 x, C = match(A, '@(x) x > 4 and x % 2 == 0')
-disp(x, '')
+disp(x)
 -- {6, 8}
 disp(C)
 -- 0  0  0
 -- 0  0  6
 -- 0  8  0
 B = match(A, C)
-disp(B, '')
+disp(B)
 -- {6, 8}
-A =  mathly{{2, 3, 4}, {5, 6, 7}, {8, 9, 10}}
+A = mathly{{2, 3, 4}, {5, 6, 7}, {8, 9, 10}}
 disp(A)
 -- 2  3  4
 -- 5  6  7
 -- 8  9 10
 x, D = match(A, C)
-disp(x, '')
+disp(x)
 -- {7, 9}
 disp(D)
 -- 0  0  0
@@ -2270,9 +2286,9 @@ disp(match(x))
 
 x = {1, 2, {3, 4, 5, {6, 7, 8, {9, 10}}, 11, 12}, 13, 14}
 y, A = match(x, '@(x) x % 2 == 0')
-disp(y, '')
+disp(y)
 -- {2, 4, 6, 8, 10, 12, 14}
-disp(A, '')
+disp(A)
 -- {0, 2, {0, 4, 0, {6, 0, 8, {0, 10}}, 0, 12}, 0, 14}
 </code></pre>
 
@@ -2329,7 +2345,7 @@ disp(a)
 -- -12  -19   -15    6  -11
 --   3   43    36   29  -26
 -- -38   -9   -16   20   16
-display(min(a))
+disp(min(a))
 -- {-38, -19, -16, 6, -26}
 disp(max(a))
 -- {3, 43, 36, 29, 16}
@@ -2367,23 +2383,23 @@ print(mean({'abc', 'de'})) --> strcat first: 'abcde' --> mean('abcde')
 <pre><code>mathly = require('mathly')
 
 -- 1) no argument is a table
-display(merge(1, 1))
+disp(merge(1, 1))
 -- {1}
-display(merge(1, 2))
+disp(merge(1, 2))
 -- {1, 2}
 
 -- 2) one argument is a table, and the other one is not
-disp(merge('a', {2, 3, 4, p = {10, 9}}), '')
+disp(merge('a', {2, 3, 4, p = {10, 9}}))
 -- {'a', 2, 3, 4, p = {10, 9}}
-disp(merge({2, 3, 4, p = {10, 9}}, 12), 'flat')
+disp(merge({2, 3, 4, p = {10, 9}}, 12))
 -- {2, 3, 4, 12, p = {10, 9}}
-disp(merge({2, 3, 4, p = {10, 9}}, 2), '')
+disp(merge({2, 3, 4, p = {10, 9}}, 2))
 -- {2, 3, 4, p = {10, 9}}
 
 -- 3) both arguments are tables
 disp(merge({5, 2, 3, 4}, {2, 4, 5, 6, 7}))
 -- {5, 2, 3, 4, 6, 7}
-disp(merge({1, 2, 3, x={3, 1, 5, w=180}}, {2, 3, 5, y=8, x={5, 1, 'abc', w=100, z={4, 5, 6}}}), '')
+disp(merge({1, 2, 3, x={3, 1, 5, w=180}}, {2, 3, 5, y=8, x={5, 1, 'abc', w=100, z={4, 5, 6}}}))
 -- {1, 2, 3, 5, x = {3, 1, 5, 'abc', z = {4, 5, 6}, w = 100}, y = 8} -- named item w is overwritten
 
 A = tt{1, 2, 3} -- Mathly table
@@ -2518,7 +2534,7 @@ disp(A * B)
 -- 10 10 10
 
 C = zeros(1, 5)  -- return a Mathly table
-display(C + 10)
+disp(C + 10, '')
 -- {10, 10, 10, 10, 10}
 
 D = zeros(3, 1)  -- a Mathly column vector
@@ -2526,7 +2542,7 @@ disp(D)
 -- 0
 -- 0
 -- 0
-display(D, 'flat')
+disp(D, '')
 -- {{0}, {0}, {0}}
 disp(2*D + 3)
 -- 3
@@ -2536,9 +2552,9 @@ disp(2*D + 3)
 A = randi({0, 100}, 2, 3) -- each element is a random integer in [0, 100]
 disp(A)
 A = randi({50, 90}, 3, 1) -- each element is a random integer in [50, 90]
-display(A, '')
+disp(A)
 A = randi({50, 90}, 1, 5) -- return a table rather than a Mathly matrix
-display(A)
+disp(A)
 
 disp(randn(3, 5))
 disp(randn(3, 5, 70, 12.55))
@@ -2637,7 +2653,7 @@ plot(x, x^4*sin(x), '-r', x, x*cos(x^2), '-b', exp, {xrange={0, 5}, yrange={-5,3
 -------
 
 fs = tables('!@(x) cos(i * x) * sin(i - x)', {i = {1, 4}, controls = 'i'})
-disp(fs, 2)
+display(fs, 2)
 plot({xrange = {-6, 6}}, table.unpack(fs)) -- same as {-6, 6, 1} --&gt; <a href=img/p10.png target=_blank>View</a>
 plot({xrange = {-6, 6, 0.01}}, table.unpack(fs)) -- smoother --&gt; <a href=img/p11.png target=_blank>View</a>
 </code></pre>
@@ -2804,7 +2820,7 @@ disp(polynomial({1, 2}, {3, 4}))
 -- 'x + 2.0'
 disp(polynomial({1, 2}, {3, 4}, 5))
 -- 7.0
-disp(polynomial({1, 2}, {3, 4}, {5, -6, 100}))
+disp(polynomial({1, 2}, {3, 4}, {5, -6, 100}), '')
 -- {7.0, -4.0, 102.0}
 
 x, y = {1, 2, 3}, {3, 1, 4}
@@ -2948,8 +2964,8 @@ disp(x)
 -- 1   2   3   4   5   6   7   8   9  10
 
 x = range(-1, -10) -- or range(-10), seq(-10)
-display(x)
--- {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10}
+disp(x)
+-- -1, -2, -3, -4, -5, -6, -7, -8, -9, -10
 
 x = seq(-2, 3)
 disp(x)
@@ -2959,8 +2975,8 @@ x = seq(10, 5)
 disp(x)
 -- 10   9   8   7   6   5
 
-display(range(0, 5, 0.6))
--- {0, 0.6, 1.2, 1.8, 2.4, 3.0, 3.6, 4.2, 4.8}
+disp(range(0, 5, 0.6))
+-- 0  0.60  1.20  1.80  2.40  3.00  3.60  4.20  4.80
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=remake href=#m><code>remake(A, opt)</code></a></h4>
@@ -3243,7 +3259,7 @@ the <code>i</code>-th column of <code>x</code>.</p></li>
 disp(std({1,2,3}))
 -- 1.0
 disp(std({1,2,3}, 1))
--- 0.81649658092773
+-- 0.8165
 A = mathly{{1, 2, 3}, {2, 3, 4}, {4, 7, 9}}
 disp(A)
 -- 1  2  3
@@ -3310,10 +3326,10 @@ the order in which they appear in <code>expr</code> if <code>expr</code> is a st
 to specify <code>opts.controls</code> if multiple controls are used.</p>
 <pre><code>mathly = require('mathly')
 
-x = tables('m / (n + 1)', { n = {1, 4}, m = {1, 3}}); disp(x, 'flat') -- same as: controls = "mn"
+x = tables('m / (n + 1)', { n = {1, 4}, m = {1, 3}}); disp(x) -- same as: controls = "mn"
 -- {{0.5, 0.3333, 0.25, 0.2}, {1.0, 0.6667, 0.5, 0.4}, {1.5, 1.0, 0.75, 0.6}}
 
-x = tables('m / (n + 1)', { n = {1, 4}, m = {1, 3}, controls = "nm"}); disp(x, '')
+x = tables('m / (n + 1)', { n = {1, 4}, m = {1, 3}, controls = "nm"}); disp(x)
 -- {{0.5, 1.0, 1.5}, {0.3333, 0.6667, 1.0}, {0.25, 0.5, 0.75}, {0.2, 0.4, 0.6}}
 
 x = tables('m / n', { n = {1, 4}, m = {1, 3}, k = {0, 1}, controls = "nmk", printcode = true}); disp(x)
@@ -3344,7 +3360,7 @@ x = tables('{1, i, {2, i * j, j - 1}}', { i = {0, 1}, j = {4, 5}}); disp(x)
 --  {{1, 1, {2, 4, 3}}, {1, 1, {2, 5, 4}}}}
 
 p, q = 2, 3
-x = tables("{p*q, sin(i), 'abc', 2*p >= q}", { i = {1, 3}, controls = 'i'}); disp(x, '')
+x = tables("{p*q, sin(i), 'abc', 2*p >= q}", { i = {1, 3}, controls = 'i'}); disp(x)
 -- {{6, 0.8415, 'abc', true}, {6, 0.9093, 'abc', true}, {6, 0.1411, 'abc', true}}
 
 x = tables('i', {i = {0, 2*pi, 0.01}})
@@ -3360,13 +3376,13 @@ x = tables('!i + j', {i = {1, 5}}); disp(x) -- no evaluation at all
 -- {'i + j', 'i + j', 'i + j', 'i + j', 'i + j'}
 
 fs = tables('!@(x) sin(x + i)', {i = {1, 10}, controls = 'i'})
-disp(fs, 2)
+display(fs, 2)
 -- {'@(x) sin(x + 1)', '@(x) sin(x + 2)', '@(x) sin(x + 3)', ..., '@(x) sin(x + 10)'}
 axisnotsquare()
 plot(table.unpack(fs)) --&gt; <a href=img/cs1.png target=_blank>View</a>
 
 fs = tables('!@(x) i*sin(x + j) + k', {i = {1, 5}, j = {-1, 1}, k = {0, 2}, controls = 'ikj', printcode = true})
-disp(fs, 3)
+display(fs, 3)
 plot({xrange = {-6, 6}}, table.unpack(flatten(fs))) --&gt; <a href=img/cs2.png target=_blank>View</a>
 </code></pre>
 
@@ -3381,7 +3397,7 @@ disp(tblcat(0, x, y, 10))
 -- 0   1   2   3   4   5  10
 
 z = mathly{{6}, {7}, {8}, {9}}
-display(tblcat(x, z, 11)) -- a column vector is automatically converted into a row vector
+disp(tblcat(x, z, 11), '') -- a column vector is automatically converted into a row vector
 -- {1, 2, 6, 7, 8, 9, 11}
 
 disp(tblcat(1, {c = 2, a = {3, 4}}, true, {ab = {5, 6, 'OK'}, aa = 7}))
@@ -3464,14 +3480,14 @@ plot(vectorfield2d('@(x, y) {2*x*y, x^2-3*y^2}', {-3, 3}, {-3, 3}, 0.75),
 <pre><code>mathly = require('mathly')
 
 vectorangle({1, 3}, {-3, 1})
--- 1.5707963267949 (90.0 degree)
+-- 1.5707963267948966 (90.0 degree)
 
 x = vectorangle({1, 3}, {-3, 1})
 disp(x + 1)
--- 2.5707963267949
+-- 2.5708
 
 vectorangle({1, 0, 1}, {0, 1, 1})
--- 1.0471975511966 (60.0 degree)
+-- 1.0471975511965979 (60.000000000000007 degree)
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=vertcat href=#m><code>vertcat(A, B, ...)</code></a></h4>
@@ -3483,7 +3499,7 @@ vectorangle({1, 0, 1}, {0, 1, 1})
 <pre><code>mathly = require('mathly')
 
 A = rr{1, 2, 3}
-display(A, '')
+disp(A, '')
 -- {{1, 2, 3}}
 B = mathly{{4, 5, 6}, {7, 8, 9}}
 disp(B)
@@ -3521,7 +3537,7 @@ clear()
 disp(all({1, 2, 3, {4, {5}}}, '@(x) x > 0'))      -- 1
 disp(any({1, 2, 3, {4, {5}}}, '@(x) x % 3 == 0')) -- 1
 disp(apply('@(x, y, z) x + y + z', {1, 2, 3}))    -- 6
-disp(map('@(x) x*x', {1, 2, 3, {4, {5}}}), '')    -- {1, 4, 9, {16, {25}}}
+disp(map('@(x) x*x', {1, 2, 3, {4, {5}}}))        -- {1, 4, 9, {16, {25}}}
 plot(sin, '@(x) 0.5*x^2 - 5', '-r', '@(t) cos(t)*t-3', '--g', {xrange={-pi, pi}}) --&gt; <a href=img/an1.png target=_blank>View</a>
 plot(parametriccurve2d({'@(t) t', '@(t) t^2'}))   -- x(t) = t, y(t) = t^2, i.e., y = x^2 --&gt; <a href=img/an2.png target=_blank>View</a>
 plot(polarcurve('@(t) cos(t) + 2*t'))             -- r(θ) = cos(θ) + 2*θ --&gt; <a href=img/an3.png target=_blank>View</a>
@@ -3532,9 +3548,9 @@ plotsphericalsurface('@(t, p) sin(t) + 5*p')    -- ρ(θ, φ) = sin(θ) + 5*φ -
 disp(sort({2, 5, 1, -3}, '@(x, y) x > y'))
 
 x = {1, 2, 3, 4, 5}
-disp(map('@(x) (iseven(x) and 2*x) or 0', x))
+disp(map('@(x) (iseven(x) and 2*x) or 0', x), '')
 -- or
-disp(map('@(x) qq(iseven(x), 2*x, 0)', x))
+disp(map('@(x) qq(iseven(x), 2*x, 0)', x), '')
 -- {0, 4, 0, 8, 0}
 
 -- to pass a function to another function not defined in Mathly

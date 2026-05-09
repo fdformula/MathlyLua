@@ -1009,10 +1009,10 @@ local function _disp(t, ind, col)
 end -- _disp
 
 -- print a table with its structure while disp(x) prints a matrix
-function display(t, col) -- 5/7/26
+function display(t, col, flat) -- 5/7/26
   if t == nil then print('nil'); return end
-  if col ~= nil and type(col) ~= 'number' then print(_vartostring_lua(t, nil, false, true)); return end
   _set_disp_format(t)
+  if flat or (col and type(col) ~= 'number') then print(_vartostring_lua(t, nil, false, true)); return end
   if type(t) == 'table' then
     _disp(t, 0, col or -1); print()
   elseif type(t) == 'string' then
@@ -1025,8 +1025,8 @@ function display(t, col) -- 5/7/26
 end
 
 -- print a mathly matrix while display(x) prints a table with its structure
-function disp(A, col)
-  if col == nil and getmetatable(A) == mathly_meta then
+function disp(A, flat)
+  if flat == nil and getmetatable(A) == mathly_meta then
     _set_disp_format(A)
     local rows, columns = size(A)
     if type(A[1]) ~= 'table' then
@@ -1039,7 +1039,7 @@ function disp(A, col)
       end
     end
   else
-    display(A, col)
+    display(A, 0, 'flat')
   end
 end
 
