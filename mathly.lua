@@ -781,7 +781,7 @@ local function _largest_width_dplaces(t) -- works with strings, numbers, and tab
       w, d = _largest_width_dplaces(t[i])
       if w > width then width = w end
       if d > dplaces then dplaces = d end
-    elseif type(t[i]) ~= 'string' then
+    elseif type(t[i]) ~= 'string' and type(t[i]) ~= 'boolean' then
       x = math.abs(t[i]) -- ignore sign
       if type(x) == 'integer' then
         w = #tostring(x)
@@ -848,7 +848,7 @@ local function _tostring(x)
   elseif type(x) == 'number' then
     return string.format(_float_format, x)
   else
-    return x
+    return tostring(x)
   end
 end
 
@@ -889,6 +889,10 @@ function who(userq) -- R
   end
 end
 
+local function _format_num(x)
+  return string.match(_tostring(x), "[%d%.%-]+")
+end
+
 -- generate the string version of a variable y starting with 'y = '
 -- firstq    -- print ',' or not before printing an entry
 -- titleq    -- for save(...)
@@ -896,15 +900,16 @@ end
 local function _vartostring_lua(x, firstq, titleq, printnowq) -- print x, for general purpose
   if titleq == nil then titleq = true end
   if firstq == nil then firstq = true end
+  if printnowq then _set_disp_format(x) end
 
   local function print1(x)
     local typ, s = type(x), ''
     if typ == 'string' then
       s = "'" .. x .. "'"
     elseif typ == 'boolean' then
-      if x then s = 'true' else s = 'false' end
-    elseif typ == 'number' then
       s = tostring(x)
+    elseif typ == 'number' then
+      s = _format_num(x)
     end
     return s
   end
@@ -948,25 +953,6 @@ local function _vartostring_lua(x, firstq, titleq, printnowq) -- print x, for ge
   return str
 end -- _vartostring_lua
 
--- print a mathly matrix while display(x) prints a table with its structure
-function disp(A, col)
-  if col == nil and getmetatable(A) == mathly_meta then
-    _set_disp_format(A)
-    local rows, columns = size(A)
-    if type(A[1]) ~= 'table' then
-      for i = 1, columns do io.write(_tostring(A[i]), ' ') end
-      io.write('\n')
-    else
-      for i = 1, rows do
-        for j = 1, columns do io.write(_tostring(A[i][j]), ' ') end
-        io.write('\n')
-      end
-    end
-  else
-    display(A, col)
-  end
-end
-
 local function _disp(t, ind, col)
   local keys, sortq, n, newlined = {}, true, col, false -- collect & sort keys
   local align = function() io.write(string.rep(" ", ind + 2)) end
@@ -1006,7 +992,7 @@ local function _disp(t, ind, col)
         io.write("\"" .. v .. "\"")
       else
         local s = _tostring(v)
-        if col < 0 or fieldq then s = string.match(s, "[%d%.%+%-]+") end
+        if (col < 0 or fieldq) and type(v) == 'number' then s = string.match(s, "[%d%.%+%-]+") end
         io.write(s)
       end
     end
@@ -1026,12 +1012,34 @@ end -- _disp
 function display(t, col) -- 5/7/26
   if t == nil then print('nil'); return end
   if col ~= nil and type(col) ~= 'number' then print(_vartostring_lua(t, nil, false, true)); return end
+  _set_disp_format(t)
   if type(t) == 'table' then
     _disp(t, 0, col or -1); print()
   elseif type(t) == 'string' then
     print("\"" .. t .. "\"")
+  elseif type(t) == 'number' then
+    print(_format_num(t))
   else
-    print(_tostring(t))
+    print(tostring(t))
+  end
+end
+
+-- print a mathly matrix while display(x) prints a table with its structure
+function disp(A, col)
+  if col == nil and getmetatable(A) == mathly_meta then
+    _set_disp_format(A)
+    local rows, columns = size(A)
+    if type(A[1]) ~= 'table' then
+      for i = 1, columns do io.write(_tostring(A[i]), ' ') end
+      io.write('\n')
+    else
+      for i = 1, rows do
+        for j = 1, columns do io.write(_tostring(A[i][j]), ' ') end
+        io.write('\n')
+      end
+    end
+  else
+    display(A, col)
   end
 end
 
