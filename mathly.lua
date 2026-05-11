@@ -514,6 +514,7 @@ end
 --   'long', 15 decimal places
 local _int_format    = "%12d"   -- 'global' for disp(...)
 local _float_format  = "%12.4f" --
+local _str_format    = "%12s"
 
 local _int_format1   = "%d"     -- 'global' for display(...)
 local _float_format1 = "%.4f"   --
@@ -774,26 +775,28 @@ end
 -- only format numbers in tables
 local function _largest_width_dplaces(t) -- works with strings, numbers, and table of tables
   if type(t) ~= 'table' then t = {t} end
-  local width, dplaces = 0, 0
-  local x, w, d
+  local width, dplaces, slen, w, d, s = 0, 0, 0, 0, 0, 0
   for i = 1, #t do
     if type(t[i]) == 'table' then
-      w, d = _largest_width_dplaces(t[i])
-      if w > width then width = w end
-      if d > dplaces then dplaces = d end
-    elseif type(t[i]) ~= 'string' and type(t[i]) ~= 'boolean' then
-      x = math.abs(t[i]) -- ignore sign
+      w, d, s = _largest_width_dplaces(t[i])
+    elseif type(t[i]) == 'string' then
+      s = #t[i] + 2
+    elseif type(t[i]) == 'boolean' then
+      s = qq(t[i], 4, 5)
+    else
+      local x = math.abs(t[i]) -- ignore sign
       if type(x) == 'integer' then
         w = #tostring(x)
       else
         w = #tostring(math.floor(t[i]))
         d = #tostring(x) - w -- decimal point counted
-        if d > dplaces then dplaces = d end
       end
-      if w > width then width = w end
     end
+    if w > width then width = w end
+    if d > dplaces then dplaces = d end
+    if s > slen then slen = s end
   end
-  return width, dplaces
+  return width, dplaces, slen
 end
 
 --[[ Lua 5.4.6
@@ -801,28 +804,17 @@ The largest number print or io.write prints each digit is ±9223372036854775807,
 otherwise, ±9.2233720368548e+18 is printed ---]]
 
 local function _set_disp_format(t)
-  local iwidth, dplaces, dispwidth
-  iwidth, dplaces = _largest_width_dplaces(t)
+  local iwidth, dplaces, slen = _largest_width_dplaces(t)
   local allintq, fmt = dplaces == 0, string.format
-
-  if _disp_format == 'long' then
-    dplaces = 13
-  elseif _disp_format == 'short' then
-    dplaces = 4
-  else -- 'bank'
-    dplaces = 2
-  end
+  dplaces = qq(_disp_format == 'long', 13, qq(_disp_format == 'bank', 2, 4))
 
   if (allintq and iwidth > 12) or (not allintq and iwidth + dplaces > 16) then -- 1.2345e+3
-    dispwidth = dplaces + 7 -- -1.2345e+10
-    _float_format   = fmt('%%%d.%de', dispwidth, dplaces)
+    local dispwidth = dplaces + 7 -- -1.2345e+10
+    local w = math.max(dispwidth, slen)
+    _float_format   = fmt('%%%d.%de', w, dplaces)
     _float_format1  = fmt('%%.%de', dplaces)
-    if iwidth < dispwidth then -- 1 sign
-      if allintq then
-        _int_format = fmt('%%%dd', iwidth)
-      else
-        _int_format = fmt('%%%dd', dispwidth)
-      end
+    if iwidth < dispwidth then
+      _int_format = fmt('%%%dd', w)
       _int_format1  = '%d'
     else
       _int_format   = _float_format
@@ -830,15 +822,11 @@ local function _set_disp_format(t)
     end
     return
   end
-
-  if allintq then
-    dispwidth = iwidth + 1 -- 1 sign
-  else
-    dispwidth = iwidth + dplaces + 2 -- 1? 1 sign
-  end
-  _float_format  = fmt('%%%d.%df', dispwidth, dplaces)
+  local w = math.max(iwidth + qq(allintq, 1, dplaces + 2), slen)
+  _float_format  = fmt('%%%d.%df', w, dplaces)
   _float_format1 = fmt('%%.%df', dplaces)
-  _int_format = fmt('%%%dd', dispwidth)
+  _int_format = fmt('%%%dd', w)
+  _str_format = fmt('%%%ds', w)
   _int_format1   = '%d'
 end -- _set_disp_format
 
@@ -848,7 +836,7 @@ local function _tostring(x)
   elseif type(x) == 'number' then
     return string.format(_float_format, x)
   else
-    return tostring(x)
+    return string.format(_str_format, tostring(x))
   end
 end
 
@@ -858,7 +846,7 @@ local function _tostring1(x)
   elseif type(x) == 'number' then
     return string.format(_float_format1, x)
   else
-    return x
+    return tostring(x)
   end
 end
 
@@ -905,7 +893,7 @@ local function _vartostring_lua(x, firstq, titleq, printnowq) -- print x, for ge
   local function print1(x)
     local typ, s = type(x), ''
     if typ == 'string' then
-      s = "'" .. x .. "'"
+      s = '"' .. x .. '"'
     elseif typ == 'boolean' then
       s = tostring(x)
     elseif typ == 'number' then
@@ -957,6 +945,7 @@ local function _disp(t, ind, col)
   local keys, sortq, n, newlined = {}, true, col, false -- collect & sort keys
   local align = function() io.write(string.rep(" ", ind + 2)) end
   local newline = function() if not newlined then print(); newlined = true; align() end; n = col end
+  if col == -1 then _str_format = "%s" end
 
   for k in pairs(t) do
     table.insert(keys, k)
@@ -989,7 +978,7 @@ local function _disp(t, ind, col)
     else
       if not fieldq and k == keys[1] and not newlined then align() end
       if type(v) == 'string' then
-        io.write("\"" .. v .. "\"")
+        io.write(_tostring("\"" .. v .. "\""))
       else
         local s = _tostring(v)
         if (col < 0 or fieldq) and type(v) == 'number' then s = string.match(s, "[%d%.%+%-]+") end
@@ -1012,7 +1001,11 @@ end -- _disp
 function display(t, col, flat) -- 5/7/26
   if t == nil then print('nil'); return end
   _set_disp_format(t)
-  if flat or (col and type(col) ~= 'number') then print(_vartostring_lua(t, nil, false, true)); return end
+  if flat or (col and type(col) ~= 'number') then
+    _str_format = "%s"
+    print(_vartostring_lua(t, nil, false, true))
+    return
+  end
   if type(t) == 'table' then
     _disp(t, 0, col or -1); print()
   elseif type(t) == 'string' then
@@ -1038,8 +1031,10 @@ function disp(A, flat)
         io.write('\n')
       end
     end
+  elseif type(flat) == 'number' then
+    display(A, flat)
   else
-    display(A, 0, 'flat')
+    display(A, 0, '')
   end
 end
 
