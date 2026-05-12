@@ -769,66 +769,46 @@ function powermod(b, n, m)
   return x
 end
 
---// function _largest_width_dplaces(t)
--- find the largest width of integers/strings and number of decimal places
--- -3.14 --> 1, 2; 123 --> 3, 0
--- only format numbers in tables
+-- find largest width of integers/strings and if all are integers
 local function _largest_width_dplaces(t) -- works with strings, numbers, and table of tables
   if type(t) ~= 'table' then t = {t} end
-  local width, dplaces, slen, w, d, s = 0, 0, 0, 0, 0, 0
+  local allintq, width, fwidth, slen, w, fw, s, tmp = true, 0, 0, 0, 0, 0, 0
   for i = 1, #t do
     if type(t[i]) == 'table' then
-      w, d, s = _largest_width_dplaces(t[i])
+      w, fw, tmp, s = _largest_width_dplaces(t[i])
+      if allintq then allintq = tmp end
     elseif type(t[i]) == 'string' then
       s = #t[i] + 2
     elseif type(t[i]) == 'boolean' then
       s = qq(t[i], 4, 5)
     else
       local x = math.abs(t[i]) -- ignore sign
-      if type(x) == 'integer' then
+      if math.type(x) == 'integer' then
         w = #tostring(x)
       else
-        w = #tostring(math.floor(t[i]))
-        d = #tostring(x) - w -- decimal point counted
+        fw = #tostring(math.floor(x))
+        allintq = false
       end
     end
     if w > width then width = w end
-    if d > dplaces then dplaces = d end
     if s > slen then slen = s end
+    if fw > fwidth then fwidth = fw end
   end
-  return width, dplaces, slen
+  return width, fwidth, allintq, slen
 end
 
---[[ Lua 5.4.6
-The largest number print or io.write prints each digit is ±9223372036854775807,
-otherwise, ±9.2233720368548e+18 is printed ---]]
-
 local function _set_disp_format(t)
-  local iwidth, dplaces, slen = _largest_width_dplaces(t)
-  local allintq, fmt = dplaces == 0, string.format
-  dplaces = qq(_disp_format == 'long', 13, qq(_disp_format == 'bank', 2, 4))
-
-  if (allintq and iwidth > 12) or (not allintq and iwidth + dplaces > 16) then -- 1.2345e+3
-    local dispwidth = dplaces + 7 -- -1.2345e+10
-    local w = math.max(dispwidth, slen)
-    _float_format   = fmt('%%%d.%de', w, dplaces)
-    _float_format1  = fmt('%%.%de', dplaces)
-    if iwidth < dispwidth then
-      _int_format = fmt('%%%dd', w)
-      _int_format1  = '%d'
-    else
-      _int_format   = _float_format
-      _int_format1  = _float_format1
-    end
-    return
-  end
-  local w = math.max(iwidth + qq(allintq, 1, dplaces + 2), slen)
+  local dplaces = qq(_disp_format == 'long', 13, qq(_disp_format == 'bank', 2, 4))
+  local iwidth, fwidth, allintq, slen = _largest_width_dplaces(t)
+  local fmt = string.format
+  local w = math.max(iwidth + 1, slen)
+  if not allintq then w = math.max(w, fwidth + dplaces + 2) end
   _float_format  = fmt('%%%d.%df', w, dplaces)
   _float_format1 = fmt('%%.%df', dplaces)
   _int_format = fmt('%%%dd', w)
   _str_format = fmt('%%%ds', w)
-  _int_format1   = '%d'
-end -- _set_disp_format
+  _int_format1 = '%d'
+end
 
 local function _tostring(x)
   if isinteger(x) then
@@ -877,8 +857,8 @@ function who(userq) -- R
   end
 end
 
-local function _format_num(x)
-  return string.match(_tostring(x), "[%d%.%-]+")
+local function _trim_2tail_spaces(x)
+  return string.match(_tostring(x), "^%s*(.+)%s*$")
 end
 
 -- generate the string version of a variable y starting with 'y = '
@@ -897,7 +877,7 @@ local function _vartostring_lua(x, firstq, titleq, printnowq) -- print x, for ge
     elseif typ == 'boolean' then
       s = tostring(x)
     elseif typ == 'number' then
-      s = _format_num(x)
+      s = _trim_2tail_spaces(x)
     end
     return s
   end
@@ -1011,7 +991,7 @@ function display(t, col, flat) -- 5/7/26
   elseif type(t) == 'string' then
     print("\"" .. t .. "\"")
   elseif type(t) == 'number' then
-    print(_format_num(t))
+    print(_trim_2tail_spaces(t))
   else
     print(tostring(t))
   end
