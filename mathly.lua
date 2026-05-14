@@ -512,12 +512,12 @@ end
 --   'bank',  2 decimal places
 --   'short', 4 decimal places (default)
 --   'long', 15 decimal places
-local _int_format    = "%12d"   -- 'global' for disp(...)
-local _float_format  = "%12.4f" --
-local _str_format    = "%12s"
+local _int_fmt    = "%12d"   -- 'global' for disp(...)
+local _float_fmt  = "%12.4f" --
+local _str_fmt    = "%12s"
 
-local _int_format1   = "%d"     -- 'global' for display(...)
-local _float_format1 = "%.4f"   --
+local _int_fmt1   = "%d"     -- 'global' for display(...)
+local _float_fmt1 = "%.4f"   --
 
 local _disp_format   = 'short'  -- 'global'
 function format(fmt)
@@ -772,17 +772,19 @@ end
 -- find largest width of integers/strings and if all are integers
 local function _largest_width_dplaces(t) -- works with strings, numbers, and table of tables
   if type(t) ~= 'table' then t = {t} end
-  local allintq, width, fwidth, slen, w, fw, s, tmp = true, 0, 0, 0, 0, 0, 0
+  local allintq, width, fwidth, slen, sign, w, fw, s, tmp, sgn = true, 0, 0, 0, 0, 0, 0, 0
   for i = 1, #t do
     if type(t[i]) == 'table' then
-      w, fw, tmp, s = _largest_width_dplaces(t[i])
+      w, fw, tmp, s, sgn = _largest_width_dplaces(t[i])
       if allintq then allintq = tmp end
+      if sgn == 1 then sign = 1 end
     elseif type(t[i]) == 'string' then
       s = #t[i] + 2
     elseif type(t[i]) == 'boolean' then
       s = qq(t[i], 4, 5)
     else
-      local x = math.abs(t[i]) -- ignore sign
+      local x = t[i]
+      if x < 0 then sign = 1; x = -x end
       if math.type(x) == 'integer' then
         w = #tostring(x)
       else
@@ -794,39 +796,31 @@ local function _largest_width_dplaces(t) -- works with strings, numbers, and tab
     if s > slen then slen = s end
     if fw > fwidth then fwidth = fw end
   end
-  return width, fwidth, allintq, slen
+  return width, fwidth, allintq, slen, sign
 end
 
 local function _set_disp_format(t)
   local dplaces = qq(_disp_format == 'long', 13, qq(_disp_format == 'bank', 2, 4))
-  local iwidth, fwidth, allintq, slen = _largest_width_dplaces(t)
+  local iwidth, fwidth, allintq, slen, sign = _largest_width_dplaces(t)
   local fmt = string.format
-  local w = math.max(iwidth + 1, slen)
-  if not allintq then w = math.max(w, fwidth + dplaces + 2) end
-  _float_format  = fmt('%%%d.%df', w, dplaces)
-  _float_format1 = fmt('%%.%df', dplaces)
-  _int_format = fmt('%%%dd', w)
-  _str_format = fmt('%%%ds', w)
-  _int_format1 = '%d'
+  local w = math.max(iwidth + sign, slen)
+  if not allintq then w = math.max(w, fwidth + dplaces + 1 + sign) end
+  _float_fmt  = fmt('%%%d.%df', w, dplaces)
+  _float_fmt1 = fmt('%%.%df', dplaces)
+  _int_fmt = fmt('%%%dd', w)
+  _str_fmt = fmt('%%%ds', w)
+  _int_fmt1 = '%d'
 end
 
 local function _tostring(x)
   if isinteger(x) then
-    return string.format(_int_format, x)
+    return string.format(_int_fmt, x)
+  elseif type(x) == 'string' then
+    return string.format(_str_fmt, "\"" .. x .. "\"")
   elseif type(x) == 'number' then
-    return string.format(_float_format, x)
+    return string.format(_float_fmt, x)
   else
-    return string.format(_str_format, tostring(x))
-  end
-end
-
-local function _tostring1(x)
-  if isinteger(x) then
-    return string.format(_int_format1, x)
-  elseif type(x) == 'number' then
-    return string.format(_float_format1, x)
-  else
-    return tostring(x)
+    return string.format(_str_fmt, tostring(x))
   end
 end
 
@@ -861,84 +855,23 @@ local function _trim_2tail_spaces(x)
   return string.match(_tostring(x), "^%s*(.+)%s*$")
 end
 
--- generate the string version of a variable y starting with 'y = '
--- firstq    -- print ',' or not before printing an entry
--- titleq    -- for save(...)
--- printnowq -- for display(x) with large matrices
-local function _vartostring_lua(x, firstq, titleq, printnowq) -- print x, for general purpose
-  if titleq == nil then titleq = true end
-  if firstq == nil then firstq = true end
-  if printnowq then _set_disp_format(x) end
-
-  local function print1(x)
-    local typ, s = type(x), ''
-    if typ == 'string' then
-      s = '"' .. x .. '"'
-    elseif typ == 'boolean' then
-      s = tostring(x)
-    elseif typ == 'number' then
-      s = _trim_2tail_spaces(x)
-    end
-    return s
+local function _disp(t, ind, col, strq, niceq)
+  if col == -1 or not niceq then col = -1; _str_fmt = '%s' end
+  local keys, n, newlined, str = {}, col, false, ''
+  local function process(s) if strq then str = str .. s else io.write(s) end end
+  local align = function() if niceq then process(string.rep(" ", ind + 2)) end end
+  local newline = function()
+    if niceq and not newlined then process('\n'); newlined = true; align() end
+    n = col
   end
 
-  local str = ''
-  if titleq then
-    str = str .. x .. ' = '
-    x = load('return ' .. x)()
-  end
-  local s = print1(x)
-  if #s > 0 then
-    if not firstq then str = str .. ', ' end
-    str = str .. s
-    if printnowq then printf(str); str = '' end
-  else
-    str = str .. '{'; firstq = true
-    local i = 1
-    for k, v in pairs(x) do
-      if not firstq then str = str .. ', ' end
-      if type(k) == 'string' then
-        str = str .. k .. ' = '
-      else -- type(k) is an index
-        while k > i do -- x = {1, 2, 3}; x[2] = nil -- Lua 5.4.6, x[3] == 3, #x == 3
-          str = str .. 'nil, '; i = i + 1
-        end
-      end
-      local s = print1(v)
-      if #s > 0 then
-        str = str .. s
-      else
-        if printnowq then printf(str); str = '' end
-        str = str .. _vartostring_lua(v, firstq, false)
-      end
-      if printnowq then printf(str); str = '' end
-      firstq = false
-      i = i + 1
-    end
-    str = str .. '}'
-  end
-  if titleq then str = str .. '\n\n' end
-  return str
-end -- _vartostring_lua
+  for k in pairs(t) do table.insert(keys, k) end
+  table.sort(keys, function(a, b)
+    if type(a) == type(b) then return a < b end
+    return tostring(a) < tostring(b)
+  end)
 
-local function _disp(t, ind, col)
-  local keys, sortq, n, newlined = {}, true, col, false -- collect & sort keys
-  local align = function() io.write(string.rep(" ", ind + 2)) end
-  local newline = function() if not newlined then print(); newlined = true; align() end; n = col end
-  if col == -1 then _str_format = "%s" end
-
-  for k in pairs(t) do
-    table.insert(keys, k)
-    if type(k) == 'number' then sortq = false end
-  end
-  if sortq then
-    table.sort(keys, function(a, b)
-      if type(a) == type(b) then return a < b end
-      return tostring(a) < tostring(b)
-    end)
-  end
-
-  print('{')
+  process("{"); if niceq then process("\n") end
   for _, k in ipairs(keys) do
     local v, tq, fieldq = t[k], false, type(k) == 'string'
     if n == 0 then newline() end
@@ -946,26 +879,26 @@ local function _disp(t, ind, col)
       if not newlined then
         if k ~= keys[1] then newline() else align() end
       end
-      io.write(k .. " = ")
+      process(k .. " = ")
     end
     if type(v) == "table" then
       if not fieldq then
         if k ~= keys[1] then newline() end
         if not newlined then align() end
       end
-      _disp(v, ind + 2, col)
+      process(_disp(v, ind + 2, col, strq, niceq))
       tq = true
     else
       if not fieldq and k == keys[1] and not newlined then align() end
       if type(v) == 'string' then
-        io.write(_tostring("\"" .. v .. "\""))
+        process(_tostring(v))
       else
         local s = _tostring(v)
         if (col < 0 or fieldq) and type(v) == 'number' then s = string.match(s, "[%d%.%+%-]+") end
-        io.write(s)
+        process(s)
       end
     end
-    if k ~= keys[#keys] then io.write(", ") end
+    if k ~= keys[#keys] then process(", ") end
     newlined = false
     if tq or fieldq then
       if not fieldq and k ~= keys[#keys] then newline(); end
@@ -974,48 +907,54 @@ local function _disp(t, ind, col)
       n = n - 1
     end
   end
-  io.write("\n" .. string.rep(" ", ind) .. "}")
+  if niceq then process("\n" .. string.rep(" ", ind) .. "}") else process("}") end
+  return qq(strq, str, "")
 end -- _disp
 
 -- print a table with its structure while disp(x) prints a matrix
-function display(t, col, flat) -- 5/7/26
-  if t == nil then print('nil'); return end
-  _set_disp_format(t)
-  if flat or (col and type(col) ~= 'number') then
-    _str_format = "%s"
-    print(_vartostring_lua(t, nil, false, true))
-    return
-  end
-  if type(t) == 'table' then
-    _disp(t, 0, col or -1); print()
-  elseif type(t) == 'string' then
-    print("\"" .. t .. "\"")
-  elseif type(t) == 'number' then
-    print(_trim_2tail_spaces(t))
+local _disp_col, _disp_flat = -1, nil
+function display(t, col, flat, strq) -- strq is not for users
+  if col and type(col) ~= 'number' then flat = col; col = -1 end
+  if strq then
+    col, flat = _disp_col, _disp_flat
   else
-    print(tostring(t))
+    _disp_col, _disp_flat = col, flat
   end
+
+  local s
+  if t == nil then
+    s = 'nil'
+  else
+    _set_disp_format(t)
+    if flat or (col and type(col) ~= 'number') then flat = true end
+    if type(t) == 'table' then
+      s = _disp(t, 0, col or -1, strq, flat == nil)
+    elseif type(t) == 'string' then
+      s = t
+    elseif type(t) == 'number' then
+      s = _trim_2tail_spaces(t)
+    else
+      s = tostring(t)
+    end
+  end
+  if strq then return s else io.write(s); return "" end
 end
 
 -- print a mathly matrix while display(x) prints a table with its structure
 function disp(A, flat)
   if flat == nil and getmetatable(A) == mathly_meta then
-    _set_disp_format(A)
-    local rows, columns = size(A)
-    if type(A[1]) ~= 'table' then
-      for i = 1, columns do io.write(_tostring(A[i]), ' ') end
-      io.write('\n')
-    else
-      for i = 1, rows do
-        for j = 1, columns do io.write(_tostring(A[i][j]), ' ') end
-        io.write('\n')
-      end
-    end
+    io.write(mathly.tostring(A))
   elseif type(flat) == 'number' then
     display(A, flat)
   else
-    display(A, 0, '')
+    display(A, -1, '')
   end
+  print()
+end
+
+-- return string version of a variable x starting with 'x = '
+local function _vartostring_lua(x)
+  return x .. ' = ' .. display(eval(x), _disp_col, _disp_flat, true) .. '\n\n'
 end
 
 -- return true if x is a row/column vector of two or more numbers
@@ -1054,7 +993,9 @@ end
 
 -- generate the string version of MATLAB variable y starting with 'y ='
 local function _vartostring_matlab(x)
-  local s = _vartostring_lua(x, nil, true)
+  local col, flat = _disp_col, _disp_flat
+  _disp_col, _disp_flat = -1, true
+  local s = _vartostring_lua(x)
   x = load('return ' .. x)()
   if getmetatable(x) == mathly_meta or ismatrix(x) then -- save matrices
     s = string.gsub(s, "}, {", ";\n")
@@ -1069,6 +1010,7 @@ local function _vartostring_matlab(x)
     s = string.gsub(s, "{", "[")
     s = string.gsub(s, "}", "]")
   end
+  _disp_col, _disp_flat = col, flat
   return s
 end
 
@@ -1101,7 +1043,7 @@ function save(fname, ...)
         if matlabq then
           file:write(_vartostring_matlab(vars[i]))
         else
-          file:write(_vartostring_lua(vars[i], nil, true))
+          file:write(_vartostring_lua(vars[i]))
           if getmetatable(x) == mathly_meta then
             file:write(vars[i] .. ' = mathly(' .. vars[i] .. ')\n\n')
           end
@@ -4983,8 +4925,8 @@ function mathly.tostring(t)
 			rowstrs[i] = table.concat(_map(_tostring, t[i]), " ")
 		end
 		return table.concat(rowstrs, "\n")
-  else -- a row vector
-    return table.concat(_map(_tostring1, t), " ")
+  else
+    return table.concat(_map(_tostring, t), " ")
   end
 end
 

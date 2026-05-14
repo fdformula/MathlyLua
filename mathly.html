@@ -1326,16 +1326,39 @@ diag({2,3,4,5}, 1) + diag({1,2,3,4,5}) + diag({3,4,5,6}, -1) -- See also: <a nam
 <tr><td><code>display(x, ...)</code></td><td> - </td><td>Print a table, including any Mathly matrix, with structure.</td></tr>
 </table>
 <p>&#x2713; &nbsp; You can always use <code>disp</code> in all cases (except that you want to know the structure of a Mathly matrix).</p>
-<p>&#x2713; &nbsp; <code>disp(x, ''), display(x, n, '')</code>: Print a table on a single line with structure. Here, '' can be replaced with anything but <code>nil</code>, e.g., ' ', '..', {{}}, true, 0, etc.
+<p>&#x2713; &nbsp; <code>disp(x, ''), display(x, '')</code>: Print a table on a single line with structure. Here, '' can be replaced with anything but <code>nil</code>, e.g., ' ', '..', {{}}, true, 0, etc.
 Note: Imagine that entries are packed together without spaces ('') in between any two entries.</p>
+<p>&#x2713; &nbsp; <code>disp(x, n), display(x, n)</code>: The indices of a table, including keys/fields like "key", "left", and "right" in the following example, are sorted in alphabetical order.
+Items in table <code>x</code> are organized in <code>n</code> columns. The default value of <code>n</code>, -1, indicates that none-field items are basically printed on a single line.</p>
 <pre><code>mathly = require('mathly')
 
 format 'bank'
-x = mathly(3, 15)
+x = (rand(2, 8) - 0.5) * 10
 disp(x)
+--  3.58 -2.53 -4.77  3.86  3.30 -2.69 -1.96  0.82
+-- -1.92  2.33  1.22 -4.37  1.61 -2.67  2.59  1.76
 display(x)
+-- {
+--   {
+--     3.58, -2.53, -4.77, 3.86, 3.30, -2.69, -1.96, 0.82
+--   },
+--   {
+--     -1.92, 2.33, 1.22, -4.37, 1.61, -2.67, 2.59, 1.76
+--   }
+-- }
 disp(x, 5)  -- same as display(x, 5)
+-- {
+--   {
+--      3.58, -2.53, -4.77,  3.86,  3.30,
+--     -2.69, -1.96,  0.82
+--   },
+--   {
+--     -1.92,  2.33,  1.22, -4.37,  1.61,
+--     -2.67,  2.59,  1.76
+--   }
+-- }
 disp(x, '') -- same as display(x, '')
+-- {{3.58, -2.53, -4.77, 3.86, 3.30, -2.69, -1.96, 0.82}, {-1.92, 2.33, 1.22, -4.37, 1.61, -2.67, 2.59, 1.76}}
 
 x = {0, 'a', 'b', {1, 2, {3, 4}, 5, 6, x = 7, 8, 'Example', 9, {10, 20, true, {30, {40, false, 50}}}}, 100}
 disp(x) -- display(x, '') is called since x is not a mathly matrix
@@ -1362,13 +1385,6 @@ display(x)
 --   },
 --   100
 -- }
-</code></pre>
-
-<p>&#x2713; &nbsp; <code>display(t, n)</code>: If the indices of a table are all fields/keys like 'key', 'left', and
-'right' in the following example, they are sorted in alphabetical order. Items in table <code>t</code> are organized in
-<code>n</code> columns. The default value of <code>n</code>, -1, indicates that none-field items are basically printed
-on a single line.</p>
-<pre><code>mathly = require('mathly')
 
 -- a binary search tree
 bst = {right = {right = {right = {key = 21}, key = 14, left = {key = 10}},
@@ -1382,61 +1398,32 @@ bst = {right = {right = {right = {key = 21}, key = 14, left = {key = 10}},
 --    └── 1
 --        └── -5
 disp(bst)
--- {left = {left = {key = -5}, right = {key = 2}, key = 1}, right = {right = {left = {key = 10}, right = {key = 21}, key = 14}, key = 8}, key = 3}
+-- {key = 3, left = {key = 1, left = {key = -5}, right = {key = 2}}, right = {key = 8, right = {key = 14, left = {key = 10}, right = {key = 21}}}}
 display(bst)
 -- {
---  key = 3,
---  left = {
---    key = 1,
---    left = {
---      key = -5
---    },
---    right = {
---      key = 2
---    }
---  },
---  right = {
---    key = 8,
---    right = {
---      key = 14,
---      left = {
---        key = 10
---      },
---      right = {
---        key = 21
---      }
---    }
---  }
---}
-
-x = randi({-100, 100}, 2, 12)
-disp(x)
--- -42  -14  -80   16  -38   16  -84  -38   -1   53   21   27
---  23   76   23 -100  -76  -66  -83   83  -55  -48   66   18
-display(x)
--- {
---   {
---     -42, -14, -80, 16, -38, 16, -84, -38, -1, 53, 21, 27
+--   key = 3,
+--   left = {
+--     key = 1,
+--     left = {
+--       key = -5
+--     },
+--     right = {
+--       key = 2
+--     }
 --   },
---   {
---     23, 76, 23, -100, -76, -66, -83, 83, -55, -48, 66, 18
+--   right = {
+--     key = 8,
+--     right = {
+--       key = 14,
+--       left = {
+--         key = 10
+--       },
+--       right = {
+--         key = 21
+--       }
+--     }
 --   }
 -- }
-display(x, 5)
--- {
---   {
---      -42,  -14,  -80,   16,  -38,
---       16,  -84,  -38,   -1,   53,
---       21,   27
---   },
---   {
---       23,   76,   23, -100,  -76,
---      -66,  -83,   83,  -55,  -48,
---       66,   18
---   }
--- }
-display(x, '') -- same as disp(x, '')
--- {{-42, -14, -80, 16, -38, 16, -84, -38, -1, 53, 21, 27}, {23, 76, 23, -100, -76, -66, -83, 83, -55, -48, 66, 18}}
 </code></pre>
 
 <h4>&bull; &nbsp; <a name=dot href=#m><code>dot(a, b)</code></a></h4>
@@ -3160,10 +3147,13 @@ disp((b^T)[3]) -- solution for Ax = b<sub>3</sub>
 <p>&#x2713; &nbsp; If the name of <code>datafile</code> ends in <code>.m</code>, the data is saved in the format of MATLAB
 scripts. Note: Data like <code>x = {1, true, 'abc', c = {2, {3}, d = 'bcd'}}</code> are undefined in MATLAB.</p>
 <p>&#x2713; &nbsp; <b>If no path is specified, the data file will be saved in the present working directory.</b></p>
+<p>&#x2713; &nbsp; The most recent call of <a href=#disp><code>display(...)</code></a> determines the output format in the saved Lua data file.</p>
 <pre><code>mathly = require('mathly')
 
-a = randi(100, 3, 2)
+a = rand(5, 12)
+format 'long'
 disp(a)
+display(a, 5)
 b = {1, 2, {3, {4, {5, 6, {7}}}}}
 c = 100
 save('data_1.lua')            -- save all user-defined variables and their values to a file,
@@ -3327,11 +3317,12 @@ the order in which they appear in <code>expr</code> if <code>expr</code> is a st
 to specify <code>opts.controls</code> if multiple controls are used.</p>
 <pre><code>mathly = require('mathly')
 
+format 'short'
 x = tables('m / (n + 1)', { n = {1, 4}, m = {1, 3}}); disp(x) -- same as: controls = "mn"
--- {{0.5, 0.3333, 0.25, 0.2}, {1.0, 0.6667, 0.5, 0.4}, {1.5, 1.0, 0.75, 0.6}}
+-- {{0.5000, 0.3333, 0.2500, 0.2000}, {1.0000, 0.6667, 0.5000, 0.4000}, {1.5000, 1.0000, 0.7500, 0.6000}}
 
 x = tables('m / (n + 1)', { n = {1, 4}, m = {1, 3}, controls = "nm"}); disp(x)
--- {{0.5, 1.0, 1.5}, {0.3333, 0.6667, 1.0}, {0.25, 0.5, 0.75}, {0.2, 0.4, 0.6}}
+-- {{0.5000, 1.0000, 1.5000}, {0.3333, 0.6667, 1.0000}, {0.2500, 0.5000, 0.7500}, {0.2000, 0.4000, 0.6000}}
 
 x = tables('m / n', { n = {1, 4}, m = {1, 3}, k = {0, 1}, controls = "nmk", printcode = true}); disp(x)
 -- local t1 = {}
