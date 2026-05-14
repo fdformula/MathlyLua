@@ -1322,14 +1322,17 @@ diag({2,3,4,5}, 1) + diag({1,2,3,4,5}) + diag({3,4,5,6}, -1) -- See also: <a nam
 
 <h4>&bull; &nbsp; <a name=disp></a><a name=display href=#m><code>disp(x, ...), display(x, ...)</code></a></h4>
 <table>
-<tr><td><code>disp(x, ...)</code></td><td> - </td><td>Print a Mathly matrix. If <code>x</code> is not a Mathly matrix, <code>display(x, 0, '')</code> is called to print it on a single line.</td></tr>
-<tr><td><code>display(x, ...)</code></td><td> - </td><td>Print a table, including any Mathly matrix, with structure.</td></tr>
+<tr><td width=132><code>disp(x, ...)</code></td><td> - </td><td>Print a Mathly matrix. If <code>x</code> is not a Mathly matrix, <code>display(x, '')</code> is called
+to print it on a single line.</td></tr>
+<tr><td><code>display(x, ...)</code></td><td> - </td><td>Print the value of <code>x</code>, including any Mathly matrix, with structure. The indices of a table <code>x</code>,
+including keys/fields like "key", "left", and "right" in the following example, are sorted in alphabetical order.</td></tr>
 </table>
 <p>&#x2713; &nbsp; You can always use <code>disp</code> in all cases (except that you want to know the structure of a Mathly matrix).</p>
-<p>&#x2713; &nbsp; <code>disp(x, ''), display(x, '')</code>: Print a table on a single line with structure. Here, '' can be replaced with anything but <code>nil</code>, e.g., ' ', '..', {{}}, true, 0, etc.
-Note: Imagine that entries are packed together without spaces ('') in between any two entries.</p>
-<p>&#x2713; &nbsp; <code>disp(x, n), display(x, n)</code>: The indices of a table, including keys/fields like "key", "left", and "right" in the following example, are sorted in alphabetical order.
-Items in table <code>x</code> are organized in <code>n</code> columns. The default value of <code>n</code>, -1, indicates that none-field items are basically printed on a single line.</p>
+<p>&#x2713; &nbsp; <code>disp(x, ''), display(x, '')</code>: Print a table on a single line with structure. Here, '' can be replaced with anything
+but <code>nil</code>, e.g., ' ', '..', {{}}, true, 0, etc. We may imagine that entries are packed together without extra spaces ('') in between any
+two entries.</p>
+<p>&#x2713; &nbsp; <code>disp(x, n), display(x, n)</code>: Items in table <code>x</code> are organized in <code>n</code> columns. The
+default value of <code>n</code>, -1, indicates that none-field items are basically printed on a single line.</p>
 <pre><code>mathly = require('mathly')
 
 format 'bank'
