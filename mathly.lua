@@ -890,21 +890,16 @@ local function _disp(t, ind, col, strq, niceq)
       tq = true
     else
       if not fieldq and k == keys[1] and not newlined then align() end
-      if type(v) == 'string' then
-        process(_tostring(v))
-      else
-        local s = _tostring(v)
-        if (col < 0 or fieldq) and type(v) == 'number' then s = string.match(s, "[%d%.%+%-]+") end
-        process(s)
-      end
+      local s = _tostring(v)
+      if type(v) == 'number' and (col < 0 or fieldq) then s = string.match(s, "[%d%.%+%-]+") end
+      process(s)
     end
     if k ~= keys[#keys] then process(", ") end
     newlined = false
+    n = n - 1
     if tq or fieldq then
       if not fieldq and k ~= keys[#keys] then newline(); end
       n = col
-    else
-      n = n - 1
     end
   end
   if niceq then process("\n" .. string.rep(" ", ind) .. "}") else process("}") end
