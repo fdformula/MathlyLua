@@ -773,17 +773,17 @@ end
 local function _largest_width_dplaces(t) -- works with strings, numbers, and table of tables
   if type(t) ~= 'table' then t = {t} end
   local allintq, width, fwidth, slen, sign, w, fw, s, tmp, sgn = true, 0, 0, 0, 0, 0, 0, 0
-  for i = 1, #t do
-    if type(t[i]) == 'table' then
-      w, fw, tmp, s, sgn = _largest_width_dplaces(t[i])
+  for _, v in pairs(t) do
+    if type(v) == 'table' then
+      w, fw, tmp, s, sgn = _largest_width_dplaces(v)
       if allintq then allintq = tmp end
       if sgn == 1 then sign = 1 end
-    elseif type(t[i]) == 'string' then
-      s = #t[i] + 2
-    elseif type(t[i]) == 'boolean' then
-      s = qq(t[i], 4, 5)
+    elseif type(v) == 'string' then
+      s = #v + 2
+    elseif type(v) == 'boolean' then
+      s = qq(v, 4, 5)
     else
-      local x = t[i]
+      local x = v
       if x < 0 then sign = 1; x = -x end
       if math.type(x) == 'integer' then
         w = #tostring(x)
@@ -855,7 +855,7 @@ local function _trim_2tail_spaces(x)
   return string.match(_tostring(x), "^%s*(.+)%s*$")
 end
 
-local function _disp(t, ind, col, strq, niceq)
+local function _disp(t, ind, col, strq, niceq) -- strq: return a string version? niceq: pretty print?
   if col == -1 or not niceq then col = -1; _str_fmt = '%s' end
   local keys, n, newlined, str = {}, col, false, ''
   local function process(s) if strq then str = str .. s else io.write(s) end end
@@ -908,7 +908,7 @@ end -- _disp
 
 -- print a table with its structure while disp(x) prints a matrix
 local _disp_col, _disp_flat = -1, nil
-function display(t, col, flat, strq) -- strq is not for users
+function display(t, col, flat, strq) -- strq: return a string version? not for users
   if col and type(col) ~= 'number' then flat = col; col = -1 end
   if strq then
     col, flat = _disp_col, _disp_flat
