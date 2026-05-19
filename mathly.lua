@@ -3983,26 +3983,34 @@ function transpose(A)
 	return _set_matrix_meta(B)
 end
 
--- calculate the reduced row-echlon form of matrix A
--- if B is provided, it works on [ A | B]; useful for finding the inverse of A or
--- solving Ax = b by rref [ A | b ]
-function rref(a, b) -- gauss-jordan elimination
-  friendly_matrix(a, 'rref(A)')
-  if type(b) == 'table' then
+local function _rrefb(b) -- b ~= nil
+  local q = type(b) ~= 'table'
+  if not q then
     if type(b[1]) ~= 'table' then
       b = cc(b)
     elseif getmetatable(b) ~= mathly_meta then
       if ismatrix(b) then
         setmetatable(b, mathly_meta)
       else
-        error('rref(A, B): B must be a vector or matrix')
+        q = true
       end
     end
   end
+  return b, q
+end
+
+-- calculate the reduced row-echlon form of matrix A
+-- if B is provided, it works on [ A | B]; useful for finding the inverse of A or
+-- solving Ax = b by rref [ A | b ]
+function rref(a, b) -- gauss-jordan elimination
+  friendly_matrix(a, 'rref(A)')
+  local bq = b ~= nil
+  if bq then b, bq = _rrefb(b) end
+  if bq then error('rref(A, B): B must be a vector or a matrix') end
+
   local rows, columns = size(a)
   local ROWS = math.min(rows, columns)
 
-  local bq = false
   local bcolumns = 0
   if b ~= nil then
     bq = true
@@ -4097,14 +4105,9 @@ function linsolve(A, b, opt)
   friendly_matrix(A, 'linsolve(A)')
   local B = b
   if b ~= nil then
-    if getmetatable(b) ~= mathly_meta then
-      if type(b) == 'table' then
-        local x = flatten(b)
-        B = mathly:new(x, #x, 1)
-      else
-        error('linsolve(A, b): b must be a table.')
-      end
-    end
+    local q
+    B, q = _rrefb(B)
+    if q then error('linsolve(A, b): b must be a vector or a matrix.') end
   else
     error('linsolve(A, b): b is not provided.')
   end
