@@ -65,6 +65,38 @@ gq = function(x) print('Please call find_and_activate_gauss_quadrature(n) first.
 
 decimalPlaces = 16
 
+function create_gauss_quadrature_table(k) -- create a table for n = 1, 3, ..., k nodes
+  local gqt = {}
+  for n = 1, k do
+    local ns = solvelegendrepoly(n)
+    local ws = map(function(x) local y = difflegendrepoly(n, x); return 2 / ((1 - x*x) * y*y) end, ns)
+    -- sort/rearrange ns
+    if n < 3 then
+      gqt[n] = {n = n, nodes = ns, weights = ws}
+    else
+      local nodes, weights = {}, {}
+      local i, head, tail = #ns, 1, #ns
+      while i > 1 do
+        nodes[tail],   nodes[head]   = ns[i], ns[i - 1]
+        weights[tail], weights[head] = ws[i], ws[i - 1]
+        tail = tail - 1
+        head = head + 1
+        i = i - 2
+      end
+      if i == 1 then
+        nodes[tail]   = ns[1] -- 0
+        weights[tail] = ws[1]
+      end
+      gqt[n] = {n = n, nodes = nodes, weights = weights}
+    end
+  end
+  return gqt
+end
+
+gqt = create_gauss_quadrature_table(20)
+format 'long'
+display(gqt, 4)
+
 function find_and_activate_gauss_quadrature(n, printq)
   printq = printq == nil
   local nodes = solvelegendrepoly(n)
