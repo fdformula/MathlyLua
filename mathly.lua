@@ -3988,7 +3988,17 @@ end
 -- solving Ax = b by rref [ A | b ]
 function rref(a, b) -- gauss-jordan elimination
   friendly_matrix(a, 'rref(A)')
-  if b ~= nil then friendly_matrix(b, 'rref(B, A)') end
+  if type(b) == 'table' then
+    if type(b[1]) ~= 'table' then
+      b = cc(b)
+    elseif getmetatable(b) ~= mathly_meta then
+      if ismatrix(b) then
+        setmetatable(b, mathly_meta)
+      else
+        error('rref(A, B): B must be a vector or matrix')
+      end
+    end
+  end
   local rows, columns = size(a)
   local ROWS = math.min(rows, columns)
 
