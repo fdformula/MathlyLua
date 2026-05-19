@@ -21,7 +21,7 @@ FUNCTIONS PROVIDED IN THIS MODULE
   disp, display, dot, expand, eye, factorial, ff, findroot, flatten, fliplr, flipud,
   format, fzero, hasindex, help, horzcat, integral, integral2, integral3, inv,
   isempty, iseven, isinteger, ismatrix, ismember, isodd, isvector, lagrangepoly,
-  length, linsolve, linspace, lu, map, match, max, mean, merge, min, tables,
+  length, linsolve, linspace, lu, map, map1, match, max, mean, merge, min, tables,
   namedargs, nchoosek, nck, newtonpoly, norm, npk, ones, polynomial, polyval,
   printf, prod, qq, qr, rand, randi, range, remake, repmat, reshape, round, rr,
   rref, save, seq, size, sleep, sort, sprintf, std, strcat, submatrix, subtable,
@@ -322,7 +322,8 @@ function max(x) return _max_min_shared(math.max, x) end
 function min(x) return _max_min_shared(math.min, x) end
 
 -- convert a MATLAB-style anonymous function in string to a function
-function ff(s)
+function ff(s, mapq) -- mapq? by default, automatically apply a function to elements of a table recursively. add it for map1(...). not for users
+  mapq = mapq == nil
   s = string.gsub(s, '%s+', ' ')
   local head, body = string.match(s, '^%s*@%s*(%(%s*[%w,%s]*%))%s*(.+)%s*$')
   if head ~= nil then
@@ -330,14 +331,18 @@ function ff(s)
     if v1 == nil then v1 = head end
     local vars = string.match(head, '^%((.*)%)')
     assert(vars ~= '' and vars ~= ' ', '@(...) needs at least 1 argument')
-    body = 'function' .. head .. ' local function _f' .. head .. ' return ' .. body .. ' end; if type(' .. v1 .. ') == \'table\' then return map(_f,' .. vars .. ') else return _f' .. head .. ' end end'
+    if mapq then
+      body = 'function' .. head .. ' local function _f' .. head .. ' return ' .. body .. ' end; if type(' .. v1 .. ') == \'table\' then return map(_f,' .. vars .. ') else return _f' .. head .. ' end end'
+    else
+      body = 'function' .. head .. ' return ' .. body .. ' end'
+    end
     return eval(body, '"' .. s .. '": ' .. body .. ', poor expression')
   else
     error('Poor expression: ' ..  s .. ". E.g., '@(x) 3*x^2 - 5*x + 1'")
   end
 end
 
--- apply a function to each atomic entry in a table and keep the structure of the table
+-- apply a function to each group of atomic entries in tables, and the result keeps the structure of the tables
 local function _map(f, ...)
   local args = {}
   for _, v in pairs{...} do
@@ -366,17 +371,26 @@ local function _map(f, ...)
   end
 end
 
-function map(f, ...)
+function map(f, ...) -- recursive, x of f(x) is an atomic element of a table
   if type(f) == 'string' then f = ff(f) end
-  local metaq = false
-  for _, v in pairs{...} do
-    if getmetatable(v) == mathly_meta then
-      metaq = true
-      break
-    end
-  end
   local x = _map(f, ...)
-  if metaq or isvector(x) or ismatrix(x) then x = _set_matrix_meta(x) end
+  if isvector(x) or ismatrix(x) then x = _set_matrix_meta(x) end
+  return x
+end
+
+function map1(f, ...) -- non-recursive, good for tables of same-type elements
+  if type(f) == 'string' then f = ff(f, false) end
+  local args = {}
+  for _, v in pairs{...} do
+    args[#args + 1] = v
+  end
+  local x = {}
+  for k, v in pairs(args[1]) do
+    local _args = {}
+    for i = 1, #args do _args[i] = args[i][k] end
+    x[#x + 1] = f(table.unpack(_args))
+  end
+  if isvector(x) or ismatrix(x) then x = _set_matrix_meta(x) end
   return x
 end
 
@@ -4021,7 +4035,9 @@ function rref(a, b) -- gauss-jordan elimination
         for k = i, columns do
           A[j][k] = A[j][k] - A[i][k] * Aji
         end
-        if bq then B[j] = B[j] - B[i] * Aji end
+        if bq then
+          for n = 1, #B[1] do B[j][n] = B[j][n] - B[i][n] * Aji end
+        end
       end
     end
   end
@@ -4052,7 +4068,9 @@ function rref(a, b) -- gauss-jordan elimination
         for k = m, columns do
           A[j][k] = A[j][k] - A[i][k] * Ajm
         end
-        if bq then  B[j] = B[j] - B[i] * Ajm end
+        if bq then
+          for n = 1, #B[1] do B[j][n] = B[j][n] - B[i][n] * Ajm end
+        end
       end
     end
   end
