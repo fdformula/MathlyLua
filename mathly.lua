@@ -187,7 +187,7 @@ local function _index_range(R, x)
   return r
 end
 
-local function friendly_matrix(A, msg)
+local function _mathly_matrix(A, msg)
   if getmetatable(A) ~= mathly_meta then
     if ismatrix(A) then
       setmetatable(A, mathly_meta)
@@ -209,7 +209,7 @@ function rr(x, I, irange)
     return setmetatable({flatten(x)}, mathly_meta) -- convert x to a row vector
   else
     local matrixq = type(x[1]) == 'table'
-    friendly_matrix(x, 'rr(A)')
+    _mathly_matrix(x, 'rr(A)')
     irange = _index_range(irange or '*', qq(matrixq, x[1], x))
     local rows = {}
     if type(I) ~= 'table' then I = { I } end
@@ -241,7 +241,7 @@ function cc(x, I, irange)
   if I == nil then
     return setmetatable(map(function(x) return {x} end, flatten(x)), mathly_meta) -- convert x to a column vector
   else
-    friendly_matrix(x, 'cc(A)')
+    _mathly_matrix(x, 'cc(A)')
     irange = _index_range(irange, x)
     if type(I) ~= 'table' then I = { I } end
     local cols = mathly(math.ceil((math.abs(irange[2] - irange[1]) + 1) / math.abs(irange[3])), #I, 0)
@@ -1300,7 +1300,7 @@ function mean(x)
     elseif type(x[1]) == 'string' then
       return mean(strcat(table.unpack(x)))
     else
-      friendly_matrix(x, 'mean(A)')
+      _mathly_matrix(x, 'mean(A)')
       local m, n = size(x)
       if m == 1 then
         return mean(x[1])
@@ -1335,7 +1335,7 @@ local function _stdvar(x, opt, sqrtq)
       if sqrtq then s = math.sqrt(s) end
       return s
     else -- a "matrix"
-      friendly_matrix(x, 'std(A)')
+      _mathly_matrix(x, 'std(A)')
       local m, n = size(x)
       if m == 1 then
         return _stdvar(x[1], opt, sqrtq)
@@ -3969,7 +3969,7 @@ function shownotlegend() _showlegendq = false end
 
 -- transpose a matrix
 function transpose(A)
-  friendly_matrix(A, 'transpose(A)')
+  _mathly_matrix(A, 'transpose(A)')
 	local B = {}
 	local m, n = size(A)
 	if type(A[1]) ~= 'table' then -- m == 1
@@ -4003,7 +4003,7 @@ end
 -- if B is provided, it works on [ A | B]; useful for finding the inverse of A or
 -- solving Ax = b by rref [ A | b ]
 function rref(a, b) -- gauss-jordan elimination
-  friendly_matrix(a, 'rref(A)')
+  _mathly_matrix(a, 'rref(A)')
   local bq = b ~= nil
   if bq then b, bq = _rrefb(b) end
   if bq then error('rref(A, B): B must be a vector or a matrix') end
@@ -4102,7 +4102,7 @@ end -- rref
 
 -- solve Ax = b and return x: A is square
 function linsolve(A, b, opt)
-  friendly_matrix(A, 'linsolve(A)')
+  _mathly_matrix(A, 'linsolve(A)')
   local B = b
   if b ~= nil then
     local q
@@ -4144,7 +4144,7 @@ end -- linsolve
 -- calculate the inverse of matrix A
 -- rref([A | I]) gives [ I | B ], where B is the inverse of A
 function inv(A)
-  friendly_matrix(A, 'inv(A)')
+  _mathly_matrix(A, 'inv(A)')
   local rows, columns = size(A)
   assert(rows == columns, 'inv(A): A must be square.')
   local v1, v2 = rref(A, eye(rows))
@@ -4222,7 +4222,7 @@ end
 
 -- Make A a lower (opt = 'LT'), upper (opt = 'UT'), or a symmetric (opt = 'SYM') matrix by replacing entries with 0's or so
 function remake(A, opt)
-  friendly_matrix(A, 'remake(A, ...)')
+  _mathly_matrix(A, 'remake(A, ...)')
   local B
   local m, n = size(A)
   local minn = math.min(m, n)
@@ -4399,7 +4399,7 @@ end -- diag
 --// function eigs(A)
 -- Return eigenvalues of a square matrix A.
 function eigs(A) -- apply qr factorization
-  friendly_matrix(A, 'eigs(A)')
+  _mathly_matrix(A, 'eigs(A)')
   local row, col = size(A)
   assert(row == col, 'eigs(A): A must be a square matrix.')
   local Q, R
@@ -4427,7 +4427,7 @@ end
 -- expand/shrink a matrix by adding value v's or dropping entries.
 -- the default value of v is 0
 function expand(A, m, n, v)
-  friendly_matrix(A, 'expand(A, ...)')
+  _mathly_matrix(A, 'expand(A, ...)')
   if m == nil then return A end
   if n == nil then n = m end
   if v == nil then v = 0 end
@@ -4470,7 +4470,7 @@ end
 
 -- Return L and U in LU factorization A = L * U, where L and U are lower and upper traingular matrices, respectively.
 function lu(A) -- by Crout's method
-  friendly_matrix(A, 'lu(A)')
+  _mathly_matrix(A, 'lu(A)')
   local s, n = size(A)
   assert(n == s and n > 1, "lu(A): A is not square.\n")
   local abs, L, U = math.abs, zeros(n, n), zeros(n, n)
@@ -4502,7 +4502,7 @@ end
 -- column vectors, and R is an invertible upper triangular matrix.
 -- note: this implementation requires that m >= n.
 function qr(A)  -- by Gram-Schmidt process
-  friendly_matrix(A, 'qr(A)')
+  _mathly_matrix(A, 'qr(A)')
   local m, n = size(A)
   assert(m >= n, 'qr(A): A is a mxn matrix, where m >= n.')
 
@@ -4529,7 +4529,7 @@ function qr(A)  -- by Gram-Schmidt process
 end
 
 function det(B)
-  friendly_matrix(B, 'det(A)')
+  _mathly_matrix(B, 'det(A)')
   local m, n = size(B)
   if m ~= n then
     print('det(A): A must be square.')
