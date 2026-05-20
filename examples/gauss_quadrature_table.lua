@@ -475,11 +475,7 @@ gqtable = { -- n nodes gauss quadrature? gqtable[n]
 -- ∫f(x)dx over [-1, 1]
 function gq_integral1(f, n) -- n: # of nodes
   if type(f) == 'string' then f = ff(f) end
-  local s = 0
-  for i = 1, n do
-    s = s + gqtable[n].weights[i] * f(gqtable[n].nodes[i])
-  end
-  return s
+  return dot(gqtable[n].weights, map1(f, gqtable[n].nodes))
 end
 
 gq_integral1('@(x) x^2', 5)
@@ -493,8 +489,7 @@ function gq_integral2(f, ab, n) -- n: # of nodes
   if type(f) == 'string' then f = ff(f) end
   local a, b = ab[1], ab[2]
   local A, B = (b - a)/2, (b + a)/2
-  local ns, ws = tt(gqtable[n].nodes), tt(gqtable[n].weights)
-  return A * dot(ws, map(f, A*ns + B))
+  return A * dot(gqtable[n].weights, map1(f, A*tt(gqtable[n].nodes) + B))
 end
 
 gq_integral2('@(x) x^2', {-2, 3}, 5)
