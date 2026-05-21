@@ -2238,7 +2238,6 @@ disp(z, '')
 disp(map1('@(a, b, c) a + 2*b + 3*c', x, y, z), '') -- same as map(...), x + 2y + 3z
 disp(map('@(a, b, c) a + 2*b + 3*c', x, y, z), '')
 
--- map(...) doesn't work
 gqtable = { -- gauss quadrature
   {n = 2, nodes = {-0.5773502691896,  0.5773502691896},
    weights = {1.0000000000000,  1.0000000000000}},
@@ -2896,7 +2895,7 @@ For example, <code>p(x) = -2x<sup>4</sup> + 4x<sup>2</sup> - 5x</code>, <code>co
 <pre><code>mathly = require('mathly')
 polyval({1, 2, 1}, 0) -- evaluate x<sup>2</sup> + 2x + 1 at x = 0
 -- 1.0000
-display(polyval({1, 2, 1}, {0, 5, 9, 100})) -- evaluate at x = 0, 5, 9, 100
+disp(polyval({1, 2, 1}, {0, 5, 9, 100}), '') -- evaluate at x = 0, 5, 9, 100
 -- {1.0, 36.0, 100.0, 10201.0}
 </code></pre>
 
@@ -3193,7 +3192,7 @@ scripts. Note: Data like <code>x = {1, true, 'abc', c = {2, {3}, d = 'bcd'}}</co
 a = rand(5, 12)
 format 'long'
 disp(a)
-display(a, 5)
+display(a, 4)
 b = {1, 2, {3, {4, {5, 6, {7}}}}}
 c = 100
 save('data_1.lua')            -- save all user-defined variables and their values to a file,
@@ -3210,7 +3209,7 @@ print(a, b, c)
 -- nil nil nil -- not defined
 
 dofile('data_2.lua') -- load/recover the data
-disp(a)
+disp(a, 4)
 disp(b)
 
 print(c) -- nil
@@ -3341,10 +3340,10 @@ x = tables(5, {i = {1, 10}}); disp(x)
 -- It can also call user-defined functions and functions provided by Lua and
 -- Mathly.
 --
-format 'short'
 x = tables('i', {i = {1, 20, 2}}); disp(x)
 -- {1, 3, 5, 7, 9, 11, 13, 15, 17, 19}
 
+format 'short'
 x = tables('1 / i^2', {i = {1, 10}}); disp(x)
 -- {1.0000, 0.2500, 0.1111, 0.0625, 0.0400, 0.0278, 0.0204, 0.0156, 0.0123, 0.0100}
 
@@ -3692,7 +3691,7 @@ options = {
 plot(data_functions_and_styles, options)
 </code></pre>
 <p>You may use it as a template, remove some attributes, and fine-tune some others for your needs.</p>
-<p>&#x2713; &nbsp; In code editors <a href=#cudatext>CudaText and Lite XL</a>, press ctrl-t to insert such a template.</p>
+<p>&#x2713; &nbsp; To insert such a template, press Ctrl-P P in <a href=#cudatext>CudaText</a>, and press Ctrl-T in <a href=#cudatext>Lite XL</a>.</p>
 <p>For example,</p>
 <pre><code>axissquare()
 shownotlegend()
