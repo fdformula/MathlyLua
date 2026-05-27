@@ -173,14 +173,16 @@ is merged into this project to reduce dependencies and make it easier for users 
 some changes have been made, full credit belongs to the original authors for whom the author of Mathly
 is very grateful.
 
-1. This project was started first right in the downloaded code of the Lua module, matrix.lua, found
+1. This project was started first right in the code of a Lua module, matrix.lua, found
 in https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua, to see if Lua is good for
 numerical computing. However, it failed to solve numerically a boundary value problem. The solution
-was obviously wrong because the boundary condition at one endpoint is not satisfied, but I could not find
-anything wrong in both the algorithm and the code. I had to wonder if there were bugs in the module. In many
-cases, it is easier to start a small project from scratch than debugging and using others' code. In
+was obviously wrong because the boundary condition at one endpoint is not satisfied, but the algorithm and the
+code were both correct. We had to wonder if there were bugs in the module. In many
+cases, it is easier to start a small project from scratch than using and debugging others' code. In
 addition, matrix.lua addresses a column vector like a[i][1] and a row vector a[1][i], rather than a[i]
 in both cases, which is quite ugly and unnatural. Furthermore, no basic graphics capabilities are provided in
-matrix.lua. Therefore, this Mathly module was developed. But anyway, the work in matrix.lua is highly appreciated.
+matrix.lua. Therefore, this Mathly module was developed. But anyway, we appreciate the work in matrix.lua.
+Actually, you may find some similarities in the code of matrix.lua and mathly.lua, e.g., m1, m2 are used
+to name arguments of some functions.
 
 &nbsp; &nbsp; &nbsp; &nbsp;December 25, 2024
