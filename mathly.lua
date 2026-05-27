@@ -2140,6 +2140,7 @@ function plot(...)
   for _, v in pairs{...} do
     if type(v) == 'table' and next(v) ~= nil then -- the last one matters
       if v.layout  then merge(layout_arg, v.layout) end
+      if v.range  then _xrange = v.range end -- removable!
       if v.xrange  then _xrange = v.xrange end -- handled by figure.toplotstring(self)
       if v.yrange  then _yrange = v.yrange end
       local opts = {'grid', 'width', 'height', 'title', 'xaxis', 'yaxis', 'margin', 'names'}
@@ -2249,7 +2250,7 @@ function plot(...)
     if type(args[i]) == 'function' then
       args[i] = {0, args[i]}
       table.insert(args, i + 1, {0, 0}) -- pretend to be x, y, ...; to be modified before plotting
-    elseif i <= #args and type(args[i]) == 'table' and _hasanyindex(args[i], {'xrange', 'yrange', 'xranges', 'yranges', 'layout', 'names'})  then
+    elseif i <= #args and type(args[i]) == 'table' and _hasanyindex(args[i], {'range', 'xrange', 'yrange', 'xranges', 'yranges', 'layout', 'names'})  then
       layout_arg[#layout_arg + 1] = args[i] -- to be processed finally
       i = i + 1
     else
