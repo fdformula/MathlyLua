@@ -2603,7 +2603,8 @@ disp(randn(3, 5, 70, 12.55))
 <li>of a marker:<p><code>size</code> = 10</p><p><code>symbol</code> = <code>'circle'</code></p>
 Some possible symbols are <code>bowtie, circle, circle-open, circle-open-dot, cross, diamond, hexagram, hourglass,
 pentagon, square, square-open, star, triangle-left, triangle-right, triangle-up, triangle-down, x,</code> etc.</li><p></p>
-<li>of a plot:<p><code>layout</code> = {<code>width</code> = 500, <code>height</code> = 400, <code>grid</code> = {<code>rows</code> = 2, <code>columns</code> = 2}, <code>title</code> = 'Demo'}</p></li>
+<li><a name=layout></a><a name=width></a><a name=height></a><a name=grid></a><a name=rows></a><a name=columns></a><a name=title></a>of a <a href=#plot>plot</a>:
+<p><code>layout</code> = {<code>width</code> = 500, <code>height</code> = 400, <code>grid</code> = {<code>rows</code> = 2, <code>columns</code> = 2}, <code>title</code> = 'Demo'}</p></li>
 </ol>
 <p><a name=plotspecs></a>Shortcuts for specifications like <code>'--ro'</code>:</p>
 <table><tbody>
@@ -2669,15 +2670,13 @@ axisnotsquare()
 plot(rand(125, 4), specs1, {names={'f1', 'f2', 'f3', 'g'}}) -- each column of a matrix defines a function with x changing from 0 to # of rows --&gt; <a href=img/p7.png target=_blank>View</a>
 plot(rand(100,5), {layout = {grid = {rows=3, columns=3}}}, rand(100,3)) --&gt; <a href=img/p8.png target=_blank>View</a>
 </code></pre>
-<p>&#x2713; &nbsp; The options <code>xrange</code> and <code>yrange</code> can be used to specify the ranges of x and y for all graphs on a single figure.
+<p>&#x2713; &nbsp; <a name=xrange></a><a name=yrange></a>The options <code>xrange</code> and <code>yrange</code> of <code><a href=#plot>plot</a></code> can be used to specify the ranges of x and y for all graphs on a single figure.
 They take the same format, e.g., <code>xrange = {start, stop, step}</code>, where <code>step</code> is optional, used to generate x values
 on <code>[start, stop]</code> if needed. For example,</p>
 <pre><code>mathly = require('mathly')
 x = linspace(0, 10, 300)
 axisnotsquare()
 plot(x, x^4*sin(x), '-r', x, x*cos(x^2), '-b', exp, {xrange={0, 5}, yrange={-5,30}}) --&gt; <a href=img/p9.png target=_blank>View</a>
-
--------
 
 fs = tables('!@(x) cos(i * x) * sin(i - x)', {i = {1, 4}, controls = 'i'})
 display(fs, 2)
@@ -3885,20 +3884,19 @@ is merged into this project to reduce dependencies and make it easier for users 
 some changes have been made, full credit belongs to the original authors for whom the author of Mathly
 is very grateful.</li>
 <p></p>
-<li>This project was started first right in the downloaded code of the Lua module,
+<li>This project was started first right in the code of a Lua module,
 <a href="https://github.com/davidm/lua-matrix/blob/master/lua/matrix.lua">matrix.lua</a>, to see if Lua is good
 for numerical computing. However, it failed to solve numerically a boundary value problem. The solution
-was obviously wrong because the boundary condition at one endpoint is not satisfied, but I could not find
-anything wrong in both the algorithm and the code. I had to wonder if there were bugs in the module. In many
+was obviously wrong because the boundary condition at one endpoint is not satisfied, but the algorithm and the
+code were both correct. We had to wonder if there were bugs in the module. In many
 cases, it is easier to start a small project from scratch than using and debugging others' code. In
 addition, matrix.lua addresses a column vector like a[i][1] and a row vector a[1][i], rather than a[i]
 in both cases, which is quite ugly and unnatural. Furthermore, no basic graphics capabilities are provided in
-matrix.lua. Therefore, this Mathly module was developed. But anyway, I appreciate the work in matrix.lua.
+matrix.lua. Therefore, this Mathly module was developed. But anyway, we appreciate the work in matrix.lua.
 Actually, you may find some similarities in the code of matrix.lua and mathly.lua, e.g., m1, m2 are used
 to name arguments of some functions.</li>
 </ol>
-<p style="margin-left: 40px;">David Wang</p>
-<p style="margin-left: 40px;">December 25, 2024</p>
+<!--<p style="margin-left: 40px;">December 25, 2024</p>-->
 </div>
 </body>
 </html>
