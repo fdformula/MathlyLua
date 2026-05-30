@@ -341,6 +341,7 @@ function ff(s, mapq) -- mapq? by default, automatically apply a function to elem
     error('Poor expression: ' ..  s .. ". E.g., '@(x) 3*x^2 - 5*x + 1'")
   end
 end
+fstr2f = ff -- removable, early version
 
 -- apply a function to each group of atomic entries in tables, and the result keeps the structure of the tables
 local function _map(f, ...)
@@ -2251,7 +2252,7 @@ function plot(...)
       args[i] = {0, args[i]}
       table.insert(args, i + 1, {0, 0}) -- pretend to be x, y, ...; to be modified before plotting
     elseif i <= #args and type(args[i]) == 'table' and _hasanyindex(args[i], {'range', 'xrange', 'yrange', 'xranges', 'yranges', 'layout', 'names'})  then
-      layout_arg[#layout_arg + 1] = args[i] -- to be processed finally
+      layout_arg[#layout_arg + 1] = args[i] -- to be processed finally          ↑ range, removable!
       i = i + 1
     else
       local trace = {}
