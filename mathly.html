@@ -1512,13 +1512,32 @@ disp(f(1)) -- 0
 plot(f, sin, {xrange = {0, 2}}) --&gt; <a href=img/ff.png target=_blank>View</a>
 
 g = ff('@(x) x*x')
-g(1) -- 1
-g{1, 2, 3} -- {1, 4, 9} -- map the function to each element of a table.
-disp(g{1, 2, {3, {4}}}) -- {1, 4, {9, {16}}}
+g(1)
+g{1, 2, 3} -- automatically map a function to each element of a table
+-- 1, 4, 9
+disp(g{1, 2, {3, {4}}})
+-- {1, 4, {9, {16}}}
 
-h = ff('@(x, y, z) x + y + z')
-h(1, 2, 3) -- 6
-h({1, 2, 3}, {2, 3, 4}, {3, 4, 5}) -- {6, 9, 12}
+h = ff('@(x, y) 2*x - y')
+disp(h({1, 2, 3, 4, 5}, {1, 0, 2, -1, 1})) -- automatically map a function to each pair of corresponding elements
+-- 1 4 4 9 9
+disp(h({1, 2, {3, {4, 5}}}, 3)) -- y ≡ 3 in h(x, y)
+-- {-1, 1, {3, {5, 7}}}
+disp(h({1, 2, {3, {4, 5}}}, {1, 0, {2, {-1, 1}}}))
+-- {1, 4, {4, {9, 9}}}
+
+k = ff('@(x, y, z) x + y + z')
+disp(k(1, 2, 3))
+-- 6
+disp(k({1, 2, 3}, {2, 3, 4}, {3, 4, 5}))
+--  6  9 12
+disp(k({1, 2, 3}, {2, 3, 4}, 3)) -- z ≡ 3 in k(x, y, z)
+-- 6  8 10
+disp(k({1, 2, 3}, 2, 3)) -- y ≡ 2 and z ≡ 3 in k(x, y, z)
+-- 6 7 8
+disp(k({1, 2, 3}, 2, {3, 4, 5})) -- y ≡ 2 in k(x, y, z)
+-- 6  8 10
+-- disp(k(1, 2, {3, 4, 5})) -- invalid; if some arguments are tables, the 1st one must be a table
 
 ff('@(x) x*x'){1, 2, 3, 4, 5}
 ff('@(x) x*x')(seq(5))
