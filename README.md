@@ -43,7 +43,7 @@ package.path = "./?.luac;;"
 `inv`, `isempty`, `isinteger`, `iseven`, `isodd`, `ismatrix`, `ismember`, `isvector`, `lagrangepoly`, `length`, `linsolve`, `linspace`, `lu`, `map`, `map1`, `match`, `mathly`, `max`, `mean`,
 `merge`, `min`, `mod`, `namedargs`, `nchoosek`, `nck`, `newtonpoly`, `norm`, `npk`, `ones`, `polyfit`, `polynomial`, `polyval`, `powermod`, `printf`, `prod`, `qq`, `qr`, `rand`,
 `randi`, `randn`, `range`, `remake`, `repmat`, `reshape`, `reverse`, `round`, `rr`, `rref`, `save`, `seq`, `size`, `sleep`, `sort`, `sprintf`, `std`, `strcat`, `submatrix`, `subtable`,
-`sum`, `tables`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vectorangle`, `vertcat`, `who`, `zeros`; `bin2dec`, `oct2hex`, ...
+`sum`, `table1`, `tblcat`, `tic`, `toc`, `transpose`, `tt`, `unique`, `var`, `vectorangle`, `vertcat`, `who`, `zeros`; `bin2dec`, `oct2hex`, ...
 
 `cat`, `isdir`, `isfile`, `iswindows`, `ls` (or `dir`), `mv`, `pwd`, `rm`
 
