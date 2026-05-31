@@ -21,11 +21,11 @@ FUNCTIONS PROVIDED IN THIS MODULE
   disp, display, dot, expand, eye, factorial, ff, findroot, flatten, fliplr, flipud,
   format, fzero, hasindex, help, horzcat, integral, integral2, integral3, inv,
   isempty, iseven, isinteger, ismatrix, ismember, isodd, isvector, lagrangepoly,
-  length, linsolve, linspace, lu, map, map1, match, max, mean, merge, min, tables,
+  length, linsolve, linspace, lu, map, map1, match, max, mean, merge, min,
   namedargs, nchoosek, nck, newtonpoly, norm, npk, ones, polynomial, polyval,
   printf, prod, qq, qr, rand, randi, range, remake, repmat, reshape, round, rr,
   rref, save, seq, size, sleep, sort, sprintf, std, strcat, submatrix, subtable,
-  sum, tables, tblcat, text, tic, toc, transpose, tt, unique, var, vectorangle,
+  sum, table1, tblcat, text, tic, toc, transpose, tt, unique, var, vectorangle,
   vertcat, who, zeros
 
   dec2bin, dec2hex, dec2oct, bin2dec, bin2hex, bin2oct, oct2bin, oct2dec,
@@ -3259,7 +3259,7 @@ function _tables_replace(str, cs, vs) -- must be GLOBAL
   return str
 end
 
-function tables(str, opts) -- Mathematica
+function table1(str, opts) -- Mathematica
   local cs, rs, fmt = {}, {}, string.format  -- controls & their ranges
   local function cs_values_str()
     local cstr, vstr = '{', '{'
@@ -3328,7 +3328,8 @@ function tables(str, opts) -- Mathematica
   local stat, v = pcall(load, c)
   if stat then stat, v = pcall(v) end
   return v
-end -- tables
+end -- table1
+tables = table1 -- deprecated
 
 local function _freq_distro(x, nbins, xmin, xmax, width)
   nbins = nbins or 10
