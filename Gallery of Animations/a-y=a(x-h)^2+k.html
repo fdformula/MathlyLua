@@ -43,7 +43,7 @@ input:focus {outline: none;}
 <span id="displaytext" style="left:74px;top:150px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
 function displaytext() { return ""; } // to be overwritten
-function displaytitle() { return ""; }
+function displaytitle() { return "<h3><em>y = a(x + h)</em><sup>2</sup> + <em>k</em></h3>"; }
 var x = [], t = [], X, Y, T, p;
 function mthlyaNext(d) {
   let x = a + d*mthlyaStep;
@@ -109,18 +109,18 @@ function mthlyUpdateTraces() {
   mthlyTraces = [];
 
   // vvvvv user's javascript vvvvv
-  function displaytitle() { // dynamically update the title nicely
-    let op1 = '-', op2 = '+', h1 = h, k1 = k, x = 'x', t = '', ax = ''
+  function displaytext() { // dynamically update the title nicely
+    let op1 = '-', op2 = '+', h1 = h, k1 = k, x = '<em>x</em>', t = '', ax = ''
     if (h < 0) { op1 = '+'; h1 = -h; }
     if (k < 0) { op2 = '-'; k1 = -k; }
-    if (h != 0) { x = '(x ' + op1 + ' ' + h1 + ')'; }
+    if (h != 0) { x = '(<em>x</em> ' + op1 + ' ' + h1 + ')'; }
     if (k != 0) { t = op2 + ' ' + k1; }
     if (a != 0) {
       ax = '' + ((a == 1)? '' : ((a == -1)? '-' : a)) + x + '<sup>2</sup> ';
     } else {
       t = k;
     }
-    return '<h3>y = ' + ax + t + '</h3>'
+    return '<em>y</em> = ' + ax + t + ''
   }
   // ^^^^^ user's javascript ^^^^^
 
