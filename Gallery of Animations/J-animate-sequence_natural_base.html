@@ -30,12 +30,12 @@ input:focus {outline: none;}
 <!-- controls -->
 <button type="button" title="Previous value" onclick="mthlyINext(-1)" style="width:48px;left:524px;top:60px;position:absolute">Prev</button>
 <button type="button" title="Next value" onclick="mthlyINext(1)" style="width:48px;left:575px;top:60px;position:absolute">Next</button>
-<label for="mthlySldrI" style='top:60px;'>n as in { (1 + 1/n)^n }:</label>
-<input type="range" id="mthlySldrI" min="0" max="200" value="0" style='left:248px;top:60px;' step="1"></input><span id="mthlySldrIvalue" style="left:469px;top:60px;position:absolute">&nbsp;</span>
+<label for="mthlySldrI" style='top:60px;'><em>n</em> as in { (1 + 1/<em>n</em>)<sup><em>n</em></sup> }:</label>
+<input type="range" id="mthlySldrI" min="1" max="200" value="1" style='left:248px;top:60px;' step="1"></input><span id="mthlySldrIvalue" style="left:469px;top:60px;position:absolute">&nbsp;</span>
 <span id="displaytext" style="left:74px;top:90px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
 function displaytext() { return ""; } // to be overwritten
-function displaytitle() { return "Sequence: Approximating Value of the Natural Base, <em>e</em>"; }
+function displaytitle() { return "Sequence: approximating natural base <em>e</em>"; }
 var x = [], t = [], X, Y, T, p, mthlyGlobal = [], mthlyGlobal1 = [], mthlyGlobal2 = [], mthlyGlobal3 = [], mthlyGlobal4 = [], mthlyGlobal5 = [];
 function mthlyINext(x) {
   x = I + x*mthlyIStep;
@@ -56,8 +56,8 @@ const mthlyLayout = {
 };
 
 var mthlySldrI = document.getElementById('mthlySldrI');
-mthlySldrI.value = 0;
-var I = 0;
+mthlySldrI.value = 1;
+var I = 1;
 p = 1;
 for (let i = -1; i <= p * (200 + 1) - 1; i += 0.402) { x.push(i); }; t = x;
 
@@ -65,7 +65,7 @@ var mthlyTraces = [];
 const mthlyxMin = -1, mthlyxMax = 200, mthlyxStep = 1;
 const mthlyyMin = -0.1, mthlyyMax = 3;
 const mthlytMin = -1, mthlytMax = 200, mthlytStep = 1;
-const mthlyIMin = 0, mthlyIMax = 200, mthlyIStep = 1;
+const mthlyIMin = 1, mthlyIMax = 200, mthlyIStep = 1;
 
 function mthlyUpdateTraces() {
   mthlyTraces = [];
@@ -84,8 +84,8 @@ function displaytext() {
 }
   // ^^^^^ user's javascript ^^^^^
 
-  mthlyTraces.push({ x: [0, 200], y: [2.718281828459, 2.718281828459], mode: 'lines', line: { color: 'red', width: 1 , dash: 'dot' } });
-  mthlyTraces.push({ x: [30], y: [2.898281828459], text: '<i>y</i> = 2.718281828459045235360...', mode: 'text', type: 'scatter', textposition: 'bottom center', name: '', textfont: { color: 'red', size: 10.000000  } });
+  mthlyTraces.push({ x: [0, 200], y: [2.7182818284590451, 2.7182818284590451], mode: 'lines', line: { color: 'red', width: 1 , dash: 'dot' } });
+  mthlyTraces.push({ x: [30], y: [2.8982818284590453], text: '<i>y</i> = 2.718281828459045235360...', mode: 'text', type: 'scatter', textposition: 'bottom center', name: '', textfont: { color: 'red', size: 10.000000  } });
   document.getElementById("displaytext").innerHTML = displaytext();
   document.getElementById("title").innerHTML = displaytitle();
 }
