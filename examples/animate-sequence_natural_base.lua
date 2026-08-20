@@ -23,12 +23,12 @@ maxI = 200 -- max n in (1 + 1/n) ^ n
 
 fstr = nil
 opts = {
-  I = {0, maxI, 1, label = 'n as in { (1 + 1/n)^n }'}, controls = 'I',
+  I = {1, maxI, 1, label = 'n as in { (1 + 1/n)^n }'}, controls = 'I',
   xrange = {-1, maxI}, yrange = {-0.1, 3},
   javascript = jcode,
   layout = {
     width = 800, height = 400, square = false,
-    title = 'Sequence: Approximating Value of the Natural Base, <em>e</em>'
+    title = 'Sequence: approximating natural base <em>e</em>'
   },
   enhancements = {
     {x = {0, maxI}, y = {e, e}, line = true, width = 1, color = 'red', style = "dash: 'dot'"},
