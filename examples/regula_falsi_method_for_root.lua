@@ -22,7 +22,7 @@ jscode = [[
   }
   a = A; b = B;
 
-  function displaytext() { return '[' + ab[I-1][0] + ', ' + ab[I-1][1] + '], x-intercept = ' + midpts[I-1]; }
+  function displaytext() { return 'Interval [' + ab[I-1][0] + ', ' + ab[I-1][1] + '], <em>x</em>-intercept = ' + midpts[I-1]; }
 ]]
 
 fstr = {'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'}
@@ -31,7 +31,7 @@ opts = {
   xrange = {-2.5, 6.1}, yrange = {-6, 6},
   layout = {
     width = 640, height = 640, square = false,
-    title = "<h3>Regula falsi method for 3cos(x) - 0.3x<sup>2</sup> + 2 = 0 starting on [-1.6, 5.5]</h3>"
+    title = "<font size=4>Regula falsi method for 3cos <em>x</em> - 0.3<em>x</em><sup>2</sup> + 2 = 0 starting on [-1.6, 5.5]</font>"
   },
   javascript = jscode, controls = 'I',
   enhancements = {
