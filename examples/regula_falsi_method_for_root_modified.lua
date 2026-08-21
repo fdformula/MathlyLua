@@ -33,17 +33,17 @@ jscode = [[
   }
   a = A; b = B;
 
-  function displaytext() { return ((m == 1)? 'Original ' : 'Modified') +' method: [' + ab[I-1][0] + ', ' + ab[I-1][1] + '], x-intercept = ' + midpts[I-1]; }
+  function displaytext() { return '<b>' + ((m == 1)? 'Original ' : 'Modified') +' method</b>: Interval [' + ab[I-1][0] + ', ' + ab[I-1][1] + '], <em>x</em>-intercept = ' + midpts[I-1]; }
 ]]
 
 fstr = {'@(t) t', '@(t) f(ab[I-1][0]) + (f(ab[I-1][1]) - f(ab[I-1][0])) / (ab[I-1][1] - ab[I-1][0]) * (t - ab[I-1][0])'}
 opts = {
   I = {1, 67, 1, label = 'Iterations'},
-  m = {1, 2, 1, label = 'Method'}, r = {0, 2, 1, label = 'Reset count to'},
+  m = {1, 2, 1, label = 'Method', default = 2}, r = {0, 2, 1, label = 'Reset count to'},
   xrange = {-3.1, 2.1}, yrange = {-22, 8},
   layout = {
     width = 640, height = 640, square = false,
-    title = "<h3>Regula falsi method for x<sup>3</sup> - 2x + 2 = 0 starting on [-3, 2]</h3>"
+    title = "<font size=5>Regula falsi method for <em>x</em><sup>3</sup> - 2<em>x</em> + 2 = 0 starting on [-3, 2]</font>"
   },
   javascript = jscode, controls = 'mrI',
   enhancements = {
