@@ -13,7 +13,7 @@ jscode = [[
   function q(x) { return fpp(x)*m(x) - fp(x) * mp(x); }  // do NOT use p which is reserved for 'play'
   const cx = X - mp(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));   // (cx, cy), center of osculation circle at (X, Y)
   const cy = f(X) + q(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));
-  function displaytext() { return "<em>k</em> = " + k(X) + ", <em>r</em> = " + (1/k(X)) + ", center (" + cx +", " + cy + ")"; }
+  function displaytext() { const K = k(X); const R = 1/K; return "At (" + X.toFixed(2) + ", " + Y.toFixed(2) + "): <em>&kappa;</em> = " + K.toFixed(4) + ", <em>r</em> = " + R.toFixed(4) + ", center (" + cx.toFixed(4) +", " + cy.toFixed(4) + ")"; }
 ]]
 
 fstr = {'@(t) t', '@(t) t*t'}
