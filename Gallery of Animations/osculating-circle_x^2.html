@@ -36,8 +36,8 @@ input:focus {outline: none;}
 <span id="displaytext" style="left:74px;top:90px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
 function displaytext() { return ""; } // to be overwritten
-function displaytitle() { return "<font size=5><em>y = x<sup>2</sup></em></font>"; }
-var x = [], t = [], X, Y, T, p;
+function displaytitle() { return "<font size=5>Osculating circle: <em>y = x</em><sup>2</sup></font>"; }
+var x = [], t = [], X, Y, T, p, mthlyGlobal = [], mthlyGlobal1 = [], mthlyGlobal2 = [], mthlyGlobal3 = [], mthlyGlobal4 = [], mthlyGlobal5 = [];
 
 var mthlyAutoPlayq = true, mthlyIntervalId = null, mthlyInterval = 200;
 const mthlyPlayButtn = document.getElementById('mthlyPlayButtn');
@@ -68,7 +68,7 @@ if (true) { const t = mthlyTmp; X = t; Y = t*t; T = mthlyTmp; }
 var mthlyTraces = [];
 const mthlyxMin = -5, mthlyxMax = 5, mthlyxStep = 1;
 const mthlyyMin = -5, mthlyyMax = 5;
-const mthlytMin = -5, mthlytMax = 5, mthlytStep = 1;
+const mthlytMin = -5, mthlytMax = 5, mthlytStep = 0.1;
 const mthlypMin = 0, mthlypMax = 1, mthlypStep = 0.01;
 
 function mthlyUpdateTraces() {
@@ -84,19 +84,22 @@ function mthlyUpdateTraces() {
   function q(x) { return fpp(x)*m(x) - fp(x) * mp(x); }  // do NOT use p which is reserved for 'play'
   const cx = X - mp(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));   // (cx, cy), center of osculation circle at (X, Y)
   const cy = f(X) + q(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));
+  function displaytext() { return "<em>k</em> = " + k(X) + ", <em>r</em> = " + (1/k(X)) + ", center (" + cx +", " + cy + ")"; }
   // ^^^^^ user's javascript ^^^^^
 
   mthlyTraces.push({ x: t.map(t => t), y: t.map(t => t*t), mode: 'lines', line: { simplify: false }, fill: 'none' });
   if (true) {
     const t = [];
-    for (let i = -6.2831853071796; i <= 6.2831853071796; i += 0.025132741228718) { t.push(i); }
-    mthlyTraces.push({ x: t.map(t => t), y: t.map(t => t*t), mode: 'lines', line: { simplify: false, color: 'blue', width: 3  }, fill: 'none' });
+    for (let i = -6.2831853071795862; i <= 6.2831853071795862; i += 0.025132741228718346) { t.push(i); }
+    mthlyTraces.push({ x: t.map(t => t), y: t.map(t => t*t), mode: 'lines', line: { simplify: false, color: 'blue', width: 3.000000  }, fill: 'none' });
   }
   if (true) {
     const t = [];
-    for (let i = 0; i <= 6.2831853071796; i += 0.012566370614359) { t.push(i); }
-    mthlyTraces.push({ x: t.map(t => cx + Math.cos(t) / k(X)), y: t.map(t => cy + Math.sin(t) / k(X)), mode: 'lines', line: { simplify: false, color: 'orange', width: 3  }, fill: 'none' });
+    for (let i = 0; i <= 6.2831853071795862; i += 0.012566370614359173) { t.push(i); }
+    mthlyTraces.push({ x: t.map(t => cx + Math.cos(t) / k(X)), y: t.map(t => cy + Math.sin(t) / k(X)), mode: 'lines', line: { simplify: false, color: 'orange', width: 3.000000  }, fill: 'none' });
   }
+  mthlyTraces.push({ x: [cx, X], y: [cy, Y], mode: 'lines', line: { color: 'orange', width: 2  } });
+  mthlyTraces.push({ x: [cx], y: [cy], mode: 'markers', marker: { color: 'orange', size: 7.000000  } });
   mthlyTraces.push({ x: [X], y: [Y], mode: 'markers', marker: { color: 'red', size: 10.000000  } });
   mthlyPlayButtnTxt();
   document.getElementById("displaytext").innerHTML = displaytext();
