@@ -36,7 +36,7 @@ input:focus {outline: none;}
 <span id="displaytext" style="left:74px;top:90px;position:absolute">&nbsp;</span>
 <script type="text/javascript">
 function displaytext() { return ""; } // to be overwritten
-function displaytitle() { return "<font size=5><em>y</em> = sin <em>x</em></font>"; }
+function displaytitle() { return "<font size=5>Osculating circle: <em>y</em> = sin <em>x</em></h3>"; }
 var x = [], t = [], X, Y, T, p, mthlyGlobal = [], mthlyGlobal1 = [], mthlyGlobal2 = [], mthlyGlobal3 = [], mthlyGlobal4 = [], mthlyGlobal5 = [];
 
 var mthlyAutoPlayq = true, mthlyIntervalId = null, mthlyInterval = 200;
@@ -85,6 +85,7 @@ function mthlyUpdateTraces() {
   function q(x) { return fpp(x)*m(x) - fp(x) * mp(x); }  // do NOT use p which is reserved for 'play'
   const cx = X - mp(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));   // (cx, cy), center of osculation circle at (X, Y)
   const cy = f(X) + q(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));
+  function displaytext() { const K = k(X); const R = 1/K; return "At (" + X.toFixed(2) + ", " + Y.toFixed(2) + "): <em>&kappa;</em> = " + K.toFixed(4) + ", <em>r</em> = " + R.toFixed(4) + ", center (" + cx.toFixed(4) +", " + cy.toFixed(4) + ")"; }
   // ^^^^^ user's javascript ^^^^^
 
   mthlyTraces.push({ x: t.map(t => t), y: t.map(t => Math.sin(t)), mode: 'lines', line: { simplify: false }, fill: 'none' });
@@ -98,6 +99,8 @@ function mthlyUpdateTraces() {
     for (let i = 0; i <= 6.2831853071795862; i += 0.012566370614359173) { t.push(i); }
     mthlyTraces.push({ x: t.map(t => cx + Math.cos(t) / k(X)), y: t.map(t => cy + Math.sin(t) / k(X)), mode: 'lines', line: { simplify: false, color: 'orange', width: 3.000000  }, fill: 'none' });
   }
+  mthlyTraces.push({ x: [cx, X], y: [cy, Y], mode: 'lines', line: { color: 'orange', width: 2  } });
+  mthlyTraces.push({ x: [cx], y: [cy], mode: 'markers', marker: { color: 'orange', size: 7.000000  } });
   mthlyTraces.push({ x: [X], y: [Y], mode: 'markers', marker: { color: 'red', size: 10.000000  } });
   mthlyPlayButtnTxt();
   document.getElementById("displaytext").innerHTML = displaytext();
