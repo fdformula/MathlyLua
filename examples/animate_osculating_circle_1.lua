@@ -14,16 +14,19 @@ jscode = [[
   function q(x) { return fpp(x)*m(x) - fp(x) * mp(x); }  // do NOT use p which is reserved for 'play'
   const cx = X - mp(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));   // (cx, cy), center of osculation circle at (X, Y)
   const cy = f(X) + q(X) / (k(X) * Math.sqrt(mp(X)**2 + q(X)**2));
+  function displaytext() { const K = k(X); const R = 1/K; return "At (" + X.toFixed(2) + ", " + Y.toFixed(2) + "): <em>&kappa;</em> = " + K.toFixed(4) + ", <em>r</em> = " + R.toFixed(4) + ", center (" + cx.toFixed(4) +", " + cy.toFixed(4) + ")"; }
 ]]
 
 fstr = {'@(t) t', '@(t) sin(t)'}
 opts = {
   xrange = {-2*pi, 2*pi},
-  layout = { title = '<h3>y = sin(x)</h3>' },
+  layout = { title = '<font size=5>Osculating circle: <em>y</em> = sin <em>x</em></h3>' },
   javascript = jscode,
   enhancements = {
     {x = fstr[1], y = fstr[2], t = {-2*pi, 2*pi}, color = 'blue'},
     {x = '@(t) cx + cos(t) / k(X)', y = '@(t) cy + sin(t) / k(X)', t = {0, 2*pi}, color = 'orange'},
+    {x = {'cx', 'X'}, y = {'cy', 'Y'}, line = true, width = '2', color = 'orange'},
+    {x = 'cx', y = 'cy', color = 'orange', size = 7, point = true},
     {x = 'X', y = 'Y', color = 'red', size = 10, point = true}
   }
 }
