@@ -1,3 +1,1 @@
-To be deleted...
-
-Please see [mathly] (https://github.com/fdformula/mathly).
+Moved to [mathly] (https://github.com/fdformula/mathly).
